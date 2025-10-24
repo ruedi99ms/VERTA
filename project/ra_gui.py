@@ -2279,6 +2279,7 @@ class RouteAnalyzerGUI:
                             "r_outer": r_outer_list[i] if i < len(r_outer_list) else None,
                             "path_length": path_length,
                             "epsilon": epsilon,
+                            "linger_delta": linger_delta,  # Store linger_delta for gaze analysis
                             "decision_mode": discover_decision_mode,
                             "scale": st.session_state.get("scale_factor", 1.0),
                         }
@@ -5775,6 +5776,25 @@ class RouteAnalyzerGUI:
                 st.write("**Will calculate decision points from scratch**")
         
         # Use the actual gaze analysis functions with proper assignments
+        # Get decision mode and parameters from discover analysis if available
+        discover_decision_mode = decision_mode  # Default fallback
+        discover_path_length = path_length
+        discover_epsilon = epsilon
+        discover_linger_delta = linger_delta
+        discover_r_outer = r_outer_list[0] if r_outer_list else None  # Default fallback
+        
+        if "branches" in st.session_state.analysis_results:
+            # Try to get parameters from the first junction's stored data
+            for junction_key, branch_data in st.session_state.analysis_results["branches"].items():
+                if isinstance(branch_data, dict) and "decision_mode" in branch_data:
+                    discover_decision_mode = branch_data["decision_mode"]
+                    discover_path_length = branch_data.get("path_length", path_length)
+                    discover_epsilon = branch_data.get("epsilon", epsilon)
+                    discover_linger_delta = branch_data.get("linger_delta", linger_delta)
+                    discover_r_outer = branch_data.get("r_outer", discover_r_outer)
+                    st.info(f"🔧 **Using discover analysis parameters:** decision_mode={discover_decision_mode}, path_length={discover_path_length}, epsilon={discover_epsilon}, linger_delta={discover_linger_delta}, r_outer={discover_r_outer}")
+                    break
+        
         try:
             st.info("🔬 Analyzing head yaw data for all junctions...")
             with st.spinner("Processing head yaw data..."):
@@ -5782,11 +5802,11 @@ class RouteAnalyzerGUI:
                     trajectories=processed_trajectories,
                     junctions=junctions,
                     assignments_df=chain_df,
-                    decision_mode=decision_mode,
+                    decision_mode=discover_decision_mode,  # Use discover decision mode
                     r_outer_list=r_outer_list,
-                    path_length=path_length,
-                    epsilon=epsilon,
-                    linger_delta=linger_delta,
+                    path_length=discover_path_length,  # Use discover path length
+                    epsilon=discover_epsilon,  # Use discover epsilon
+                    linger_delta=discover_linger_delta,  # Use discover linger delta
                     base_index=0  # Start from 0 for all junctions
                 )
             
@@ -5796,11 +5816,11 @@ class RouteAnalyzerGUI:
                     trajectories=processed_trajectories,
                     junctions=junctions,
                     assignments_df=chain_df,
-                    decision_mode=decision_mode,
+                    decision_mode=discover_decision_mode,  # Use discover decision mode
                     r_outer_list=r_outer_list,
-                    path_length=path_length,
-                    epsilon=epsilon,
-                    linger_delta=linger_delta,
+                    path_length=discover_path_length,  # Use discover path length
+                    epsilon=discover_epsilon,  # Use discover epsilon
+                    linger_delta=discover_linger_delta,  # Use discover linger delta
                     physio_window=3.0,
                     base_index=0,
                 )
@@ -5811,11 +5831,11 @@ class RouteAnalyzerGUI:
                     trajectories=processed_trajectories,
                     junctions=junctions,
                     assignments_df=chain_df,
-                    decision_mode=decision_mode,
+                    decision_mode=discover_decision_mode,  # Use discover decision mode
                     r_outer_list=r_outer_list,
-                    path_length=path_length,
-                    epsilon=epsilon,
-                    linger_delta=linger_delta,
+                    path_length=discover_path_length,  # Use discover path length
+                    epsilon=discover_epsilon,  # Use discover epsilon
+                    linger_delta=discover_linger_delta,  # Use discover linger delta
                     physio_window=3.0,
                     base_index=0,
                 )
@@ -5893,6 +5913,23 @@ class RouteAnalyzerGUI:
         
         # Debug: Check r_outer parameter at function start
         st.write(f"🔍 **DEBUG: r_outer parameter received:** {r_outer} (type: {type(r_outer)})")
+        
+        # Get decision mode and parameters from discover analysis if available
+        discover_decision_mode = decision_mode  # Default fallback
+        discover_path_length = path_length
+        discover_epsilon = epsilon
+        discover_linger_delta = linger_delta
+        
+        if "branches" in st.session_state.analysis_results:
+            # Try to get parameters from the first junction's stored data
+            for junction_key, branch_data in st.session_state.analysis_results["branches"].items():
+                if isinstance(branch_data, dict) and "decision_mode" in branch_data:
+                    discover_decision_mode = branch_data["decision_mode"]
+                    discover_path_length = branch_data.get("path_length", path_length)
+                    discover_epsilon = branch_data.get("epsilon", epsilon)
+                    discover_linger_delta = branch_data.get("linger_delta", linger_delta)
+                    st.info(f"🔧 **Using discover analysis parameters:** decision_mode={discover_decision_mode}, path_length={discover_path_length}, epsilon={discover_epsilon}")
+                    break
         
         # Always define r_outer_list upfront to avoid unbound local errors later
         r_outer_list = [r_outer] if r_outer is not None else [None]
@@ -6836,11 +6873,11 @@ class RouteAnalyzerGUI:
                     trajectories=trajectories_for_analysis,
                     junctions=[junction],
                     assignments_df=chain_df_call,  # Use the assignments with merged decision points
-                    decision_mode="hybrid",  # Use hybrid mode for existing assignments
+                    decision_mode=discover_decision_mode,  # Use discover decision mode
                     r_outer_list=r_outer_list,
-                    path_length=path_length,
-                    epsilon=epsilon,
-                    linger_delta=linger_delta,  # Use the same linger_delta as discover analysis
+                    path_length=discover_path_length,  # Use discover path length
+                    epsilon=discover_epsilon,  # Use discover epsilon
+                    linger_delta=discover_linger_delta,  # Use discover linger delta
                     physio_window=3.0
                 )
                 
@@ -6953,11 +6990,11 @@ class RouteAnalyzerGUI:
                     trajectories=trajectories_for_analysis,
                     junctions=[junction],
                     assignments_df=chain_df_call,  # Use the assignments with merged decision points
-                    decision_mode="hybrid",  # Use hybrid mode for existing assignments
+                    decision_mode=discover_decision_mode,  # Use discover decision mode
                     r_outer_list=r_outer_list,
-                    path_length=path_length,
-                    epsilon=epsilon,
-                    linger_delta=linger_delta,  # Use the same linger_delta as discover analysis
+                    path_length=discover_path_length,  # Use discover path length
+                    epsilon=discover_epsilon,  # Use discover epsilon
+                    linger_delta=discover_linger_delta,  # Use discover linger delta
                     physio_window=3.0
                 )
                 
