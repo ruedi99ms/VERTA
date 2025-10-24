@@ -298,7 +298,7 @@ def compute_head_yaw_at_decisions(
                 
             results.append({
                 "trajectory": tr.tid,
-                "junction": i,
+                "junction": label_idx,  # Use label_idx instead of i to match the actual junction index
                 "branch": int(branch),
                 "head_yaw": head_yaw,
                 "movement_yaw": movement_yaw,
@@ -324,6 +324,7 @@ def analyze_physiological_at_junctions(
     epsilon: float = 0.05,
     linger_delta: float = 0.0,
     physio_window: float = 3.0,
+    base_index: int = 0,
 ) -> pd.DataFrame:
     """
     Analyze physiological data (heart rate, pupil dilation) at decision points.
@@ -349,7 +350,9 @@ def analyze_physiological_at_junctions(
             continue
             
         for i, junc in enumerate(junctions):
-            branch_col = f"branch_j{i}"
+            # Use the actual junction index (base_index + i) for branch column lookup
+            label_idx = base_index + i
+            branch_col = f"branch_j{label_idx}"
             branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
             if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) < 0:
                 continue
@@ -523,7 +526,7 @@ def analyze_physiological_at_junctions(
             
             results.append({
                 "trajectory": tr.tid,
-                "junction": i,
+                "junction": label_idx,  # Use label_idx instead of i to match the actual junction index
                 "branch": int(branch),
                 "heart_rate_baseline": hr_baseline,
                 "heart_rate_decision": hr_decision,
@@ -546,6 +549,7 @@ def analyze_pupil_dilation_trajectory(
     epsilon: float = 0.05,
     linger_delta: float = 0.0,
     physio_window: float = 3.0,
+    base_index: int = 0,
 ) -> pd.DataFrame:
     """Analyze pupil dilation trajectory from junction entry to decision point."""
     from tqdm import tqdm
@@ -565,7 +569,9 @@ def analyze_pupil_dilation_trajectory(
             continue
             
         for i, junc in enumerate(junctions):
-            branch_col = f"branch_j{i}"
+            # Use the actual junction index (base_index + i) for branch column lookup
+            label_idx = base_index + i
+            branch_col = f"branch_j{label_idx}"
             branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
             if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) < 0:
                 continue
@@ -638,7 +644,7 @@ def analyze_pupil_dilation_trajectory(
             
             results.append({
                 "trajectory": traj.tid,
-                "junction": i,
+                "junction": label_idx,  # Use label_idx instead of i to match the actual junction index
                 "branch": int(branch),
                 "pupil_baseline": pupil_baseline,
                 "pupil_decision": pupil_decision,
@@ -696,7 +702,22 @@ def plot_gaze_directions_at_junctions(
         ax.scatter([junction.cx], [junction.cz], color="black", s=30, zorder=3)
         
         # Filter gaze data for this junction
-        junction_gaze = gaze_df[gaze_df["junction"] == j_idx]
+        print(f"[gaze_plot_debug] Junction {j_idx}: Looking for junction index {j_idx} in gaze_df")
+        print(f"[gaze_plot_debug] Junction {j_idx}: Available junction indices in gaze_df: {sorted(gaze_df['junction'].unique())}")
+        print(f"[gaze_plot_debug] Junction {j_idx}: Total gaze_df rows: {len(gaze_df)}")
+        
+        # Handle individual junction data: if we only have data for one junction,
+        # use all the data regardless of junction index
+        available_junction_indices = sorted(gaze_df['junction'].unique())
+        if len(available_junction_indices) == 1:
+            # Single junction data - use all data
+            junction_gaze = gaze_df.copy()
+            print(f"[gaze_plot_debug] Junction {j_idx}: Single junction data detected, using all {len(junction_gaze)} rows")
+        else:
+            # Multi-junction data - filter by junction index
+            junction_gaze = gaze_df[gaze_df["junction"] == j_idx]
+            print(f"[gaze_plot_debug] Junction {j_idx}: Found {len(junction_gaze)} rows after filtering")
+        
         # Drop unassigned/outlier branches to avoid confusing colors
         if "branch" in junction_gaze.columns:
             junction_gaze = junction_gaze.copy()
@@ -704,6 +725,7 @@ def plot_gaze_directions_at_junctions(
             junction_gaze = junction_gaze.dropna(subset=["branch"]).copy()
             junction_gaze["branch"] = junction_gaze["branch"].astype(int)
             junction_gaze = junction_gaze[junction_gaze["branch"] >= 0]
+            print(f"[gaze_plot_debug] Junction {j_idx}: After branch filtering: {len(junction_gaze)} rows")
         
         # Debug: Check what gaze data we have
         # Prefer user-provided label; otherwise use coordinates for clarity

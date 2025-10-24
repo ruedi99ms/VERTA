@@ -5720,6 +5720,7 @@ class RouteAnalyzerGUI:
                     epsilon=epsilon,
                     linger_delta=linger_delta,
                     physio_window=3.0,
+                    base_index=0,
                 )
             
             st.info("🔬 Analyzing pupil dilation trajectories for all junctions...")
@@ -5734,6 +5735,7 @@ class RouteAnalyzerGUI:
                     epsilon=epsilon,
                     linger_delta=linger_delta,
                     physio_window=3.0,
+                    base_index=0,
                 )
             
             # Generate pupil dilation heatmaps for all junctions
