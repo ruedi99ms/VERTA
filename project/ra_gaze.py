@@ -30,6 +30,7 @@ def compute_head_yaw_at_decisions(
     epsilon: float = 0.05,
     linger_delta: float = 0.0,
     base_index: int = 0,
+    decisions_df: Optional[pd.DataFrame] = None,
 ) -> pd.DataFrame:
     """Compute head yaw angles at decision points for each trajectory."""
     from tqdm import tqdm
@@ -112,11 +113,42 @@ def compute_head_yaw_at_decisions(
                 continue
                 
             # Prefer precomputed decisions if provided via assignments_df.
-            # Look for decision points specific to this trajectory
+            # Look for decision points specific to this trajectory and junction
             pre_idx = None
             pre_x = np.nan
             pre_z = np.nan
-            if "decision_idx" in traj_assignments.columns:
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                'decision_idx': f"decision_idx_j{label_idx}",
+                'intercept_x': f"intercept_x_j{label_idx}",
+                'intercept_z': f"intercept_z_j{label_idx}"
+            }
+            
+            # Debug: Check what junction-specific columns are available
+            available_junction_cols = [col for col in traj_assignments.columns if col.startswith('decision_idx_j')]
+            if tr.tid < 5:  # Only debug first 5 trajectories to avoid spam
+                print(f"[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Available junction columns: {available_junction_cols}")
+                print(f"[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Looking for: {list(junction_cols.values())}")
+            
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                traj_assignments_for_traj = traj_assignments[traj_assignments["trajectory"] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    decision_idx_val = traj_assignments_for_traj[junction_cols['decision_idx']].iloc[0]
+                    intercept_x_val = traj_assignments_for_traj[junction_cols['intercept_x']].iloc[0]
+                    intercept_z_val = traj_assignments_for_traj[junction_cols['intercept_z']].iloc[0]
+                    
+                    if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                        pre_idx = int(decision_idx_val)
+                    if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                        pre_x = float(intercept_x_val)
+                    if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                        pre_z = float(intercept_z_val)
+                        
+                if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                    print(f"[gaze_debug] Using precomputed decision point for trajectory {tr.tid} at junction {label_idx}: idx={pre_idx}, x={pre_x}, z={pre_z}")
+            elif "decision_idx" in traj_assignments.columns:
                 # Filter to this specific trajectory
                 print(f"[gaze_debug] Looking for trajectory {tr.tid} in assignments with trajectory IDs: {traj_assignments['trajectory'].unique()[:10]}")
                 print(f"[gaze_debug] Assignments DataFrame shape: {traj_assignments.shape}")
@@ -362,7 +394,32 @@ def analyze_physiological_at_junctions(
             pre_idx = None
             pre_x = np.nan
             pre_z = np.nan
-            if "decision_idx" in traj_assignments.columns:
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                'decision_idx': f"decision_idx_j{i}",
+                'intercept_x': f"intercept_x_j{i}",
+                'intercept_z': f"intercept_z_j{i}"
+            }
+            
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                traj_assignments_for_traj = traj_assignments[traj_assignments["trajectory"] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    decision_idx_val = traj_assignments_for_traj[junction_cols['decision_idx']].iloc[0]
+                    intercept_x_val = traj_assignments_for_traj[junction_cols['intercept_x']].iloc[0]
+                    intercept_z_val = traj_assignments_for_traj[junction_cols['intercept_z']].iloc[0]
+                    
+                    if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                        pre_idx = int(decision_idx_val)
+                    if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                        pre_x = float(intercept_x_val)
+                    if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                        pre_z = float(intercept_z_val)
+                        
+                if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                    print(f"[physio_debug] Trajectory {tr.tid} at junction {i}: Using precomputed decision point idx={pre_idx}, x={pre_x}, z={pre_z}")
+            elif "decision_idx" in traj_assignments.columns:
                 # Filter to this specific trajectory
                 traj_assignments_for_traj = traj_assignments[traj_assignments["trajectory"] == tr.tid]
                 if not traj_assignments_for_traj.empty:
@@ -578,7 +635,22 @@ def analyze_pupil_dilation_trajectory(
                 
             # Find decision intercept using precomputed decision_idx when available
             r_out = r_outer_list[i]
-            if "decision_idx" in traj_assignments.columns:
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                'decision_idx': f"decision_idx_j{i}",
+                'intercept_x': f"intercept_x_j{i}",
+                'intercept_z': f"intercept_z_j{i}"
+            }
+            
+            idx = None
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                decision_idx_val = traj_assignments[junction_cols['decision_idx']].iloc[0]
+                if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                    idx = int(decision_idx_val)
+                    print(f"[pupil_debug] Trajectory {traj.tid} at junction {i}: Using precomputed decision point idx={idx}")
+            elif "decision_idx" in traj_assignments.columns:
                 val = traj_assignments["decision_idx"].iloc[0]
                 if not (isinstance(val, float) and np.isnan(val)):
                     idx = int(val)

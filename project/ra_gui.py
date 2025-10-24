@@ -5648,6 +5648,16 @@ class RouteAnalyzerGUI:
         
         if existing_assignments is not None and use_existing_assignments:
             chain_df = existing_assignments
+            
+            # For multi-junction analysis, we'll pass decision points separately to each gaze function
+            # This avoids the complex merging issues with junction-specific data
+            decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("decision_points")
+            if decisions_chain_df is not None and len(decisions_chain_df) > 0:
+                st.info("🔗 **Found decision points - will use precomputed intercept coordinates**")
+                st.write(f"🔍 **Decision points available:** {len(decisions_chain_df)} records")
+            else:
+                st.warning("⚠️ **No decision points found in session state - will calculate from scratch**")
+            
             st.success(f"✅ Using existing assignments - found {len(chain_df)} assignments")
             st.info(f"🔍 **GAZE ANALYSIS PATH:** Using existing assignments from previous discover analysis")
         else:
@@ -5691,6 +5701,78 @@ class RouteAnalyzerGUI:
                 processed_trajectories.append(traj)
             else:
                 processed_trajectories.append(traj)
+        
+        # Merge decision points with assignments for each junction to avoid multi-junction merging issues
+        chain_df_with_decisions = chain_df.copy()
+        if decisions_chain_df is not None and len(decisions_chain_df) > 0:
+            st.info("🔗 **Merging decision points with assignments per junction...**")
+            try:
+                from ra_consistency import normalize_assignments
+                
+                # For each junction, merge its decision points
+                # Ensure junction_index is numeric for comparison (do this once outside the loop)
+                decisions_df_numeric = decisions_chain_df.copy()
+                st.write(f"🔍 **Debug: Original junction_index values:** {decisions_df_numeric['junction_index'].unique()[:10]}")
+                st.write(f"🔍 **Debug: Original junction_index types:** {[type(x) for x in decisions_df_numeric['junction_index'].unique()[:5]]}")
+                
+                decisions_df_numeric["junction_index"] = pd.to_numeric(decisions_df_numeric["junction_index"], errors='coerce')
+                st.write(f"🔍 **Debug: After conversion junction_index values:** {decisions_df_numeric['junction_index'].unique()[:10]}")
+                st.write(f"🔍 **Debug: NaN count after conversion:** {decisions_df_numeric['junction_index'].isna().sum()}")
+                
+                for junction_idx in range(len(junctions)):
+                    # Filter decision points for this junction
+                    junction_decisions = decisions_df_numeric[decisions_df_numeric["junction_index"] == junction_idx].copy()
+                    
+                    if len(junction_decisions) > 0:
+                        # Remove junction_index column to avoid filtering conflicts in normalize_assignments
+                        junction_decisions_clean = junction_decisions.drop(columns=['junction_index']).copy()
+                        
+                        # Debug: Check trajectory ID types
+                        st.write(f"🔍 **Debug Junction {junction_idx}:**")
+                        st.write(f"- Chain_df trajectory types: {[type(x) for x in chain_df['trajectory'].unique()[:5]]}")
+                        st.write(f"- Junction_decisions trajectory types: {[type(x) for x in junction_decisions_clean['trajectory'].unique()[:5]]}")
+                        st.write(f"- Chain_df trajectory values: {chain_df['trajectory'].unique()[:5]}")
+                        st.write(f"- Junction_decisions trajectory values: {junction_decisions_clean['trajectory'].unique()[:5]}")
+                        
+                        # Normalize assignments for this junction
+                        chain_df_normalized, norm_report = normalize_assignments(
+                            assignments_df=chain_df,
+                            trajectories=processed_trajectories,
+                            junctions=[junctions[junction_idx]],  # Single junction
+                            current_junction_idx=None,  # Don't filter by junction since we already did
+                            decisions_df=junction_decisions_clean,
+                            prefer_decisions=True,
+                            include_outliers=False,
+                            strict=False,
+                        )
+                        
+                        # Merge the decision columns from this junction's normalized data
+                        decision_cols = ['decision_idx', 'intercept_x', 'intercept_z']
+                        for col in decision_cols:
+                            if col in chain_df_normalized.columns:
+                                # Create junction-specific column names
+                                junction_col = f"{col}_j{junction_idx}"
+                                chain_df_with_decisions[junction_col] = chain_df_normalized[col]
+                
+                # Check if any decision points were merged
+                decision_cols_merged = [col for col in chain_df_with_decisions.columns if col.startswith('decision_idx_')]
+                if decision_cols_merged:
+                    st.success(f"✅ **Successfully merged decision points for {len(decision_cols_merged)} junctions**")
+                    
+                    # Debug: Show coverage of decision points
+                    for col in decision_cols_merged:
+                        junction_num = col.split('_')[-1]
+                        non_null_count = chain_df_with_decisions[col].notna().sum()
+                        total_count = len(chain_df_with_decisions)
+                        st.write(f"🔍 **Junction {junction_num}:** {non_null_count}/{total_count} trajectories have precomputed decision points")
+                    
+                    chain_df = chain_df_with_decisions
+                else:
+                    st.warning("⚠️ **No decision points merged - will calculate from scratch**")
+                    
+            except Exception as e:
+                st.warning(f"⚠️ **Could not merge decision points:** {e}")
+                st.write("**Will calculate decision points from scratch**")
         
         # Use the actual gaze analysis functions with proper assignments
         try:
@@ -6725,7 +6807,7 @@ class RouteAnalyzerGUI:
                 except Exception:
                     from ra_consistency import normalize_assignments
 
-                decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("chain_decisions")
+                decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("decision_points")
                 if decisions_chain_df is None:
                     # Fallback: try to load from default GUI outputs dir
                     try:
@@ -6835,7 +6917,7 @@ class RouteAnalyzerGUI:
                 except Exception:
                     from ra_consistency import normalize_assignments
 
-                decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("chain_decisions")
+                decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("decision_points")
                 if decisions_chain_df is None:
                     # Fallback: try to load from default GUI outputs dir
                     try:
@@ -6942,7 +7024,7 @@ class RouteAnalyzerGUI:
                 except Exception:
                     from ra_consistency import normalize_assignments
 
-                decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("chain_decisions")
+                decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("decision_points")
                 if decisions_chain_df is None:
                     # Fallback: try to load from default GUI outputs dir
                     try:

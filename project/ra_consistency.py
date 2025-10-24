@@ -24,7 +24,16 @@ def _build_tid_map(trajectories: Sequence[Trajectory], assignments_df: Optional[
     if assignments_df is not None and "trajectory" in assignments_df.columns:
         # Use trajectory IDs from assignments DataFrame to ensure compatibility
         assignment_ids = assignments_df["trajectory"].unique()
-        return {str(tid): int(i) for i, tid in enumerate(sorted(assignment_ids))}
+        # Handle mixed numeric and non-numeric trajectory IDs
+        assignment_ids_numeric = []
+        for x in assignment_ids:
+            try:
+                assignment_ids_numeric.append(int(x))
+            except (ValueError, TypeError):
+                # Skip non-numeric IDs like 'outlier_test'
+                print(f"[consistency_debug] Skipping non-numeric trajectory ID: {x}")
+                continue
+        return {str(tid): int(i) for i, tid in enumerate(sorted(assignment_ids_numeric))}
     else:
         # Fallback to original behavior
         return {str(getattr(t, "tid", i)): int(i) for i, t in enumerate(trajectories)}
@@ -81,9 +90,12 @@ def normalize_assignments(
         dec = decisions_df.copy()
         # Accept either consolidated 'junction_index' or assume single junction (0)
         if current_junction_idx is not None and "junction_index" in dec.columns:
+            # Ensure both sides of comparison are the same type
+            dec["junction_index"] = pd.to_numeric(dec["junction_index"], errors='coerce')
             dec = dec[dec["junction_index"] == int(current_junction_idx)]
         elif "junction_index" in dec.columns and dec["junction_index"].nunique() == 1:
             pass
+        # For multi-junction analysis (current_junction_idx=None), keep all decision points
         # Map trajectory ids then merge
         dec = dec.copy()
         dec["trajectory"] = dec["trajectory"].astype(str).map(tid_map)
@@ -91,6 +103,13 @@ def normalize_assignments(
         dec["trajectory"] = dec["trajectory"].astype(int)
         keep_cols = [c for c in ["trajectory", "decision_idx", "intercept_x", "intercept_z"] if c in dec.columns]
         if keep_cols:
+            # Ensure both DataFrames have the same trajectory ID data type before merging
+            print(f"[consistency_debug] Before merge - df trajectory types: {[type(x) for x in df['trajectory'].unique()[:3]]}")
+            print(f"[consistency_debug] Before merge - dec trajectory types: {[type(x) for x in dec['trajectory'].unique()[:3]]}")
+            df["trajectory"] = df["trajectory"].astype(int)
+            dec["trajectory"] = dec["trajectory"].astype(int)
+            print(f"[consistency_debug] After conversion - df trajectory types: {[type(x) for x in df['trajectory'].unique()[:3]]}")
+            print(f"[consistency_debug] After conversion - dec trajectory types: {[type(x) for x in dec['trajectory'].unique()[:3]]}")
             df = df.merge(dec[keep_cols], on="trajectory", how="left")
 
     # 4) Filter out outliers by default for consumers (can be kept if requested)
