@@ -199,11 +199,15 @@ gui_outputs/intent_recognition/
     intent_feature_importance.png   # Feature importance plots
     intent_accuracy_analysis.png     # Accuracy vs. distance
     test_predictions.json           # Sample predictions
-    models/                         # Trained model files (if saved)
-      model_100.pkl
+    models/                         # Trained model files
+      model_100.pkl                 # Trained Random Forest/Gradient Boosting
+      scaler_100.pkl                # Feature scaler
       model_75.pkl
+      scaler_75.pkl
       model_50.pkl
+      scaler_50.pkl
       model_25.pkl
+      scaler_25.pkl
 ```
 
 ### Training Results JSON
@@ -385,9 +389,96 @@ For live systems:
 - Feature Engineering: Correlation, covariance analysis
 - Cross-Validation: Model evaluation best practices
 
+## 💾 Loading and Using Saved Models
+
+### After Training (Export from GUI)
+
+After running Intent Recognition in the GUI, models are automatically saved to:
+```
+gui_outputs/intent_recognition/junction_0/models/
+├── model_100.pkl    # Trained model for 100 units
+├── scaler_100.pkl   # Feature scaler
+├── model_75.pkl
+├── scaler_75.pkl
+├── model_50.pkl
+├── scaler_50.pkl
+├── model_25.pkl
+└── scaler_25.pkl
+```
+
+### Loading Models in Python
+
+```python
+import pickle
+import numpy as np
+
+# Load a specific model and scaler
+distance = 75.0
+
+with open(f"gui_outputs/intent_recognition/junction_0/models/model_{distance}.pkl", 'rb') as f:
+    model = pickle.load(f)
+
+with open(f"gui_outputs/intent_recognition/junction_0/models/scaler_{distance}.pkl", 'rb') as f:
+    scaler = pickle.load(f)
+
+# Extract features from current trajectory (see ra_intent_recognition.py)
+features = extract_features(trajectory, junction, distance)
+
+# Scale features
+features_scaled = scaler.transform([features])
+
+# Predict
+predicted_branch = model.predict(features_scaled)[0]
+confidence = model.predict_proba(features_scaled)[0].max()
+probabilities = model.predict_proba(features_scaled)[0]
+
+print(f"Predicted branch: {predicted_branch}")
+print(f"Confidence: {confidence:.1%}")
+```
+
+### Example Scripts
+
+See `example_load_intent_models.py` for:
+- ✅ Loading multiple models at once
+- ✅ Real-time prediction in VR systems
+- ✅ A/B testing different intervention strategies
+- ✅ Cross-study benchmarking
+
+### Integration into VR System
+
+```python
+# In your VR application loop
+class NavigationSystem:
+    def __init__(self):
+        self.model_loader = IntentModelLoader("path/to/models")
+    
+    def update(self, user):
+        """Called every frame"""
+        junction = detect_upcoming_junction(user)
+        distance = calculate_distance(user, junction)
+        
+        # Predict intent
+        prediction, confidence, _ = self.model_loader.predict(
+            extract_features(user.trajectory, junction),
+            distance
+        )
+        
+        # Take action if confident
+        if confidence > 0.8 and distance < 75:
+            show_navigation_hint(prediction)
+            preload_content(prediction)
+```
+
 ## 📝 Summary
 
 Intent Recognition enables **predictive** rather than **reactive** systems by learning from historical user behavior to predict future route choices. Use it when you need to prepare the system before the user makes their decision!
+
+**Key benefits:**
+- ✅ **Models are saved** - Load and reuse in future studies
+- ✅ **Production ready** - Use trained models in live VR systems
+- ✅ **Transfer learning** - Apply models from one study to another
+- ✅ **A/B testing** - Compare different intervention strategies
+- ✅ **Research applications** - Understand when and why users decide
 
 ---
 

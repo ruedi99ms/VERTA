@@ -82,19 +82,22 @@ class IntentRecognitionAnalyzer:
     
     def __init__(self, 
                  prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0],
-                 model_type: str = "random_forest"):
+                 model_type: str = "random_forest",
+                 output_dir: Optional[str] = None):
         """
         Initialize analyzer
         
         Args:
             prediction_distances: Distances before junction to make predictions
             model_type: "random_forest" or "gradient_boosting"
+            output_dir: Directory to save models (optional)
         """
         if not SKLEARN_AVAILABLE:
             raise ImportError("scikit-learn required for intent recognition")
             
         self.prediction_distances = sorted(prediction_distances, reverse=True)
         self.model_type = model_type
+        self.output_dir = output_dir
         self.models = {}  # One model per prediction distance
         self.scalers = {}  # Feature scalers
         self.feature_importance = {}
@@ -455,6 +458,24 @@ class IntentRecognitionAnalyzer:
             self.models[dist] = model
             self.scalers[dist] = scaler
             
+            # Save model and scaler to disk
+            if self.output_dir:
+                models_dir = os.path.join(self.output_dir, "models")
+                os.makedirs(models_dir, exist_ok=True)
+                
+                # Save model
+                model_path = os.path.join(models_dir, f"model_{dist}.pkl")
+                import pickle
+                with open(model_path, 'wb') as f:
+                    pickle.dump(model, f)
+                
+                # Save scaler
+                scaler_path = os.path.join(models_dir, f"scaler_{dist}.pkl")
+                with open(scaler_path, 'wb') as f:
+                    pickle.dump(scaler, f)
+                
+                logger.info(f"  ✓ Saved model to {model_path}")
+            
             # Feature importance
             if hasattr(model, 'feature_importances_'):
                 importance = model.feature_importances_
@@ -566,10 +587,11 @@ def analyze_intent_recognition(
         logger.error("Insufficient valid trajectories for intent recognition")
         return {'error': 'insufficient_data'}
     
-    # Initialize analyzer
+    # Initialize analyzer with output_dir for model saving
     analyzer = IntentRecognitionAnalyzer(
         prediction_distances=prediction_distances,
-        model_type="random_forest"
+        model_type="random_forest",
+        output_dir=output_dir
     )
     
     # Train models
