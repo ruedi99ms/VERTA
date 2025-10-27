@@ -4639,12 +4639,8 @@ class RouteAnalyzerGUI:
         with st.expander("🔍 Debug: Available Analysis Results", expanded=False):
             if st.session_state.analysis_results is not None:
                 st.write("Analysis results keys:", list(st.session_state.analysis_results.keys()))
-                if "metrics" in st.session_state.analysis_results:
-                    st.write("Metrics data available:", len(st.session_state.analysis_results["metrics"]), "entries")
-                    if st.session_state.analysis_results["metrics"]:
-                        st.write("Sample metrics entry:", st.session_state.analysis_results["metrics"][0])
-                else:
-                    st.write("No analysis results available")
+            else:
+                st.write("No analysis results available")
         
         # Show different visualizations based on analysis type
         # If multiple analysis types are available, let user choose
