@@ -36,7 +36,7 @@ if str(project_dir) not in sys.path:
 
 try:
     # Try relative imports first (when used as package)
-    from .ra_data_loader import load_folder, load_folder_with_gaze, Trajectory, Trajectory, ColumnMapping
+    from .ra_data_loader import load_folder, load_folder_with_gaze, Trajectory, ColumnMapping
     from .ra_decisions import discover_decision_chain, discover_branches, assign_branches
     from .ra_geometry import Circle, entered_junction_idx
     from .ra_prediction import analyze_junction_choice_patterns, JunctionChoiceAnalyzer
@@ -54,7 +54,7 @@ try:
     from .ra_logging import get_logger
 except ImportError:
     # Fall back to absolute imports (when used standalone)
-    from ra_data_loader import load_folder, load_folder_with_gaze, Trajectory, Trajectory, ColumnMapping
+    from ra_data_loader import load_folder, load_folder_with_gaze, Trajectory, ColumnMapping
     from ra_decisions import discover_decision_chain, discover_branches, assign_branches
     from ra_geometry import Circle, entered_junction_idx
     from ra_prediction import analyze_junction_choice_patterns
