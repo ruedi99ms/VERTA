@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "route-analyzer"
-version = "0.1.0"
+version = "1.0.0"
 description = "VERTA - Virtual Environment Route and Trajectory Analyzer: A comprehensive toolkit for analyzing route choices and trajectories in virtual environments"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
+license = "MIT"
 license-files = ["LICENSE"]
 authors = [
-    {name = "ruedi99ms"}
+    {name = "Niklas Suhre", email="suhre@verkehr.tu-darmstadt.de"}
 ]
 keywords = [
     "trajectory-analysis",
@@ -28,7 +28,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -55,17 +54,16 @@ gui = ["streamlit>=1.28.0", "plotly>=5.15.0"]
 test = ["pytest>=7.0.0"]
 
 [project.scripts]
-route-analyzer = "route_analyzer.__main__:main"
+route-analyzer = "route_analyzer_RUEDI99MS.__main__:main"
 
 [project.urls]
-# Uncomment and update these when you have a repository:
-# Homepage = "https://github.com/yourusername/route_analyzer"
-# Documentation = "https://github.com/yourusername/route_analyzer#readme"
-# Repository = "https://github.com/yourusername/route_analyzer"
-# Issues = "https://github.com/yourusername/route_analyzer/issues"
+Homepage = "https://github.com/ruedi99ms/VERTA"
+Documentation = "https://github.com/ruedi99ms/VERTA#readme"
+Repository = "https://github.com/ruedi99ms/VERTA"
+Issues = "https://github.com/ruedi99ms/VERTA/issues"
 
 [tool.setuptools]
-packages = ["route_analyzer"]
+packages = ["route_analyzer_RUEDI99MS"]
 package-dir = {"" = "src"}
 
 [tool.pytest.ini_options]
