@@ -9,18 +9,11 @@ from typing import Optional, Sequence, Tuple
 import numpy as np
 import pandas as pd
 
-try:
-    from .ra_clustering import best_k_by_silhouette, cluster_angles_dbscan, kmeans_2d, merge_close_centers
-    from .ra_geometry import Circle, entered_junction_idx
-    from .ra_data_loader import Trajectory
-    from .ra_plotting import plot_decision_intercepts
-    from .ra_logging import get_logger
-except ImportError:
-    from ra_clustering import best_k_by_silhouette, cluster_angles_dbscan, kmeans_2d, merge_close_centers
-    from ra_geometry import Circle, entered_junction_idx
-    from ra_data_loader import Trajectory
-    from ra_plotting import plot_decision_intercepts
-    from ra_logging import get_logger
+from route_analyzer.ra_clustering import best_k_by_silhouette, cluster_angles_dbscan, kmeans_2d, merge_close_centers
+from route_analyzer.ra_geometry import Circle, entered_junction_idx
+from route_analyzer.ra_data_loader import Trajectory
+from route_analyzer.ra_plotting import plot_decision_intercepts
+from route_analyzer.ra_logging import get_logger
 
 logger = get_logger()
 

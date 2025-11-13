@@ -9,14 +9,13 @@ import numpy as np
 import pandas as pd
 from typing import Dict, List, Optional, Any
 
-from .ra_commands import BaseCommand
-from .ra_data_loader import load_folder
-from .ra_decisions import discover_decision_chain
-from .ra_geometry import Circle
-from .ra_data_loader import Trajectory
-from .ra_prediction import analyze_junction_choice_patterns, JunctionChoiceAnalyzer
-from .ra_logging import get_logger
-from .ra_consistency import normalize_assignments
+from route_analyzer.ra_commands import BaseCommand
+from route_analyzer.ra_data_loader import load_folder, Trajectory
+from route_analyzer.ra_decisions import discover_decision_chain
+from route_analyzer.ra_geometry import Circle
+from route_analyzer.ra_prediction import analyze_junction_choice_patterns, JunctionChoiceAnalyzer
+from route_analyzer.ra_logging import get_logger
+from route_analyzer.ra_consistency import normalize_assignments
 
 
 class PredictCommand(BaseCommand):
@@ -116,7 +115,7 @@ class PredictCommand(BaseCommand):
         )
         # Consistency warnings (optional)
         try:
-            from .ra_consistency import validate_consistency
+            from route_analyzer.ra_consistency import validate_consistency
             validate_consistency(norm_df, trajectories, junctions)
         except Exception:
             pass

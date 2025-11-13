@@ -10,10 +10,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-try:
-    from .ra_logging import get_logger
-except ImportError:
-    from ra_logging import get_logger
+from route_analyzer.ra_logging import get_logger
 
 T = TypeVar('T', bound='Trajectory')
 

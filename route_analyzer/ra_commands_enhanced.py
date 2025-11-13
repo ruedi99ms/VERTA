@@ -4,20 +4,16 @@ import json
 import numpy as np
 import pandas as pd
 
-from .ra_plotting import plot_flow_graph_map, plot_per_junction_flow_graph
-
-try:
-    from .ra_commands import BaseCommand
-    from .ra_data_loader import load_folder
-    from .ra_decisions import discover_decision_chain
-    from .ra_plotting import plot_chain_overview, plot_chain_small_multiples, plot_per_junction_flow_graph
-    from .ra_geometry import Circle
-except ImportError:
-    from ra_commands import BaseCommand
-    from ra_data_loader import load_folder
-    from ra_decisions import discover_decision_chain
-    from ra_plotting import plot_chain_overview, plot_chain_small_multiples, plot_per_junction_flow_graph
-    from ra_geometry import Circle
+from route_analyzer.ra_plotting import (
+    plot_flow_graph_map, 
+    plot_per_junction_flow_graph,
+    plot_chain_overview, 
+    plot_chain_small_multiples
+)
+from route_analyzer.ra_commands import BaseCommand
+from route_analyzer.ra_data_loader import load_folder
+from route_analyzer.ra_decisions import discover_decision_chain
+from route_analyzer.ra_geometry import Circle
 
 
 class EnhancedChainCommand(BaseCommand):

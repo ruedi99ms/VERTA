@@ -11,23 +11,23 @@ import pandas as pd
 import os
 import json
 
-from .ra_clustering import split_small_branches
-from .ra_decisions import assign_branches, discover_branches, discover_decision_chain
-from .ra_gaze import (
+from route_analyzer.ra_clustering import split_small_branches
+from route_analyzer.ra_decisions import assign_branches, discover_branches, discover_decision_chain
+from route_analyzer.ra_gaze import (
     compute_head_yaw_at_decisions, 
     analyze_physiological_at_junctions, plot_gaze_directions_at_junctions,
     plot_physiological_by_branch, gaze_movement_consistency_report,
     analyze_pupil_dilation_trajectory, plot_pupil_trajectory_analysis
 )
-from .ra_consistency import normalize_assignments, validate_trajectories_unique
-from .ra_geometry import Circle
-from .ra_data_loader import load_folder, load_folder_with_gaze, save_assignments, save_centers, save_centers_json, save_summary
-from .ra_metrics import _timing_for_traj, time_between_regions, speed_through_junction, junction_transit_speed
-from .ra_plotting import (
+from route_analyzer.ra_consistency import normalize_assignments, validate_trajectories_unique
+from route_analyzer.ra_geometry import Circle
+from route_analyzer.ra_data_loader import load_folder, load_folder_with_gaze, save_assignments, save_centers, save_centers_json, save_summary
+from route_analyzer.ra_metrics import _timing_for_traj, time_between_regions, speed_through_junction, junction_transit_speed
+from route_analyzer.ra_plotting import (
     plot_decision_intercepts,
     plot_chain_overview, plot_chain_small_multiples
 )
-from .ra_logging import RouteAnalyzerLogger
+from route_analyzer.ra_logging import RouteAnalyzerLogger
 
 
 @dataclass
@@ -663,10 +663,10 @@ class GazeCommand(BaseCommand):
 
 
 # Import predict command
-from .ra_commands_predict import PredictCommand
+from route_analyzer.ra_commands_predict import PredictCommand
 
 # Import intent recognition command
-from .ra_commands_intent import IntentRecognitionCommand
+from route_analyzer.ra_commands_intent import IntentRecognitionCommand
 
 # Command registry
 COMMANDS = {

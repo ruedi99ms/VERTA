@@ -19,12 +19,8 @@ from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
 # Import your trajectory and geometry classes
-try:
-    from ra_data_loader import Trajectory
-    from ra_geometry import Circle
-except ImportError:
-    from project.ra_data_loader import Trajectory
-    from project.ra_geometry import Circle
+from route_analyzer.ra_data_loader import Trajectory
+from route_analyzer.ra_geometry import Circle
 
 
 class IntentModelLoader:

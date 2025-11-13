@@ -9,7 +9,7 @@ Usage:
     streamlit run ra_gui.py
 
 Or as a Python package:
-    from project.ra_gui import launch_gui
+    from route_analyzer.ra_gui import launch_gui
     launch_gui()
 """
 
@@ -29,52 +29,25 @@ from pathlib import Path
 import sys
 from pathlib import Path
 
-# Add project directory to Python path for absolute imports
-project_dir = Path(__file__).parent
-if str(project_dir) not in sys.path:
-    sys.path.insert(0, str(project_dir))
+# Package imports - no path manipulation needed
 
-try:
-    # Try relative imports first (when used as package)
-    from .ra_data_loader import load_folder, load_folder_with_gaze, Trajectory, ColumnMapping
-    from .ra_decisions import discover_decision_chain, discover_branches, assign_branches
-    from .ra_geometry import Circle, entered_junction_idx
-    from .ra_prediction import analyze_junction_choice_patterns, JunctionChoiceAnalyzer
-    from .ra_plotting import plot_flow_graph_map, plot_per_junction_flow_graph, plot_chain_overview
-    from .ra_metrics import _timing_for_traj, time_between_regions, compute_basic_trajectory_metrics, speed_through_junction, junction_transit_speed
-    from .ra_gaze import (
-        compute_head_yaw_at_decisions, 
-        analyze_physiological_at_junctions, 
-        plot_gaze_directions_at_junctions,
-        plot_physiological_by_branch, 
-        gaze_movement_consistency_report,
-        analyze_pupil_dilation_trajectory, 
-        plot_pupil_trajectory_analysis
-    )
-    from .ra_intent_recognition import analyze_intent_recognition, IntentRecognitionAnalyzer
-    from .ra_logging import get_logger
-except ImportError:
-    # Fall back to absolute imports (when used standalone)
-    from ra_data_loader import load_folder, load_folder_with_gaze, Trajectory, ColumnMapping
-    from ra_decisions import discover_decision_chain, discover_branches, assign_branches
-    from ra_geometry import Circle, entered_junction_idx
-    from ra_prediction import analyze_junction_choice_patterns
-    from ra_plotting import plot_flow_graph_map, plot_per_junction_flow_graph, plot_chain_overview
-    from ra_metrics import _timing_for_traj, time_between_regions, compute_basic_trajectory_metrics, speed_through_junction, junction_transit_speed
-    from ra_gaze import (
-        compute_head_yaw_at_decisions, 
-        analyze_physiological_at_junctions, 
-        plot_gaze_directions_at_junctions,
-        plot_physiological_by_branch, 
-        gaze_movement_consistency_report,
-        analyze_pupil_dilation_trajectory, 
-        plot_pupil_trajectory_analysis,
-        create_pupil_dilation_heatmap,
-        plot_pupil_dilation_heatmap,
-        create_per_junction_pupil_heatmap
-    )
-    from ra_intent_recognition import analyze_intent_recognition, IntentRecognitionAnalyzer
-    from ra_logging import get_logger
+from route_analyzer.ra_data_loader import load_folder, load_folder_with_gaze, Trajectory, ColumnMapping
+from route_analyzer.ra_decisions import discover_decision_chain, discover_branches, assign_branches
+from route_analyzer.ra_geometry import Circle, entered_junction_idx
+from route_analyzer.ra_prediction import analyze_junction_choice_patterns, JunctionChoiceAnalyzer
+from route_analyzer.ra_plotting import plot_flow_graph_map, plot_per_junction_flow_graph, plot_chain_overview
+from route_analyzer.ra_metrics import _timing_for_traj, time_between_regions, compute_basic_trajectory_metrics, speed_through_junction, junction_transit_speed
+from route_analyzer.ra_gaze import (
+    compute_head_yaw_at_decisions, 
+    analyze_physiological_at_junctions, 
+    plot_gaze_directions_at_junctions,
+    plot_physiological_by_branch, 
+    gaze_movement_consistency_report,
+    analyze_pupil_dilation_trajectory, 
+    plot_pupil_trajectory_analysis
+)
+from route_analyzer.ra_intent_recognition import analyze_intent_recognition, IntentRecognitionAnalyzer
+from route_analyzer.ra_logging import get_logger
 
 # Configure Streamlit page
 st.set_page_config(

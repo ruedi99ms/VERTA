@@ -9,12 +9,12 @@ import numpy as np
 import pandas as pd
 from typing import Dict, List, Optional, Any
 
-from .ra_commands import BaseCommand
-from .ra_data_loader import load_folder, load_folder_with_gaze
-from .ra_decisions import discover_branches, assign_branches
-from .ra_geometry import Circle
-from .ra_intent_recognition import analyze_intent_recognition
-from .ra_logging import get_logger
+from route_analyzer.ra_commands import BaseCommand
+from route_analyzer.ra_data_loader import load_folder, load_folder_with_gaze
+from route_analyzer.ra_decisions import discover_branches, assign_branches
+from route_analyzer.ra_geometry import Circle
+from route_analyzer.ra_intent_recognition import analyze_intent_recognition
+from route_analyzer.ra_logging import get_logger
 
 
 class IntentRecognitionCommand(BaseCommand):

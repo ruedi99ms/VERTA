@@ -5,5 +5,17 @@
 /outputs
 /outputs_changed_junction
 /outputs_probe
-/project/__pycache__
-*.pyc
+/images
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+*.egg
