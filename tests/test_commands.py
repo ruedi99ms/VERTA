@@ -10,16 +10,11 @@ import argparse
 from unittest.mock import Mock, patch, MagicMock
 
 """
-Note: These tests are currently skipped because ra_commands and related modules
-use relative imports (e.g., `from .ra_clustering import ...`), which require
-the modules to be part of a proper Python package. 
+Tests for command classes (BaseCommand, DiscoverCommand, AssignCommand, etc.).
 
-To enable these tests, the codebase would need to be restructured to use either:
-1. A proper package structure (e.g., a 'route_analyzer' package directory)
-2. Absolute imports instead of relative imports
-
-For now, the tests gracefully skip when the modules cannot be imported.
-The core functionality is still tested via the geometry and data_loader tests.
+These tests verify that command classes can be instantiated and their argument
+parsers are correctly configured. The tests will skip if the route_analyzer package
+is not installed (e.g., run `pip install -e .` from the repository root).
 """
 import sys
 from pathlib import Path

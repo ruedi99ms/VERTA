@@ -45,12 +45,21 @@ The GUI will automatically open at `http://localhost:8501`
 - **Multiple Zones**: Support for multiple start/end zones
 
 ### 📊 Analysis
-- **Discover Branches**: Automatic junction branch detection with clustering
-- **Predict Choices**: Behavioral pattern recognition and prediction
-- **Intent Recognition**: ML-based early route prediction (NEW!)
-- **Enhanced Analysis**: Multi-junction evacuation planning
-- **Parameter Control**: Adjust all analysis settings
+VERTA GUI provides 7 comprehensive analysis types:
+
+1. **Discover Branches** - Automatic junction branch detection with clustering algorithms (kmeans, DBSCAN, auto)
+2. **Assign Trajectories** - Assign new trajectories to previously discovered branch centers
+3. **Movement Metrics** - Calculate trajectory movement patterns, timing, and speed metrics
+4. **Gaze & Physiology** - Analyze eye tracking data, head yaw, pupil dilation, and physiological metrics
+5. **Predict Choices** - Behavioral pattern recognition and junction choice prediction with confidence scoring
+6. **Intent Recognition** - ML-based early route prediction (predict choices BEFORE reaching decision points)
+7. **Enhanced Analysis** - Multi-junction evacuation planning, risk assessment, and efficiency metrics
+
+**Additional Features:**
+- **Parameter Control**: Adjust all analysis settings in real-time
 - **Real-time Status**: Live progress and completion indicators
+- **Multi-junction Support**: Analyze complex route networks
+- **Batch Processing**: Process multiple datasets efficiently
 
 ### 📈 Visualization
 - **Flow Graphs**: Interactive flow diagrams

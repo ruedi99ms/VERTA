@@ -63,7 +63,7 @@ See [GUI_README.md](GUI_README.md) for detailed GUI documentation.
 
 ## CLI Commands
 
-VERTA provides 6 main commands for different types of analysis:
+VERTA provides 7 main commands for different types of analysis:
 
 ### 1. Discover Branches
 
@@ -83,11 +83,19 @@ route-analyzer discover \
 ```
 
 **Key Parameters:**
-- `--cluster_method`: Choose from `kmeans`, `auto`, or `dbscan`
-- `--decision_mode`: `pathlen`, `radial`, or `hybrid`
-- `--k`: Number of clusters (for kmeans)
+- `--cluster_method`: Choose from `kmeans`, `auto`, or `dbscan` (default: `kmeans`)
+- `--decision_mode`: `pathlen`, `radial`, or `hybrid` (default: `hybrid`)
+- `--k`: Number of clusters for kmeans (default: 3)
+- `--k_min`, `--k_max`: Range for auto clustering (default: 2-6)
 - `--r_outer`: Outer radius for radial decision mode
-- `--linger_delta`: Distance beyond junction for decision detection
+- `--linger_delta`: Distance beyond junction for decision detection (default: 5.0)
+- `--epsilon`: Minimum step size for trajectory processing (default: 0.015)
+- `--angle_eps`: Angle epsilon for DBSCAN clustering (default: 15.0 degrees)
+- `--min_samples`: Minimum samples for DBSCAN clustering (default: 5)
+- `--min_sep_deg`: Minimum separation in degrees between branches (default: 12.0)
+- `--seed`: Random seed for reproducibility (default: 0)
+- `--plot_intercepts`: Plot decision intercepts visualization (default: True)
+- `--show_paths`: Show trajectory paths in plots (default: True)
 
 ### 2. Assign Branches
 
@@ -103,6 +111,18 @@ route-analyzer assign \
   --out ./outputs/new_assignments
 ```
 
+**Key Parameters:**
+- `--centers`: Path to previously discovered branch centers (.npy file) - **required**
+- `--decision_mode`: `pathlen`, `radial`, or `hybrid` (default: `pathlen`)
+- `--distance`: Path length after junction for decision detection (default: 100.0)
+- `--epsilon`: Minimum step size for trajectory processing (default: 0.015)
+- `--assign_angle_eps`: Angle tolerance for branch assignment (default: 15.0 degrees)
+
+**Use Cases:**
+- Assign new test data to previously discovered branches
+- Apply learned branch structure to new datasets
+- Batch processing of multiple trajectory sets
+
 ### 3. Compute Metrics
 
 Calculate timing and speed metrics for trajectories:
@@ -117,10 +137,18 @@ route-analyzer metrics \
   --out ./outputs
 ```
 
+**Key Parameters:**
+- `--decision_mode`: `pathlen`, `radial`, or `hybrid` (default: `pathlen`)
+- `--distance`: Path length after junction for timing calculation (default: 100.0)
+- `--r_outer`: Outer radius for radial decision mode
+- `--trend_window`: Window size for trend analysis (default: 5)
+- `--min_outward`: Minimum outward movement threshold (default: 0.0)
+
 **Metrics Computed:**
 - Time to travel specified path length after junction
 - Speed through junction (entry, exit, average transit)
-- Time between regions (if `--regions` specified)
+- Junction transit speed analysis
+- Basic trajectory metrics (total distance, duration, average speed)
 
 ### 4. Gaze Analysis
 
@@ -168,7 +196,48 @@ route-analyzer predict \
 - Confidence scoring for predictions
 - Concrete prediction examples
 
-### 6. Enhanced Chain Analysis
+### 6. Intent Recognition
+
+ML-based early route prediction - predict user route choices **before** they reach decision points:
+
+```bash
+route-analyzer intent \
+  --input ./data \
+  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \
+  --scale 0.2 \
+  --junction 520 330 20 \
+  --distance 100 \
+  --prediction_distances 100 75 50 25 \
+  --model_type random_forest \
+  --cv_folds 5 \
+  --test_split 0.2 \
+  --out ./outputs/intent_recognition
+```
+
+**Key Parameters:**
+- `--prediction_distances`: Distances before junction to make predictions (default: 100, 75, 50, 25 units)
+- `--model_type`: Choose `random_forest` (fast) or `gradient_boosting` (higher accuracy)
+- `--cv_folds`: Cross-validation folds for model evaluation (default: 5)
+- `--test_split`: Fraction of data for testing (default: 0.2)
+- `--with_gaze`: Include gaze and physiological data if available
+- `--centers`: Use pre-computed branch centers (optional)
+- `--assignments`: Use pre-computed branch assignments (optional)
+
+**Intent Recognition Features:**
+- Multi-distance prediction models (train at 100, 75, 50, 25 units before junction)
+- Feature importance analysis (spatial, kinematic, gaze, physiological)
+- Accuracy analysis showing prediction improvement with proximity
+- Cross-validated model evaluation
+- Saved models for production deployment
+- Sample predictions with confidence scores
+
+**Use Cases:**
+- Proactive wayfinding systems
+- Predictive content loading
+- Dynamic environment optimization
+- A/B testing of early interventions
+
+### 7. Enhanced Chain Analysis
 
 Multi-junction analysis with evacuation planning features:
 
@@ -230,6 +299,16 @@ Each command generates specific output files:
 - `prediction_confidence.png` - Confidence analysis plots
 - `sequence_analysis.json` - Route sequence analysis (if `--analyze_sequences`)
 - `analysis_summary.json` - High-level summary with recommendations
+
+### Intent Recognition Command
+- `intent_recognition_summary.csv` - Summary of model accuracy per junction and distance
+- `intent_recognition_junction_summary.csv` - Average accuracy per junction
+- `intent_recognition_results.json` - Complete analysis results
+- `junction_*/models/` - Trained model files (model_*.pkl, scaler_*.pkl)
+- `junction_*/intent_training_results.json` - Model metrics and feature importance
+- `junction_*/intent_feature_importance.png` - Feature importance visualization
+- `junction_*/intent_accuracy_analysis.png` - Accuracy vs. distance chart
+- `junction_*/test_predictions.json` - Sample predictions with confidence scores
 
 ### Chain-Enhanced Command
 - `Chain_Overview.png` - Multi-junction trajectory overview

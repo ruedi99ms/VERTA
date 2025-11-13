@@ -49,15 +49,34 @@ pytest -v
 
 ```bash
 pip install pytest-cov
-pytest --cov=. --cov-report=html
+pytest --cov=route_analyzer --cov-report=html
+```
+
+This generates an HTML coverage report in `htmlcov/index.html` showing which code is covered by tests.
+
+### Run with Markers
+
+```bash
+# Run only fast tests (if markers are defined)
+pytest -m "not slow"
+
+# Run integration tests
+pytest -m integration
 ```
 
 ## Test Structure
 
-- `conftest.py`: Shared pytest fixtures for all tests
-- `test_geometry.py`: Tests for geometry classes (Circle, Rect) and functions
-- `test_commands.py`: Tests for command classes (BaseCommand, DiscoverCommand, etc.)
-- `test_data_loader.py`: Tests for data loading functionality (Trajectory, ColumnMapping)
+The test suite currently includes:
+
+- `conftest.py`: Shared pytest fixtures for all tests (trajectories, circles, rectangles, CSV files, etc.)
+- `test_geometry.py`: Tests for geometry classes (Circle, Rect) and functions (entered_junction_idx)
+- `test_commands.py`: Tests for command classes (BaseCommand, DiscoverCommand, AssignCommand, MetricsCommand, GazeCommand)
+- `test_data_loader.py`: Tests for data loading functionality (Trajectory, ColumnMapping, has_gaze_data, has_physio_data)
+
+**Current Test Status:**
+- ✅ All 40 tests passing
+- ✅ Tests run successfully with proper package structure
+- ✅ Tests use proper absolute imports from `route_analyzer` package
 
 ## Adding New Tests
 
@@ -83,4 +102,30 @@ class TestCircle:
         assert circle.cz == 2.0
         assert circle.r == 3.0
 ```
+
+## Test Coverage Summary
+
+The test suite currently covers:
+
+- **Geometry Module**: Circle and Rect classes, contains() methods, entered_junction_idx function
+- **Data Loader Module**: Trajectory creation (basic, with time, with gaze), ColumnMapping, gaze/physio data detection
+- **Commands Module**: CommandConfig, BaseCommand, DiscoverCommand, AssignCommand, MetricsCommand, GazeCommand argument parsing
+
+**Test Count**: 40 tests across 3 test files
+
+## Troubleshooting
+
+**Tests fail with import errors:**
+```bash
+# Install the package in development mode
+pip install -e .
+
+# Or install with test dependencies
+pip install -e ".[test]"
+```
+
+**Tests skip with "package not available":**
+- Ensure you're running tests from the repository root
+- Install the package: `pip install -e .`
+- Verify installation: `python -c "import route_analyzer; print('OK')"`
 
