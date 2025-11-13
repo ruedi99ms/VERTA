@@ -309,7 +309,7 @@ if __name__ == "__main__":
 ❌ Models not found in: {models_dir}
 
 To generate models:
-1. Open the GUI: python launch_gui.py
+1. Open the GUI: python gui/launch.py
 2. Load your trajectory data
 3. Run Analysis → Intent Recognition
 4. Models will be saved to: gui_outputs/intent_recognition/junction_X/models/

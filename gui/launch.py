@@ -6,7 +6,7 @@ VERTA GUI Launcher
 Launch the VERTA (Virtual Environment Route and Trajectory Analyzer) web UI from the repository root.
 
 Usage:
-  python launch_gui.py
+  python gui/launch.py
   # or
   streamlit run route_analyzer/ra_gui.py
 """
@@ -18,9 +18,9 @@ from pathlib import Path
 
 
 def main() -> int:
-    # Determine repository root
+    # Determine repository root (parent of gui/ folder)
     this_file = Path(__file__).resolve()
-    repo_root = this_file.parent
+    repo_root = this_file.parent.parent
 
     # Path to GUI app
     gui_path = repo_root / "route_analyzer" / "ra_gui.py"
@@ -33,7 +33,7 @@ def main() -> int:
         import streamlit  # noqa: F401
     except Exception:
         print("Streamlit is not installed.")
-        print("Install GUI deps first: pip install -r requirements_gui.txt")
+        print("Install GUI deps first: pip install -r gui/requirements.txt")
         return 1
 
     # Build streamlit command

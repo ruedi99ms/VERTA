@@ -6,18 +6,15 @@ A modern, interactive web interface for VERTA (Virtual Environment Route and Tra
 
 ### 1. Install GUI Dependencies
 ```bash
-pip install -r requirements_gui.txt
+pip install -r gui/requirements.txt
 ```
 
 ### 2. Launch the GUI
 ```bash
-# Option 1: Using the launcher script
-python launch_gui.py
+# Option 1: Using the launcher script (recommended)
+python gui/launch.py
 
-# Option 2: Direct Streamlit command
-streamlit run launch_gui.py
-
-# Option 3: Direct Streamlit command to GUI module
+# Option 2: Direct Streamlit command to GUI module
 streamlit run route_analyzer/ra_gui.py
 ```
 
@@ -142,7 +139,7 @@ VERTA GUI provides 7 comprehensive analysis types:
 **GUI won't start:**
 ```bash
 # Check dependencies
-pip install -r requirements_gui.txt
+pip install -r gui/requirements.txt
 
 # Verify Python path
 python -c "import streamlit; print('Streamlit OK')"

@@ -482,5 +482,5 @@ Intent Recognition enables **predictive** rather than **reactive** systems by le
 
 ---
 
-For more information, see [GUI_README.md](GUI_README.md) and the main [README.md](README.md).
+For more information, see [`gui/README.md`](gui/README.md) and the main [README.md](README.md).
 

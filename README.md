@@ -22,13 +22,15 @@ For an interactive, user-friendly interface, try the web-based GUI:
 
 ```bash
 # Install GUI dependencies
-pip install -r requirements_gui.txt
+pip install -r gui/requirements.txt
 
 # Launch the web interface
-python launch_gui.py
+python gui/launch.py
 # or
-streamlit run launch_gui.py
+streamlit run route_analyzer/ra_gui.py
 ```
+
+See [`gui/README.md`](gui/README.md) for detailed GUI documentation.
 
 The GUI provides:
 - **Interactive junction editor** with drag-and-drop functionality
@@ -59,7 +61,7 @@ Predict user route choices **before** they reach decision points using machine l
 - Dynamic environment optimization
 - A/B testing of early interventions
 
-See [GUI_README.md](GUI_README.md) for detailed GUI documentation.
+See [`gui/README.md`](gui/README.md) for detailed GUI documentation.
 
 ## CLI Commands
 
@@ -418,7 +420,7 @@ Install with `pip install .[yaml]`, `pip install .[parquet]`, `pip install .[gui
 
 For the web interface, install:
 ```bash
-pip install -r requirements_gui.txt
+pip install -r gui/requirements.txt
 ```
 
 Additional GUI packages:
@@ -443,7 +445,7 @@ python -c "import route_analyzer; print('Package OK')"
 **GUI won't start:**
 ```bash
 # Check GUI dependencies
-pip install -r requirements_gui.txt
+pip install -r gui/requirements.txt
 
 # Verify Streamlit installation
 python -c "import streamlit; print('Streamlit OK')"
