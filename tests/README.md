@@ -109,7 +109,7 @@ The test suite currently covers:
 
 - **Geometry Module**: Circle and Rect classes, contains() methods, entered_junction_idx function
 - **Data Loader Module**: Trajectory creation (basic, with time, with gaze), ColumnMapping, gaze/physio data detection
-- **Commands Module**: CommandConfig, BaseCommand, DiscoverCommand, AssignCommand, MetricsCommand, GazeCommand argument parsing
+- **Commands Module**: CommandConfig, BaseCommand, DiscoverCommand, AssignCommand, MetricsCommand, GazeCommand, PredictCommand, IntentRecognitionCommand, EnhancedChainCommand argument parsing
 
 **Test Count**: 40 tests across 3 test files
 

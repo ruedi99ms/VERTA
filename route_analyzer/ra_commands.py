@@ -25,9 +25,14 @@ from route_analyzer.ra_data_loader import load_folder, load_folder_with_gaze, sa
 from route_analyzer.ra_metrics import _timing_for_traj, time_between_regions, speed_through_junction, junction_transit_speed
 from route_analyzer.ra_plotting import (
     plot_decision_intercepts,
-    plot_chain_overview, plot_chain_small_multiples
+    plot_chain_overview, plot_chain_small_multiples,
+    plot_flow_graph_map, plot_per_junction_flow_graph
 )
-from route_analyzer.ra_logging import RouteAnalyzerLogger
+from route_analyzer.ra_logging import RouteAnalyzerLogger, get_logger
+from route_analyzer.ra_data_loader import Trajectory
+from route_analyzer.ra_prediction import analyze_junction_choice_patterns, JunctionChoiceAnalyzer
+from route_analyzer.ra_intent_recognition import analyze_intent_recognition
+from collections import Counter
 
 
 @dataclass
@@ -662,11 +667,769 @@ class GazeCommand(BaseCommand):
             self.logger.error(f"Pupil trajectory plot failed: {e}")
 
 
-# Import predict command
-from route_analyzer.ra_commands_predict import PredictCommand
+class PredictCommand(BaseCommand):
+    """Command handler for junction-based choice prediction analysis"""
+    
+    def add_arguments(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("--input", required=True, help="Input folder path")
+        parser.add_argument("--out", required=True, help="Output folder path")
+        parser.add_argument("--glob", default="*.csv", help="File pattern")
+        parser.add_argument("--columns", default=None, help="Column mapping")
+        parser.add_argument("--scale", type=float, default=1.0, help="Coordinate scaling factor")
+        parser.add_argument("--motion_threshold", type=float, default=0.001, help="Motion detection threshold")
+        parser.add_argument("--junctions", nargs="+", type=float, required=True, help="Junction coordinates (x z r ...)")
+        parser.add_argument("--r_outer_list", nargs="*", type=float, default=None, help="Outer radii for each junction")
+        parser.add_argument("--distance", type=float, default=100.0, help="Path length for decision")
+        parser.add_argument("--epsilon", type=float, default=0.015, help="Minimum step size")
+        parser.add_argument("--k", type=int, default=3, help="Number of clusters")
+        parser.add_argument("--decision_mode", choices=["pathlen", "radial", "hybrid"], default="hybrid", help="Decision mode")
+        parser.add_argument("--linger_delta", type=float, default=5.0, help="Linger distance beyond junction")
+        parser.add_argument("--cluster_method", choices=["kmeans", "auto", "dbscan"], default="kmeans", help="Clustering method")
+        parser.add_argument("--k_min", type=int, default=2, help="Minimum k for auto clustering")
+        parser.add_argument("--k_max", type=int, default=6, help="Maximum k for auto clustering")
+        parser.add_argument("--min_sep_deg", type=float, default=12.0, help="Minimum separation in degrees")
+        parser.add_argument("--angle_eps", type=float, default=15.0, help="Angle epsilon for DBSCAN")
+        parser.add_argument("--min_samples", type=int, default=5, help="Minimum samples for DBSCAN")
+        parser.add_argument("--seed", type=int, default=0, help="Random seed")
+        
+        # Prediction-specific arguments
+        parser.add_argument("--min_pattern_samples", type=int, default=3, help="Minimum samples for pattern recognition")
+        parser.add_argument("--pattern_threshold", type=float, default=0.3, help="Minimum probability threshold for patterns")
+        parser.add_argument("--confidence_threshold", type=float, default=0.5, help="Minimum confidence for predictions")
+        parser.add_argument("--analyze_sequences", action="store_true", help="Analyze complete route sequences")
+        parser.add_argument("--predict_examples", type=int, default=10, help="Number of prediction examples to generate")
+    
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute the prediction analysis"""
+        logger = get_logger()
+        logger.info("Starting junction-based choice prediction analysis...")
+        
+        # Create output directory
+        os.makedirs(args.out, exist_ok=True)
+        
+        # Load trajectories
+        logger.info(f"Loading trajectories from {args.input}")
+        trajectories = load_folder(
+            folder=args.input, 
+            pattern=args.glob, 
+            columns=args.columns, 
+            scale=args.scale, 
+            motion_threshold=args.motion_threshold
+        )
+        
+        if not trajectories:
+            logger.error("No trajectories loaded!")
+            return
+        
+        logger.info(f"Loaded {len(trajectories)} trajectories")
+        
+        # Parse junctions
+        junctions = self._parse_junctions(args.junctions)
+        logger.info(f"Analyzing {len(junctions)} junctions")
+        
+        # Discover decision chain
+        logger.info("Discovering decision chains...")
+        chain_df, branch_centers_list = discover_decision_chain(
+            trajectories=trajectories,
+            junctions=junctions,
+            r_outer_list=args.r_outer_list,
+            path_length=args.distance,
+            epsilon=args.epsilon,
+            k=args.k,
+            decision_mode=args.decision_mode,
+            linger_delta=args.linger_delta,
+            cluster_method=args.cluster_method,
+            k_min=args.k_min,
+            k_max=args.k_max,
+            min_sep_deg=args.min_sep_deg,
+            angle_eps=args.angle_eps,
+            min_samples=args.min_samples,
+            seed=args.seed,
+            out_dir=args.out
+        )
+        
+        if chain_df.empty:
+            logger.error("No decision chains discovered!")
+            return
+        
+        logger.info(f"Discovered decision chains for {len(chain_df)} trajectories")
+        
+        # Normalize chain for downstream prediction (ID dtype, columns)
+        norm_df, _rep = normalize_assignments(
+            chain_df,
+            trajectories=trajectories,
+            junctions=junctions,
+            prefer_decisions=False,
+            include_outliers=False,
+        )
+        # Consistency warnings (optional)
+        try:
+            from route_analyzer.ra_consistency import validate_consistency
+            validate_consistency(norm_df, trajectories, junctions)
+        except Exception:
+            pass
+        # Save normalized chain
+        norm_df.to_csv(os.path.join(args.out, "decision_chains.csv"), index=False)
+        
+        # Run prediction analysis
+        logger.info("Analyzing junction choice patterns...")
+        analysis_results = analyze_junction_choice_patterns(
+            trajectories=trajectories,
+            chain_df=norm_df,
+            junctions=junctions,
+            output_dir=args.out,
+            r_outer_list=args.r_outer_list,
+            gui_mode=False  # Terminal mode
+        )
+        
+        # Generate additional analysis if requested
+        if args.analyze_sequences:
+            self._analyze_route_sequences(norm_df, junctions, args.out)
+        
+        # Generate prediction examples
+        if args.predict_examples > 0:
+            self._generate_prediction_examples(trajectories, norm_df, junctions, args.out, args.predict_examples)
+        
+        # Save summary
+        self._save_analysis_summary(analysis_results, args.out)
+        
+        logger.info(f"Prediction analysis complete! Results saved to {args.out}")
+    
+    def _parse_junctions(self, junction_args: List[float]) -> List[Circle]:
+        """Parse junction arguments into Circle objects"""
+        if len(junction_args) % 3 != 0:
+            raise ValueError("Junctions must be specified as x z r triplets")
+        
+        junctions = []
+        for i in range(0, len(junction_args), 3):
+            x, z, r = junction_args[i:i+3]
+            junctions.append(Circle(cx=x, cz=z, r=r))
+        
+        return junctions
+    
+    def _analyze_route_sequences(self, chain_df: pd.DataFrame, junctions: List[Circle], output_dir: str):
+        """Analyze complete route sequences for behavioral patterns"""
+        logger = get_logger()
+        logger.info("Analyzing route sequences...")
+        
+        # Extract sequences
+        sequences = []
+        for _, row in chain_df.iterrows():
+            sequence = []
+            for i in range(len(junctions)):
+                branch_col = f"branch_j{i}"
+                if branch_col in row and pd.notna(row[branch_col]):
+                    sequence.append(int(row[branch_col]))
+                else:
+                    break
+            
+            if len(sequence) > 1:
+                sequences.append(sequence)
+        
+        # Analyze sequence patterns
+        sequence_analysis = {
+            'total_sequences': len(sequences),
+            'sequence_lengths': [len(seq) for seq in sequences],
+            'common_patterns': self._find_common_sequence_patterns(sequences),
+            'sequence_diversity': len(set(tuple(seq) for seq in sequences)),
+            'average_length': np.mean([len(seq) for seq in sequences]) if sequences else 0
+        }
+        
+        # Save sequence analysis
+        with open(os.path.join(output_dir, "sequence_analysis.json"), "w") as f:
+            json.dump(sequence_analysis, f, indent=2)
+        
+        logger.info(f"Found {len(sequences)} route sequences")
+    
+    def _find_common_sequence_patterns(self, sequences: List[List[int]]) -> List[Dict[str, Any]]:
+        """Find common patterns in route sequences"""
+        # Count sequence patterns
+        sequence_counts = Counter(tuple(seq) for seq in sequences)
+        
+        # Get most common patterns
+        common_patterns = []
+        for pattern, count in sequence_counts.most_common(10):
+            if count > 1:  # Only patterns that occur more than once
+                common_patterns.append({
+                    'pattern': list(pattern),
+                    'count': count,
+                    'frequency': count / len(sequences)
+                })
+        
+        return common_patterns
+    
+    def _generate_prediction_examples(self, trajectories: List[Trajectory], chain_df: pd.DataFrame, junctions: List[Circle], 
+                                    output_dir: str, num_examples: int):
+        """Generate prediction examples for sample trajectories"""
+        logger = get_logger()
+        logger.info(f"Generating {num_examples} prediction examples...")
+        
+        # Initialize analyzer
+        analyzer = JunctionChoiceAnalyzer(trajectories, chain_df, junctions)
+        
+        # Get sample trajectories
+        sample_trajectories = chain_df.head(num_examples)
+        
+        predictions = []
+        for _, row in sample_trajectories.iterrows():
+            trajectory_id = row['trajectory']
+            
+            # Find first junction with a valid branch
+            for i in range(len(junctions)):
+                branch_col = f"branch_j{i}"
+                if branch_col in row and pd.notna(row[branch_col]):
+                    current_junction = i
+                    current_branch = int(row[branch_col])
+                    
+                    # Make prediction
+                    prediction = analyzer.predict_next_choice(trajectory_id, current_junction, current_branch)
+                    predictions.append(prediction)
+                    break
+        
+        # Save prediction examples
+        prediction_data = []
+        for pred in predictions:
+            prediction_data.append({
+                'trajectory_id': pred.trajectory_id,
+                'current_junction': pred.current_junction,
+                'current_branch': pred.current_branch,
+                'predicted_next_junction': pred.predicted_next_junction,
+                'predicted_next_branch': pred.predicted_next_branch,
+                'confidence': pred.confidence,
+                'pattern_used': pred.pattern_used,
+                'alternatives': [
+                    {'junction': j, 'branch': b, 'probability': p} 
+                    for j, b, p in pred.alternative_predictions
+                ]
+            })
+        
+        with open(os.path.join(output_dir, "prediction_examples.json"), "w") as f:
+            json.dump(prediction_data, f, indent=2)
+        
+        logger.info(f"Generated {len(predictions)} prediction examples")
+    
+    def _save_analysis_summary(self, analysis_results: Dict[str, Any], output_dir: str):
+        """Save a summary of the analysis results"""
+        summary = {
+            'analysis_type': 'Junction-Based Choice Prediction',
+            'summary': analysis_results['summary'],
+            'key_findings': {
+                'total_patterns': analysis_results['summary']['unique_patterns'],
+                'pattern_distribution': analysis_results['pattern_types'],
+                'top_pattern': analysis_results['top_patterns'][0] if analysis_results['top_patterns'] else None
+            },
+            'recommendations': self._generate_recommendations(analysis_results)
+        }
+        
+        with open(os.path.join(output_dir, "analysis_summary.json"), "w") as f:
+            json.dump(summary, f, indent=2)
+    
+    def _generate_recommendations(self, analysis_results: Dict[str, Any]) -> List[str]:
+        """Generate recommendations based on analysis results"""
+        recommendations = []
+        
+        # Check for strong patterns
+        preferred_patterns = [p for p in analysis_results['top_patterns'] if p['pattern_type'] == 'preferred']
+        if preferred_patterns:
+            recommendations.append(f"Found {len(preferred_patterns)} strong behavioral patterns that could be used for route prediction")
+        
+        # Check for junction-specific insights
+        junction_analysis = analysis_results['junction_analysis']
+        for junction_idx, analysis in junction_analysis.items():
+            if analysis['pattern_diversity'] == 1:
+                recommendations.append(f"Junction {junction_idx} shows very predictable behavior - consider this for traffic optimization")
+            elif analysis['pattern_diversity'] > 3:
+                recommendations.append(f"Junction {junction_idx} shows high variability - may need better signage or design")
+        
+        # Check for learning opportunities
+        learned_patterns = [p for p in analysis_results['top_patterns'] if p['pattern_type'] == 'learned']
+        if learned_patterns:
+            recommendations.append(f"Found {len(learned_patterns)} learned patterns - participants are adapting to the environment")
+        
+        return recommendations
 
-# Import intent recognition command
-from route_analyzer.ra_commands_intent import IntentRecognitionCommand
+
+class IntentRecognitionCommand(BaseCommand):
+    """Command handler for Intent Recognition (ML-based route prediction)"""
+    
+    def add_arguments(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("--input", required=True, help="Input folder path")
+        parser.add_argument("--out", required=True, help="Output folder path")
+        parser.add_argument("--glob", default="*.csv", help="File pattern")
+        parser.add_argument("--columns", default=None, help="Column mapping")
+        parser.add_argument("--scale", type=float, default=1.0, help="Coordinate scaling factor")
+        parser.add_argument("--motion_threshold", type=float, default=0.001, help="Motion detection threshold")
+        
+        # Junction specification
+        junction_group = parser.add_mutually_exclusive_group(required=True)
+        junction_group.add_argument("--junction", nargs=3, type=float, metavar=("X", "Z", "R"), 
+                                   help="Single junction (x z r)")
+        junction_group.add_argument("--junctions", nargs="+", type=float, 
+                                   help="Multiple junctions (x z r x z r ...)")
+        
+        # Branch discovery/assignment
+        parser.add_argument("--distance", type=float, default=100.0, help="Path length for decision")
+        parser.add_argument("--epsilon", type=float, default=0.015, help="Minimum step size")
+        parser.add_argument("--k", type=int, default=3, help="Number of clusters")
+        parser.add_argument("--decision_mode", choices=["pathlen", "radial", "hybrid"], default="hybrid", 
+                           help="Decision mode")
+        parser.add_argument("--linger_delta", type=float, default=5.0, help="Linger distance beyond junction")
+        parser.add_argument("--cluster_method", choices=["kmeans", "auto", "dbscan"], default="kmeans", 
+                           help="Clustering method")
+        parser.add_argument("--k_min", type=int, default=2, help="Minimum k for auto clustering")
+        parser.add_argument("--k_max", type=int, default=6, help="Maximum k for auto clustering")
+        parser.add_argument("--min_sep_deg", type=float, default=12.0, help="Minimum separation in degrees")
+        parser.add_argument("--angle_eps", type=float, default=15.0, help="Angle epsilon for DBSCAN")
+        parser.add_argument("--min_samples", type=int, default=5, help="Minimum samples for DBSCAN")
+        parser.add_argument("--seed", type=int, default=0, help="Random seed")
+        parser.add_argument("--centers", help="Path to pre-computed branch centers (.npy file)")
+        parser.add_argument("--assignments", help="Path to pre-computed branch assignments CSV file")
+        
+        # Intent recognition specific
+        parser.add_argument("--prediction_distances", nargs="+", type=float, 
+                           default=[100.0, 75.0, 50.0, 25.0],
+                           help="Distances before junction to make predictions (units)")
+        parser.add_argument("--model_type", choices=["random_forest", "gradient_boosting"], 
+                           default="random_forest", help="ML model type")
+        parser.add_argument("--cv_folds", type=int, default=5, help="Cross-validation folds")
+        parser.add_argument("--test_split", type=float, default=0.2, help="Test set fraction")
+        
+        # Gaze/physiological data (optional)
+        parser.add_argument("--with_gaze", action="store_true", 
+                           help="Load gaze and physiological data if available")
+    
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute the intent recognition analysis"""
+        logger = get_logger()
+        logger.info("Starting Intent Recognition analysis...")
+        
+        # Check if scikit-learn is available
+        try:
+            import sklearn
+        except ImportError:
+            logger.error("scikit-learn is required for Intent Recognition. Install with: pip install scikit-learn")
+            return
+        
+        # Create output directory
+        os.makedirs(args.out, exist_ok=True)
+        
+        # Load trajectories
+        logger.info(f"Loading trajectories from {args.input}")
+        if args.with_gaze:
+            trajectories = load_folder_with_gaze(
+                folder=args.input,
+                pattern=args.glob,
+                columns=args.columns,
+                scale=args.scale,
+                motion_threshold=args.motion_threshold
+            )
+        else:
+            trajectories = load_folder(
+                folder=args.input,
+                pattern=args.glob,
+                columns=args.columns,
+                scale=args.scale,
+                motion_threshold=args.motion_threshold
+            )
+        
+        if not trajectories:
+            logger.error("No trajectories loaded!")
+            return
+        
+        logger.info(f"Loaded {len(trajectories)} trajectories")
+        
+        # Parse junctions
+        junctions = self._parse_junctions(args)
+        logger.info(f"Analyzing {len(junctions)} junction(s)")
+        
+        # Process each junction
+        all_results = {}
+        summary_data = []
+        
+        for junction_idx, junction in enumerate(junctions):
+            logger.info(f"\n{'='*60}")
+            logger.info(f"Processing Junction {junction_idx}")
+            logger.info(f"{'='*60}")
+            
+            junction_output = os.path.join(args.out, f"junction_{junction_idx}")
+            os.makedirs(junction_output, exist_ok=True)
+            
+            # Get branch assignments
+            assignments_df = self._get_branch_assignments(
+                trajectories, junction, junction_idx, args, junction_output
+            )
+            
+            if assignments_df is None or assignments_df.empty:
+                logger.warning(f"Junction {junction_idx}: No valid branch assignments found. Skipping.")
+                continue
+            
+            # Filter valid assignments
+            valid_assignments = assignments_df[assignments_df['branch'] >= 0]
+            if len(valid_assignments) < 10:
+                logger.warning(f"Junction {junction_idx}: Insufficient valid trajectories ({len(valid_assignments)} < 10). Skipping.")
+                continue
+            
+            logger.info(f"Junction {junction_idx}: Found {len(valid_assignments)} valid trajectories")
+            
+            # Run intent recognition
+            logger.info(f"Training intent recognition models for Junction {junction_idx}...")
+            results = analyze_intent_recognition(
+                trajectories=trajectories,
+                junction=junction,
+                actual_branches=valid_assignments,
+                output_dir=junction_output,
+                prediction_distances=args.prediction_distances,
+                previous_choices=None  # Could be extended for multi-junction support
+            )
+            
+            if 'error' in results:
+                logger.error(f"Junction {junction_idx} failed: {results['error']}")
+                all_results[f"junction_{junction_idx}"] = results
+                continue
+            
+            # Extract summary statistics
+            training_results = results.get('training_results', {})
+            models_trained = training_results.get('models_trained', {})
+            
+            for dist, model_info in models_trained.items():
+                summary_data.append({
+                    'junction': f"J{junction_idx}",
+                    'distance': dist,
+                    'accuracy': model_info.get('cv_mean_accuracy', 0.0) * 100,
+                    'std_dev': model_info.get('cv_std_accuracy', 0.0) * 100,
+                    'samples': model_info.get('n_samples', 0)
+                })
+            
+            all_results[f"junction_{junction_idx}"] = results
+            logger.info(f"Junction {junction_idx}: Intent recognition complete!")
+        
+        # Save overall summary
+        if summary_data:
+            summary_df = pd.DataFrame(summary_data)
+            summary_df.to_csv(os.path.join(args.out, "intent_recognition_summary.csv"), index=False)
+            
+            # Calculate average accuracy per junction
+            junction_summary = summary_df.groupby('junction').agg({
+                'accuracy': 'mean',
+                'samples': 'first'
+            }).reset_index()
+            junction_summary.columns = ['Junction', 'Avg Accuracy (%)', 'Samples']
+            junction_summary.to_csv(os.path.join(args.out, "intent_recognition_junction_summary.csv"), index=False)
+            
+            logger.info("\n" + "="*60)
+            logger.info("Intent Recognition Summary")
+            logger.info("="*60)
+            logger.info(junction_summary.to_string(index=False))
+        
+        # Save run arguments
+        self._save_run_args(args, args.out)
+        
+        # Save full results
+        results_path = os.path.join(args.out, "intent_recognition_results.json")
+        # Convert results to JSON-serializable format
+        json_results = {}
+        for key, value in all_results.items():
+            if 'analyzer' in value:
+                # Remove analyzer object (not JSON serializable)
+                json_results[key] = {
+                    'training_results': value.get('training_results', {}),
+                    'test_predictions': value.get('test_predictions', {})
+                }
+            else:
+                json_results[key] = value
+        
+        with open(results_path, 'w') as f:
+            json.dump(json_results, f, indent=2, default=str)
+        
+        logger.info(f"\n✅ Intent Recognition analysis complete! Results saved to {args.out}")
+        logger.info(f"   - Models saved in: junction_*/models/")
+        logger.info(f"   - Summary: intent_recognition_summary.csv")
+        logger.info(f"   - Full results: intent_recognition_results.json")
+    
+    def _parse_junctions(self, args: argparse.Namespace) -> List[Circle]:
+        """Parse junction arguments into Circle objects"""
+        if args.junction:
+            # Single junction: x z r
+            x, z, r = args.junction
+            return [Circle(cx=x, cz=z, r=r)]
+        elif args.junctions:
+            # Multiple junctions: x z r x z r ...
+            if len(args.junctions) % 3 != 0:
+                raise ValueError("Junctions must be specified as x z r triplets")
+            
+            junctions = []
+            for i in range(0, len(args.junctions), 3):
+                x, z, r = args.junctions[i:i+3]
+                junctions.append(Circle(cx=x, cz=z, r=r))
+            
+            return junctions
+        else:
+            raise ValueError("Must specify either --junction or --junctions")
+    
+    def _get_branch_assignments(self, trajectories: List, junction: Circle, 
+                                junction_idx: int, args: argparse.Namespace,
+                                output_dir: str) -> Optional[pd.DataFrame]:
+        """Get branch assignments either from file or by discovery"""
+        logger = get_logger()
+        
+        # Option 1: Load from assignments file
+        if args.assignments:
+            logger.info(f"Loading branch assignments from {args.assignments}")
+            try:
+                assignments_df = pd.read_csv(args.assignments)
+                # Check if it has the right columns
+                if 'trajectory' in assignments_df.columns and 'branch' in assignments_df.columns:
+                    return assignments_df
+                else:
+                    logger.warning("Assignments file missing required columns. Discovering branches instead.")
+            except Exception as e:
+                logger.warning(f"Failed to load assignments file: {e}. Discovering branches instead.")
+        
+        # Option 2: Use pre-computed centers
+        if args.centers:
+            logger.info(f"Using pre-computed branch centers from {args.centers}")
+            try:
+                centers = np.load(args.centers)
+                assignments_df = assign_branches(
+                    trajectories=trajectories,
+                    junction=junction,
+                    centers=centers,
+                    path_length=args.distance,
+                    epsilon=args.epsilon,
+                    decision_mode=args.decision_mode,
+                    linger_delta=args.linger_delta
+                )
+                # Save assignments for future use
+                assignments_df.to_csv(os.path.join(output_dir, "branch_assignments.csv"), index=False)
+                return assignments_df
+            except Exception as e:
+                logger.warning(f"Failed to load centers: {e}. Discovering branches instead.")
+        
+        # Option 3: Discover branches
+        logger.info(f"Discovering branches for Junction {junction_idx}...")
+        try:
+            centers, assignments_df = discover_branches(
+                trajectories=trajectories,
+                junction=junction,
+                path_length=args.distance,
+                epsilon=args.epsilon,
+                k=args.k,
+                decision_mode=args.decision_mode,
+                linger_delta=args.linger_delta,
+                cluster_method=args.cluster_method,
+                k_min=args.k_min,
+                k_max=args.k_max,
+                min_sep_deg=args.min_sep_deg,
+                angle_eps=args.angle_eps,
+                min_samples=args.min_samples,
+                seed=args.seed
+            )
+            
+            # Save discovered centers and assignments
+            np.save(os.path.join(output_dir, "branch_centers.npy"), centers)
+            assignments_df.to_csv(os.path.join(output_dir, "branch_assignments.csv"), index=False)
+            
+            logger.info(f"Discovered {len(centers)} branches with {len(assignments_df[assignments_df['branch'] >= 0])} valid assignments")
+            return assignments_df
+            
+        except Exception as e:
+            logger.error(f"Failed to discover branches: {e}")
+            return None
+
+
+class EnhancedChainCommand(BaseCommand):
+    """Enhanced command handler for multi-junction decision chain analysis with flow graph features"""
+    
+    def add_arguments(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("--input", required=True, help="Input folder path")
+        parser.add_argument("--out", required=True, help="Output folder path")
+        parser.add_argument("--glob", default="*.csv", help="File pattern")
+        parser.add_argument("--columns", default=None, help="Column mapping")
+        parser.add_argument("--scale", type=float, default=1.0, help="Coordinate scaling factor")
+        parser.add_argument("--motion_threshold", type=float, default=0.001, help="Motion detection threshold")
+        parser.add_argument("--junctions", nargs="+", type=float, required=True, help="Junction coordinates (x z r ...)")
+        parser.add_argument("--r_outer_list", nargs="*", type=float, default=None, help="Outer radii for each junction")
+        parser.add_argument("--distance", type=float, default=100.0, help="Path length for decision")
+        parser.add_argument("--epsilon", type=float, default=0.015, help="Minimum step size")
+        parser.add_argument("--k", type=int, default=3, help="Number of clusters")
+        parser.add_argument("--decision_mode", choices=["pathlen", "radial", "hybrid"], default="hybrid", help="Decision mode")
+        parser.add_argument("--linger_delta", type=float, default=5.0, help="Linger distance beyond junction")
+        parser.add_argument("--cluster_method", choices=["kmeans", "auto", "dbscan"], default="kmeans", help="Clustering method")
+        parser.add_argument("--k_min", type=int, default=2, help="Minimum k for auto clustering")
+        parser.add_argument("--k_max", type=int, default=6, help="Maximum k for auto clustering")
+        parser.add_argument("--min_sep_deg", type=float, default=12.0, help="Minimum separation in degrees")
+        parser.add_argument("--angle_eps", type=float, default=15.0, help="Angle epsilon for DBSCAN")
+        parser.add_argument("--min_samples", type=int, default=5, help="Minimum samples for DBSCAN")
+        parser.add_argument("--seed", type=int, default=0, help="Random seed")
+        parser.add_argument("--small_multiples", action="store_true", help="Generate small multiples plot")
+        parser.add_argument("--small_multiples_window", type=float, default=80.0, help="Small multiples window size")
+        
+        # Enhanced analysis flags
+        parser.add_argument("--evacuation_analysis", action="store_true", help="Run enhanced flow analysis")
+        parser.add_argument("--generate_recommendations", action="store_true", help="Generate flow recommendations")
+        parser.add_argument("--risk_assessment", action="store_true", help="Generate risk assessment")
+        parser.add_argument("--efficiency_metrics", action="store_true", help="Generate efficiency metrics")
+        
+        # Junction naming
+        parser.add_argument("--junction_names", nargs="*", type=str, default=None, help="Names for junctions")
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Execute enhanced chain analysis"""
+        self.logger.info("Starting Loading trajectories")
+        
+        # Load trajectories
+        trajectories = load_folder(
+            folder=args.input,
+            pattern=args.glob,
+            columns=args.columns,
+            scale=args.scale,
+            motion_threshold=args.motion_threshold
+        )
+        
+        if len(trajectories) == 0:
+            self.logger.warning("No trajectories loaded. Exiting.")
+            return
+        
+        self.logger.info(f"Loaded {len(trajectories)} trajectories")
+        
+        # Parse junctions
+        junctions = self._parse_junctions(args.junctions)
+        
+        # Parse r_outer_list
+        rlist = args.r_outer_list or [None] * len(junctions)
+        
+        self.logger.info("Starting Discovering decision chain")
+        
+        # Discover decision chain
+        chain_df, centers_list = discover_decision_chain(
+            trajectories=trajectories,
+            junctions=junctions,
+            r_outer_list=rlist,
+            path_length=args.distance,
+            epsilon=args.epsilon,
+            k=args.k,
+            decision_mode=args.decision_mode,
+            linger_delta=args.linger_delta,
+            cluster_method=args.cluster_method,
+            k_min=args.k_min,
+            k_max=args.k_max,
+            min_sep_deg=args.min_sep_deg,
+            angle_eps=args.angle_eps,
+            min_samples=args.min_samples,
+            seed=args.seed,
+            out_dir=args.out
+        )
+        
+        self.logger.info("Completed Discovering decision chain")
+        
+        # Generate chain plots
+        self.logger.info("Starting Generating chain plots")
+        self._generate_chain_plots(trajectories, chain_df, junctions, rlist, args)
+        self.logger.info("Completed Generating chain plots")
+        
+        # Run enhanced analysis if requested
+        if args.evacuation_analysis:
+            self.logger.info("Starting Running enhanced flow analysis")
+            self._run_enhanced_analysis(chain_df, junctions, trajectories, args)
+            self.logger.info("Completed Running enhanced flow analysis")
+        
+        self.logger.info("Enhanced chain analysis completed. Results saved to " + args.out)
+
+    def _parse_junctions(self, junction_coords: list) -> list:
+        """Parse junction coordinates into Circle objects"""
+        if len(junction_coords) % 3 != 0:
+            raise ValueError("Junction coordinates must be triples: x z r ...")
+        
+        junctions = []
+        for i in range(0, len(junction_coords), 3):
+            x, z, r = junction_coords[i:i+3]
+            junctions.append(Circle(cx=x, cz=z, r=r))
+        
+        return junctions
+
+    def _generate_chain_plots(self, trajectories, chain_df, junctions, rlist, args):
+        """Generate chain visualization plots"""
+        try:
+            plot_chain_overview(
+                trajectories=trajectories,
+                chain_df=chain_df,
+                junctions=junctions,
+                r_outer_list=rlist,
+                path_length=float(args.distance),
+                epsilon=float(args.epsilon),
+                linger_delta=float(args.linger_delta),
+                decision_mode=str(args.decision_mode),
+                out_path=os.path.join(args.out, "Chain_Overview.png"),
+                show_paths=True,
+                show_centers=False,
+                centers_list=None,
+                annotate_counts=False,
+            )
+            self.logger.info("Chain overview plot generated")
+        except Exception as e:
+            self.logger.error(f"Chain overview plot failed: {e}")
+        
+        # Always generate small multiples for enhanced chain analysis
+        try:
+            plot_chain_small_multiples(
+                trajectories=trajectories,
+                chain_df=chain_df,
+                junctions=junctions,
+                r_outer_list=rlist,
+                window_radius=float(args.small_multiples_window),
+                path_length=float(args.distance),
+                epsilon=float(args.epsilon),
+                linger_delta=float(args.linger_delta),
+                decision_mode=str(args.decision_mode),
+                out_path=os.path.join(args.out, "Chain_SmallMultiples.png"),
+            )
+            self.logger.info("Chain small multiples plot generated")
+        except Exception as e:
+            self.logger.error(f"Chain small multiples plot failed: {e}")
+        
+        # Generate flow graph map
+        try:
+            plot_flow_graph_map(
+                trajectories=trajectories,
+                chain_df=chain_df,
+                junctions=junctions,
+                r_outer_list=rlist,
+                out_path=os.path.join(args.out, "Flow_Graph_Map.png"),
+                junction_names=getattr(args, 'junction_names', None),
+                show_junction_names=True,
+                min_flow_threshold=0.01,  # Show flows >= 1%
+                arrow_scale=1.0,
+                start_zones=getattr(args, 'start_zones', None),
+                end_zones=getattr(args, 'end_zones', None),
+            )
+            self.logger.info("Flow graph map generated")
+        except Exception as e:
+            self.logger.error(f"Flow graph map failed: {e}")
+    
+    def _run_enhanced_analysis(self, chain_df, junctions, trajectories, args):
+        """Run enhanced flow analysis - simplified to only generate flow maps"""
+        try:
+            # Generate per-junction flow graph map
+            plot_per_junction_flow_graph(
+                trajectories=trajectories,
+                chain_df=chain_df,
+                junctions=junctions,
+                r_outer_list=getattr(args, 'r_outer_list', None),
+                out_path=os.path.join(args.out, "Per_Junction_Flow_Graph.png"),
+                junction_names=getattr(args, 'junction_names', None),
+                show_junction_names=True,
+                min_flow_threshold=0.01,  # Show flows >= 1%
+                arrow_scale=1.0,
+                start_zones=getattr(args, 'start_zones', None),
+                end_zones=getattr(args, 'end_zones', None),
+            )
+            self.logger.info("Per-junction flow graph map generated")
+            
+        except Exception as e:
+            self.logger.error(f"Enhanced analysis failed: {e}")
+            import traceback
+            traceback.print_exc()
+
 
 # Command registry
 COMMANDS = {
@@ -676,4 +1439,5 @@ COMMANDS = {
     "gaze": GazeCommand,
     "predict": PredictCommand,
     "intent": IntentRecognitionCommand,
+    "chain-enhanced": EnhancedChainCommand,
 }

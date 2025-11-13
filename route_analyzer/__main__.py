@@ -45,8 +45,7 @@ import argparse
 import sys
 from typing import Optional, Sequence
 
-from route_analyzer.ra_commands import COMMANDS
-from route_analyzer.ra_commands_enhanced import EnhancedChainCommand
+from route_analyzer.ra_commands import COMMANDS, EnhancedChainCommand
 from route_analyzer.ra_config import load_config_file, overlay_config_on_namespace, parse_columns
 from route_analyzer.ra_validation import validate_args
 from route_analyzer.ra_logging import get_logger
