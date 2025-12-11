@@ -7,11 +7,11 @@ from typing import Optional, Sequence, Tuple
 import numpy as np
 import pandas as pd
 
-from route_analyzer.ra_clustering import best_k_by_silhouette, cluster_angles_dbscan, kmeans_2d, merge_close_centers
-from route_analyzer.ra_geometry import Circle, entered_junction_idx
-from route_analyzer.ra_data_loader import Trajectory
-from route_analyzer.ra_plotting import plot_decision_intercepts
-from route_analyzer.ra_logging import get_logger
+from route_analyzer_ruedi99ms.ra_clustering import best_k_by_silhouette, cluster_angles_dbscan, kmeans_2d, merge_close_centers
+from route_analyzer_ruedi99ms.ra_geometry import Circle, entered_junction_idx
+from route_analyzer_ruedi99ms.ra_data_loader import Trajectory
+from route_analyzer_ruedi99ms.ra_plotting import plot_decision_intercepts
+from route_analyzer_ruedi99ms.ra_logging import get_logger
 
 logger = get_logger()
 
@@ -28,7 +28,7 @@ def get_decision_index(
 ) -> Optional[int]:
     """
     Get decision index using the specified decision mode.
-    
+
     Args:
         x, z: Trajectory coordinates
         junction: Junction circle
@@ -38,20 +38,20 @@ def get_decision_index(
         epsilon: Minimum step size
         linger_delta: Linger distance beyond junction
         window: Window size for radial mode
-        
+
     Returns:
         Decision index or None if not found
     """
     if len(x) < 2:
         return None
-    
+
     # Find junction entry point
     rx = x - junction.cx
     rz = z - junction.cz
     r = np.hypot(rx, rz)
     inside = r <= junction.r
     start = int(np.argmax(inside)) if inside.any() else int(np.argmin(r))
-    
+
     if decision_mode == "radial":
         rout = r_outer if (r_outer is not None and r_outer > junction.r) else (junction.r + 10.0)
         return _get_radial_decision_index(x, z, junction, rout, start, window)
@@ -64,23 +64,23 @@ def get_decision_index(
         if idx is not None:
             return idx
         return _get_pathlen_decision_index(x, z, junction, path_length, epsilon, linger_delta, start)
-    
+
     return None
 
 
 def _get_radial_decision_index(
-    x: np.ndarray, 
-    z: np.ndarray, 
-    junction: Circle, 
-    r_outer: float, 
-    start: int, 
+    x: np.ndarray,
+    z: np.ndarray,
+    junction: Circle,
+    r_outer: float,
+    start: int,
     window: int
 ) -> Optional[int]:
     """Get decision index using radial mode."""
     rx = x - junction.cx
     rz = z - junction.cz
     r = np.hypot(rx, rz)
-    
+
     # Find the first index crossing r_outer with outward trend
     for i in range(start + 1, len(r)):
         if r[i] >= r_outer:
@@ -96,12 +96,12 @@ def _get_radial_decision_index(
 
 
 def _get_pathlen_decision_index(
-    x: np.ndarray, 
-    z: np.ndarray, 
-    junction: Circle, 
-    path_length: float, 
-    epsilon: float, 
-    linger_delta: float, 
+    x: np.ndarray,
+    z: np.ndarray,
+    junction: Circle,
+    path_length: float,
+    epsilon: float,
+    linger_delta: float,
     start: int
 ) -> Optional[int]:
     """Get decision index using path length mode."""
@@ -110,10 +110,10 @@ def _get_pathlen_decision_index(
     seg = np.hypot(dx, dz)
     if len(seg) == 0:
         return None
-    
+
     cum = np.cumsum(seg)
     reach_idx = int(np.argmax(cum >= path_length)) if (cum >= path_length).any() else None
-    
+
     if reach_idx is not None:
         return start + reach_idx + 1
     return None
@@ -305,14 +305,14 @@ def discover_branches(trajectories: Sequence[Trajectory],
     centers     : (k,2) ndarray of unit vectors (sorted by angle)
     """
     from tqdm import tqdm
-    
+
     # --- Extract one direction vector per trajectory ---
     vecs, ids, diags, mode_log = [], [], [], []
     decisions_rows = []  # persist decision index/coords per trajectory
     assign_all_rows = []  # holds rows for −2 (no entry)
 
     logger.info(f"Processing {len(trajectories)} trajectories...")
-    
+
     for tr in tqdm(trajectories, desc="Analyzing trajectories", unit="traj"):
         # 0) Hard "no entry" → branch -2 (kept only in *all* table for plotting/stats)
         entered, _ = entered_junction_idx(tr.x, tr.z, junction)
@@ -384,11 +384,11 @@ def discover_branches(trajectories: Sequence[Trajectory],
             if 0 <= decision_idx < len(tr.x) and 0 <= decision_idx < len(tr.z):
                 ix = float(tr.x[decision_idx])
                 iz = float(tr.z[decision_idx])
-                
+
                 # CRITICAL VALIDATION: Ensure decision point is not outside r_outer
                 decision_distance = np.hypot(ix - junction.cx, iz - junction.cz)
                 rout = r_outer if (r_outer is not None and r_outer > junction.r) else (junction.r + 10.0)
-                
+
                 # Calculate adaptive tolerance based on trajectory resolution
                 # Use the typical step size in the trajectory as tolerance
                 if len(tr.x) > 1:
@@ -397,7 +397,7 @@ def discover_branches(trajectories: Sequence[Trajectory],
                     tolerance = max(typical_step * 2.0, 1.0)  # At least 2 steps or 1 unit
                 else:
                     tolerance = 1.0
-                
+
                 if decision_distance > rout + tolerance:
                     logger.debug(f"REJECTED: Decision point at distance {decision_distance:.1f} is outside r_outer {rout:.1f} (tolerance: {tolerance:.1f}) for trajectory {tr.tid}")
                     continue
@@ -431,7 +431,7 @@ def discover_branches(trajectories: Sequence[Trajectory],
         try:
             pd.DataFrame(diags).to_csv(os.path.join(out_dir, "discover_diagnostics.csv"), index=False)
             logger.debug(f"diagnostics -> {os.path.join(out_dir, 'discover_diagnostics.csv')}")
-            
+
             pd.DataFrame(mode_log).to_csv(os.path.join(out_dir, "decision_mode_used.csv"), index=False)
             logger.debug(f"decision_mode_used -> {os.path.join(out_dir, 'decision_mode_used.csv')}")
         except Exception as e:
@@ -463,7 +463,7 @@ def discover_branches(trajectories: Sequence[Trajectory],
 
         labels, centers = kmeans_2d(V, k=k, seed=seed)
         logger.debug(f"After kmeans: labels={np.unique(labels)}, centers.shape={centers.shape}")
-        
+
         # merge near-duplicate directions
         centers, labels = merge_close_centers(centers, labels, min_sep_deg=min_sep_deg)
         logger.debug(f"After merge: labels={np.unique(labels)}, centers.shape={centers.shape}")
@@ -473,7 +473,7 @@ def discover_branches(trajectories: Sequence[Trajectory],
         order = np.argsort(ang)
         mapping = {old: new for new, old in enumerate(order)}
         logger.debug(f"Angle sort order={order}, mapping={mapping}")
-        
+
         centers = centers[order]
         nrm = np.linalg.norm(centers, axis=1, keepdims=True)
         centers = centers / np.clip(nrm, 1e-12, None)
@@ -535,10 +535,10 @@ def discover_branches(trajectories: Sequence[Trajectory],
         except Exception as e:
             print(f"[discover_debug] Junction {junction_number}: Error saving decision points: {e}")
             pass
-        
+
         # Ensure r_outer has a proper default value for plotting
         plot_r_outer = r_outer if (r_outer is not None and r_outer > junction.r) else (junction.r + 10.0)
-        
+
         # Load decision points data for plotting
         decision_points_df = None
         try:
@@ -547,7 +547,7 @@ def discover_branches(trajectories: Sequence[Trajectory],
                 decision_points_df = pd.read_csv(decision_points_path)
         except Exception:
             pass
-        
+
         plot_decision_intercepts(
             trajectories=trajectories,
             assignments_df=assignments_all,
