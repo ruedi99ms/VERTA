@@ -1,0 +1,2177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>route_analyzer_ruedi99ms API documentation</title>
+<meta name="description" content="VERTA - Virtual Environment Route and Trajectory Analyzer …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Package <code>route_analyzer_ruedi99ms</code></h1>
+</header>
+<section id="section-intro">
+<p>VERTA - Virtual Environment Route and Trajectory Analyzer</p>
+<p>A comprehensive toolkit for analyzing route choices and trajectories in virtual environments.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+VERTA - Virtual Environment Route and Trajectory Analyzer
+
+A comprehensive toolkit for analyzing route choices and trajectories in virtual environments.
+&#34;&#34;&#34;
+
+__version__ = &#34;0.1.0&#34;
+
+# Import main classes and functions for convenient access
+from route_analyzer_ruedi99ms.ra_data_loader import (
+    Trajectory,
+    ColumnMapping,
+    load_folder,
+    load_folder_with_gaze,
+)
+
+from route_analyzer_ruedi99ms.ra_geometry import Circle, Rect
+
+from route_analyzer_ruedi99ms.ra_decisions import (
+    discover_branches,
+    assign_branches,
+    discover_decision_chain,
+)
+
+from route_analyzer_ruedi99ms.ra_commands import (
+    BaseCommand,
+    CommandConfig,
+    DiscoverCommand,
+    AssignCommand,
+    MetricsCommand,
+    GazeCommand,
+    COMMANDS,
+)
+
+__all__ = [
+    &#34;Trajectory&#34;,
+    &#34;ColumnMapping&#34;,
+    &#34;load_folder&#34;,
+    &#34;load_folder_with_gaze&#34;,
+    &#34;Circle&#34;,
+    &#34;Rect&#34;,
+    &#34;discover_branches&#34;,
+    &#34;assign_branches&#34;,
+    &#34;discover_decision_chain&#34;,
+    &#34;BaseCommand&#34;,
+    &#34;CommandConfig&#34;,
+    &#34;DiscoverCommand&#34;,
+    &#34;AssignCommand&#34;,
+    &#34;MetricsCommand&#34;,
+    &#34;GazeCommand&#34;,
+    &#34;COMMANDS&#34;,
+]</code></pre>
+</details>
+</section>
+<section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_clustering" href="ra_clustering.html">route_analyzer_ruedi99ms.ra_clustering</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_commands" href="ra_commands.html">route_analyzer_ruedi99ms.ra_commands</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_config" href="ra_config.html">route_analyzer_ruedi99ms.ra_config</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_consistency" href="ra_consistency.html">route_analyzer_ruedi99ms.ra_consistency</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_data_loader" href="ra_data_loader.html">route_analyzer_ruedi99ms.ra_data_loader</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_decisions" href="ra_decisions.html">route_analyzer_ruedi99ms.ra_decisions</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_gaze" href="ra_gaze.html">route_analyzer_ruedi99ms.ra_gaze</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_geometry" href="ra_geometry.html">route_analyzer_ruedi99ms.ra_geometry</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_gui" href="ra_gui.html">route_analyzer_ruedi99ms.ra_gui</a></code></dt>
+<dd>
+<div class="desc"><p>VERTA Web GUI
+…</p></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_intent_recognition" href="ra_intent_recognition.html">route_analyzer_ruedi99ms.ra_intent_recognition</a></code></dt>
+<dd>
+<div class="desc"><p>Intent Recognition Module for Route Analyzer …</p></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_logging" href="ra_logging.html">route_analyzer_ruedi99ms.ra_logging</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_metrics" href="ra_metrics.html">route_analyzer_ruedi99ms.ra_metrics</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_plotting" href="ra_plotting.html">route_analyzer_ruedi99ms.ra_plotting</a></code></dt>
+<dd>
+<div class="desc"><p>Route Analyzer Plotting Module …</p></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_prediction" href="ra_prediction.html">route_analyzer_ruedi99ms.ra_prediction</a></code></dt>
+<dd>
+<div class="desc"><p>Junction-based choice prediction and analysis module …</p></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_progress" href="ra_progress.html">route_analyzer_ruedi99ms.ra_progress</a></code></dt>
+<dd>
+<div class="desc"><p>Progress tracking utilities for Route Analyzer …</p></div>
+</dd>
+<dt><code class="name"><a title="route_analyzer_ruedi99ms.ra_validation" href="ra_validation.html">route_analyzer_ruedi99ms.ra_validation</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="route_analyzer_ruedi99ms.assign_branches"><code class="name flex">
+<span>def <span class="ident">assign_branches</span></span>(<span>trajectories, centers: numpy.ndarray, junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, path_length: float = 100.0, decision_mode='pathlen', r_outer=None, epsilon: float = 0.05, linger_delta: float = 0.0, assign_angle_eps: float = 15.0, out_dir=None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Assign branches using fixed centers, consistent with discover.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def assign_branches(trajectories,
+                    centers: np.ndarray,
+                    junction: Circle,
+                    path_length: float = 100.0,
+                    decision_mode=&#34;pathlen&#34;,
+                    r_outer=None,
+                    epsilon: float = 0.05,
+                    linger_delta: float = 0.0,
+                    assign_angle_eps: float = 15.0,
+                    out_dir = None) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Assign branches using fixed centers, consistent with discover.&#34;&#34;&#34;
+    ids, labs = [], []
+    dbg_rows, mode_rows = [], []
+
+    min_dot = float(math.cos(math.radians(assign_angle_eps)))
+
+    for tr in trajectories:
+        # hard −2 if we never enter the junction
+        entered, _ = entered_junction_idx(tr.x, tr.z, junction)
+        if not entered:
+            ids.append(tr.tid); labs.append(-2)
+            continue
+
+        v, mode_used = _pick_vector_and_source(
+            tr, junction, decision_mode, path_length, r_outer, epsilon, linger_delta=linger_delta
+        )
+
+        # entered but no usable vector → −1
+        if v is None or centers.size == 0:
+            ids.append(tr.tid); labs.append(-1)
+            continue
+
+        v = v / max(1e-12, np.linalg.norm(v))
+        dots = centers @ v
+        lab = int(np.argmax(dots))
+        # too far from any center?  mark −1
+        lab = lab if float(dots[lab]) &gt;= min_dot else -1
+
+        ids.append(tr.tid); labs.append(lab)
+        dbg_rows.append({
+            &#34;trajectory&#34;: tr.tid, &#34;vx&#34;: float(v[0]), &#34;vz&#34;: float(v[1]),
+            &#34;assigned_branch&#34;: lab, &#34;argmax_dot&#34;: float(dots[lab] if lab&gt;=0 else np.max(dots)),
+            &#34;best_alt_branch&#34;: int(np.argsort(dots)[-2]) if len(dots) &gt; 1 else -1,
+            &#34;best_alt_dot&#34;: float(np.sort(dots)[-2]) if len(dots) &gt; 1 else float(&#34;nan&#34;),
+        })
+        mode_rows.append({&#34;trajectory&#34;: tr.tid, &#34;mode_used&#34;: mode_used})
+
+    df = pd.DataFrame({&#34;trajectory&#34;: ids, &#34;branch&#34;: labs})
+    if out_dir is not None:
+        pd.DataFrame(dbg_rows).to_csv(os.path.join(out_dir, &#34;assign_vectors.csv&#34;), index=False)
+        pd.DataFrame(mode_rows).to_csv(os.path.join(out_dir, &#34;assign_mode_used.csv&#34;), index=False)
+    return df</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.discover_branches"><code class="name flex">
+<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>], junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, k: int = 3, path_length: float = 100.0, epsilon: float = 0.05, seed: int = 0, decision_mode='hybrid', r_outer=None, linger_delta: float = 0.0, out_dir=None, cluster_method: str = 'kmeans', k_min: int = 2, k_max: int = 6, min_sep_deg: float = 12.0, angle_eps: float = 15.0, min_samples: int = 5, junction_number: int = 0, all_junctions: Sequence[<a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>] = None) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute initial movement vectors and cluster them into k branches.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>assignments</code></strong> :&ensp;<code>DataFrame with columns ["trajectory", "branch"]</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>summary
+: DataFrame with columns ["branch", "count", "percent"]</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>centers
+: (k,2) ndarray</code> of <code>unit vectors (sorted by angle)</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def discover_branches(trajectories: Sequence[Trajectory],
+                      junction: Circle,
+                      k: int = 3,
+                      path_length: float = 100.0,
+                      epsilon: float = 0.05,
+                      seed: int = 0,
+                      decision_mode=&#34;hybrid&#34;,
+                      r_outer=None,
+                      linger_delta: float = 0.0,
+                      out_dir = None,
+                      cluster_method: str = &#34;kmeans&#34;,
+                      k_min: int = 2,
+                      k_max: int = 6,
+                      min_sep_deg: float = 12.0,
+                      angle_eps: float = 15.0,
+                      min_samples: int = 5,
+                      junction_number: int = 0,
+                      all_junctions: Sequence[Circle] = None
+                      ) -&gt; Tuple[pd.DataFrame, pd.DataFrame, np.ndarray]:
+    &#34;&#34;&#34;Compute initial movement vectors and cluster them into k branches.
+
+    Returns
+    -------
+    assignments : DataFrame with columns [&#34;trajectory&#34;, &#34;branch&#34;]
+    summary     : DataFrame with columns [&#34;branch&#34;, &#34;count&#34;, &#34;percent&#34;]
+    centers     : (k,2) ndarray of unit vectors (sorted by angle)
+    &#34;&#34;&#34;
+    from tqdm import tqdm
+
+    # --- Extract one direction vector per trajectory ---
+    vecs, ids, diags, mode_log = [], [], [], []
+    decisions_rows = []  # persist decision index/coords per trajectory
+    assign_all_rows = []  # holds rows for −2 (no entry)
+
+    logger.info(f&#34;Processing {len(trajectories)} trajectories...&#34;)
+
+    for tr in tqdm(trajectories, desc=&#34;Analyzing trajectories&#34;, unit=&#34;traj&#34;):
+        # 0) Hard &#34;no entry&#34; → branch -2 (kept only in *all* table for plotting/stats)
+        entered, _ = entered_junction_idx(tr.x, tr.z, junction)
+        if not entered:
+            assign_all_rows.append({&#34;trajectory&#34;: tr.tid, &#34;branch&#34;: -2})
+            diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: False, &#34;reason&#34;: &#34;no_junction_entry&#34;})
+            continue
+
+        # 1) Get initial direction according to mode (hybrid tries radial, falls back to pathlen)
+        v, mode_used = _pick_vector_and_source(
+            tr=tr,
+            junction=junction,
+            decision_mode=str(decision_mode),
+            path_length=float(path_length),
+            r_outer=r_outer,
+            epsilon=float(epsilon),
+            linger_delta=float(linger_delta),
+        )
+        mode_log.append({&#34;trajectory&#34;: tr.tid, &#34;mode_used&#34;: mode_used})
+
+        # 2) If we still didn’t get a vector, mark as “entered but off-center” (branch -1 in *all*)
+        if v is None:
+            assign_all_rows.append({&#34;trajectory&#34;: tr.tid, &#34;branch&#34;: -1})
+            diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: False, &#34;reason&#34;: &#34;no_vector&#34;})
+            continue
+
+        # 3) Normalize and keep
+        v = v / max(1e-12, float(np.linalg.norm(v)))
+        vecs.append(v)
+        ids.append(tr.tid)
+        diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: True, &#34;reason&#34;: mode_used})
+
+        # Persist approximate decision index consistent with mode_used
+        try:
+            rx = tr.x - junction.cx
+            rz = tr.z - junction.cz
+            r = np.hypot(rx, rz)
+            inside = r &lt;= junction.r
+            start = int(np.argmax(inside)) if inside.any() else int(np.argmin(r))
+
+            decision_idx = None
+            if mode_used == &#34;radial&#34;:
+                rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+                i_cross = None
+                for i in range(start + 1, len(r)):
+                    if r[i] &gt;= rout:
+                        j0 = max(start + 1, i - 5)
+                        seg = r[j0:i+1]
+                        outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0 if seg.size &gt;= 2 else True
+                        if outward:
+                            i_cross = i
+                            break
+                decision_idx = int(i_cross) if i_cross is not None else None
+            else:
+                dx = np.diff(tr.x[start:])
+                dz = np.diff(tr.z[start:])
+                seg = np.hypot(dx, dz)
+                cum = np.cumsum(seg)
+                reach_idx = int(np.argmax(cum &gt;= float(path_length))) if (cum &gt;= float(path_length)).any() else None
+                decision_idx = int(start + reach_idx + 1) if reach_idx is not None else None
+
+            if decision_idx is None:
+                # Don&#39;t assign trajectories without proper decision points
+                # Mark as *entered but no decision* (branch -1 in *all*)
+                assign_all_rows.append({&#34;trajectory&#34;: tr.tid, &#34;branch&#34;: -1})
+                diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: False, &#34;reason&#34;: &#34;no_decision_point&#34;})
+                continue
+
+            if 0 &lt;= decision_idx &lt; len(tr.x) and 0 &lt;= decision_idx &lt; len(tr.z):
+                ix = float(tr.x[decision_idx])
+                iz = float(tr.z[decision_idx])
+
+                # CRITICAL VALIDATION: Ensure decision point is not outside r_outer
+                decision_distance = np.hypot(ix - junction.cx, iz - junction.cz)
+                rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+
+                # Calculate adaptive tolerance based on trajectory resolution
+                # Use the typical step size in the trajectory as tolerance
+                if len(tr.x) &gt; 1:
+                    step_sizes = np.hypot(np.diff(tr.x), np.diff(tr.z))
+                    typical_step = np.median(step_sizes) if len(step_sizes) &gt; 0 else 1.0
+                    tolerance = max(typical_step * 2.0, 1.0)  # At least 2 steps or 1 unit
+                else:
+                    tolerance = 1.0
+
+                if decision_distance &gt; rout + tolerance:
+                    logger.debug(f&#34;REJECTED: Decision point at distance {decision_distance:.1f} is outside r_outer {rout:.1f} (tolerance: {tolerance:.1f}) for trajectory {tr.tid}&#34;)
+                    continue
+            else:
+                # Don&#39;t use fallback if decision_idx is out of bounds
+                # This indicates an invalid decision point
+                continue
+
+            decisions_rows.append({
+                &#34;trajectory&#34;: tr.tid,
+                &#34;junction_index&#34;: 0,
+                &#34;decision_idx&#34;: int(decision_idx),
+                &#34;intercept_x&#34;: ix,
+                &#34;intercept_z&#34;: iz,
+                &#34;mode_used&#34;: str(mode_used),
+            })
+        except Exception:
+            pass
+
+
+
+
+
+    diag_df = pd.DataFrame(diags)
+    diag_df.to_csv(os.path.join(out_dir, &#34;discover_diag_reasons.csv&#34;), index=False)
+
+    logger.info(f&#34;trajectories: {len(trajectories)}  extracted_vectors: {len(vecs)}&#34;)
+
+    # Optional CSV diagnostics
+    if out_dir is not None:
+        try:
+            pd.DataFrame(diags).to_csv(os.path.join(out_dir, &#34;discover_diagnostics.csv&#34;), index=False)
+            logger.debug(f&#34;diagnostics -&gt; {os.path.join(out_dir, &#39;discover_diagnostics.csv&#39;)}&#34;)
+
+            pd.DataFrame(mode_log).to_csv(os.path.join(out_dir, &#34;decision_mode_used.csv&#34;), index=False)
+            logger.debug(f&#34;decision_mode_used -&gt; {os.path.join(out_dir, &#39;decision_mode_used.csv&#39;)}&#34;)
+        except Exception as e:
+            logger.warning(f&#34;could not write diagnostics: {e}&#34;)
+
+    n_noentry = sum(1 for r in assign_all_rows if r[&#34;branch&#34;] == -2)
+    n_off     = sum(1 for r in assign_all_rows if r[&#34;branch&#34;] == -1)
+    logger.info(f&#34;entered={len(vecs)+n_off}  no_vector={n_off}  no_entry={n_noentry}&#34;)
+
+    if len(vecs) == 0:
+        empty_assign = pd.DataFrame(columns=[&#34;trajectory&#34;, &#34;branch&#34;])
+        empty_sum = pd.DataFrame(columns=[&#34;branch&#34;, &#34;count&#34;, &#34;percent&#34;])
+        return empty_assign, empty_sum, np.zeros((0, 2))
+
+    V = np.vstack(vecs)
+
+    if out_dir is not None and len(vecs):
+        pd.DataFrame({&#34;trajectory&#34;: ids, &#34;vx&#34;: V[:, 0], &#34;vz&#34;: V[:, 1]}).to_csv(os.path.join(out_dir, &#34;vectors.csv&#34;), index=False)
+
+    # ---- CLUSTERING ----
+    if cluster_method in (&#34;kmeans&#34;, &#34;auto&#34;):
+        if cluster_method == &#34;auto&#34;:
+            k_auto, sil = best_k_by_silhouette(V, k_min=k_min, k_max=k_max, seed=seed)
+            logger.debug(f&#34;auto-k silhouette -&gt; {k_auto}  scores={sil}&#34;)
+            k = k_auto
+        if k &gt; len(V):
+            logger.debug(f&#34;Requested k={k} but only {len(V)} vectors; capping.&#34;)
+            k = len(V)
+
+        labels, centers = kmeans_2d(V, k=k, seed=seed)
+        logger.debug(f&#34;After kmeans: labels={np.unique(labels)}, centers.shape={centers.shape}&#34;)
+
+        # merge near-duplicate directions
+        centers, labels = merge_close_centers(centers, labels, min_sep_deg=min_sep_deg)
+        logger.debug(f&#34;After merge: labels={np.unique(labels)}, centers.shape={centers.shape}&#34;)
+
+        # angle-sort centers; remap labels to 0..C-1
+        ang = np.arctan2(centers[:, 1], centers[:, 0])
+        order = np.argsort(ang)
+        mapping = {old: new for new, old in enumerate(order)}
+        logger.debug(f&#34;Angle sort order={order}, mapping={mapping}&#34;)
+
+        centers = centers[order]
+        nrm = np.linalg.norm(centers, axis=1, keepdims=True)
+        centers = centers / np.clip(nrm, 1e-12, None)
+        labels = np.array([mapping[l] for l in labels], dtype=int)
+        logger.debug(f&#34;Final labels={np.unique(labels)}&#34;)
+
+    elif cluster_method == &#34;dbscan&#34;:
+        # density on angles; can yield outliers labeled -1
+        lab, centers = cluster_angles_dbscan(V, eps_deg=angle_eps, min_samples=min_samples)
+        labels = lab.copy()  # keep -1 for outliers
+
+        # If no clusters found, all are outliers; centers is (0,2)
+        if centers.size == 0:
+            pass  # labels already -1; centers OK
+        else:
+            # Sort centers by angle for stable numbering
+            ang = np.arctan2(centers[:, 1], centers[:, 0])
+            order = np.argsort(ang)                  # order gives new IDs
+            centers = centers[order]
+
+            # Old DBSCAN cluster ids are 0..C-1 in the order they were built.
+            # Build mapping: old_id -&gt; new_id (angle-sorted)
+            old_ids = np.arange(len(order))
+            remap = {int(old_id): int(new_id) for new_id, old_id in enumerate(order)}
+
+            # Remap labels &gt;= 0; keep -1 as is
+            for i, l in enumerate(labels):
+                if l &gt;= 0:
+                    labels[i] = remap[int(l)]
+
+
+    else:
+        raise ValueError(f&#34;Unknown cluster_method={cluster_method}&#34;)
+
+    assignments = pd.DataFrame({&#34;trajectory&#34;: ids, &#34;branch&#34;: labels})
+    assignments_all = pd.concat([assignments, pd.DataFrame(assign_all_rows)], ignore_index=True)
+
+    # Summary (main branches only, &gt;=0) stays the same using *assignments*
+    mask_main = assignments[&#34;branch&#34;] &gt;= 0
+    cnt = Counter(assignments.loc[mask_main, &#34;branch&#34;])
+    total = int(mask_main.sum())
+    summary = pd.DataFrame({
+        &#34;branch&#34;: sorted(cnt.keys()),
+        &#34;count&#34;: [cnt[b] for b in sorted(cnt.keys())],
+        &#34;percent&#34;: [cnt[b] / total * 100.0 if total else 0.0 for b in sorted(cnt.keys())],
+    })
+
+    # Write both CSVs if out_dir given and draw intercepts using the *all* table
+    if out_dir is not None:
+        assignments.to_csv(os.path.join(out_dir, &#34;branch_assignments.csv&#34;), index=False)
+        assignments_all.to_csv(os.path.join(out_dir, &#34;branch_assignments_all.csv&#34;), index=False)
+        mode_df = pd.DataFrame(mode_log)
+        mode_df.to_csv(os.path.join(out_dir, &#34;decision_mode_used.csv&#34;), index=False)
+        # persist decision points for reuse in gaze
+        try:
+            decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
+            pd.DataFrame(decisions_rows).to_csv(decision_points_path, index=False)
+            print(f&#34;[discover_debug] Junction {junction_number}: Saved {len(decisions_rows)} decision points to {decision_points_path}&#34;)
+        except Exception as e:
+            print(f&#34;[discover_debug] Junction {junction_number}: Error saving decision points: {e}&#34;)
+            pass
+
+        # Ensure r_outer has a proper default value for plotting
+        plot_r_outer = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+
+        # Load decision points data for plotting
+        decision_points_df = None
+        try:
+            decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
+            if os.path.exists(decision_points_path):
+                decision_points_df = pd.read_csv(decision_points_path)
+        except Exception:
+            pass
+
+        plot_decision_intercepts(
+            trajectories=trajectories,
+            assignments_df=assignments_all,
+            mode_log_df=mode_df,
+            centers=centers,
+            junction=junction,
+            r_outer=plot_r_outer,
+            path_length=path_length,
+            epsilon=epsilon,
+            linger_delta=linger_delta,
+            out_path=os.path.join(out_dir, &#34;Decision_Intercepts.png&#34;),
+            show_paths=False,
+            junction_number=junction_number,
+            all_junctions=all_junctions,
+            decision_points_df=decision_points_df
+        )
+
+    return assignments, summary, centers</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.discover_decision_chain"><code class="name flex">
+<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>], junctions: Sequence[<a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>], *, path_length: float = 100.0, epsilon: float = 0.05, seed: int = 0, decision_mode: str = 'hybrid', r_outer_list: Optional[Sequence[float]] = None, linger_delta: float = 0.0, out_dir: Optional[str] = None, cluster_method: str = 'kmeans', k: int = 3, k_min: int = 2, k_max: int = 6, min_sep_deg: float = 12.0, angle_eps: float = 15.0, min_samples: int = 5) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Discover branches at multiple junctions (a decision chain).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>chain_df</code></strong> :&ensp;<code>DataFrame with one row per trajectory and columns:</code></dt>
+<dd>
+<ul>
+<li>trajectory</li>
+<li>branch_j0, branch_j1, &hellip; for each junction index</li>
+</ul>
+</dd>
+<dt><strong><code>centers_list</code></strong> :&ensp;<code>list</code> of <code>(C,2) arrays</code> of <code>unit vectors per junction</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def discover_decision_chain(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    *,
+    path_length: float = 100.0,
+    epsilon: float = 0.05,
+    seed: int = 0,
+    decision_mode: str = &#34;hybrid&#34;,
+    r_outer_list: Optional[Sequence[float]] = None,
+    linger_delta: float = 0.0,
+    out_dir: Optional[str] = None,
+    cluster_method: str = &#34;kmeans&#34;,
+    k: int = 3,
+    k_min: int = 2,
+    k_max: int = 6,
+    min_sep_deg: float = 12.0,
+    angle_eps: float = 15.0,
+    min_samples: int = 5,
+) -&gt; tuple[pd.DataFrame, list[np.ndarray], pd.DataFrame]:
+    &#34;&#34;&#34;
+    Discover branches at multiple junctions (a decision chain).
+
+    Returns
+    -------
+    chain_df : DataFrame with one row per trajectory and columns:
+        - trajectory
+        - branch_j0, branch_j1, ... for each junction index
+    centers_list : list of (C,2) arrays of unit vectors per junction
+    &#34;&#34;&#34;
+    if r_outer_list is None:
+        r_outer_list = [None] * len(junctions)
+    if len(r_outer_list) != len(junctions):
+        raise ValueError(&#34;r_outer_list length must match junctions length or be omitted&#34;)
+
+    all_centers: list[np.ndarray] = []
+    per_j_assign: list[pd.DataFrame] = []
+    per_j_decisions: list[pd.DataFrame] = []
+
+    # make an optional folder structure: out_dir/junction_{i}
+    def _subdir(i: int) -&gt; Optional[str]:
+        if out_dir is None:
+            return None
+        d = os.path.join(out_dir, f&#34;junction_{i}&#34;)
+        os.makedirs(d, exist_ok=True)
+        return d
+
+    # Run discovery per junction
+    for i, (junc, r_out) in enumerate(zip(junctions, r_outer_list)):
+        sub_out = _subdir(i)
+        assign_i, _summary_i, centers_i = discover_branches(
+            trajectories=trajectories,
+            junction=junc,
+            k=int(k),
+            path_length=float(path_length),
+            epsilon=float(epsilon),
+            seed=int(seed + i),  # perturb seed per stage for stability if needed
+            decision_mode=str(decision_mode),
+            r_outer=r_out,
+            linger_delta=float(linger_delta),
+            out_dir=sub_out,
+            cluster_method=str(cluster_method),
+            k_min=int(k_min),
+            k_max=int(k_max),
+            min_sep_deg=float(min_sep_deg),
+            angle_eps=float(angle_eps),
+            min_samples=int(min_samples),
+            junction_number=i,  # Pass the correct junction number
+            all_junctions=junctions
+        )
+        # rename branch column to junction index specific
+        assign_i = assign_i.rename(columns={&#34;branch&#34;: f&#34;branch_j{i}&#34;})
+        per_j_assign.append(assign_i)
+        all_centers.append(centers_i)
+
+        # read decisions file written by discover_branches for this junction
+        sub = _subdir(i)
+        if sub is not None:
+            p = os.path.join(sub, &#34;decision_points.csv&#34;)
+            try:
+                if os.path.exists(p):
+                    dfi = pd.read_csv(p)
+                    dfi[&#34;junction_index&#34;] = i
+                    per_j_decisions.append(dfi)
+                    print(f&#34;[discover_debug] Junction {i}: Loaded {len(dfi)} decision points from {p}&#34;)
+                else:
+                    print(f&#34;[discover_debug] Junction {i}: No decision points file found at {p}&#34;)
+            except Exception as e:
+                print(f&#34;[discover_debug] Junction {i}: Error loading decision points: {e}&#34;)
+                pass
+        else:
+            print(f&#34;[discover_debug] Junction {i}: No output directory created&#34;)
+
+    # Merge per-junction assignments into a wide table
+    from functools import reduce
+    def _merge(a: pd.DataFrame, b: pd.DataFrame) -&gt; pd.DataFrame:
+        return a.merge(b, on=&#34;trajectory&#34;, how=&#34;outer&#34;)
+
+    chain_df = reduce(_merge, per_j_assign)
+
+    # Optional: order columns (trajectory first)
+    cols = [&#34;trajectory&#34;] + [f&#34;branch_j{i}&#34; for i in range(len(junctions))]
+    chain_df = chain_df.reindex(columns=cols)
+
+    if out_dir is not None:
+        chain_path = os.path.join(out_dir, &#34;branch_assignments_chain.csv&#34;)
+        chain_df.to_csv(chain_path, index=False)
+        # also write centers per junction
+        for i, c in enumerate(all_centers):
+            np.save(os.path.join(out_dir, f&#34;branch_centers_j{i}.npy&#34;), c)
+    # write consolidated decisions
+    decisions_chain_df = pd.concat(per_j_decisions, ignore_index=True) if per_j_decisions else pd.DataFrame(columns=[&#34;trajectory&#34;,&#34;junction_index&#34;,&#34;decision_idx&#34;,&#34;intercept_x&#34;,&#34;intercept_z&#34;,&#34;mode_used&#34;])
+    print(f&#34;[discover_debug] Created chain_decisions DataFrame with {len(decisions_chain_df)} rows&#34;)
+    print(f&#34;[discover_debug] Junction indices in chain_decisions: {sorted(decisions_chain_df[&#39;junction_index&#39;].unique()) if not decisions_chain_df.empty else &#39;None&#39;}&#34;)
+    if not decisions_chain_df.empty:
+        decisions_chain_df.to_csv(os.path.join(out_dir, &#34;branch_decisions_chain.csv&#34;), index=False)
+        print(f&#34;[discover_debug] Saved chain_decisions to {os.path.join(out_dir, &#39;branch_decisions_chain.csv&#39;)}&#34;)
+    else:
+        decisions_chain_df = pd.concat(per_j_decisions, ignore_index=True) if per_j_decisions else pd.DataFrame(columns=[&#34;trajectory&#34;,&#34;junction_index&#34;,&#34;decision_idx&#34;,&#34;intercept_x&#34;,&#34;intercept_z&#34;,&#34;mode_used&#34;])
+        print(f&#34;[discover_debug] Chain_decisions is empty, created empty DataFrame&#34;)
+
+    return chain_df, all_centers, decisions_chain_df</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.load_folder"><code class="name flex">
+<span>def <span class="ident">load_folder</span></span>(<span>folder: str, pattern: str = '*.csv', columns: Optional[Dict[str, str]] = None, require_time: bool = False, require_gaze: bool = False, scale: float = 1.0, motion_threshold: float = 0.001, progress_callback: Optional[<built-in function callable>] = None) ‑> List[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load trajectories with optional gaze data support.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>folder</code></strong></dt>
+<dd>Folder to search</dd>
+<dt><strong><code>pattern</code></strong></dt>
+<dd>Glob pattern for files</dd>
+<dt><strong><code>columns</code></strong></dt>
+<dd>Column mapping dictionary</dd>
+<dt><strong><code>require_time</code></strong></dt>
+<dd>Whether time data is required</dd>
+<dt><strong><code>require_gaze</code></strong></dt>
+<dd>Whether gaze data is required (legacy parameter for compatibility)</dd>
+<dt><strong><code>scale</code></strong></dt>
+<dd>Coordinate scaling factor</dd>
+<dt><strong><code>motion_threshold</code></strong></dt>
+<dd>Motion detection threshold</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of Trajectory objects</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_folder(folder: str,
+                pattern: str = &#34;*.csv&#34;,
+                columns: Optional[Dict[str, str]] = None,
+                require_time: bool = False,
+                require_gaze: bool = False,
+                scale: float = 1.0,
+                motion_threshold: float = 0.001,
+                progress_callback: Optional[callable] = None) -&gt; List[Trajectory]:
+    &#34;&#34;&#34;
+    Load trajectories with optional gaze data support.
+
+    Args:
+        folder: Folder to search
+        pattern: Glob pattern for files
+        columns: Column mapping dictionary
+        require_time: Whether time data is required
+        require_gaze: Whether gaze data is required (legacy parameter for compatibility)
+        scale: Coordinate scaling factor
+        motion_threshold: Motion detection threshold
+
+    Returns:
+        List of Trajectory objects
+    &#34;&#34;&#34;
+    if columns is None:
+        # Use VR defaults for better compatibility with VR data files
+        column_mapping = ColumnMapping.vr_defaults()
+    else:
+        column_mapping = ColumnMapping.from_dict(columns)
+
+    loader = TrajectoryLoader(column_mapping)
+    return loader.load_folder(folder, pattern, Trajectory, require_time, scale, motion_threshold, progress_callback)</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.load_folder_with_gaze"><code class="name flex">
+<span>def <span class="ident">load_folder_with_gaze</span></span>(<span>folder: str, pattern: str = '*.csv', columns: Optional[Dict[str, str]] = None, require_time: bool = False, scale: float = 1.0, motion_threshold: float = 0.001, progress_callback: Optional[<built-in function callable>] = None) ‑> List[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load gaze trajectories (backward compatibility).</p>
+<p>DEPRECATED: Use load_folder() with require_gaze=True instead.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>folder</code></strong></dt>
+<dd>Folder to search</dd>
+<dt><strong><code>pattern</code></strong></dt>
+<dd>Glob pattern for files</dd>
+<dt><strong><code>columns</code></strong></dt>
+<dd>Column mapping dictionary</dd>
+<dt><strong><code>require_time</code></strong></dt>
+<dd>Whether time data is required</dd>
+<dt><strong><code>scale</code></strong></dt>
+<dd>Coordinate scaling factor</dd>
+<dt><strong><code>motion_threshold</code></strong></dt>
+<dd>Motion detection threshold</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of Trajectory objects</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_folder_with_gaze(folder: str,
+                         pattern: str = &#34;*.csv&#34;,
+                         columns: Optional[Dict[str, str]] = None,
+                         require_time: bool = False,
+                         scale: float = 1.0,
+                         motion_threshold: float = 0.001,
+                         progress_callback: Optional[callable] = None) -&gt; List[Trajectory]:
+    &#34;&#34;&#34;
+    Load gaze trajectories (backward compatibility).
+
+    DEPRECATED: Use load_folder() with require_gaze=True instead.
+
+    Args:
+        folder: Folder to search
+        pattern: Glob pattern for files
+        columns: Column mapping dictionary
+        require_time: Whether time data is required
+        scale: Coordinate scaling factor
+        motion_threshold: Motion detection threshold
+
+    Returns:
+        List of Trajectory objects
+    &#34;&#34;&#34;
+    # Delegate to the unified load_folder function
+    return load_folder(folder, pattern, columns, require_time, require_gaze=True, scale=scale, motion_threshold=motion_threshold, progress_callback=progress_callback)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="route_analyzer_ruedi99ms.AssignCommand"><code class="flex name class">
+<span>class <span class="ident">AssignCommand</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Command handler for branch assignment using precomputed centers</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AssignCommand(BaseCommand):
+    &#34;&#34;&#34;Command handler for branch assignment using precomputed centers&#34;&#34;&#34;
+
+    def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+        parser.add_argument(&#34;--input&#34;, required=True, help=&#34;Input folder path&#34;)
+        parser.add_argument(&#34;--out&#34;, required=True, help=&#34;Output folder path&#34;)
+        parser.add_argument(&#34;--glob&#34;, default=&#34;*.csv&#34;, help=&#34;File pattern&#34;)
+        parser.add_argument(&#34;--columns&#34;, default=None, help=&#34;Column mapping&#34;)
+        parser.add_argument(&#34;--scale&#34;, type=float, default=1.0, help=&#34;Coordinate scaling factor&#34;)
+        parser.add_argument(&#34;--motion_threshold&#34;, type=float, default=0.001, help=&#34;Motion detection threshold&#34;)
+        parser.add_argument(&#34;--junction&#34;, nargs=2, type=float, required=True, metavar=(&#34;X&#34;, &#34;Z&#34;), help=&#34;Junction coordinates&#34;)
+        parser.add_argument(&#34;--radius&#34;, type=float, required=True, help=&#34;Junction radius&#34;)
+        parser.add_argument(&#34;--distance&#34;, type=float, default=100.0, help=&#34;Path length for decision&#34;)
+        parser.add_argument(&#34;--epsilon&#34;, type=float, default=0.015, help=&#34;Minimum step size&#34;)
+        parser.add_argument(&#34;--decision_mode&#34;, choices=[&#34;pathlen&#34;, &#34;radial&#34;, &#34;hybrid&#34;], default=&#34;pathlen&#34;, help=&#34;Decision mode&#34;)
+        parser.add_argument(&#34;--r_outer&#34;, type=float, default=None, help=&#34;Outer radius for radial mode&#34;)
+        parser.add_argument(&#34;--linger_delta&#34;, type=float, default=5.0, help=&#34;Linger distance beyond junction&#34;)
+        parser.add_argument(&#34;--centers&#34;, required=True, help=&#34;Path to precomputed centers&#34;)
+
+    def execute(self, args: argparse.Namespace) -&gt; None:
+        self._create_output_dir(args.out)
+
+        with self.logger.operation(&#34;Loading trajectories&#34;):
+            trajectories = load_folder(
+                args.input, args.glob,
+                columns=args.columns,
+                require_time=False,
+                scale=args.scale,
+                motion_threshold=args.motion_threshold
+            )
+
+        if len(trajectories) == 0:
+            self.logger.error(&#34;No trajectories loaded. Check your input path, file pattern, and column mappings.&#34;)
+            return
+
+        junction = Circle(cx=float(args.junction[0]), cz=float(args.junction[1]), r=float(args.radius))
+        centers = np.load(args.centers)
+
+        with self.logger.operation(&#34;Assigning branches&#34;):
+            assignments = assign_branches(
+                trajectories, centers, junction,
+                path_length=float(args.distance),
+                epsilon=float(args.epsilon),
+                decision_mode=args.decision_mode,
+                r_outer=float(args.r_outer) if args.r_outer is not None else None,
+                linger_delta=float(args.linger_delta),
+                out_dir=args.out
+            )
+        # Normalize/validate and add branch_j0 for single-junction compatibility
+        try:
+            validate_trajectories_unique(trajectories)
+        except Exception:
+            pass
+        if &#34;branch_j0&#34; not in assignments.columns:
+            assignments = assignments.copy()
+            assignments[&#34;branch_j0&#34;] = assignments[&#34;branch&#34;]
+
+        # Consistency warnings (after enriching columns)
+        try:
+            from .ra_consistency import validate_consistency
+            validate_consistency(assignments, trajectories, [junction])
+        except Exception:
+            pass
+
+        save_assignments(assignments, os.path.join(args.out, &#34;branch_assignments.csv&#34;))
+        self._save_run_args(args, args.out)
+        self.logger.info(f&#34;Assignment completed. Results saved to {args.out}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></b></code>:
+<ul class="hlist">
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute">execute</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="route_analyzer_ruedi99ms.BaseCommand"><code class="flex name class">
+<span>class <span class="ident">BaseCommand</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Abstract base class for all commands</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseCommand(ABC):
+    &#34;&#34;&#34;Abstract base class for all commands&#34;&#34;&#34;
+
+    def __init__(self):
+        self.logger = RouteAnalyzerLogger()
+
+    @abstractmethod
+    def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+        &#34;&#34;&#34;Add command-specific arguments&#34;&#34;&#34;
+        pass
+
+    @abstractmethod
+    def execute(self, args: argparse.Namespace) -&gt; None:
+        &#34;&#34;&#34;Execute the command&#34;&#34;&#34;
+        pass
+
+    def _create_output_dir(self, out_path: str) -&gt; None:
+        &#34;&#34;&#34;Create output directory if it doesn&#39;t exist&#34;&#34;&#34;
+        os.makedirs(out_path, exist_ok=True)
+
+    def _save_run_args(self, args: argparse.Namespace, out_path: str) -&gt; None:
+        &#34;&#34;&#34;Save run arguments to JSON file&#34;&#34;&#34;
+        args_path = os.path.join(out_path, &#34;run_args.json&#34;)
+        with open(args_path, &#34;w&#34;) as f:
+            json.dump(vars(args), f, indent=2)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="route_analyzer_ruedi99ms.ra_commands.AssignCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.AssignCommand">AssignCommand</a></li>
+<li><a title="route_analyzer_ruedi99ms.ra_commands.DiscoverCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.DiscoverCommand">DiscoverCommand</a></li>
+<li><a title="route_analyzer_ruedi99ms.ra_commands.EnhancedChainCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.EnhancedChainCommand">EnhancedChainCommand</a></li>
+<li><a title="route_analyzer_ruedi99ms.ra_commands.GazeCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.GazeCommand">GazeCommand</a></li>
+<li><a title="route_analyzer_ruedi99ms.ra_commands.IntentRecognitionCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.IntentRecognitionCommand">IntentRecognitionCommand</a></li>
+<li><a title="route_analyzer_ruedi99ms.ra_commands.MetricsCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.MetricsCommand">MetricsCommand</a></li>
+<li><a title="route_analyzer_ruedi99ms.ra_commands.PredictCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.PredictCommand">PredictCommand</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.BaseCommand.add_arguments"><code class="name flex">
+<span>def <span class="ident">add_arguments</span></span>(<span>self, parser: argparse.ArgumentParser) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add command-specific arguments</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+    &#34;&#34;&#34;Add command-specific arguments&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.BaseCommand.execute"><code class="name flex">
+<span>def <span class="ident">execute</span></span>(<span>self, args: argparse.Namespace) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Execute the command</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def execute(self, args: argparse.Namespace) -&gt; None:
+    &#34;&#34;&#34;Execute the command&#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Circle"><code class="flex name class">
+<span>class <span class="ident">Circle</span></span>
+<span>(</span><span>cx: float, cz: float, r: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Circle(cx: float, cz: float, r: float)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Circle:
+    cx: float
+    cz: float
+    r: float
+
+    def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
+        return (x - self.cx) ** 2 + (z - self.cz) ** 2 &lt;= self.r ** 2</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.Circle.cx"><code class="name">var <span class="ident">cx</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Circle.cz"><code class="name">var <span class="ident">cz</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Circle.r"><code class="name">var <span class="ident">r</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.Circle.contains"><code class="name flex">
+<span>def <span class="ident">contains</span></span>(<span>self, x: numpy.ndarray, z: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
+    return (x - self.cx) ** 2 + (z - self.cz) ** 2 &lt;= self.r ** 2</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping"><code class="flex name class">
+<span>class <span class="ident">ColumnMapping</span></span>
+<span>(</span><span>x: str = 'x', z: str = 'z', t: str = 't', headset_x: str = 'Headset.Head.Position.X', headset_y: str = 'Headset.Head.Position.Y', headset_z: str = 'Headset.Head.Position.Z', headset_rot_x: str = 'Headset.Head.Rotation.X', headset_rot_y: str = 'Headset.Head.Rotation.Y', headset_rot_z: str = 'Headset.Head.Rotation.Z', headset_rot_w: str = 'Headset.Head.Rotation.W', controller_left_x: str = 'Controller.Left.Position.X', controller_left_y: str = 'Controller.Left.Position.Y', controller_left_z: str = 'Controller.Left.Position.Z', controller_right_x: str = 'Controller.Right.Position.X', controller_right_y: str = 'Controller.Right.Position.Y', controller_right_z: str = 'Controller.Right.Position.Z', time: str = 'Time', head_forward_x: str = 'Headset.Head.Forward.X', head_forward_y: str = 'Headset.Head.Forward.Y', head_forward_z: str = 'Headset.Head.Forward.Z', head_up_x: str = 'Headset.Head.Up.X', head_up_y: str = 'Headset.Head.Up.Y', head_up_z: str = 'Headset.Head.Up.Z', gaze_x: str = 'Headset.Gaze.X', gaze_y: str = 'Headset.Gaze.Y', pupil_l: str = 'Headset.PupilDilation.L', pupil_r: str = 'Headset.PupilDilation.R', heart_rate: str = 'Headset.HeartRate')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Centralized column mapping configuration</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ColumnMapping:
+    &#34;&#34;&#34;Centralized column mapping configuration&#34;&#34;&#34;
+    x: str = &#34;x&#34;
+    z: str = &#34;z&#34;
+    t: str = &#34;t&#34;
+    # VR-specific columns
+    headset_x: str = &#34;Headset.Head.Position.X&#34;
+    headset_y: str = &#34;Headset.Head.Position.Y&#34;
+    headset_z: str = &#34;Headset.Head.Position.Z&#34;
+    headset_rot_x: str = &#34;Headset.Head.Rotation.X&#34;
+    headset_rot_y: str = &#34;Headset.Head.Rotation.Y&#34;
+    headset_rot_z: str = &#34;Headset.Head.Rotation.Z&#34;
+    headset_rot_w: str = &#34;Headset.Head.Rotation.W&#34;
+    controller_left_x: str = &#34;Controller.Left.Position.X&#34;
+    controller_left_y: str = &#34;Controller.Left.Position.Y&#34;
+    controller_left_z: str = &#34;Controller.Left.Position.Z&#34;
+    controller_right_x: str = &#34;Controller.Right.Position.X&#34;
+    controller_right_y: str = &#34;Controller.Right.Position.Y&#34;
+    controller_right_z: str = &#34;Controller.Right.Position.Z&#34;
+    time: str = &#34;Time&#34;
+    # VR headset gaze/physio columns
+    head_forward_x: str = &#34;Headset.Head.Forward.X&#34;
+    head_forward_y: str = &#34;Headset.Head.Forward.Y&#34;
+    head_forward_z: str = &#34;Headset.Head.Forward.Z&#34;
+    head_up_x: str = &#34;Headset.Head.Up.X&#34;
+    head_up_y: str = &#34;Headset.Head.Up.Y&#34;
+    head_up_z: str = &#34;Headset.Head.Up.Z&#34;
+    gaze_x: str = &#34;Headset.Gaze.X&#34;
+    gaze_y: str = &#34;Headset.Gaze.Y&#34;
+    pupil_l: str = &#34;Headset.PupilDilation.L&#34;
+    pupil_r: str = &#34;Headset.PupilDilation.R&#34;
+    heart_rate: str = &#34;Headset.HeartRate&#34;
+
+    @classmethod
+    def vr_defaults(cls) -&gt; &#39;ColumnMapping&#39;:
+        &#34;&#34;&#34;Create VR default column mapping&#34;&#34;&#34;
+        return cls()
+
+    @classmethod
+    def from_dict(cls, columns: Dict[str, str]) -&gt; &#39;ColumnMapping&#39;:
+        &#34;&#34;&#34;Create column mapping from dictionary&#34;&#34;&#34;
+        return cls(**columns)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.controller_left_x"><code class="name">var <span class="ident">controller_left_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.controller_left_y"><code class="name">var <span class="ident">controller_left_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.controller_left_z"><code class="name">var <span class="ident">controller_left_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.controller_right_x"><code class="name">var <span class="ident">controller_right_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.controller_right_y"><code class="name">var <span class="ident">controller_right_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.controller_right_z"><code class="name">var <span class="ident">controller_right_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_w"><code class="name">var <span class="ident">headset_rot_w</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_x"><code class="name">var <span class="ident">headset_rot_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_y"><code class="name">var <span class="ident">headset_rot_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_z"><code class="name">var <span class="ident">headset_rot_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.headset_x"><code class="name">var <span class="ident">headset_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.headset_y"><code class="name">var <span class="ident">headset_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.headset_z"><code class="name">var <span class="ident">headset_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.t"><code class="name">var <span class="ident">t</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.time"><code class="name">var <span class="ident">time</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.x"><code class="name">var <span class="ident">x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.z"><code class="name">var <span class="ident">z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>columns: Dict[str, str]) ‑> <a title="route_analyzer_ruedi99ms.ra_data_loader.ColumnMapping" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.ColumnMapping">ColumnMapping</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create column mapping from dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_dict(cls, columns: Dict[str, str]) -&gt; &#39;ColumnMapping&#39;:
+    &#34;&#34;&#34;Create column mapping from dictionary&#34;&#34;&#34;
+    return cls(**columns)</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ColumnMapping.vr_defaults"><code class="name flex">
+<span>def <span class="ident">vr_defaults</span></span>(<span>) ‑> <a title="route_analyzer_ruedi99ms.ra_data_loader.ColumnMapping" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.ColumnMapping">ColumnMapping</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create VR default column mapping</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def vr_defaults(cls) -&gt; &#39;ColumnMapping&#39;:
+    &#34;&#34;&#34;Create VR default column mapping&#34;&#34;&#34;
+    return cls()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="route_analyzer_ruedi99ms.CommandConfig"><code class="flex name class">
+<span>class <span class="ident">CommandConfig</span></span>
+<span>(</span><span>input: str, glob: str = '*.csv', columns: Optional[Dict[str, str]] = None, scale: float = 1.0, motion_threshold: float = 0.001, out: Optional[str] = None, config: Optional[str] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Shared configuration for all commands</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class CommandConfig:
+    &#34;&#34;&#34;Shared configuration for all commands&#34;&#34;&#34;
+    input: str
+    glob: str = &#34;*.csv&#34;
+    columns: Optional[Dict[str, str]] = None
+    scale: float = 1.0
+    motion_threshold: float = 0.001
+    out: Optional[str] = None
+    config: Optional[str] = None # Added for consistency, though handled by main</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.CommandConfig.columns"><code class="name">var <span class="ident">columns</span> : Optional[Dict[str, str]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.CommandConfig.config"><code class="name">var <span class="ident">config</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.CommandConfig.glob"><code class="name">var <span class="ident">glob</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.CommandConfig.input"><code class="name">var <span class="ident">input</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.CommandConfig.motion_threshold"><code class="name">var <span class="ident">motion_threshold</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.CommandConfig.out"><code class="name">var <span class="ident">out</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.CommandConfig.scale"><code class="name">var <span class="ident">scale</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="route_analyzer_ruedi99ms.DiscoverCommand"><code class="flex name class">
+<span>class <span class="ident">DiscoverCommand</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Command handler for branch discovery</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DiscoverCommand(BaseCommand):
+    &#34;&#34;&#34;Command handler for branch discovery&#34;&#34;&#34;
+
+    def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+        parser.add_argument(&#34;--input&#34;, required=True, help=&#34;Input folder path&#34;)
+        parser.add_argument(&#34;--out&#34;, required=True, help=&#34;Output folder path&#34;)
+        parser.add_argument(&#34;--glob&#34;, default=&#34;*.csv&#34;, help=&#34;File pattern&#34;)
+        parser.add_argument(&#34;--columns&#34;, default=None, help=&#34;Column mapping&#34;)
+        parser.add_argument(&#34;--scale&#34;, type=float, default=1.0, help=&#34;Coordinate scaling factor&#34;)
+        parser.add_argument(&#34;--motion_threshold&#34;, type=float, default=0.001, help=&#34;Motion detection threshold&#34;)
+        parser.add_argument(&#34;--junction&#34;, nargs=2, type=float, required=True, metavar=(&#34;X&#34;, &#34;Z&#34;), help=&#34;Junction coordinates&#34;)
+        parser.add_argument(&#34;--radius&#34;, type=float, required=True, help=&#34;Junction radius&#34;)
+        parser.add_argument(&#34;--distance&#34;, type=float, default=100.0, help=&#34;Path length for decision&#34;)
+        parser.add_argument(&#34;--epsilon&#34;, type=float, default=0.015, help=&#34;Minimum step size&#34;)
+        parser.add_argument(&#34;--k&#34;, type=int, default=3, help=&#34;Number of clusters&#34;)
+        parser.add_argument(&#34;--decision_mode&#34;, choices=[&#34;pathlen&#34;, &#34;radial&#34;, &#34;hybrid&#34;], default=&#34;hybrid&#34;, help=&#34;Decision mode&#34;)
+        parser.add_argument(&#34;--r_outer&#34;, type=float, default=None, help=&#34;Outer radius for radial mode&#34;)
+        parser.add_argument(&#34;--linger_delta&#34;, type=float, default=5.0, help=&#34;Linger distance beyond junction&#34;)
+        parser.add_argument(&#34;--cluster_method&#34;, choices=[&#34;kmeans&#34;, &#34;auto&#34;, &#34;dbscan&#34;], default=&#34;kmeans&#34;, help=&#34;Clustering method&#34;)
+        parser.add_argument(&#34;--k_min&#34;, type=int, default=2, help=&#34;Minimum k for auto clustering&#34;)
+        parser.add_argument(&#34;--k_max&#34;, type=int, default=6, help=&#34;Maximum k for auto clustering&#34;)
+        parser.add_argument(&#34;--min_sep_deg&#34;, type=float, default=12.0, help=&#34;Minimum separation in degrees&#34;)
+        parser.add_argument(&#34;--angle_eps&#34;, type=float, default=15.0, help=&#34;Angle epsilon for DBSCAN&#34;)
+        parser.add_argument(&#34;--min_samples&#34;, type=int, default=5, help=&#34;Minimum samples for DBSCAN&#34;)
+        parser.add_argument(&#34;--seed&#34;, type=int, default=0, help=&#34;Random seed&#34;)
+        parser.add_argument(&#34;--plot_intercepts&#34;, action=&#34;store_true&#34;, default=True, help=&#34;Plot decision intercepts&#34;)
+        parser.add_argument(&#34;--show_paths&#34;, action=&#34;store_true&#34;, default=True, help=&#34;Show trajectory paths&#34;)
+        parser.add_argument(&#34;--outlier_frac&#34;, type=float, default=0.05, help=&#34;Outlier fraction threshold&#34;)
+        parser.add_argument(&#34;--outlier_min&#34;, type=int, default=3, help=&#34;Minimum outlier count&#34;)
+        parser.add_argument(&#34;--plot_outliers&#34;, action=&#34;store_true&#34;, help=&#34;Plot outlier trajectories&#34;)
+        parser.add_argument(&#34;--plot_noenter_paths&#34;, action=&#34;store_true&#34;, help=&#34;Plot no-entry paths&#34;)
+        parser.add_argument(&#34;--legend_noenter_as_line&#34;, action=&#34;store_true&#34;, help=&#34;Legend style for no-entry&#34;)
+        parser.add_argument(&#34;--include_noenter_in_assignments&#34;, action=&#34;store_true&#34;, help=&#34;Include no-entry in assignments&#34;)
+
+    def execute(self, args: argparse.Namespace) -&gt; None:
+        self._create_output_dir(args.out)
+
+        with self.logger.operation(&#34;Loading trajectories&#34;):
+            trajectories = load_folder(
+                args.input, args.glob,
+                columns=args.columns,
+                require_time=False,
+                scale=args.scale,
+                motion_threshold=args.motion_threshold
+            )
+
+        if len(trajectories) == 0:
+            self.logger.error(&#34;No trajectories loaded. Check your input path, file pattern, and column mappings.&#34;)
+            return
+
+        junction = Circle(cx=float(args.junction[0]), cz=float(args.junction[1]), r=float(args.radius))
+
+        with self.logger.operation(&#34;Discovering branches&#34;):
+            assignments, summary, centers = discover_branches(
+                trajectories, junction,
+                k=int(args.k),
+                path_length=float(args.distance),
+                epsilon=float(args.epsilon),
+                seed=int(args.seed),
+                decision_mode=args.decision_mode,
+                r_outer=float(args.r_outer) if args.r_outer is not None else None,
+                linger_delta=float(args.linger_delta),
+                out_dir=args.out,
+                cluster_method=args.cluster_method,
+                k_min=int(args.k_min),
+                k_max=int(args.k_max),
+                min_sep_deg=float(args.min_sep_deg),
+                angle_eps=float(args.angle_eps),
+                min_samples=int(args.min_samples),
+                junction_number=0,  # CLI discover command is always for junction 0
+                all_junctions=[junction]
+            )
+
+        with self.logger.operation(&#34;Processing assignments&#34;):
+            self._process_assignments(assignments, centers, args)
+
+        with self.logger.operation(&#34;Generating plots&#34;):
+            self._generate_plots(trajectories, assignments, centers, junction, args)
+
+        self._save_run_args(args, args.out)
+        self.logger.info(f&#34;Discovery completed. Results saved to {args.out}&#34;)
+
+    def _process_assignments(self, assignments: pd.DataFrame, centers: np.ndarray, args: argparse.Namespace) -&gt; None:
+        &#34;&#34;&#34;Process and save assignment results&#34;&#34;&#34;
+        # Save all assignments
+        save_assignments(assignments, os.path.join(args.out, &#34;branch_assignments_main.csv&#34;))
+
+        # Create summary
+        summary_all = (assignments[&#34;branch&#34;]
+                    .value_counts()
+                    .sort_index()
+                    .rename_axis(&#34;branch&#34;)
+                    .to_frame(&#34;count&#34;))
+        summary_all[&#34;percent&#34;] = summary_all[&#34;count&#34;] / max(1, int(summary_all[&#34;count&#34;].sum())) * 100.0
+        save_summary(summary_all.reset_index(), os.path.join(args.out, &#34;branch_summary_all.csv&#34;), with_entropy=True)
+
+        # Split small branches
+        min_needed = max(int(np.ceil(float(args.outlier_frac) * len(assignments))), int(args.outlier_min))
+        main_assign, minor_assign, counts = split_small_branches(assignments, min_frac=float(args.outlier_frac))
+
+        if len(minor_assign):
+            small_branches_abs = set(counts[counts &lt; min_needed].index)
+            if small_branches_abs:
+                keep_mask = ~main_assign[&#34;branch&#34;].isin(small_branches_abs)
+                extra_minor = main_assign[~keep_mask]
+                main_assign = main_assign[keep_mask]
+                minor_assign = pd.concat([minor_assign, extra_minor], ignore_index=True)
+
+        # Save main assignments
+        save_assignments(main_assign, os.path.join(args.out, &#34;branch_assignments.csv&#34;))
+
+        # Include no-entry if requested
+        if args.include_noenter_in_assignments:
+            all_path = os.path.join(args.out, &#34;branch_assignments_all.csv&#34;)
+            if os.path.exists(all_path):
+                df_all = pd.read_csv(all_path)
+                noenter = df_all[df_all[&#34;branch&#34;] == -2]
+                combined = pd.concat([main_assign, noenter], ignore_index=True)
+                save_assignments(combined, os.path.join(args.out, &#34;branch_assignments.csv&#34;))
+
+        # Create main summary
+        summary_main = (main_assign[&#34;branch&#34;]
+                        .value_counts()
+                        .sort_index()
+                        .rename_axis(&#34;branch&#34;)
+                        .to_frame(&#34;count&#34;))
+        summary_main[&#34;percent&#34;] = summary_main[&#34;count&#34;] / max(1, int(summary_main[&#34;count&#34;].sum())) * 100.0
+        save_summary(summary_main.reset_index(), os.path.join(args.out, &#34;branch_summary.csv&#34;), with_entropy=True)
+
+        # Log outlier info
+        if len(minor_assign):
+            self.logger.info(f&#34;Flagged outlier branches: {len(minor_assign)} trajectories &#34;
+                            f&#34;(threshold = max({args.outlier_frac*100:.1f}% of N, {args.outlier_min}))&#34;)
+        else:
+            self.logger.info(&#34;No outlier branches flagged&#34;)
+
+        # Save centers
+        save_centers(centers, os.path.join(args.out, &#34;branch_centers.npy&#34;))
+        save_centers_json(centers, os.path.join(args.out, &#34;branch_centers.json&#34;))
+
+    def _generate_plots(self, trajectories, assignments, centers, junction, args):
+        &#34;&#34;&#34;Generate visualization plots&#34;&#34;&#34;
+        main_assignments = pd.read_csv(os.path.join(args.out, &#34;branch_assignments.csv&#34;))
+
+        # Branch directions plot (optional - function may not exist)
+        try:
+            from .ra_plotting import plot_branch_directions
+            plot_branch_directions(centers, (junction.cx, junction.cz),
+                                 os.path.join(args.out, &#34;Branch_Directions.png&#34;))
+        except (ImportError, AttributeError):
+            self.logger.warning(&#34;plot_branch_directions not available, skipping&#34;)
+
+        # Branch counts plot (optional - function may not exist)
+        try:
+            from .ra_plotting import plot_branch_counts
+            plot_branch_counts(main_assignments, os.path.join(args.out, &#34;Branch_Counts.png&#34;))
+        except (ImportError, AttributeError):
+            self.logger.warning(&#34;plot_branch_counts not available, skipping&#34;)
+
+        # Decision intercepts plot
+        if args.plot_intercepts:
+            try:
+                assign_all_path = os.path.join(args.out, &#34;branch_assignments_all.csv&#34;)
+                if args.plot_outliers and os.path.exists(assign_all_path):
+                    assign_for_plot = pd.read_csv(assign_all_path)
+                else:
+                    assign_for_plot = main_assignments
+
+                mode_log_path = os.path.join(args.out, &#34;decision_mode_used.csv&#34;)
+                mode_log_df = pd.read_csv(mode_log_path) if os.path.exists(mode_log_path) else None
+
+                # Load decision points data for plotting
+                decision_points_df = None
+                try:
+                    decision_points_path = os.path.join(args.out, &#34;decision_points.csv&#34;)
+                    if os.path.exists(decision_points_path):
+                        decision_points_df = pd.read_csv(decision_points_path)
+                except Exception:
+                    pass
+
+                plot_decision_intercepts(
+                    trajectories=trajectories,
+                    assignments_df=assign_for_plot,
+                    mode_log_df=mode_log_df,
+                    centers=centers,
+                    junction=junction,
+                    r_outer=float(args.r_outer) if args.r_outer is not None else None,
+                    path_length=float(args.distance),
+                    epsilon=float(args.epsilon),
+                    linger_delta=float(args.linger_delta),
+                    out_path=os.path.join(args.out, &#34;Decision_Intercepts.png&#34;),
+                    show_paths=False,
+                    legend_noenter_as_line=args.legend_noenter_as_line,
+                    decision_points_df=decision_points_df
+                )
+                self.logger.info(&#34;Decision intercepts plot generated&#34;)
+            except Exception as e:
+                self.logger.error(f&#34;Intercept plot failed: {e}&#34;)
+
+        # Decision map plot (optional - function may not exist)
+        try:
+            from .ra_plotting import plot_discover_map
+            plot_discover_map(
+                trajectories=trajectories,
+                assignments_df=main_assignments,
+                junction=junction,
+                centers=centers,
+                r_outer=float(args.r_outer) if args.r_outer is not None else None,
+                out_path=os.path.join(args.out, &#34;Decision_Map.png&#34;)
+            )
+            self.logger.info(&#34;Decision map plot generated&#34;)
+        except (ImportError, AttributeError, NameError) as e:
+            self.logger.warning(f&#34;plot_discover_map not available, skipping: {e}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></b></code>:
+<ul class="hlist">
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute">execute</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="route_analyzer_ruedi99ms.GazeCommand"><code class="flex name class">
+<span>class <span class="ident">GazeCommand</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Command handler for gaze and physiological analysis</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GazeCommand(BaseCommand):
+    &#34;&#34;&#34;Command handler for gaze and physiological analysis&#34;&#34;&#34;
+
+    def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+        parser.add_argument(&#34;--input&#34;, required=True, help=&#34;Input folder path&#34;)
+        parser.add_argument(&#34;--out&#34;, required=True, help=&#34;Output folder path&#34;)
+        parser.add_argument(&#34;--glob&#34;, default=&#34;*.csv&#34;, help=&#34;File pattern&#34;)
+        parser.add_argument(&#34;--columns&#34;, default=None, help=&#34;Column mapping&#34;)
+        parser.add_argument(&#34;--scale&#34;, type=float, default=1.0, help=&#34;Coordinate scaling factor&#34;)
+        parser.add_argument(&#34;--motion_threshold&#34;, type=float, default=0.001, help=&#34;Motion detection threshold&#34;)
+
+        junction_group = parser.add_mutually_exclusive_group(required=True)
+        junction_group.add_argument(&#34;--junction&#34;, nargs=2, type=float, metavar=(&#34;X&#34;, &#34;Z&#34;), help=&#34;Single junction coordinates&#34;)
+        junction_group.add_argument(&#34;--junctions&#34;, nargs=&#34;+&#34;, type=float, help=&#34;Multiple junction coordinates (x z r ...)&#34;)
+
+        parser.add_argument(&#34;--radius&#34;, type=float, default=None, help=&#34;Junction radius&#34;)
+        parser.add_argument(&#34;--r_outer&#34;, type=float, default=None, help=&#34;Outer radius for radial mode&#34;)
+        parser.add_argument(&#34;--r_outer_list&#34;, nargs=&#34;*&#34;, type=float, default=None, help=&#34;Outer radii for each junction&#34;)
+        parser.add_argument(&#34;--distance&#34;, type=float, default=100.0, help=&#34;Path length for decision&#34;)
+        parser.add_argument(&#34;--epsilon&#34;, type=float, default=0.015, help=&#34;Minimum step size&#34;)
+        parser.add_argument(&#34;--decision_mode&#34;, choices=[&#34;pathlen&#34;, &#34;radial&#34;, &#34;hybrid&#34;], default=&#34;hybrid&#34;, help=&#34;Decision mode&#34;)
+        parser.add_argument(&#34;--linger_delta&#34;, type=float, default=5.0, help=&#34;Linger distance beyond junction&#34;)
+        parser.add_argument(&#34;--cluster_method&#34;, choices=[&#34;kmeans&#34;, &#34;auto&#34;, &#34;dbscan&#34;], default=&#34;kmeans&#34;, help=&#34;Clustering method&#34;)
+        parser.add_argument(&#34;--k&#34;, type=int, default=3, help=&#34;Number of clusters&#34;)
+        parser.add_argument(&#34;--k_min&#34;, type=int, default=2, help=&#34;Minimum k for auto clustering&#34;)
+        parser.add_argument(&#34;--k_max&#34;, type=int, default=6, help=&#34;Maximum k for auto clustering&#34;)
+        parser.add_argument(&#34;--min_sep_deg&#34;, type=float, default=12.0, help=&#34;Minimum separation in degrees&#34;)
+        parser.add_argument(&#34;--angle_eps&#34;, type=float, default=15.0, help=&#34;Angle epsilon for DBSCAN&#34;)
+        parser.add_argument(&#34;--min_samples&#34;, type=int, default=5, help=&#34;Minimum samples for DBSCAN&#34;)
+        parser.add_argument(&#34;--seed&#34;, type=int, default=0, help=&#34;Random seed&#34;)
+        parser.add_argument(&#34;--centers&#34;, help=&#34;Path to pre-computed branch centers (.npy file)&#34;)
+        parser.add_argument(&#34;--physio_window&#34;, type=float, default=3.0, help=&#34;Physiological analysis window&#34;)
+        parser.add_argument(&#34;--plot_outliers&#34;, action=&#34;store_true&#34;, help=&#34;Include outlier branches in gaze plots (gray)&#34;)
+
+    def execute(self, args: argparse.Namespace) -&gt; None:
+        self._create_output_dir(args.out)
+
+        with self.logger.operation(&#34;Loading gaze trajectories&#34;):
+            gaze_trajectories = load_folder_with_gaze(
+                args.input, args.glob,
+                columns=args.columns,
+                require_time=True,
+                scale=args.scale,
+                motion_threshold=args.motion_threshold
+            )
+
+        if len(gaze_trajectories) == 0:
+            self.logger.error(&#34;No gaze trajectories loaded. Check your input path, file pattern, and column mappings.&#34;)
+            return
+
+        # Parse junctions
+        if hasattr(args, &#39;junction&#39;) and args.junction is not None:
+            junctions = [Circle(cx=float(args.junction[0]), cz=float(args.junction[1]), r=float(args.radius))]
+            rlist = [float(args.r_outer)] if args.r_outer is not None else None
+        else:
+            vals = list(map(float, args.junctions))
+            if len(vals) % 3 != 0:
+                raise ValueError(&#34;--junctions must be triples: x z r ...&#34;)
+            triples = [vals[i:i+3] for i in range(0, len(vals), 3)]
+            junctions = [Circle(cx=a, cz=b, r=c) for a, b, c in triples]
+            rlist = list(args.r_outer_list) if args.r_outer_list is not None and len(args.r_outer_list) &gt; 0 else None
+
+        with self.logger.operation(&#34;Discovering branches for gaze analysis&#34;):
+            chain_df, centers_list = discover_decision_chain(
+                trajectories=gaze_trajectories,
+                junctions=junctions,
+                path_length=float(args.distance),
+                epsilon=float(args.epsilon),
+                seed=int(args.seed),
+                decision_mode=str(args.decision_mode),
+                r_outer_list=rlist,
+                linger_delta=float(args.linger_delta),
+                out_dir=str(args.out),
+                cluster_method=str(args.cluster_method),
+                k=int(args.k),
+                k_min=int(args.k_min),
+                k_max=int(args.k_max),
+                min_sep_deg=float(args.min_sep_deg),
+                angle_eps=float(args.angle_eps),
+                min_samples=int(args.min_samples),
+            )
+
+        with self.logger.operation(&#34;Computing gaze analysis&#34;):
+            # Normalize assignments and merge decisions when available
+            decisions_path = os.path.join(str(args.out), &#34;branch_decisions_chain.csv&#34;)
+            decisions_df = pd.read_csv(decisions_path) if os.path.exists(decisions_path) else None
+            norm_df, report = normalize_assignments(
+                chain_df,
+                trajectories=gaze_trajectories,
+                junctions=junctions,
+                decisions_df=decisions_df,
+                prefer_decisions=True,
+                include_outliers=False,
+            )
+            self.logger.info(f&#34;Assignments normalized: in={int(report[&#39;input_rows&#39;])} kept={int(report[&#39;kept_after_tid_map&#39;])} dropped={int(report[&#39;dropped_unmapped_ids&#39;])} decisions={&#39;yes&#39; if report[&#39;has_decisions&#39;] else &#39;no&#39;}&#34;)
+            # Extra consistency warnings
+            try:
+                from .ra_consistency import validate_consistency
+                validate_consistency(norm_df, gaze_trajectories, junctions)
+            except Exception:
+                pass
+
+            gaze_df = compute_head_yaw_at_decisions(
+                trajectories=gaze_trajectories,
+                junctions=junctions,
+                assignments_df=norm_df,
+                decision_mode=str(args.decision_mode),
+                r_outer_list=rlist,
+                path_length=float(args.distance),
+                epsilon=float(args.epsilon),
+                linger_delta=float(args.linger_delta),
+            )
+
+        with self.logger.operation(&#34;Computing physiological analysis&#34;):
+            physio_df = analyze_physiological_at_junctions(
+                trajectories=gaze_trajectories,
+                junctions=junctions,
+                assignments_df=chain_df,
+                decision_mode=str(args.decision_mode),
+                r_outer_list=rlist,
+                path_length=float(args.distance),
+                epsilon=float(args.epsilon),
+                linger_delta=float(args.linger_delta),
+                physio_window=float(args.physio_window),
+            )
+
+        # Save results
+        gaze_df.to_csv(os.path.join(args.out, &#34;gaze_analysis.csv&#34;), index=False)
+        physio_df.to_csv(os.path.join(args.out, &#34;physiological_analysis.csv&#34;), index=False)
+
+        # Generate consistency report
+        consistency = gaze_movement_consistency_report(gaze_df)
+        with open(os.path.join(args.out, &#34;gaze_consistency_report.json&#34;), &#34;w&#34;) as f:
+            json.dump(consistency, f, indent=2)
+
+        with self.logger.operation(&#34;Generating gaze plots&#34;):
+            self._generate_gaze_plots(gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args)
+
+        self._save_run_args(args, args.out)
+        self.logger.info(f&#34;Gaze analysis completed. Results saved to {args.out}&#34;)
+        self.logger.info(f&#34;Found {len(gaze_df)} valid gaze-decision pairs&#34;)
+        if &#34;mean_absolute_yaw_difference&#34; in consistency:
+            self.logger.info(f&#34;Mean head-movement alignment: {consistency[&#39;mean_absolute_yaw_difference&#39;]:.1f}°&#34;)
+            self.logger.info(f&#34;Well-aligned decisions: {consistency[&#39;aligned_percentage&#39;]:.1f}%&#34;)
+
+    def _generate_gaze_plots(self, gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args):
+        &#34;&#34;&#34;Generate gaze visualization plots&#34;&#34;&#34;
+        try:
+            plot_gaze_directions_at_junctions(
+                trajectories=gaze_trajectories,
+                junctions=junctions,
+                gaze_df=gaze_df,
+                out_path=os.path.join(args.out, &#34;Gaze_Directions.png&#34;),
+                r_outer_list=rlist,
+                junction_labels=[f&#34;Junction {i}&#34; for i in range(len(junctions))],
+                centers_list=None,  # Optional parameter - not available in this context
+            )
+            self.logger.info(&#34;Gaze directions plot generated&#34;)
+        except Exception as e:
+            self.logger.error(f&#34;Gaze directions plot failed: {e}&#34;)
+
+        try:
+            plot_physiological_by_branch(
+                physio_df=physio_df,
+                out_path=os.path.join(args.out, &#34;Physiological_Analysis.png&#34;),
+            )
+            self.logger.info(&#34;Physiological analysis plot generated&#34;)
+        except Exception as e:
+            self.logger.error(f&#34;Physiological analysis plot failed: {e}&#34;)
+
+        # Pupil trajectory analysis
+        pupil_traj_df = analyze_pupil_dilation_trajectory(
+            trajectories=gaze_trajectories,
+            junctions=junctions,
+            assignments_df=chain_df,
+            decision_mode=str(args.decision_mode),
+            r_outer_list=rlist,
+            path_length=float(args.distance),
+            epsilon=float(args.epsilon),
+            linger_delta=float(args.linger_delta),
+        )
+
+        pupil_traj_df.to_csv(os.path.join(args.out, &#34;pupil_trajectory_analysis.csv&#34;), index=False)
+
+        try:
+            plot_pupil_trajectory_analysis(
+                pupil_traj_df=pupil_traj_df,
+                out_path=os.path.join(args.out, &#34;Pupil_Trajectory_Analysis.png&#34;),
+            )
+            self.logger.info(&#34;Pupil trajectory analysis plot generated&#34;)
+        except Exception as e:
+            self.logger.error(f&#34;Pupil trajectory plot failed: {e}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></b></code>:
+<ul class="hlist">
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute">execute</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="route_analyzer_ruedi99ms.MetricsCommand"><code class="flex name class">
+<span>class <span class="ident">MetricsCommand</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Command handler for timing metrics computation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MetricsCommand(BaseCommand):
+    &#34;&#34;&#34;Command handler for timing metrics computation&#34;&#34;&#34;
+
+    def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+        parser.add_argument(&#34;--input&#34;, required=True, help=&#34;Input folder path&#34;)
+        parser.add_argument(&#34;--out&#34;, required=True, help=&#34;Output folder path&#34;)
+        parser.add_argument(&#34;--glob&#34;, default=&#34;*.csv&#34;, help=&#34;File pattern&#34;)
+        parser.add_argument(&#34;--columns&#34;, default=None, help=&#34;Column mapping&#34;)
+        parser.add_argument(&#34;--scale&#34;, type=float, default=1.0, help=&#34;Coordinate scaling factor&#34;)
+        parser.add_argument(&#34;--motion_threshold&#34;, type=float, default=0.001, help=&#34;Motion detection threshold&#34;)
+        parser.add_argument(&#34;--junction&#34;, nargs=2, type=float, required=True, metavar=(&#34;X&#34;, &#34;Z&#34;), help=&#34;Junction coordinates&#34;)
+        parser.add_argument(&#34;--radius&#34;, type=float, required=True, help=&#34;Junction radius&#34;)
+        parser.add_argument(&#34;--distance&#34;, type=float, default=100.0, help=&#34;Path length for decision&#34;)
+        parser.add_argument(&#34;--decision_mode&#34;, choices=[&#34;pathlen&#34;, &#34;radial&#34;, &#34;hybrid&#34;], default=&#34;pathlen&#34;, help=&#34;Decision mode&#34;)
+        parser.add_argument(&#34;--r_outer&#34;, type=float, default=None, help=&#34;Outer radius for radial mode&#34;)
+        parser.add_argument(&#34;--trend_window&#34;, type=int, default=5, help=&#34;Trend window for radial mode&#34;)
+        parser.add_argument(&#34;--min_outward&#34;, type=float, default=0.0, help=&#34;Minimum outward movement&#34;)
+        parser.add_argument(&#34;--linger_delta&#34;, type=float, default=5.0, help=&#34;Linger distance beyond junction&#34;)
+        parser.add_argument(&#34;--epsilon&#34;, type=float, default=0.015, help=&#34;Minimum step size&#34;)
+        parser.add_argument(&#34;--regions&#34;, default=None, help=&#34;JSON regions specification&#34;)
+
+    def execute(self, args: argparse.Namespace) -&gt; None:
+        self._create_output_dir(args.out)
+
+        with self.logger.operation(&#34;Loading trajectories&#34;):
+            trajectories = load_folder(
+                args.input, args.glob,
+                columns=args.columns,
+                require_time=True,
+                scale=args.scale,
+                motion_threshold=args.motion_threshold
+            )
+
+        if len(trajectories) == 0:
+            self.logger.error(&#34;No trajectories loaded. Check your input path, file pattern, and column mappings.&#34;)
+            return
+
+        junction = Circle(cx=float(args.junction[0]), cz=float(args.junction[1]), r=float(args.radius))
+
+        # Basic consistency check on loaded trajectories
+        try:
+            validate_trajectories_unique(trajectories)
+        except Exception:
+            pass
+
+        with self.logger.operation(&#34;Computing timing and speed metrics&#34;):
+            rows = []
+            for tr in trajectories:
+                # Compute timing metrics
+                t_val, mode_used = _timing_for_traj(
+                    tr=tr,
+                    junction=junction,
+                    decision_mode=str(args.decision_mode),
+                    distance=float(args.distance),
+                    r_outer=float(args.r_outer) if args.r_outer is not None else None,
+                    trend_window=int(args.trend_window),
+                    min_outward=float(args.min_outward),
+                )
+
+                # Compute speed metrics
+                speed_val, speed_mode = speed_through_junction(
+                    tr=tr,
+                    junction=junction,
+                    decision_mode=str(args.decision_mode),
+                    path_length=float(args.distance),
+                    r_outer=float(args.r_outer) if args.r_outer is not None else None,
+                    window=int(args.trend_window),
+                    min_outward=float(args.min_outward),
+                )
+
+                # Compute junction transit speeds
+                entry_speed, exit_speed, avg_transit_speed = junction_transit_speed(tr, junction)
+
+                row = {
+                    &#34;trajectory&#34;: tr.tid,
+                    &#34;time_value&#34;: t_val,
+                    &#34;decision_mode_requested&#34;: str(args.decision_mode),
+                    &#34;decision_mode_used&#34;: mode_used,
+                    &#34;distance&#34;: float(args.distance) if mode_used == &#34;pathlen&#34; else None,
+                    &#34;r_outer&#34;: float(args.r_outer) if (mode_used == &#34;radial&#34; and args.r_outer is not None) else None,
+                    &#34;trend_window&#34;: int(args.trend_window) if mode_used == &#34;radial&#34; else None,
+                    &#34;min_outward&#34;: float(args.min_outward) if mode_used == &#34;radial&#34; else None,
+                    # Speed analysis columns
+                    &#34;speed_through_junction&#34;: speed_val,
+                    &#34;speed_mode_used&#34;: speed_mode,
+                    &#34;entry_speed&#34;: entry_speed,
+                    &#34;exit_speed&#34;: exit_speed,
+                    &#34;average_transit_speed&#34;: avg_transit_speed,
+                }
+
+                if args.regions:
+                    spec = json.loads(args.regions)
+                    def parse_region(obj):
+                        if &#34;rect&#34; in obj:
+                            a,b,c,d = obj[&#34;rect&#34;]
+                            from .ra_geometry import Rect
+                            return Rect(float(a), float(b), float(c), float(d))
+                        if &#34;circle&#34; in obj:
+                            a,b,r = obj[&#34;circle&#34;]
+                            return Circle(float(a), float(b), float(r))
+                    A = parse_region(spec[&#34;A&#34;]) if &#34;A&#34; in spec else None
+                    B = parse_region(spec[&#34;B&#34;]) if &#34;B&#34; in spec else None
+                    if A is not None and B is not None:
+                        tA, tB, dt = time_between_regions(tr, A, B)
+                        row.update({&#34;t_A&#34;: tA, &#34;t_B&#34;: tB, &#34;dt_AB&#34;: dt})
+
+                rows.append(row)
+
+            df = pd.DataFrame(rows)
+            df.to_csv(os.path.join(args.out, &#34;timing_and_speed_metrics.csv&#34;), index=False)
+
+        self._save_run_args(args, args.out)
+        self.logger.info(f&#34;Metrics computation completed. Results saved to {args.out}&#34;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand">BaseCommand</a></b></code>:
+<ul class="hlist">
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute" href="ra_commands.html#route_analyzer_ruedi99ms.ra_commands.BaseCommand.execute">execute</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Rect"><code class="flex name class">
+<span>class <span class="ident">Rect</span></span>
+<span>(</span><span>xmin: float, xmax: float, zmin: float, zmax: float)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Rect(xmin: float, xmax: float, zmin: float, zmax: float)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Rect:
+    xmin: float
+    xmax: float
+    zmin: float
+    zmax: float
+
+    def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
+        return (x &gt;= self.xmin) &amp; (x &lt;= self.xmax) &amp; (z &gt;= self.zmin) &amp; (z &lt;= self.zmax)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.Rect.xmax"><code class="name">var <span class="ident">xmax</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Rect.xmin"><code class="name">var <span class="ident">xmin</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Rect.zmax"><code class="name">var <span class="ident">zmax</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Rect.zmin"><code class="name">var <span class="ident">zmin</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.Rect.contains"><code class="name flex">
+<span>def <span class="ident">contains</span></span>(<span>self, x: numpy.ndarray, z: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
+    return (x &gt;= self.xmin) &amp; (x &lt;= self.xmax) &amp; (z &gt;= self.zmin) &amp; (z &lt;= self.zmax)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory"><code class="flex name class">
+<span>class <span class="ident">Trajectory</span></span>
+<span>(</span><span>tid: str, x: numpy.ndarray, z: numpy.ndarray, t: Optional[numpy.ndarray] = None, head_forward_x: Optional[numpy.ndarray] = None, head_forward_y: Optional[numpy.ndarray] = None, head_forward_z: Optional[numpy.ndarray] = None, head_up_x: Optional[numpy.ndarray] = None, head_up_y: Optional[numpy.ndarray] = None, head_up_z: Optional[numpy.ndarray] = None, gaze_x: Optional[numpy.ndarray] = None, gaze_y: Optional[numpy.ndarray] = None, heart_rate: Optional[numpy.ndarray] = None, pupil_l: Optional[numpy.ndarray] = None, pupil_r: Optional[numpy.ndarray] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unified trajectory with optional gaze/physio fields.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Trajectory:
+    &#34;&#34;&#34;Unified trajectory with optional gaze/physio fields.&#34;&#34;&#34;
+    tid: str
+    x: np.ndarray
+    z: np.ndarray
+    t: Optional[np.ndarray] = None
+    # Optional gaze/physio fields (present only when available)
+    head_forward_x: Optional[np.ndarray] = None
+    head_forward_y: Optional[np.ndarray] = None
+    head_forward_z: Optional[np.ndarray] = None
+    head_up_x: Optional[np.ndarray] = None
+    head_up_y: Optional[np.ndarray] = None
+    head_up_z: Optional[np.ndarray] = None
+    gaze_x: Optional[np.ndarray] = None
+    gaze_y: Optional[np.ndarray] = None
+    heart_rate: Optional[np.ndarray] = None
+    pupil_l: Optional[np.ndarray] = None
+    pupil_r: Optional[np.ndarray] = None</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.Trajectory.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.t"><code class="name">var <span class="ident">t</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.tid"><code class="name">var <span class="ident">tid</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.x"><code class="name">var <span class="ident">x</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.Trajectory.z"><code class="name">var <span class="ident">z</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="route_analyzer_ruedi99ms.ra_clustering" href="ra_clustering.html">route_analyzer_ruedi99ms.ra_clustering</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_commands" href="ra_commands.html">route_analyzer_ruedi99ms.ra_commands</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_config" href="ra_config.html">route_analyzer_ruedi99ms.ra_config</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_consistency" href="ra_consistency.html">route_analyzer_ruedi99ms.ra_consistency</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_data_loader" href="ra_data_loader.html">route_analyzer_ruedi99ms.ra_data_loader</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_decisions" href="ra_decisions.html">route_analyzer_ruedi99ms.ra_decisions</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_gaze" href="ra_gaze.html">route_analyzer_ruedi99ms.ra_gaze</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_geometry" href="ra_geometry.html">route_analyzer_ruedi99ms.ra_geometry</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_gui" href="ra_gui.html">route_analyzer_ruedi99ms.ra_gui</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition" href="ra_intent_recognition.html">route_analyzer_ruedi99ms.ra_intent_recognition</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_logging" href="ra_logging.html">route_analyzer_ruedi99ms.ra_logging</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics" href="ra_metrics.html">route_analyzer_ruedi99ms.ra_metrics</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_plotting" href="ra_plotting.html">route_analyzer_ruedi99ms.ra_plotting</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_prediction" href="ra_prediction.html">route_analyzer_ruedi99ms.ra_prediction</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_progress" href="ra_progress.html">route_analyzer_ruedi99ms.ra_progress</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_validation" href="ra_validation.html">route_analyzer_ruedi99ms.ra_validation</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.assign_branches" href="#route_analyzer_ruedi99ms.assign_branches">assign_branches</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.discover_branches" href="#route_analyzer_ruedi99ms.discover_branches">discover_branches</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.discover_decision_chain" href="#route_analyzer_ruedi99ms.discover_decision_chain">discover_decision_chain</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.load_folder" href="#route_analyzer_ruedi99ms.load_folder">load_folder</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.load_folder_with_gaze" href="#route_analyzer_ruedi99ms.load_folder_with_gaze">load_folder_with_gaze</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.AssignCommand" href="#route_analyzer_ruedi99ms.AssignCommand">AssignCommand</a></code></h4>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.BaseCommand" href="#route_analyzer_ruedi99ms.BaseCommand">BaseCommand</a></code></h4>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.BaseCommand.add_arguments" href="#route_analyzer_ruedi99ms.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.BaseCommand.execute" href="#route_analyzer_ruedi99ms.BaseCommand.execute">execute</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.Circle" href="#route_analyzer_ruedi99ms.Circle">Circle</a></code></h4>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.Circle.contains" href="#route_analyzer_ruedi99ms.Circle.contains">contains</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Circle.cx" href="#route_analyzer_ruedi99ms.Circle.cx">cx</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Circle.cz" href="#route_analyzer_ruedi99ms.Circle.cz">cz</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Circle.r" href="#route_analyzer_ruedi99ms.Circle.r">r</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.ColumnMapping" href="#route_analyzer_ruedi99ms.ColumnMapping">ColumnMapping</a></code></h4>
+<ul class="two-column">
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.controller_left_x" href="#route_analyzer_ruedi99ms.ColumnMapping.controller_left_x">controller_left_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.controller_left_y" href="#route_analyzer_ruedi99ms.ColumnMapping.controller_left_y">controller_left_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.controller_left_z" href="#route_analyzer_ruedi99ms.ColumnMapping.controller_left_z">controller_left_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.controller_right_x" href="#route_analyzer_ruedi99ms.ColumnMapping.controller_right_x">controller_right_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.controller_right_y" href="#route_analyzer_ruedi99ms.ColumnMapping.controller_right_y">controller_right_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.controller_right_z" href="#route_analyzer_ruedi99ms.ColumnMapping.controller_right_z">controller_right_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.from_dict" href="#route_analyzer_ruedi99ms.ColumnMapping.from_dict">from_dict</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.gaze_x" href="#route_analyzer_ruedi99ms.ColumnMapping.gaze_x">gaze_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.gaze_y" href="#route_analyzer_ruedi99ms.ColumnMapping.gaze_y">gaze_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.head_forward_x" href="#route_analyzer_ruedi99ms.ColumnMapping.head_forward_x">head_forward_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.head_forward_y" href="#route_analyzer_ruedi99ms.ColumnMapping.head_forward_y">head_forward_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.head_forward_z" href="#route_analyzer_ruedi99ms.ColumnMapping.head_forward_z">head_forward_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.head_up_x" href="#route_analyzer_ruedi99ms.ColumnMapping.head_up_x">head_up_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.head_up_y" href="#route_analyzer_ruedi99ms.ColumnMapping.head_up_y">head_up_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.head_up_z" href="#route_analyzer_ruedi99ms.ColumnMapping.head_up_z">head_up_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_w" href="#route_analyzer_ruedi99ms.ColumnMapping.headset_rot_w">headset_rot_w</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_x" href="#route_analyzer_ruedi99ms.ColumnMapping.headset_rot_x">headset_rot_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_y" href="#route_analyzer_ruedi99ms.ColumnMapping.headset_rot_y">headset_rot_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.headset_rot_z" href="#route_analyzer_ruedi99ms.ColumnMapping.headset_rot_z">headset_rot_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.headset_x" href="#route_analyzer_ruedi99ms.ColumnMapping.headset_x">headset_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.headset_y" href="#route_analyzer_ruedi99ms.ColumnMapping.headset_y">headset_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.headset_z" href="#route_analyzer_ruedi99ms.ColumnMapping.headset_z">headset_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.heart_rate" href="#route_analyzer_ruedi99ms.ColumnMapping.heart_rate">heart_rate</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.pupil_l" href="#route_analyzer_ruedi99ms.ColumnMapping.pupil_l">pupil_l</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.pupil_r" href="#route_analyzer_ruedi99ms.ColumnMapping.pupil_r">pupil_r</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.t" href="#route_analyzer_ruedi99ms.ColumnMapping.t">t</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.time" href="#route_analyzer_ruedi99ms.ColumnMapping.time">time</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.vr_defaults" href="#route_analyzer_ruedi99ms.ColumnMapping.vr_defaults">vr_defaults</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.x" href="#route_analyzer_ruedi99ms.ColumnMapping.x">x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ColumnMapping.z" href="#route_analyzer_ruedi99ms.ColumnMapping.z">z</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.CommandConfig" href="#route_analyzer_ruedi99ms.CommandConfig">CommandConfig</a></code></h4>
+<ul class="two-column">
+<li><code><a title="route_analyzer_ruedi99ms.CommandConfig.columns" href="#route_analyzer_ruedi99ms.CommandConfig.columns">columns</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.CommandConfig.config" href="#route_analyzer_ruedi99ms.CommandConfig.config">config</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.CommandConfig.glob" href="#route_analyzer_ruedi99ms.CommandConfig.glob">glob</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.CommandConfig.input" href="#route_analyzer_ruedi99ms.CommandConfig.input">input</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.CommandConfig.motion_threshold" href="#route_analyzer_ruedi99ms.CommandConfig.motion_threshold">motion_threshold</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.CommandConfig.out" href="#route_analyzer_ruedi99ms.CommandConfig.out">out</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.CommandConfig.scale" href="#route_analyzer_ruedi99ms.CommandConfig.scale">scale</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.DiscoverCommand" href="#route_analyzer_ruedi99ms.DiscoverCommand">DiscoverCommand</a></code></h4>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.GazeCommand" href="#route_analyzer_ruedi99ms.GazeCommand">GazeCommand</a></code></h4>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.MetricsCommand" href="#route_analyzer_ruedi99ms.MetricsCommand">MetricsCommand</a></code></h4>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.Rect" href="#route_analyzer_ruedi99ms.Rect">Rect</a></code></h4>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.Rect.contains" href="#route_analyzer_ruedi99ms.Rect.contains">contains</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Rect.xmax" href="#route_analyzer_ruedi99ms.Rect.xmax">xmax</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Rect.xmin" href="#route_analyzer_ruedi99ms.Rect.xmin">xmin</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Rect.zmax" href="#route_analyzer_ruedi99ms.Rect.zmax">zmax</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Rect.zmin" href="#route_analyzer_ruedi99ms.Rect.zmin">zmin</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.Trajectory" href="#route_analyzer_ruedi99ms.Trajectory">Trajectory</a></code></h4>
+<ul class="two-column">
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.gaze_x" href="#route_analyzer_ruedi99ms.Trajectory.gaze_x">gaze_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.gaze_y" href="#route_analyzer_ruedi99ms.Trajectory.gaze_y">gaze_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.head_forward_x" href="#route_analyzer_ruedi99ms.Trajectory.head_forward_x">head_forward_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.head_forward_y" href="#route_analyzer_ruedi99ms.Trajectory.head_forward_y">head_forward_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.head_forward_z" href="#route_analyzer_ruedi99ms.Trajectory.head_forward_z">head_forward_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.head_up_x" href="#route_analyzer_ruedi99ms.Trajectory.head_up_x">head_up_x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.head_up_y" href="#route_analyzer_ruedi99ms.Trajectory.head_up_y">head_up_y</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.head_up_z" href="#route_analyzer_ruedi99ms.Trajectory.head_up_z">head_up_z</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.heart_rate" href="#route_analyzer_ruedi99ms.Trajectory.heart_rate">heart_rate</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.pupil_l" href="#route_analyzer_ruedi99ms.Trajectory.pupil_l">pupil_l</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.pupil_r" href="#route_analyzer_ruedi99ms.Trajectory.pupil_r">pupil_r</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.t" href="#route_analyzer_ruedi99ms.Trajectory.t">t</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.tid" href="#route_analyzer_ruedi99ms.Trajectory.tid">tid</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.x" href="#route_analyzer_ruedi99ms.Trajectory.x">x</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.Trajectory.z" href="#route_analyzer_ruedi99ms.Trajectory.z">z</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

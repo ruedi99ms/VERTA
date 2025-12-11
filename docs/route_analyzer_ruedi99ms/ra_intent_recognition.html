@@ -1,0 +1,1932 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>route_analyzer_ruedi99ms.ra_intent_recognition API documentation</title>
+<meta name="description" content="Intent Recognition Module for Route Analyzer …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>route_analyzer_ruedi99ms.ra_intent_recognition</code></h1>
+</header>
+<section id="section-intro">
+<p>Intent Recognition Module for Route Analyzer</p>
+<p>Predicts user route choices before they reach decision points using machine learning on trajectory, gaze, and physiological features.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Intent Recognition Module for Route Analyzer
+
+Predicts user route choices before they reach decision points using machine learning on trajectory, gaze, and physiological features.
+&#34;&#34;&#34;
+
+import os
+import json
+import warnings
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from typing import List, Dict, Tuple, Optional, Any
+from dataclasses import dataclass
+from collections import defaultdict
+
+# Suppress sklearn warnings about invalid values in division
+warnings.filterwarnings(&#39;ignore&#39;, category=RuntimeWarning, message=&#39;invalid value encountered in divide&#39;)
+warnings.filterwarnings(&#39;ignore&#39;, category=RuntimeWarning, message=&#39;All-NaN slice encountered&#39;)
+warnings.filterwarnings(&#39;ignore&#39;, category=RuntimeWarning, module=&#39;sklearn&#39;)
+
+try:
+    from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+    from sklearn.model_selection import cross_val_score, train_test_split
+    from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+    from sklearn.preprocessing import StandardScaler
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    print(&#34;scikit-learn not available. Intent recognition features disabled.&#34;)
+    print(&#34;Install with: pip install scikit-learn&#34;)
+
+try:
+    from .ra_data_loader import Trajectory, has_gaze_data, has_physio_data
+    from .ra_geometry import Circle
+    from .ra_logging import get_logger
+except ImportError:
+    from ra_data_loader import Trajectory, has_gaze_data, has_physio_data
+    from ra_geometry import Circle
+    from ra_logging import get_logger
+
+logger = get_logger()
+
+
+@dataclass
+class IntentFeatures:
+    &#34;&#34;&#34;Features extracted for intent prediction&#34;&#34;&#34;
+    # Spatial features
+    distance_to_junction: float
+    approach_angle: float  # Angle of approach trajectory
+    lateral_offset: float  # How far off center-line
+    
+    # Kinematic features
+    current_speed: float
+    speed_change_rate: float  # Acceleration/deceleration
+    curvature: float  # Path curvature
+    sinuosity: float  # Path complexity
+    
+    # Temporal features
+    time_to_junction: float  # Estimated based on current speed
+    
+    # Gaze features (if available)
+    gaze_angle: Optional[float]  # Where they&#39;re looking
+    gaze_alignment: Optional[float]  # Gaze-movement alignment
+    head_rotation_rate: Optional[float]  # How fast head is turning
+    
+    # Physiological features (if available)
+    heart_rate: Optional[float]
+    heart_rate_trend: Optional[float]  # Increasing/decreasing
+    pupil_dilation: Optional[float]
+    pupil_change_rate: Optional[float]
+    
+    # Contextual features
+    previous_junction_choice: Optional[int]  # Previous branch choice
+    trajectory_id: str
+
+
+class IntentRecognitionAnalyzer:
+    &#34;&#34;&#34;Analyze and predict user intent before decision points&#34;&#34;&#34;
+    
+    def __init__(self, 
+                 prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0],
+                 model_type: str = &#34;random_forest&#34;,
+                 output_dir: Optional[str] = None):
+        &#34;&#34;&#34;
+        Initialize analyzer
+        
+        Args:
+            prediction_distances: Distances before junction to make predictions
+            model_type: &#34;random_forest&#34; or &#34;gradient_boosting&#34;
+            output_dir: Directory to save models (optional)
+        &#34;&#34;&#34;
+        if not SKLEARN_AVAILABLE:
+            raise ImportError(&#34;scikit-learn required for intent recognition&#34;)
+            
+        self.prediction_distances = sorted(prediction_distances, reverse=True)
+        self.model_type = model_type
+        self.output_dir = output_dir
+        self.models = {}  # One model per prediction distance
+        self.scalers = {}  # Feature scalers
+        self.feature_importance = {}
+        
+    def extract_features_at_distance(self,
+                                     trajectory: Trajectory,
+                                     junction: Circle,
+                                     distance_before: float,
+                                     previous_choice: Optional[int] = None) -&gt; Optional[IntentFeatures]:
+        &#34;&#34;&#34;
+        Extract features at a specific distance before junction
+        
+        Args:
+            trajectory: Trajectory object
+            junction: Junction circle
+            distance_before: How far before junction to extract features
+            previous_choice: Branch chosen at previous junction (if any)
+        &#34;&#34;&#34;
+        # Find point approximately distance_before from junction
+        distances = np.sqrt((trajectory.x - junction.cx)**2 + 
+                           (trajectory.z - junction.cz)**2)
+        
+        # Find entry point into junction
+        inside = distances &lt;= junction.r
+        if not inside.any():
+            return None
+            
+        entry_idx = int(np.argmax(inside))
+        
+        # Find point at target distance before entry
+        target_distance = junction.r + distance_before
+        before_entry = distances[:entry_idx]
+        
+        if len(before_entry) &lt; 10:  # Need sufficient history
+            return None
+            
+        # Find closest point to target distance
+        dist_diff = np.abs(before_entry - target_distance)
+        feature_idx = int(np.argmin(dist_diff))
+        
+        if feature_idx &lt; 5:  # Need some history for derivatives
+            return None
+            
+        # Extract features
+        features = self._compute_features(
+            trajectory, junction, feature_idx, entry_idx, previous_choice
+        )
+        
+        return features
+    
+    def _compute_features(self,
+                         tr: Trajectory,
+                         junction: Circle,
+                         idx: int,
+                         entry_idx: int,
+                         previous_choice: Optional[int]) -&gt; IntentFeatures:
+        &#34;&#34;&#34;Compute all features at a specific point in trajectory&#34;&#34;&#34;
+        
+        # Window for computing derivatives/trends
+        window = min(10, idx)
+        start_idx = max(0, idx - window)
+        
+        # === SPATIAL FEATURES ===
+        dist_to_junction = float(np.sqrt(
+            (tr.x[idx] - junction.cx)**2 + (tr.z[idx] - junction.cz)**2
+        ))
+        
+        # Approach angle (direction toward junction vs current heading)
+        dx = tr.x[idx] - tr.x[start_idx]
+        dz = tr.z[idx] - tr.z[start_idx]
+        heading_angle = np.arctan2(dz, dx)
+        
+        to_junction_x = junction.cx - tr.x[idx]
+        to_junction_z = junction.cz - tr.z[idx]
+        junction_angle = np.arctan2(to_junction_z, to_junction_x)
+        
+        approach_angle = float(np.abs(self._angle_diff(heading_angle, junction_angle)))
+        
+        # Lateral offset (perpendicular distance from straight line to junction)
+        lateral_offset = float(np.abs(
+            (to_junction_z * dx - to_junction_x * dz) / 
+            (np.sqrt(dx**2 + dz**2) + 1e-6)
+        ))
+        
+        # Kinematic Features
+        dx_seg = np.diff(tr.x[start_idx:idx+1])
+        dz_seg = np.diff(tr.z[start_idx:idx+1])
+        speeds = np.sqrt(dx_seg**2 + dz_seg**2)
+        
+        if tr.t is not None and len(tr.t) &gt; idx:
+            dt = np.diff(tr.t[start_idx:idx+1])
+            dt = np.where(dt &gt; 0, dt, 1.0)  # Avoid division by zero
+            speeds = speeds / dt
+        
+        current_speed = float(np.mean(speeds[-3:]) if len(speeds) &gt;= 3 else speeds[-1] if len(speeds) &gt; 0 else 0.0)
+        
+        # Acceleration (speed change rate)
+        if len(speeds) &gt;= 5:
+            speed_change_rate = float(np.mean(np.diff(speeds[-5:])))
+        else:
+            speed_change_rate = 0.0
+        
+        # Curvature (angle changes along path)
+        if len(dx_seg) &gt;= 3:
+            angles = np.arctan2(dz_seg, dx_seg)
+            angle_diffs = np.diff(angles)
+            # Normalize to [-pi, pi]
+            angle_diffs = np.arctan2(np.sin(angle_diffs), np.cos(angle_diffs))
+            curvature = float(np.mean(np.abs(angle_diffs)))
+        else:
+            curvature = 0.0
+        
+        # Sinuosity (path_length / straight_line_distance)
+        path_length = float(np.sum(np.sqrt(dx_seg**2 + dz_seg**2)))
+        straight_line = float(np.sqrt(
+            (tr.x[idx] - tr.x[start_idx])**2 + 
+            (tr.z[idx] - tr.z[start_idx])**2
+        ))
+        sinuosity = path_length / (straight_line + 1e-6)
+        
+        # Temporal Features
+        time_to_junction = (dist_to_junction - junction.r) / (current_speed + 1e-6)
+        
+        # Gaze Features
+        gaze_angle = None
+        gaze_alignment = None
+        head_rotation_rate = None
+        
+        if has_gaze_data(tr):
+            # Gaze direction
+            if tr.gaze_x is not None and tr.gaze_y is not None:
+                gaze_angle = float(np.arctan2(tr.gaze_y[idx], tr.gaze_x[idx]))
+                
+                # Gaze-movement alignment (are they looking where they&#39;re going?)
+                gaze_alignment = float(np.cos(gaze_angle - heading_angle))
+            
+            # Head rotation rate
+            if tr.head_forward_x is not None and tr.head_forward_z is not None:
+                head_angles = np.arctan2(
+                    tr.head_forward_z[start_idx:idx+1],
+                    tr.head_forward_x[start_idx:idx+1]
+                )
+                if len(head_angles) &gt;= 2:
+                    head_rotation_rate = float(np.std(np.diff(head_angles)))
+        
+        # Physiological Features
+        heart_rate_val = None
+        heart_rate_trend = None
+        pupil_dilation = None
+        pupil_change_rate = None
+        
+        if has_physio_data(tr):
+            if tr.heart_rate is not None and not np.isnan(tr.heart_rate[idx]):
+                heart_rate_val = float(tr.heart_rate[idx])
+                
+                # Heart rate trend
+                hr_window = tr.heart_rate[start_idx:idx+1]
+                hr_window = hr_window[~np.isnan(hr_window)]
+                if len(hr_window) &gt;= 2:
+                    heart_rate_trend = float(hr_window[-1] - hr_window[0])
+            
+            # Pupil dilation (average of left and right)
+            if tr.pupil_l is not None and tr.pupil_r is not None:
+                pupil_l = tr.pupil_l[idx]
+                pupil_r = tr.pupil_r[idx]
+                if not (np.isnan(pupil_l) or np.isnan(pupil_r)):
+                    pupil_dilation = float((pupil_l + pupil_r) / 2.0)
+                    
+                    # Pupil change rate
+                    pupil_avg = (tr.pupil_l[start_idx:idx+1] + tr.pupil_r[start_idx:idx+1]) / 2.0
+                    pupil_avg = pupil_avg[~np.isnan(pupil_avg)]
+                    if len(pupil_avg) &gt;= 2:
+                        pupil_change_rate = float(pupil_avg[-1] - pupil_avg[0])
+        
+        return IntentFeatures(
+            distance_to_junction=dist_to_junction,
+            approach_angle=approach_angle,
+            lateral_offset=lateral_offset,
+            current_speed=current_speed,
+            speed_change_rate=speed_change_rate,
+            curvature=curvature,
+            sinuosity=sinuosity,
+            time_to_junction=time_to_junction,
+            gaze_angle=gaze_angle,
+            gaze_alignment=gaze_alignment,
+            head_rotation_rate=head_rotation_rate,
+            heart_rate=heart_rate_val,
+            heart_rate_trend=heart_rate_trend,
+            pupil_dilation=pupil_dilation,
+            pupil_change_rate=pupil_change_rate,
+            previous_junction_choice=previous_choice,
+            trajectory_id=tr.tid
+        )
+    
+    @staticmethod
+    def _angle_diff(a1: float, a2: float) -&gt; float:
+        &#34;&#34;&#34;Compute smallest angle difference between two angles&#34;&#34;&#34;
+        diff = a1 - a2
+        return np.arctan2(np.sin(diff), np.cos(diff))
+    
+    def features_to_array(self, features: IntentFeatures) -&gt; np.ndarray:
+        &#34;&#34;&#34;Convert IntentFeatures to numpy array for ML&#34;&#34;&#34;
+        # Build feature vector, replacing None with NaN
+        # Also replace inf values with NaN to avoid sklearn warnings
+        feature_vector = [
+            features.distance_to_junction,
+            features.approach_angle,
+            features.lateral_offset,
+            features.current_speed,
+            features.speed_change_rate,
+            features.curvature,
+            features.sinuosity,
+            features.time_to_junction,
+            features.gaze_angle if features.gaze_angle is not None else np.nan,
+            features.gaze_alignment if features.gaze_alignment is not None else np.nan,
+            features.head_rotation_rate if features.head_rotation_rate is not None else np.nan,
+            features.heart_rate if features.heart_rate is not None else np.nan,
+            features.heart_rate_trend if features.heart_rate_trend is not None else np.nan,
+            features.pupil_dilation if features.pupil_dilation is not None else np.nan,
+            features.pupil_change_rate if features.pupil_change_rate is not None else np.nan,
+            features.previous_junction_choice if features.previous_junction_choice is not None else -1,
+        ]
+        
+        arr = np.array(feature_vector, dtype=float)
+        # Replace inf with nan to avoid sklearn warnings
+        arr[~np.isfinite(arr)] = np.nan
+        return arr
+    
+    def get_feature_names(self) -&gt; List[str]:
+        &#34;&#34;&#34;Get ordered list of feature names&#34;&#34;&#34;
+        return [
+            &#39;distance_to_junction&#39;,
+            &#39;approach_angle&#39;,
+            &#39;lateral_offset&#39;,
+            &#39;current_speed&#39;,
+            &#39;speed_change_rate&#39;,
+            &#39;curvature&#39;,
+            &#39;sinuosity&#39;,
+            &#39;time_to_junction&#39;,
+            &#39;gaze_angle&#39;,
+            &#39;gaze_alignment&#39;,
+            &#39;head_rotation_rate&#39;,
+            &#39;heart_rate&#39;,
+            &#39;heart_rate_trend&#39;,
+            &#39;pupil_dilation&#39;,
+            &#39;pupil_change_rate&#39;,
+            &#39;previous_junction_choice&#39;,
+        ]
+    
+    def train_models(self,
+                    trajectories: List[Trajectory],
+                    junction: Circle,
+                    actual_branches: Dict[str, int],
+                    previous_choices: Optional[Dict[str, int]] = None) -&gt; Dict[str, Any]:
+        &#34;&#34;&#34;
+        Train intent prediction models at multiple prediction distances
+        
+        Args:
+            trajectories: List of trajectory objects
+            junction: Junction to analyze
+            actual_branches: Dict mapping trajectory_id -&gt; actual branch chosen
+            previous_choices: Dict mapping trajectory_id -&gt; previous junction choice
+            
+        Returns:
+            Training results and metrics
+        &#34;&#34;&#34;
+        logger.info(&#34;Training intent recognition models...&#34;)
+        
+        if previous_choices is None:
+            previous_choices = {}
+        
+        results = {
+            &#39;models_trained&#39;: {},
+            &#39;feature_importance&#39;: {},
+            &#39;cross_validation_scores&#39;: {},
+            &#39;sample_sizes&#39;: {}
+        }
+        
+        # Train one model per prediction distance
+        for dist in self.prediction_distances:
+            logger.info(f&#34;Training model for {dist} units before junction...&#34;)
+            
+            # Extract features for all trajectories
+            X_list = []
+            y_list = []
+            valid_trajectories = []
+            
+            for tr in trajectories:
+                if tr.tid not in actual_branches:
+                    continue
+                
+                prev_choice = previous_choices.get(tr.tid, None)
+                features = self.extract_features_at_distance(
+                    tr, junction, dist, prev_choice
+                )
+                
+                if features is None:
+                    continue
+                
+                X_list.append(self.features_to_array(features))
+                y_list.append(actual_branches[tr.tid])
+                valid_trajectories.append(tr.tid)
+            
+            if len(X_list) &lt; 10:
+                logger.warning(f&#34;Insufficient data for distance {dist} (only {len(X_list)} samples)&#34;)
+                continue
+            
+            X = np.vstack(X_list)
+            y = np.array(y_list)
+            
+            # Handle NaN values (impute with median)
+            nan_mask = np.isnan(X)
+            if nan_mask.any():
+                # Suppress warning when computing median of all-NaN columns
+                with warnings.catch_warnings():
+                    warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+                    col_medians = np.nanmedian(X, axis=0)
+                
+                for col in range(X.shape[1]):
+                    # If entire column is NaN, use 0
+                    if np.isnan(col_medians[col]):
+                        X[nan_mask[:, col], col] = 0.0
+                    else:
+                        X[nan_mask[:, col], col] = col_medians[col]
+            
+            # Replace any remaining inf values
+            X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+            
+            # Standardize features
+            with warnings.catch_warnings():
+                warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+                scaler = StandardScaler()
+                X_scaled = scaler.fit_transform(X)
+            
+            # Train model
+            if self.model_type == &#34;random_forest&#34;:
+                model = RandomForestClassifier(
+                    n_estimators=100,
+                    max_depth=10,
+                    min_samples_split=10,
+                    random_state=42
+                )
+            else:  # gradient_boosting
+                model = GradientBoostingClassifier(
+                    n_estimators=100,
+                    max_depth=5,
+                    learning_rate=0.1,
+                    random_state=42
+                )
+            
+            # Cross-validation
+            cv_scores = cross_val_score(model, X_scaled, y, cv=5)
+            
+            # Train on full dataset
+            model.fit(X_scaled, y)
+            
+            # Store model and scaler
+            self.models[dist] = model
+            self.scalers[dist] = scaler
+            
+            # Save model and scaler to disk
+            if self.output_dir:
+                models_dir = os.path.join(self.output_dir, &#34;models&#34;)
+                os.makedirs(models_dir, exist_ok=True)
+                
+                # Save model
+                model_path = os.path.join(models_dir, f&#34;model_{dist}.pkl&#34;)
+                import pickle
+                with open(model_path, &#39;wb&#39;) as f:
+                    pickle.dump(model, f)
+                
+                # Save scaler
+                scaler_path = os.path.join(models_dir, f&#34;scaler_{dist}.pkl&#34;)
+                with open(scaler_path, &#39;wb&#39;) as f:
+                    pickle.dump(scaler, f)
+                
+                logger.info(f&#34;  ✓ Saved model to {model_path}&#34;)
+            
+            # Feature importance
+            if hasattr(model, &#39;feature_importances_&#39;):
+                importance = model.feature_importances_
+                self.feature_importance[dist] = dict(zip(
+                    self.get_feature_names(), importance
+                ))
+            
+            # Store results
+            results[&#39;models_trained&#39;][dist] = {
+                &#39;n_samples&#39;: len(X_list),
+                &#39;n_features&#39;: X.shape[1],
+                &#39;cv_mean_accuracy&#39;: float(np.mean(cv_scores)),
+                &#39;cv_std_accuracy&#39;: float(np.std(cv_scores)),
+                &#39;valid_trajectories&#39;: valid_trajectories
+            }
+            
+            logger.info(f&#34;  ✓ Distance {dist}: Accuracy = {np.mean(cv_scores):.3f} ± {np.std(cv_scores):.3f} (n={len(X_list)})&#34;)
+        
+        results[&#39;feature_importance&#39;] = self.feature_importance
+        
+        return results
+    
+    def predict_intent(self,
+                      trajectory: Trajectory,
+                      junction: Circle,
+                      previous_choice: Optional[int] = None) -&gt; Dict[float, Dict]:
+        &#34;&#34;&#34;
+        Predict intent at multiple distances before junction
+        
+        Returns:
+            Dict mapping distance -&gt; {predicted_branch, confidence, probabilities}
+        &#34;&#34;&#34;
+        predictions = {}
+        
+        for dist in self.prediction_distances:
+            if dist not in self.models:
+                continue
+            
+            features = self.extract_features_at_distance(
+                trajectory, junction, dist, previous_choice
+            )
+            
+            if features is None:
+                continue
+            
+            X = self.features_to_array(features).reshape(1, -1)
+            
+            # Handle NaN and inf values
+            nan_mask = np.isnan(X)
+            if nan_mask.any():
+                for col in range(X.shape[1]):
+                    if nan_mask[0, col]:
+                        X[0, col] = 0.0
+            
+            # Replace any remaining inf values
+            X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+            
+            # Scale features
+            with warnings.catch_warnings():
+                warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+                X_scaled = self.scalers[dist].transform(X)
+            
+            # Predict
+            predicted_branch = int(self.models[dist].predict(X_scaled)[0])
+            probabilities = self.models[dist].predict_proba(X_scaled)[0]
+            confidence = float(np.max(probabilities))
+            
+            predictions[dist] = {
+                &#39;predicted_branch&#39;: predicted_branch,
+                &#39;confidence&#39;: confidence,
+                &#39;probabilities&#39;: dict(enumerate(probabilities)),
+                &#39;features&#39;: features
+            }
+        
+        return predictions
+
+
+def analyze_intent_recognition(
+    trajectories: List[Trajectory],
+    junction: Circle,
+    actual_branches: pd.DataFrame,
+    output_dir: str,
+    prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0],
+    previous_choices: Optional[Dict[str, int]] = None
+) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;
+    Complete intent recognition analysis
+    
+    Args:
+        trajectories: List of trajectory objects
+        junction: Junction to analyze
+        actual_branches: DataFrame with columns [&#39;trajectory&#39;, &#39;branch&#39;]
+        output_dir: Directory for outputs
+        prediction_distances: Distances before junction to make predictions
+        previous_choices: Dict mapping trajectory_id -&gt; previous branch choice
+        
+    Returns:
+        Analysis results dictionary
+    &#34;&#34;&#34;
+    logger.info(&#34;Starting intent recognition analysis...&#34;)
+    
+    # Convert branches to dict
+    branch_dict = dict(zip(actual_branches[&#39;trajectory&#39;], actual_branches[&#39;branch&#39;]))
+    
+    # Filter out invalid branches (-1, -2)
+    branch_dict = {tid: b for tid, b in branch_dict.items() if b &gt;= 0}
+    
+    if len(branch_dict) &lt; 10:
+        logger.error(&#34;Insufficient valid trajectories for intent recognition&#34;)
+        return {&#39;error&#39;: &#39;insufficient_data&#39;}
+    
+    # Initialize analyzer with output_dir for model saving
+    analyzer = IntentRecognitionAnalyzer(
+        prediction_distances=prediction_distances,
+        model_type=&#34;random_forest&#34;,
+        output_dir=output_dir
+    )
+    
+    # Train models
+    training_results = analyzer.train_models(
+        trajectories, junction, branch_dict, previous_choices
+    )
+    
+    # Save training results
+    with open(os.path.join(output_dir, &#39;intent_training_results.json&#39;), &#39;w&#39;) as f:
+        json.dump(training_results, f, indent=2)
+    
+    # Create visualizations
+    _visualize_feature_importance(analyzer, output_dir)
+    _visualize_prediction_accuracy(training_results, output_dir)
+    
+    # Test predictions on sample trajectories
+    test_predictions = _test_sample_predictions(
+        analyzer, trajectories, junction, branch_dict, previous_choices
+    )
+    
+    # Save test predictions
+    with open(os.path.join(output_dir, &#39;intent_test_predictions.json&#39;), &#39;w&#39;) as f:
+        json.dump(test_predictions, f, indent=2, default=str)
+    
+    logger.info(&#34;Intent recognition analysis complete!&#34;)
+    
+    return {
+        &#39;training_results&#39;: training_results,
+        &#39;test_predictions&#39;: test_predictions,
+        &#39;analyzer&#39;: analyzer
+    }
+
+
+def _visualize_feature_importance(analyzer: IntentRecognitionAnalyzer, output_dir: str):
+    &#34;&#34;&#34;Create feature importance visualization&#34;&#34;&#34;
+    n_models = len(analyzer.feature_importance)
+    
+    if n_models == 0:
+        return
+    
+    fig, axes = plt.subplots(1, n_models, figsize=(6*n_models, 5))
+    
+    if n_models == 1:
+        axes = [axes]
+    
+    for ax, (dist, importance) in zip(axes, analyzer.feature_importance.items()):
+        # Sort by importance
+        sorted_items = sorted(importance.items(), key=lambda x: x[1], reverse=True)
+        features, values = zip(*sorted_items[:10])  # Top 10
+        
+        # Plot
+        ax.barh(range(len(features)), values)
+        ax.set_yticks(range(len(features)))
+        ax.set_yticklabels(features)
+        ax.set_xlabel(&#39;Importance&#39;)
+        ax.set_title(f&#39;Feature Importance\n{dist} units before junction&#39;)
+        ax.invert_yaxis()
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, &#39;intent_feature_importance.png&#39;), dpi=300, bbox_inches=&#39;tight&#39;)
+    plt.close()
+    
+    logger.info(f&#34;Feature importance plot saved&#34;)
+
+
+def _visualize_prediction_accuracy(training_results: Dict, output_dir: str):
+    &#34;&#34;&#34;Visualize prediction accuracy vs distance&#34;&#34;&#34;
+    models = training_results.get(&#39;models_trained&#39;, {})
+    
+    if not models:
+        return
+    
+    distances = sorted(models.keys())
+    accuracies = [models[d][&#39;cv_mean_accuracy&#39;] for d in distances]
+    stds = [models[d][&#39;cv_std_accuracy&#39;] for d in distances]
+    samples = [models[d][&#39;n_samples&#39;] for d in distances]
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # Accuracy plot
+    ax1.errorbar(distances, accuracies, yerr=stds, marker=&#39;o&#39;, linewidth=2, markersize=8)
+    ax1.set_xlabel(&#39;Distance Before Junction (units)&#39;, fontsize=12)
+    ax1.set_ylabel(&#39;Prediction Accuracy&#39;, fontsize=12)
+    ax1.set_title(&#39;Intent Prediction Accuracy\nvs Distance to Junction&#39;, fontsize=14, fontweight=&#39;bold&#39;)
+    ax1.grid(True, alpha=0.3)
+    ax1.set_ylim(0, 1.0)
+    
+    # Sample size plot
+    ax2.bar(distances, samples, color=&#39;steelblue&#39;, alpha=0.7)
+    ax2.set_xlabel(&#39;Distance Before Junction (units)&#39;, fontsize=12)
+    ax2.set_ylabel(&#39;Number of Samples&#39;, fontsize=12)
+    ax2.set_title(&#39;Training Sample Sizes&#39;, fontsize=14, fontweight=&#39;bold&#39;)
+    ax2.grid(True, alpha=0.3, axis=&#39;y&#39;)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, &#39;intent_accuracy_analysis.png&#39;), dpi=300, bbox_inches=&#39;tight&#39;)
+    plt.close()
+    
+    logger.info(f&#34;Accuracy analysis plot saved&#34;)
+
+
+def _test_sample_predictions(analyzer: IntentRecognitionAnalyzer,
+                             trajectories: List[Trajectory],
+                             junction: Circle,
+                             actual_branches: Dict[str, int],
+                             previous_choices: Optional[Dict[str, int]]) -&gt; Dict:
+    &#34;&#34;&#34;Test predictions on sample trajectories&#34;&#34;&#34;
+    
+    # Select up to 10 random trajectories
+    test_trajectories = [tr for tr in trajectories if tr.tid in actual_branches]
+    test_trajectories = test_trajectories[:10]
+    
+    results = {}
+    
+    for tr in test_trajectories:
+        prev_choice = previous_choices.get(tr.tid, None) if previous_choices else None
+        predictions = analyzer.predict_intent(tr, junction, prev_choice)
+        
+        actual = actual_branches[tr.tid]
+        
+        results[tr.tid] = {
+            &#39;actual_branch&#39;: actual,
+            &#39;predictions_by_distance&#39;: {}
+        }
+        
+        for dist, pred in predictions.items():
+            correct = (pred[&#39;predicted_branch&#39;] == actual)
+            results[tr.tid][&#39;predictions_by_distance&#39;][float(dist)] = {
+                &#39;predicted_branch&#39;: pred[&#39;predicted_branch&#39;],
+                &#39;confidence&#39;: pred[&#39;confidence&#39;],
+                &#39;correct&#39;: correct
+            }
+    
+    return results
+
+
+if __name__ == &#34;__main__&#34;:
+    print(&#34;Intent Recognition Module&#34;)
+    print(&#34;=&#34; * 50)
+    print(&#34;This module provides ML-based intent prediction&#34;)
+    print(&#34;for trajectory route choices.&#34;)
+    print()
+    print(&#34;Usage:&#34;)
+    print(&#34;  from ra_intent_recognition import analyze_intent_recognition&#34;)
+    print(&#34;  results = analyze_intent_recognition(trajectories, junction, branches, output_dir)&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.analyze_intent_recognition"><code class="name flex">
+<span>def <span class="ident">analyze_intent_recognition</span></span>(<span>trajectories: List[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>], junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, actual_branches: pandas.core.frame.DataFrame, output_dir: str, prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0], previous_choices: Optional[Dict[str, int]] = None) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Complete intent recognition analysis</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories</code></strong></dt>
+<dd>List of trajectory objects</dd>
+<dt><strong><code>junction</code></strong></dt>
+<dd>Junction to analyze</dd>
+<dt><strong><code>actual_branches</code></strong></dt>
+<dd>DataFrame with columns ['trajectory', 'branch']</dd>
+<dt><strong><code>output_dir</code></strong></dt>
+<dd>Directory for outputs</dd>
+<dt><strong><code>prediction_distances</code></strong></dt>
+<dd>Distances before junction to make predictions</dd>
+<dt><strong><code>previous_choices</code></strong></dt>
+<dd>Dict mapping trajectory_id -&gt; previous branch choice</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Analysis results dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_intent_recognition(
+    trajectories: List[Trajectory],
+    junction: Circle,
+    actual_branches: pd.DataFrame,
+    output_dir: str,
+    prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0],
+    previous_choices: Optional[Dict[str, int]] = None
+) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;
+    Complete intent recognition analysis
+    
+    Args:
+        trajectories: List of trajectory objects
+        junction: Junction to analyze
+        actual_branches: DataFrame with columns [&#39;trajectory&#39;, &#39;branch&#39;]
+        output_dir: Directory for outputs
+        prediction_distances: Distances before junction to make predictions
+        previous_choices: Dict mapping trajectory_id -&gt; previous branch choice
+        
+    Returns:
+        Analysis results dictionary
+    &#34;&#34;&#34;
+    logger.info(&#34;Starting intent recognition analysis...&#34;)
+    
+    # Convert branches to dict
+    branch_dict = dict(zip(actual_branches[&#39;trajectory&#39;], actual_branches[&#39;branch&#39;]))
+    
+    # Filter out invalid branches (-1, -2)
+    branch_dict = {tid: b for tid, b in branch_dict.items() if b &gt;= 0}
+    
+    if len(branch_dict) &lt; 10:
+        logger.error(&#34;Insufficient valid trajectories for intent recognition&#34;)
+        return {&#39;error&#39;: &#39;insufficient_data&#39;}
+    
+    # Initialize analyzer with output_dir for model saving
+    analyzer = IntentRecognitionAnalyzer(
+        prediction_distances=prediction_distances,
+        model_type=&#34;random_forest&#34;,
+        output_dir=output_dir
+    )
+    
+    # Train models
+    training_results = analyzer.train_models(
+        trajectories, junction, branch_dict, previous_choices
+    )
+    
+    # Save training results
+    with open(os.path.join(output_dir, &#39;intent_training_results.json&#39;), &#39;w&#39;) as f:
+        json.dump(training_results, f, indent=2)
+    
+    # Create visualizations
+    _visualize_feature_importance(analyzer, output_dir)
+    _visualize_prediction_accuracy(training_results, output_dir)
+    
+    # Test predictions on sample trajectories
+    test_predictions = _test_sample_predictions(
+        analyzer, trajectories, junction, branch_dict, previous_choices
+    )
+    
+    # Save test predictions
+    with open(os.path.join(output_dir, &#39;intent_test_predictions.json&#39;), &#39;w&#39;) as f:
+        json.dump(test_predictions, f, indent=2, default=str)
+    
+    logger.info(&#34;Intent recognition analysis complete!&#34;)
+    
+    return {
+        &#39;training_results&#39;: training_results,
+        &#39;test_predictions&#39;: test_predictions,
+        &#39;analyzer&#39;: analyzer
+    }</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures"><code class="flex name class">
+<span>class <span class="ident">IntentFeatures</span></span>
+<span>(</span><span>distance_to_junction: float, approach_angle: float, lateral_offset: float, current_speed: float, speed_change_rate: float, curvature: float, sinuosity: float, time_to_junction: float, gaze_angle: Optional[float], gaze_alignment: Optional[float], head_rotation_rate: Optional[float], heart_rate: Optional[float], heart_rate_trend: Optional[float], pupil_dilation: Optional[float], pupil_change_rate: Optional[float], previous_junction_choice: Optional[int], trajectory_id: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Features extracted for intent prediction</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class IntentFeatures:
+    &#34;&#34;&#34;Features extracted for intent prediction&#34;&#34;&#34;
+    # Spatial features
+    distance_to_junction: float
+    approach_angle: float  # Angle of approach trajectory
+    lateral_offset: float  # How far off center-line
+    
+    # Kinematic features
+    current_speed: float
+    speed_change_rate: float  # Acceleration/deceleration
+    curvature: float  # Path curvature
+    sinuosity: float  # Path complexity
+    
+    # Temporal features
+    time_to_junction: float  # Estimated based on current speed
+    
+    # Gaze features (if available)
+    gaze_angle: Optional[float]  # Where they&#39;re looking
+    gaze_alignment: Optional[float]  # Gaze-movement alignment
+    head_rotation_rate: Optional[float]  # How fast head is turning
+    
+    # Physiological features (if available)
+    heart_rate: Optional[float]
+    heart_rate_trend: Optional[float]  # Increasing/decreasing
+    pupil_dilation: Optional[float]
+    pupil_change_rate: Optional[float]
+    
+    # Contextual features
+    previous_junction_choice: Optional[int]  # Previous branch choice
+    trajectory_id: str</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.approach_angle"><code class="name">var <span class="ident">approach_angle</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.current_speed"><code class="name">var <span class="ident">current_speed</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.curvature"><code class="name">var <span class="ident">curvature</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.distance_to_junction"><code class="name">var <span class="ident">distance_to_junction</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.gaze_alignment"><code class="name">var <span class="ident">gaze_alignment</span> : Optional[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.gaze_angle"><code class="name">var <span class="ident">gaze_angle</span> : Optional[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.head_rotation_rate"><code class="name">var <span class="ident">head_rotation_rate</span> : Optional[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : Optional[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.heart_rate_trend"><code class="name">var <span class="ident">heart_rate_trend</span> : Optional[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.lateral_offset"><code class="name">var <span class="ident">lateral_offset</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.previous_junction_choice"><code class="name">var <span class="ident">previous_junction_choice</span> : Optional[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.pupil_change_rate"><code class="name">var <span class="ident">pupil_change_rate</span> : Optional[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.pupil_dilation"><code class="name">var <span class="ident">pupil_dilation</span> : Optional[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.sinuosity"><code class="name">var <span class="ident">sinuosity</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.speed_change_rate"><code class="name">var <span class="ident">speed_change_rate</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.time_to_junction"><code class="name">var <span class="ident">time_to_junction</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.trajectory_id"><code class="name">var <span class="ident">trajectory_id</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer"><code class="flex name class">
+<span>class <span class="ident">IntentRecognitionAnalyzer</span></span>
+<span>(</span><span>prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0], model_type: str = 'random_forest', output_dir: Optional[str] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Analyze and predict user intent before decision points</p>
+<p>Initialize analyzer</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>prediction_distances</code></strong></dt>
+<dd>Distances before junction to make predictions</dd>
+<dt><strong><code>model_type</code></strong></dt>
+<dd>"random_forest" or "gradient_boosting"</dd>
+<dt><strong><code>output_dir</code></strong></dt>
+<dd>Directory to save models (optional)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IntentRecognitionAnalyzer:
+    &#34;&#34;&#34;Analyze and predict user intent before decision points&#34;&#34;&#34;
+    
+    def __init__(self, 
+                 prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0],
+                 model_type: str = &#34;random_forest&#34;,
+                 output_dir: Optional[str] = None):
+        &#34;&#34;&#34;
+        Initialize analyzer
+        
+        Args:
+            prediction_distances: Distances before junction to make predictions
+            model_type: &#34;random_forest&#34; or &#34;gradient_boosting&#34;
+            output_dir: Directory to save models (optional)
+        &#34;&#34;&#34;
+        if not SKLEARN_AVAILABLE:
+            raise ImportError(&#34;scikit-learn required for intent recognition&#34;)
+            
+        self.prediction_distances = sorted(prediction_distances, reverse=True)
+        self.model_type = model_type
+        self.output_dir = output_dir
+        self.models = {}  # One model per prediction distance
+        self.scalers = {}  # Feature scalers
+        self.feature_importance = {}
+        
+    def extract_features_at_distance(self,
+                                     trajectory: Trajectory,
+                                     junction: Circle,
+                                     distance_before: float,
+                                     previous_choice: Optional[int] = None) -&gt; Optional[IntentFeatures]:
+        &#34;&#34;&#34;
+        Extract features at a specific distance before junction
+        
+        Args:
+            trajectory: Trajectory object
+            junction: Junction circle
+            distance_before: How far before junction to extract features
+            previous_choice: Branch chosen at previous junction (if any)
+        &#34;&#34;&#34;
+        # Find point approximately distance_before from junction
+        distances = np.sqrt((trajectory.x - junction.cx)**2 + 
+                           (trajectory.z - junction.cz)**2)
+        
+        # Find entry point into junction
+        inside = distances &lt;= junction.r
+        if not inside.any():
+            return None
+            
+        entry_idx = int(np.argmax(inside))
+        
+        # Find point at target distance before entry
+        target_distance = junction.r + distance_before
+        before_entry = distances[:entry_idx]
+        
+        if len(before_entry) &lt; 10:  # Need sufficient history
+            return None
+            
+        # Find closest point to target distance
+        dist_diff = np.abs(before_entry - target_distance)
+        feature_idx = int(np.argmin(dist_diff))
+        
+        if feature_idx &lt; 5:  # Need some history for derivatives
+            return None
+            
+        # Extract features
+        features = self._compute_features(
+            trajectory, junction, feature_idx, entry_idx, previous_choice
+        )
+        
+        return features
+    
+    def _compute_features(self,
+                         tr: Trajectory,
+                         junction: Circle,
+                         idx: int,
+                         entry_idx: int,
+                         previous_choice: Optional[int]) -&gt; IntentFeatures:
+        &#34;&#34;&#34;Compute all features at a specific point in trajectory&#34;&#34;&#34;
+        
+        # Window for computing derivatives/trends
+        window = min(10, idx)
+        start_idx = max(0, idx - window)
+        
+        # === SPATIAL FEATURES ===
+        dist_to_junction = float(np.sqrt(
+            (tr.x[idx] - junction.cx)**2 + (tr.z[idx] - junction.cz)**2
+        ))
+        
+        # Approach angle (direction toward junction vs current heading)
+        dx = tr.x[idx] - tr.x[start_idx]
+        dz = tr.z[idx] - tr.z[start_idx]
+        heading_angle = np.arctan2(dz, dx)
+        
+        to_junction_x = junction.cx - tr.x[idx]
+        to_junction_z = junction.cz - tr.z[idx]
+        junction_angle = np.arctan2(to_junction_z, to_junction_x)
+        
+        approach_angle = float(np.abs(self._angle_diff(heading_angle, junction_angle)))
+        
+        # Lateral offset (perpendicular distance from straight line to junction)
+        lateral_offset = float(np.abs(
+            (to_junction_z * dx - to_junction_x * dz) / 
+            (np.sqrt(dx**2 + dz**2) + 1e-6)
+        ))
+        
+        # Kinematic Features
+        dx_seg = np.diff(tr.x[start_idx:idx+1])
+        dz_seg = np.diff(tr.z[start_idx:idx+1])
+        speeds = np.sqrt(dx_seg**2 + dz_seg**2)
+        
+        if tr.t is not None and len(tr.t) &gt; idx:
+            dt = np.diff(tr.t[start_idx:idx+1])
+            dt = np.where(dt &gt; 0, dt, 1.0)  # Avoid division by zero
+            speeds = speeds / dt
+        
+        current_speed = float(np.mean(speeds[-3:]) if len(speeds) &gt;= 3 else speeds[-1] if len(speeds) &gt; 0 else 0.0)
+        
+        # Acceleration (speed change rate)
+        if len(speeds) &gt;= 5:
+            speed_change_rate = float(np.mean(np.diff(speeds[-5:])))
+        else:
+            speed_change_rate = 0.0
+        
+        # Curvature (angle changes along path)
+        if len(dx_seg) &gt;= 3:
+            angles = np.arctan2(dz_seg, dx_seg)
+            angle_diffs = np.diff(angles)
+            # Normalize to [-pi, pi]
+            angle_diffs = np.arctan2(np.sin(angle_diffs), np.cos(angle_diffs))
+            curvature = float(np.mean(np.abs(angle_diffs)))
+        else:
+            curvature = 0.0
+        
+        # Sinuosity (path_length / straight_line_distance)
+        path_length = float(np.sum(np.sqrt(dx_seg**2 + dz_seg**2)))
+        straight_line = float(np.sqrt(
+            (tr.x[idx] - tr.x[start_idx])**2 + 
+            (tr.z[idx] - tr.z[start_idx])**2
+        ))
+        sinuosity = path_length / (straight_line + 1e-6)
+        
+        # Temporal Features
+        time_to_junction = (dist_to_junction - junction.r) / (current_speed + 1e-6)
+        
+        # Gaze Features
+        gaze_angle = None
+        gaze_alignment = None
+        head_rotation_rate = None
+        
+        if has_gaze_data(tr):
+            # Gaze direction
+            if tr.gaze_x is not None and tr.gaze_y is not None:
+                gaze_angle = float(np.arctan2(tr.gaze_y[idx], tr.gaze_x[idx]))
+                
+                # Gaze-movement alignment (are they looking where they&#39;re going?)
+                gaze_alignment = float(np.cos(gaze_angle - heading_angle))
+            
+            # Head rotation rate
+            if tr.head_forward_x is not None and tr.head_forward_z is not None:
+                head_angles = np.arctan2(
+                    tr.head_forward_z[start_idx:idx+1],
+                    tr.head_forward_x[start_idx:idx+1]
+                )
+                if len(head_angles) &gt;= 2:
+                    head_rotation_rate = float(np.std(np.diff(head_angles)))
+        
+        # Physiological Features
+        heart_rate_val = None
+        heart_rate_trend = None
+        pupil_dilation = None
+        pupil_change_rate = None
+        
+        if has_physio_data(tr):
+            if tr.heart_rate is not None and not np.isnan(tr.heart_rate[idx]):
+                heart_rate_val = float(tr.heart_rate[idx])
+                
+                # Heart rate trend
+                hr_window = tr.heart_rate[start_idx:idx+1]
+                hr_window = hr_window[~np.isnan(hr_window)]
+                if len(hr_window) &gt;= 2:
+                    heart_rate_trend = float(hr_window[-1] - hr_window[0])
+            
+            # Pupil dilation (average of left and right)
+            if tr.pupil_l is not None and tr.pupil_r is not None:
+                pupil_l = tr.pupil_l[idx]
+                pupil_r = tr.pupil_r[idx]
+                if not (np.isnan(pupil_l) or np.isnan(pupil_r)):
+                    pupil_dilation = float((pupil_l + pupil_r) / 2.0)
+                    
+                    # Pupil change rate
+                    pupil_avg = (tr.pupil_l[start_idx:idx+1] + tr.pupil_r[start_idx:idx+1]) / 2.0
+                    pupil_avg = pupil_avg[~np.isnan(pupil_avg)]
+                    if len(pupil_avg) &gt;= 2:
+                        pupil_change_rate = float(pupil_avg[-1] - pupil_avg[0])
+        
+        return IntentFeatures(
+            distance_to_junction=dist_to_junction,
+            approach_angle=approach_angle,
+            lateral_offset=lateral_offset,
+            current_speed=current_speed,
+            speed_change_rate=speed_change_rate,
+            curvature=curvature,
+            sinuosity=sinuosity,
+            time_to_junction=time_to_junction,
+            gaze_angle=gaze_angle,
+            gaze_alignment=gaze_alignment,
+            head_rotation_rate=head_rotation_rate,
+            heart_rate=heart_rate_val,
+            heart_rate_trend=heart_rate_trend,
+            pupil_dilation=pupil_dilation,
+            pupil_change_rate=pupil_change_rate,
+            previous_junction_choice=previous_choice,
+            trajectory_id=tr.tid
+        )
+    
+    @staticmethod
+    def _angle_diff(a1: float, a2: float) -&gt; float:
+        &#34;&#34;&#34;Compute smallest angle difference between two angles&#34;&#34;&#34;
+        diff = a1 - a2
+        return np.arctan2(np.sin(diff), np.cos(diff))
+    
+    def features_to_array(self, features: IntentFeatures) -&gt; np.ndarray:
+        &#34;&#34;&#34;Convert IntentFeatures to numpy array for ML&#34;&#34;&#34;
+        # Build feature vector, replacing None with NaN
+        # Also replace inf values with NaN to avoid sklearn warnings
+        feature_vector = [
+            features.distance_to_junction,
+            features.approach_angle,
+            features.lateral_offset,
+            features.current_speed,
+            features.speed_change_rate,
+            features.curvature,
+            features.sinuosity,
+            features.time_to_junction,
+            features.gaze_angle if features.gaze_angle is not None else np.nan,
+            features.gaze_alignment if features.gaze_alignment is not None else np.nan,
+            features.head_rotation_rate if features.head_rotation_rate is not None else np.nan,
+            features.heart_rate if features.heart_rate is not None else np.nan,
+            features.heart_rate_trend if features.heart_rate_trend is not None else np.nan,
+            features.pupil_dilation if features.pupil_dilation is not None else np.nan,
+            features.pupil_change_rate if features.pupil_change_rate is not None else np.nan,
+            features.previous_junction_choice if features.previous_junction_choice is not None else -1,
+        ]
+        
+        arr = np.array(feature_vector, dtype=float)
+        # Replace inf with nan to avoid sklearn warnings
+        arr[~np.isfinite(arr)] = np.nan
+        return arr
+    
+    def get_feature_names(self) -&gt; List[str]:
+        &#34;&#34;&#34;Get ordered list of feature names&#34;&#34;&#34;
+        return [
+            &#39;distance_to_junction&#39;,
+            &#39;approach_angle&#39;,
+            &#39;lateral_offset&#39;,
+            &#39;current_speed&#39;,
+            &#39;speed_change_rate&#39;,
+            &#39;curvature&#39;,
+            &#39;sinuosity&#39;,
+            &#39;time_to_junction&#39;,
+            &#39;gaze_angle&#39;,
+            &#39;gaze_alignment&#39;,
+            &#39;head_rotation_rate&#39;,
+            &#39;heart_rate&#39;,
+            &#39;heart_rate_trend&#39;,
+            &#39;pupil_dilation&#39;,
+            &#39;pupil_change_rate&#39;,
+            &#39;previous_junction_choice&#39;,
+        ]
+    
+    def train_models(self,
+                    trajectories: List[Trajectory],
+                    junction: Circle,
+                    actual_branches: Dict[str, int],
+                    previous_choices: Optional[Dict[str, int]] = None) -&gt; Dict[str, Any]:
+        &#34;&#34;&#34;
+        Train intent prediction models at multiple prediction distances
+        
+        Args:
+            trajectories: List of trajectory objects
+            junction: Junction to analyze
+            actual_branches: Dict mapping trajectory_id -&gt; actual branch chosen
+            previous_choices: Dict mapping trajectory_id -&gt; previous junction choice
+            
+        Returns:
+            Training results and metrics
+        &#34;&#34;&#34;
+        logger.info(&#34;Training intent recognition models...&#34;)
+        
+        if previous_choices is None:
+            previous_choices = {}
+        
+        results = {
+            &#39;models_trained&#39;: {},
+            &#39;feature_importance&#39;: {},
+            &#39;cross_validation_scores&#39;: {},
+            &#39;sample_sizes&#39;: {}
+        }
+        
+        # Train one model per prediction distance
+        for dist in self.prediction_distances:
+            logger.info(f&#34;Training model for {dist} units before junction...&#34;)
+            
+            # Extract features for all trajectories
+            X_list = []
+            y_list = []
+            valid_trajectories = []
+            
+            for tr in trajectories:
+                if tr.tid not in actual_branches:
+                    continue
+                
+                prev_choice = previous_choices.get(tr.tid, None)
+                features = self.extract_features_at_distance(
+                    tr, junction, dist, prev_choice
+                )
+                
+                if features is None:
+                    continue
+                
+                X_list.append(self.features_to_array(features))
+                y_list.append(actual_branches[tr.tid])
+                valid_trajectories.append(tr.tid)
+            
+            if len(X_list) &lt; 10:
+                logger.warning(f&#34;Insufficient data for distance {dist} (only {len(X_list)} samples)&#34;)
+                continue
+            
+            X = np.vstack(X_list)
+            y = np.array(y_list)
+            
+            # Handle NaN values (impute with median)
+            nan_mask = np.isnan(X)
+            if nan_mask.any():
+                # Suppress warning when computing median of all-NaN columns
+                with warnings.catch_warnings():
+                    warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+                    col_medians = np.nanmedian(X, axis=0)
+                
+                for col in range(X.shape[1]):
+                    # If entire column is NaN, use 0
+                    if np.isnan(col_medians[col]):
+                        X[nan_mask[:, col], col] = 0.0
+                    else:
+                        X[nan_mask[:, col], col] = col_medians[col]
+            
+            # Replace any remaining inf values
+            X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+            
+            # Standardize features
+            with warnings.catch_warnings():
+                warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+                scaler = StandardScaler()
+                X_scaled = scaler.fit_transform(X)
+            
+            # Train model
+            if self.model_type == &#34;random_forest&#34;:
+                model = RandomForestClassifier(
+                    n_estimators=100,
+                    max_depth=10,
+                    min_samples_split=10,
+                    random_state=42
+                )
+            else:  # gradient_boosting
+                model = GradientBoostingClassifier(
+                    n_estimators=100,
+                    max_depth=5,
+                    learning_rate=0.1,
+                    random_state=42
+                )
+            
+            # Cross-validation
+            cv_scores = cross_val_score(model, X_scaled, y, cv=5)
+            
+            # Train on full dataset
+            model.fit(X_scaled, y)
+            
+            # Store model and scaler
+            self.models[dist] = model
+            self.scalers[dist] = scaler
+            
+            # Save model and scaler to disk
+            if self.output_dir:
+                models_dir = os.path.join(self.output_dir, &#34;models&#34;)
+                os.makedirs(models_dir, exist_ok=True)
+                
+                # Save model
+                model_path = os.path.join(models_dir, f&#34;model_{dist}.pkl&#34;)
+                import pickle
+                with open(model_path, &#39;wb&#39;) as f:
+                    pickle.dump(model, f)
+                
+                # Save scaler
+                scaler_path = os.path.join(models_dir, f&#34;scaler_{dist}.pkl&#34;)
+                with open(scaler_path, &#39;wb&#39;) as f:
+                    pickle.dump(scaler, f)
+                
+                logger.info(f&#34;  ✓ Saved model to {model_path}&#34;)
+            
+            # Feature importance
+            if hasattr(model, &#39;feature_importances_&#39;):
+                importance = model.feature_importances_
+                self.feature_importance[dist] = dict(zip(
+                    self.get_feature_names(), importance
+                ))
+            
+            # Store results
+            results[&#39;models_trained&#39;][dist] = {
+                &#39;n_samples&#39;: len(X_list),
+                &#39;n_features&#39;: X.shape[1],
+                &#39;cv_mean_accuracy&#39;: float(np.mean(cv_scores)),
+                &#39;cv_std_accuracy&#39;: float(np.std(cv_scores)),
+                &#39;valid_trajectories&#39;: valid_trajectories
+            }
+            
+            logger.info(f&#34;  ✓ Distance {dist}: Accuracy = {np.mean(cv_scores):.3f} ± {np.std(cv_scores):.3f} (n={len(X_list)})&#34;)
+        
+        results[&#39;feature_importance&#39;] = self.feature_importance
+        
+        return results
+    
+    def predict_intent(self,
+                      trajectory: Trajectory,
+                      junction: Circle,
+                      previous_choice: Optional[int] = None) -&gt; Dict[float, Dict]:
+        &#34;&#34;&#34;
+        Predict intent at multiple distances before junction
+        
+        Returns:
+            Dict mapping distance -&gt; {predicted_branch, confidence, probabilities}
+        &#34;&#34;&#34;
+        predictions = {}
+        
+        for dist in self.prediction_distances:
+            if dist not in self.models:
+                continue
+            
+            features = self.extract_features_at_distance(
+                trajectory, junction, dist, previous_choice
+            )
+            
+            if features is None:
+                continue
+            
+            X = self.features_to_array(features).reshape(1, -1)
+            
+            # Handle NaN and inf values
+            nan_mask = np.isnan(X)
+            if nan_mask.any():
+                for col in range(X.shape[1]):
+                    if nan_mask[0, col]:
+                        X[0, col] = 0.0
+            
+            # Replace any remaining inf values
+            X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+            
+            # Scale features
+            with warnings.catch_warnings():
+                warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+                X_scaled = self.scalers[dist].transform(X)
+            
+            # Predict
+            predicted_branch = int(self.models[dist].predict(X_scaled)[0])
+            probabilities = self.models[dist].predict_proba(X_scaled)[0]
+            confidence = float(np.max(probabilities))
+            
+            predictions[dist] = {
+                &#39;predicted_branch&#39;: predicted_branch,
+                &#39;confidence&#39;: confidence,
+                &#39;probabilities&#39;: dict(enumerate(probabilities)),
+                &#39;features&#39;: features
+            }
+        
+        return predictions</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.extract_features_at_distance"><code class="name flex">
+<span>def <span class="ident">extract_features_at_distance</span></span>(<span>self, trajectory: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>, junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, distance_before: float, previous_choice: Optional[int] = None) ‑> Optional[<a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures">IntentFeatures</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Extract features at a specific distance before junction</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectory</code></strong></dt>
+<dd>Trajectory object</dd>
+<dt><strong><code>junction</code></strong></dt>
+<dd>Junction circle</dd>
+<dt><strong><code>distance_before</code></strong></dt>
+<dd>How far before junction to extract features</dd>
+<dt><strong><code>previous_choice</code></strong></dt>
+<dd>Branch chosen at previous junction (if any)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extract_features_at_distance(self,
+                                 trajectory: Trajectory,
+                                 junction: Circle,
+                                 distance_before: float,
+                                 previous_choice: Optional[int] = None) -&gt; Optional[IntentFeatures]:
+    &#34;&#34;&#34;
+    Extract features at a specific distance before junction
+    
+    Args:
+        trajectory: Trajectory object
+        junction: Junction circle
+        distance_before: How far before junction to extract features
+        previous_choice: Branch chosen at previous junction (if any)
+    &#34;&#34;&#34;
+    # Find point approximately distance_before from junction
+    distances = np.sqrt((trajectory.x - junction.cx)**2 + 
+                       (trajectory.z - junction.cz)**2)
+    
+    # Find entry point into junction
+    inside = distances &lt;= junction.r
+    if not inside.any():
+        return None
+        
+    entry_idx = int(np.argmax(inside))
+    
+    # Find point at target distance before entry
+    target_distance = junction.r + distance_before
+    before_entry = distances[:entry_idx]
+    
+    if len(before_entry) &lt; 10:  # Need sufficient history
+        return None
+        
+    # Find closest point to target distance
+    dist_diff = np.abs(before_entry - target_distance)
+    feature_idx = int(np.argmin(dist_diff))
+    
+    if feature_idx &lt; 5:  # Need some history for derivatives
+        return None
+        
+    # Extract features
+    features = self._compute_features(
+        trajectory, junction, feature_idx, entry_idx, previous_choice
+    )
+    
+    return features</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.features_to_array"><code class="name flex">
+<span>def <span class="ident">features_to_array</span></span>(<span>self, features: <a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures">IntentFeatures</a>) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert IntentFeatures to numpy array for ML</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def features_to_array(self, features: IntentFeatures) -&gt; np.ndarray:
+    &#34;&#34;&#34;Convert IntentFeatures to numpy array for ML&#34;&#34;&#34;
+    # Build feature vector, replacing None with NaN
+    # Also replace inf values with NaN to avoid sklearn warnings
+    feature_vector = [
+        features.distance_to_junction,
+        features.approach_angle,
+        features.lateral_offset,
+        features.current_speed,
+        features.speed_change_rate,
+        features.curvature,
+        features.sinuosity,
+        features.time_to_junction,
+        features.gaze_angle if features.gaze_angle is not None else np.nan,
+        features.gaze_alignment if features.gaze_alignment is not None else np.nan,
+        features.head_rotation_rate if features.head_rotation_rate is not None else np.nan,
+        features.heart_rate if features.heart_rate is not None else np.nan,
+        features.heart_rate_trend if features.heart_rate_trend is not None else np.nan,
+        features.pupil_dilation if features.pupil_dilation is not None else np.nan,
+        features.pupil_change_rate if features.pupil_change_rate is not None else np.nan,
+        features.previous_junction_choice if features.previous_junction_choice is not None else -1,
+    ]
+    
+    arr = np.array(feature_vector, dtype=float)
+    # Replace inf with nan to avoid sklearn warnings
+    arr[~np.isfinite(arr)] = np.nan
+    return arr</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.get_feature_names"><code class="name flex">
+<span>def <span class="ident">get_feature_names</span></span>(<span>self) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get ordered list of feature names</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_feature_names(self) -&gt; List[str]:
+    &#34;&#34;&#34;Get ordered list of feature names&#34;&#34;&#34;
+    return [
+        &#39;distance_to_junction&#39;,
+        &#39;approach_angle&#39;,
+        &#39;lateral_offset&#39;,
+        &#39;current_speed&#39;,
+        &#39;speed_change_rate&#39;,
+        &#39;curvature&#39;,
+        &#39;sinuosity&#39;,
+        &#39;time_to_junction&#39;,
+        &#39;gaze_angle&#39;,
+        &#39;gaze_alignment&#39;,
+        &#39;head_rotation_rate&#39;,
+        &#39;heart_rate&#39;,
+        &#39;heart_rate_trend&#39;,
+        &#39;pupil_dilation&#39;,
+        &#39;pupil_change_rate&#39;,
+        &#39;previous_junction_choice&#39;,
+    ]</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.predict_intent"><code class="name flex">
+<span>def <span class="ident">predict_intent</span></span>(<span>self, trajectory: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>, junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, previous_choice: Optional[int] = None) ‑> Dict[float, Dict]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Predict intent at multiple distances before junction</p>
+<h2 id="returns">Returns</h2>
+<p>Dict mapping distance -&gt; {predicted_branch, confidence, probabilities}</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def predict_intent(self,
+                  trajectory: Trajectory,
+                  junction: Circle,
+                  previous_choice: Optional[int] = None) -&gt; Dict[float, Dict]:
+    &#34;&#34;&#34;
+    Predict intent at multiple distances before junction
+    
+    Returns:
+        Dict mapping distance -&gt; {predicted_branch, confidence, probabilities}
+    &#34;&#34;&#34;
+    predictions = {}
+    
+    for dist in self.prediction_distances:
+        if dist not in self.models:
+            continue
+        
+        features = self.extract_features_at_distance(
+            trajectory, junction, dist, previous_choice
+        )
+        
+        if features is None:
+            continue
+        
+        X = self.features_to_array(features).reshape(1, -1)
+        
+        # Handle NaN and inf values
+        nan_mask = np.isnan(X)
+        if nan_mask.any():
+            for col in range(X.shape[1]):
+                if nan_mask[0, col]:
+                    X[0, col] = 0.0
+        
+        # Replace any remaining inf values
+        X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+        
+        # Scale features
+        with warnings.catch_warnings():
+            warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+            X_scaled = self.scalers[dist].transform(X)
+        
+        # Predict
+        predicted_branch = int(self.models[dist].predict(X_scaled)[0])
+        probabilities = self.models[dist].predict_proba(X_scaled)[0]
+        confidence = float(np.max(probabilities))
+        
+        predictions[dist] = {
+            &#39;predicted_branch&#39;: predicted_branch,
+            &#39;confidence&#39;: confidence,
+            &#39;probabilities&#39;: dict(enumerate(probabilities)),
+            &#39;features&#39;: features
+        }
+    
+    return predictions</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.train_models"><code class="name flex">
+<span>def <span class="ident">train_models</span></span>(<span>self, trajectories: List[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>], junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, actual_branches: Dict[str, int], previous_choices: Optional[Dict[str, int]] = None) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Train intent prediction models at multiple prediction distances</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories</code></strong></dt>
+<dd>List of trajectory objects</dd>
+<dt><strong><code>junction</code></strong></dt>
+<dd>Junction to analyze</dd>
+<dt><strong><code>actual_branches</code></strong></dt>
+<dd>Dict mapping trajectory_id -&gt; actual branch chosen</dd>
+<dt><strong><code>previous_choices</code></strong></dt>
+<dd>Dict mapping trajectory_id -&gt; previous junction choice</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Training results and metrics</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def train_models(self,
+                trajectories: List[Trajectory],
+                junction: Circle,
+                actual_branches: Dict[str, int],
+                previous_choices: Optional[Dict[str, int]] = None) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;
+    Train intent prediction models at multiple prediction distances
+    
+    Args:
+        trajectories: List of trajectory objects
+        junction: Junction to analyze
+        actual_branches: Dict mapping trajectory_id -&gt; actual branch chosen
+        previous_choices: Dict mapping trajectory_id -&gt; previous junction choice
+        
+    Returns:
+        Training results and metrics
+    &#34;&#34;&#34;
+    logger.info(&#34;Training intent recognition models...&#34;)
+    
+    if previous_choices is None:
+        previous_choices = {}
+    
+    results = {
+        &#39;models_trained&#39;: {},
+        &#39;feature_importance&#39;: {},
+        &#39;cross_validation_scores&#39;: {},
+        &#39;sample_sizes&#39;: {}
+    }
+    
+    # Train one model per prediction distance
+    for dist in self.prediction_distances:
+        logger.info(f&#34;Training model for {dist} units before junction...&#34;)
+        
+        # Extract features for all trajectories
+        X_list = []
+        y_list = []
+        valid_trajectories = []
+        
+        for tr in trajectories:
+            if tr.tid not in actual_branches:
+                continue
+            
+            prev_choice = previous_choices.get(tr.tid, None)
+            features = self.extract_features_at_distance(
+                tr, junction, dist, prev_choice
+            )
+            
+            if features is None:
+                continue
+            
+            X_list.append(self.features_to_array(features))
+            y_list.append(actual_branches[tr.tid])
+            valid_trajectories.append(tr.tid)
+        
+        if len(X_list) &lt; 10:
+            logger.warning(f&#34;Insufficient data for distance {dist} (only {len(X_list)} samples)&#34;)
+            continue
+        
+        X = np.vstack(X_list)
+        y = np.array(y_list)
+        
+        # Handle NaN values (impute with median)
+        nan_mask = np.isnan(X)
+        if nan_mask.any():
+            # Suppress warning when computing median of all-NaN columns
+            with warnings.catch_warnings():
+                warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+                col_medians = np.nanmedian(X, axis=0)
+            
+            for col in range(X.shape[1]):
+                # If entire column is NaN, use 0
+                if np.isnan(col_medians[col]):
+                    X[nan_mask[:, col], col] = 0.0
+                else:
+                    X[nan_mask[:, col], col] = col_medians[col]
+        
+        # Replace any remaining inf values
+        X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+        
+        # Standardize features
+        with warnings.catch_warnings():
+            warnings.simplefilter(&#34;ignore&#34;, RuntimeWarning)
+            scaler = StandardScaler()
+            X_scaled = scaler.fit_transform(X)
+        
+        # Train model
+        if self.model_type == &#34;random_forest&#34;:
+            model = RandomForestClassifier(
+                n_estimators=100,
+                max_depth=10,
+                min_samples_split=10,
+                random_state=42
+            )
+        else:  # gradient_boosting
+            model = GradientBoostingClassifier(
+                n_estimators=100,
+                max_depth=5,
+                learning_rate=0.1,
+                random_state=42
+            )
+        
+        # Cross-validation
+        cv_scores = cross_val_score(model, X_scaled, y, cv=5)
+        
+        # Train on full dataset
+        model.fit(X_scaled, y)
+        
+        # Store model and scaler
+        self.models[dist] = model
+        self.scalers[dist] = scaler
+        
+        # Save model and scaler to disk
+        if self.output_dir:
+            models_dir = os.path.join(self.output_dir, &#34;models&#34;)
+            os.makedirs(models_dir, exist_ok=True)
+            
+            # Save model
+            model_path = os.path.join(models_dir, f&#34;model_{dist}.pkl&#34;)
+            import pickle
+            with open(model_path, &#39;wb&#39;) as f:
+                pickle.dump(model, f)
+            
+            # Save scaler
+            scaler_path = os.path.join(models_dir, f&#34;scaler_{dist}.pkl&#34;)
+            with open(scaler_path, &#39;wb&#39;) as f:
+                pickle.dump(scaler, f)
+            
+            logger.info(f&#34;  ✓ Saved model to {model_path}&#34;)
+        
+        # Feature importance
+        if hasattr(model, &#39;feature_importances_&#39;):
+            importance = model.feature_importances_
+            self.feature_importance[dist] = dict(zip(
+                self.get_feature_names(), importance
+            ))
+        
+        # Store results
+        results[&#39;models_trained&#39;][dist] = {
+            &#39;n_samples&#39;: len(X_list),
+            &#39;n_features&#39;: X.shape[1],
+            &#39;cv_mean_accuracy&#39;: float(np.mean(cv_scores)),
+            &#39;cv_std_accuracy&#39;: float(np.std(cv_scores)),
+            &#39;valid_trajectories&#39;: valid_trajectories
+        }
+        
+        logger.info(f&#34;  ✓ Distance {dist}: Accuracy = {np.mean(cv_scores):.3f} ± {np.std(cv_scores):.3f} (n={len(X_list)})&#34;)
+    
+    results[&#39;feature_importance&#39;] = self.feature_importance
+    
+    return results</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="route_analyzer_ruedi99ms" href="index.html">route_analyzer_ruedi99ms</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.analyze_intent_recognition" href="#route_analyzer_ruedi99ms.ra_intent_recognition.analyze_intent_recognition">analyze_intent_recognition</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures">IntentFeatures</a></code></h4>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.approach_angle" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.approach_angle">approach_angle</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.current_speed" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.current_speed">current_speed</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.curvature" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.curvature">curvature</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.distance_to_junction" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.distance_to_junction">distance_to_junction</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.gaze_alignment" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.gaze_alignment">gaze_alignment</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.gaze_angle" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.gaze_angle">gaze_angle</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.head_rotation_rate" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.head_rotation_rate">head_rotation_rate</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.heart_rate" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.heart_rate">heart_rate</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.heart_rate_trend" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.heart_rate_trend">heart_rate_trend</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.lateral_offset" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.lateral_offset">lateral_offset</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.previous_junction_choice" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.previous_junction_choice">previous_junction_choice</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.pupil_change_rate" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.pupil_change_rate">pupil_change_rate</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.pupil_dilation" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.pupil_dilation">pupil_dilation</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.sinuosity" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.sinuosity">sinuosity</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.speed_change_rate" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.speed_change_rate">speed_change_rate</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.time_to_junction" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.time_to_junction">time_to_junction</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.trajectory_id" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentFeatures.trajectory_id">trajectory_id</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer">IntentRecognitionAnalyzer</a></code></h4>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.extract_features_at_distance" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.extract_features_at_distance">extract_features_at_distance</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.features_to_array" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.features_to_array">features_to_array</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.get_feature_names" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.get_feature_names">get_feature_names</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.predict_intent" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.predict_intent">predict_intent</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.train_models" href="#route_analyzer_ruedi99ms.ra_intent_recognition.IntentRecognitionAnalyzer.train_models">train_models</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
