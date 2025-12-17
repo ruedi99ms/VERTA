@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>route_analyzer_ruedi99ms.ra_metrics API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>route_analyzer_ruedi99ms.ra_metrics</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># ------------------------------
+# Metrics
+# ------------------------------
+
+from typing import Tuple, Optional
+import numpy as np
+import pandas as pd
+
+try:
+    from .ra_geometry import Circle, Rect
+    from .ra_data_loader import Trajectory
+except ImportError:
+    from ra_geometry import Circle, Rect
+    from ra_data_loader import Trajectory
+
+
+def _safe_convert_time_data(t_data: np.ndarray) -&gt; np.ndarray:
+    &#34;&#34;&#34;
+    Safely convert time data to numeric format, handling string inputs and various formats.
+    
+    Args:
+        t_data: Time data array (may be strings or numeric)
+        
+    Returns:
+        Numeric time data array, or None if conversion fails
+    &#34;&#34;&#34;
+    if t_data is None:
+        return None
+    
+    try:
+        # If already numeric, return as is
+        if t_data.dtype.kind in [&#39;i&#39;, &#39;f&#39;]:  # Integer or float
+            return t_data
+        
+        # Try to convert string/object data to numeric
+        if t_data.dtype.kind in [&#39;U&#39;, &#39;S&#39;, &#39;O&#39;]:  # String or object type
+            # First, try direct conversion
+            t_numeric = pd.to_numeric(t_data, errors=&#39;coerce&#39;)
+            
+            # Check if conversion was successful
+            if np.all(np.isnan(t_numeric)):
+                # Try timestamp format (HH:MM:SS.mmm)
+                t_numeric = _convert_timestamp_format(t_data)
+                if t_numeric is not None:
+                    return t_numeric
+                
+                # Try generic string cleaning
+                t_numeric = _convert_generic_string_format(t_data)
+                if t_numeric is not None:
+                    return t_numeric
+            
+            return t_numeric
+        
+        return t_data
+    except (ValueError, TypeError, AttributeError):
+        return None
+
+
+def _convert_timestamp_format(t_data: np.ndarray) -&gt; Optional[np.ndarray]:
+    &#34;&#34;&#34;Convert timestamp format (HH:MM:SS.mmm) to seconds.&#34;&#34;&#34;
+    import re
+    timestamp_pattern = re.compile(r&#39;(\d{2}):(\d{2}):(\d{2})\.(\d{3})&#39;)
+    
+    try:
+        cleaned = []
+        for val in t_data:
+            if pd.isna(val) or val == &#39;&#39;:
+                cleaned.append(np.nan)
+                continue
+            
+            val_str = str(val).strip()
+            match = timestamp_pattern.match(val_str)
+            if match:
+                hours, minutes, seconds, milliseconds = match.groups()
+                total_seconds = float(hours) * 3600 + float(minutes) * 60 + float(seconds) + float(milliseconds) / 1000
+                cleaned.append(total_seconds)
+            else:
+                cleaned.append(np.nan)
+        
+        t_numeric = np.array(cleaned)
+        return t_numeric if np.any(~np.isnan(t_numeric)) else None
+    except (ValueError, TypeError):
+        return None
+
+
+def _convert_generic_string_format(t_data: np.ndarray) -&gt; Optional[np.ndarray]:
+    &#34;&#34;&#34;Convert generic string format to numeric.&#34;&#34;&#34;
+    import re
+    
+    try:
+        t_cleaned = []
+        for val in t_data:
+            if isinstance(val, str):
+                # Remove common prefixes/suffixes and quotes
+                cleaned = val.strip().strip(&#39;&#34;\&#39;&#39;)
+                # Try to extract number from strings like &#34;Time: 1.23&#34; or &#34;1.23s&#34;
+                match = re.search(r&#39;(\d+\.?\d*)&#39;, cleaned)
+                if match:
+                    cleaned = match.group(1)
+                t_cleaned.append(cleaned)
+            else:
+                t_cleaned.append(val)
+        
+        # Try conversion again
+        t_numeric = pd.to_numeric(t_cleaned, errors=&#39;coerce&#39;)
+        return t_numeric if np.any(~np.isnan(t_numeric)) else None
+    except (ValueError, TypeError):
+        return None
+
+
+def time_to_distance_after_junction(tr: Trajectory,
+                                    junction: Circle,
+                                    path_length: float) -&gt; float:
+    &#34;&#34;&#34;Time (seconds) from first entering `junction` until cumulative traveled distance along the path reaches `path_length`. Returns NaN if no time data or cannot be computed.
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return float(&#34;nan&#34;)
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return float(&#34;nan&#34;)
+    
+    dist = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = dist &lt;= junction.r
+    if inside.any():
+        start = int(np.argmax(inside))
+    else:
+        start = int(np.argmin(dist))
+    dx = np.diff(tr.x[start:])
+    dz = np.diff(tr.z[start:])
+    seg = np.hypot(dx, dz)
+    if len(seg) == 0:
+        return float(&#34;nan&#34;)
+    cum = np.cumsum(seg)
+    mask = cum &gt;= path_length
+    if not mask.any():
+        return float(&#34;nan&#34;)
+    reach = int(np.argmax(mask))
+    return float(t_numeric[start + reach] - t_numeric[start])
+
+def time_from_junction_to_radial_exit(
+    tr: Trajectory,
+    junction: Circle,
+    r_outer: float,
+    window: int = 5,
+    min_outward: float = 0.0,
+) -&gt; float:
+    &#34;&#34;&#34;
+    Time (seconds) from first entering `junction` until the trajectory crosses r_outer with a non-negative (or &gt;= min_outward) outward trend. NaN if no time or no crossing.
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return float(&#34;nan&#34;)
+
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return float(&#34;nan&#34;)
+
+    # reuse your existing index finder but with a configurable outward threshold
+    r = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = r &lt;= junction.r
+    start = int(np.argmax(inside)) if inside.any() else int(np.argmin(r))
+
+    i_cross = None
+    for i in range(start + 1, len(r)):
+        if r[i] &gt;= r_outer:
+            j0 = max(start + 1, i - window)
+            seg = r[j0:i+1]
+            if seg.size &lt; 2 or float(np.nanmean(np.diff(seg))) &gt;= float(min_outward):
+                i_cross = i
+                break
+
+    if i_cross is None:
+        return float(&#34;nan&#34;)
+    return float(t_numeric[i_cross] - t_numeric[start])
+
+def time_between_regions(tr: Trajectory,
+                         A: Rect | Circle,
+                         B: Rect | Circle) -&gt; Tuple[float, float, float]:
+    &#34;&#34;&#34;Return (t_A, t_B, dt) where t_A is the first timestamp when trajectory is in region A, t_B for region B, and dt = t_B - t_A. Returns (nan, nan, nan) if timestamps missing or sequence invalid.
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    inA = A.contains(tr.x, tr.z)
+    inB = B.contains(tr.x, tr.z)
+    iA = int(np.argmax(inA)) if inA.any() else None
+    iB = int(np.argmax(inB)) if inB.any() else None
+    if iA is not None and iB is not None and iB &gt; iA:
+        return float(t_numeric[iA]), float(t_numeric[iB]), float(t_numeric[iB] - t_numeric[iA])
+    return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+
+def shannon_entropy(summary: pd.DataFrame) -&gt; float:
+    &#34;&#34;&#34;Compute entropy (nats) from a branch summary with a &#39;percent&#39; column.&#34;&#34;&#34;
+    if len(summary) == 0:
+        return float(&#34;nan&#34;)
+    p = summary[&#34;percent&#34;].to_numpy(dtype=float) / 100.0
+    p = p[p &gt; 0]
+    if len(p) == 0:
+        return 0.0
+    return float(-np.sum(p * np.log(p)))
+
+def compute_basic_trajectory_metrics(tr: Trajectory) -&gt; dict:
+    &#34;&#34;&#34;
+    Compute basic trajectory metrics: total time, total distance, and average speed.
+    
+    Args:
+        tr: Trajectory object
+        
+    Returns:
+        dict with keys: total_time, total_distance, average_speed
+    &#34;&#34;&#34;
+    metrics = {
+        &#34;total_time&#34;: 0.0,
+        &#34;total_distance&#34;: 0.0,
+        &#34;average_speed&#34;: 0.0
+    }
+    
+    # Compute total distance
+    if len(tr.x) &gt; 1:
+        # Filter out NaN values
+        valid_mask = ~(np.isnan(tr.x) | np.isnan(tr.z))
+        if not valid_mask.any():
+            # All values are NaN
+            metrics[&#34;total_distance&#34;] = 0.0
+        else:
+            # Use only valid (non-NaN) points
+            x_valid = tr.x[valid_mask]
+            z_valid = tr.z[valid_mask]
+            
+            if len(x_valid) &gt; 1:
+                dx = np.diff(x_valid)
+                dz = np.diff(z_valid)
+                segments = np.hypot(dx, dz)
+                total_distance = float(np.sum(segments))
+                metrics[&#34;total_distance&#34;] = total_distance
+            else:
+                metrics[&#34;total_distance&#34;] = 0.0
+    
+    # Compute total time and average speed
+    if tr.t is not None and len(tr.t) &gt; 1:
+        # Safely convert time data to numeric
+        t_numeric = _safe_convert_time_data(tr.t)
+        if t_numeric is not None:
+            total_time = float(t_numeric[-1] - t_numeric[0])
+            metrics[&#34;total_time&#34;] = total_time
+            
+            if total_time &gt; 0 and metrics[&#34;total_distance&#34;] &gt; 0:
+                metrics[&#34;average_speed&#34;] = metrics[&#34;total_distance&#34;] / total_time
+    
+    return metrics
+
+
+def speed_through_junction(tr: Trajectory,
+                          junction: Circle,
+                          decision_mode: str = &#34;pathlen&#34;,
+                          path_length: float = 100.0,
+                          r_outer: Optional[float] = None,
+                          window: int = 5,
+                          min_outward: float = 0.0) -&gt; Tuple[float, str]:
+    &#34;&#34;&#34;
+    Calculate average speed through junction based on decision mode.
+    
+    Args:
+        tr: Trajectory object
+        junction: Junction circle
+        decision_mode: &#34;pathlen&#34;, &#34;radial&#34;, or &#34;hybrid&#34;
+        path_length: Path length for pathlen mode
+        r_outer: Outer radius for radial mode
+        window: Window size for radial mode
+        min_outward: Minimum outward movement for radial mode
+        
+    Returns:
+        Tuple of (average_speed, mode_used)
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return (float(&#34;nan&#34;), &#34;no_time_data&#34;)
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return (float(&#34;nan&#34;), &#34;no_time_data&#34;)
+    
+    # Find junction entry point
+    dist = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = dist &lt;= junction.r
+    if inside.any():
+        start_idx = int(np.argmax(inside))
+    else:
+        start_idx = int(np.argmin(dist))
+    
+    # Determine end point based on decision mode
+    end_idx = None
+    mode_used = decision_mode
+    
+    if decision_mode == &#34;pathlen&#34;:
+        # Calculate cumulative distance from start
+        dx = np.diff(tr.x[start_idx:])
+        dz = np.diff(tr.z[start_idx:])
+        seg = np.hypot(dx, dz)
+        if len(seg) == 0:
+            return (float(&#34;nan&#34;), &#34;no_movement&#34;)
+        
+        cum = np.cumsum(seg)
+        mask = cum &gt;= path_length
+        if mask.any():
+            end_idx = start_idx + int(np.argmax(mask)) + 1
+        else:
+            return (float(&#34;nan&#34;), &#34;pathlen_not_reached&#34;)
+    
+    elif decision_mode == &#34;radial&#34;:
+        # Find radial exit point
+        rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+        
+        for i in range(start_idx + 1, len(dist)):
+            if dist[i] &gt;= rout:
+                j0 = max(start_idx + 1, i - window)
+                seg = dist[j0:i+1]
+                if seg.size &gt;= 2 and float(np.nanmean(np.diff(seg))) &gt;= min_outward:
+                    end_idx = i
+                    break
+        
+        if end_idx is None:
+            return (float(&#34;nan&#34;), &#34;radial_not_reached&#34;)
+    
+    elif decision_mode == &#34;hybrid&#34;:
+        # Try radial first, fall back to pathlen
+        rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+        
+        # Try radial
+        for i in range(start_idx + 1, len(dist)):
+            if dist[i] &gt;= rout:
+                j0 = max(start_idx + 1, i - window)
+                seg = dist[j0:i+1]
+                if seg.size &gt;= 2 and float(np.nanmean(np.diff(seg))) &gt;= min_outward:
+                    end_idx = i
+                    mode_used = &#34;radial&#34;
+                    break
+        
+        # Fall back to pathlen if radial failed
+        if end_idx is None:
+            dx = np.diff(tr.x[start_idx:])
+            dz = np.diff(tr.z[start_idx:])
+            seg = np.hypot(dx, dz)
+            if len(seg) &gt; 0:
+                cum = np.cumsum(seg)
+                mask = cum &gt;= path_length
+                if mask.any():
+                    end_idx = start_idx + int(np.argmax(mask)) + 1
+                    mode_used = &#34;pathlen&#34;
+                else:
+                    return (float(&#34;nan&#34;), &#34;hybrid_not_reached&#34;)
+            else:
+                return (float(&#34;nan&#34;), &#34;hybrid_no_movement&#34;)
+    
+    # Calculate speed if we have valid start and end points
+    if end_idx is not None and end_idx &gt; start_idx:
+        # Calculate distance traveled
+        x_segment = tr.x[start_idx:end_idx+1]
+        z_segment = tr.z[start_idx:end_idx+1]
+        
+        if len(x_segment) &gt; 1:
+            dx = np.diff(x_segment)
+            dz = np.diff(z_segment)
+            segments = np.hypot(dx, dz)
+            total_distance = float(np.sum(segments))
+            
+            # Calculate time elapsed
+            total_time = float(t_numeric[end_idx] - t_numeric[start_idx])
+            
+            if total_time &gt; 0:
+                average_speed = total_distance / total_time
+                return (average_speed, mode_used)
+            else:
+                return (float(&#34;nan&#34;), f&#34;{mode_used}_zero_time&#34;)
+        else:
+            return (float(&#34;nan&#34;), f&#34;{mode_used}_single_point&#34;)
+    
+    return (float(&#34;nan&#34;), f&#34;{mode_used}_invalid&#34;)
+
+
+def junction_transit_speed(tr: Trajectory,
+                          junction: Circle) -&gt; Tuple[float, float, float]:
+    &#34;&#34;&#34;
+    Calculate speed metrics for junction transit: entry speed, exit speed, and average speed.
+    
+    Args:
+        tr: Trajectory object
+        junction: Junction circle
+        
+    Returns:
+        Tuple of (entry_speed, exit_speed, average_speed)
+    &#34;&#34;&#34;
+    if tr.t is None or len(tr.x) &lt; 3:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Find junction entry and exit points
+    dist = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = dist &lt;= junction.r
+    
+    if not inside.any():
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Find entry point (first time inside)
+    entry_idx = int(np.argmax(inside))
+    
+    # Find exit point (last time inside)
+    exit_idx = len(inside) - 1 - int(np.argmax(inside[::-1]))
+    
+    if exit_idx &lt;= entry_idx:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Calculate entry speed (average speed in 2-5 second window before entering)
+    entry_speed = float(&#34;nan&#34;)
+    if entry_idx &gt; 0:
+        # Find start of 2-5 second window before entry
+        entry_time = t_numeric[entry_idx]
+        window_start_time = entry_time - 5.0  # 5 seconds before
+        window_end_time = entry_time - 2.0   # 2 seconds before
+        
+        # Find indices for the time window
+        window_mask = (t_numeric &gt;= window_start_time) &amp; (t_numeric &lt;= window_end_time)
+        window_indices = np.where(window_mask)[0]
+        
+        if len(window_indices) &gt; 1:
+            # Calculate average speed in this window
+            x_window = tr.x[window_indices]
+            z_window = tr.z[window_indices]
+            t_window = t_numeric[window_indices]
+            
+            if len(x_window) &gt; 1:
+                dx = np.diff(x_window)
+                dz = np.diff(z_window)
+                segments = np.hypot(dx, dz)
+                total_distance = float(np.sum(segments))
+                total_time = float(t_window[-1] - t_window[0])
+                
+                if total_time &gt; 0:
+                    entry_speed = total_distance / total_time
+    
+    # Calculate exit speed (average speed in 2-5 second window after exiting)
+    exit_speed = float(&#34;nan&#34;)
+    if exit_idx &lt; len(tr.x) - 1:
+        # Find start of 2-5 second window after exit
+        exit_time = t_numeric[exit_idx]
+        window_start_time = exit_time + 2.0   # 2 seconds after
+        window_end_time = exit_time + 5.0     # 5 seconds after
+        
+        # Find indices for the time window
+        window_mask = (t_numeric &gt;= window_start_time) &amp; (t_numeric &lt;= window_end_time)
+        window_indices = np.where(window_mask)[0]
+        
+        if len(window_indices) &gt; 1:
+            # Calculate average speed in this window
+            x_window = tr.x[window_indices]
+            z_window = tr.z[window_indices]
+            t_window = t_numeric[window_indices]
+            
+            if len(x_window) &gt; 1:
+                dx = np.diff(x_window)
+                dz = np.diff(z_window)
+                segments = np.hypot(dx, dz)
+                total_distance = float(np.sum(segments))
+                total_time = float(t_window[-1] - t_window[0])
+                
+                if total_time &gt; 0:
+                    exit_speed = total_distance / total_time
+    
+    # Calculate average speed through junction
+    average_speed = float(&#34;nan&#34;)
+    if exit_idx &gt; entry_idx:
+        # Calculate total distance through junction
+        x_segment = tr.x[entry_idx:exit_idx+1]
+        z_segment = tr.z[entry_idx:exit_idx+1]
+        
+        if len(x_segment) &gt; 1:
+            dx = np.diff(x_segment)
+            dz = np.diff(z_segment)
+            segments = np.hypot(dx, dz)
+            total_distance = float(np.sum(segments))
+            
+            # Calculate total time through junction
+            total_time = t_numeric[exit_idx] - t_numeric[entry_idx]
+            
+            if total_time &gt; 0:
+                average_speed = total_distance / total_time
+    
+    return (entry_speed, exit_speed, average_speed)
+
+
+def _timing_for_traj(
+    tr: Trajectory,
+    junction: Circle,
+    decision_mode: str,
+    distance: float,
+    r_outer: float | None,
+    trend_window: int,
+    min_outward: float,
+) -&gt; tuple[float, str]:
+    &#34;&#34;&#34;
+    Returns (time_value_seconds, mode_used).
+    - pathlen: junction entry -&gt; reach `distance` of walked path
+    - radial:  junction entry -&gt; first intercept of r_outer with outward trend
+    - hybrid:  try radial first, fall back to pathlen
+    &#34;&#34;&#34;
+    if decision_mode == &#34;pathlen&#34;:
+        return (
+            time_to_distance_after_junction(tr, junction, path_length=float(distance)),
+            &#34;pathlen&#34;,
+        )
+
+    # radial (or hybrid attempt): need a sensible outer radius
+    rout = None
+    if r_outer is not None and float(r_outer) &gt; float(junction.r):
+        rout = float(r_outer)
+    else:
+        # soft default if user forgot to pass r_outer
+        rout = float(junction.r) + 10.0
+
+    t_rad = time_from_junction_to_radial_exit(
+        tr,
+        junction,
+        r_outer=rout,
+        window=int(trend_window),
+        min_outward=float(min_outward),
+    )
+    if decision_mode == &#34;radial&#34;:
+        return (t_rad, &#34;radial&#34;)
+
+    # hybrid: radial if it worked, else pathlen
+    if not (t_rad is None or (isinstance(t_rad, float) and (t_rad != t_rad))):  # not NaN
+        return (t_rad, &#34;radial&#34;)
+    return (
+        time_to_distance_after_junction(tr, junction, path_length=float(distance)),
+        &#34;pathlen&#34;,
+    )</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_metrics.compute_basic_trajectory_metrics"><code class="name flex">
+<span>def <span class="ident">compute_basic_trajectory_metrics</span></span>(<span>tr: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute basic trajectory metrics: total time, total distance, and average speed.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>tr</code></strong></dt>
+<dd>Trajectory object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict with keys</code></dt>
+<dd>total_time, total_distance, average_speed</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_basic_trajectory_metrics(tr: Trajectory) -&gt; dict:
+    &#34;&#34;&#34;
+    Compute basic trajectory metrics: total time, total distance, and average speed.
+    
+    Args:
+        tr: Trajectory object
+        
+    Returns:
+        dict with keys: total_time, total_distance, average_speed
+    &#34;&#34;&#34;
+    metrics = {
+        &#34;total_time&#34;: 0.0,
+        &#34;total_distance&#34;: 0.0,
+        &#34;average_speed&#34;: 0.0
+    }
+    
+    # Compute total distance
+    if len(tr.x) &gt; 1:
+        # Filter out NaN values
+        valid_mask = ~(np.isnan(tr.x) | np.isnan(tr.z))
+        if not valid_mask.any():
+            # All values are NaN
+            metrics[&#34;total_distance&#34;] = 0.0
+        else:
+            # Use only valid (non-NaN) points
+            x_valid = tr.x[valid_mask]
+            z_valid = tr.z[valid_mask]
+            
+            if len(x_valid) &gt; 1:
+                dx = np.diff(x_valid)
+                dz = np.diff(z_valid)
+                segments = np.hypot(dx, dz)
+                total_distance = float(np.sum(segments))
+                metrics[&#34;total_distance&#34;] = total_distance
+            else:
+                metrics[&#34;total_distance&#34;] = 0.0
+    
+    # Compute total time and average speed
+    if tr.t is not None and len(tr.t) &gt; 1:
+        # Safely convert time data to numeric
+        t_numeric = _safe_convert_time_data(tr.t)
+        if t_numeric is not None:
+            total_time = float(t_numeric[-1] - t_numeric[0])
+            metrics[&#34;total_time&#34;] = total_time
+            
+            if total_time &gt; 0 and metrics[&#34;total_distance&#34;] &gt; 0:
+                metrics[&#34;average_speed&#34;] = metrics[&#34;total_distance&#34;] / total_time
+    
+    return metrics</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_metrics.junction_transit_speed"><code class="name flex">
+<span>def <span class="ident">junction_transit_speed</span></span>(<span>tr: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>, junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>) ‑> Tuple[float, float, float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate speed metrics for junction transit: entry speed, exit speed, and average speed.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>tr</code></strong></dt>
+<dd>Trajectory object</dd>
+<dt><strong><code>junction</code></strong></dt>
+<dd>Junction circle</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Tuple of (entry_speed, exit_speed, average_speed)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def junction_transit_speed(tr: Trajectory,
+                          junction: Circle) -&gt; Tuple[float, float, float]:
+    &#34;&#34;&#34;
+    Calculate speed metrics for junction transit: entry speed, exit speed, and average speed.
+    
+    Args:
+        tr: Trajectory object
+        junction: Junction circle
+        
+    Returns:
+        Tuple of (entry_speed, exit_speed, average_speed)
+    &#34;&#34;&#34;
+    if tr.t is None or len(tr.x) &lt; 3:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Find junction entry and exit points
+    dist = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = dist &lt;= junction.r
+    
+    if not inside.any():
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Find entry point (first time inside)
+    entry_idx = int(np.argmax(inside))
+    
+    # Find exit point (last time inside)
+    exit_idx = len(inside) - 1 - int(np.argmax(inside[::-1]))
+    
+    if exit_idx &lt;= entry_idx:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Calculate entry speed (average speed in 2-5 second window before entering)
+    entry_speed = float(&#34;nan&#34;)
+    if entry_idx &gt; 0:
+        # Find start of 2-5 second window before entry
+        entry_time = t_numeric[entry_idx]
+        window_start_time = entry_time - 5.0  # 5 seconds before
+        window_end_time = entry_time - 2.0   # 2 seconds before
+        
+        # Find indices for the time window
+        window_mask = (t_numeric &gt;= window_start_time) &amp; (t_numeric &lt;= window_end_time)
+        window_indices = np.where(window_mask)[0]
+        
+        if len(window_indices) &gt; 1:
+            # Calculate average speed in this window
+            x_window = tr.x[window_indices]
+            z_window = tr.z[window_indices]
+            t_window = t_numeric[window_indices]
+            
+            if len(x_window) &gt; 1:
+                dx = np.diff(x_window)
+                dz = np.diff(z_window)
+                segments = np.hypot(dx, dz)
+                total_distance = float(np.sum(segments))
+                total_time = float(t_window[-1] - t_window[0])
+                
+                if total_time &gt; 0:
+                    entry_speed = total_distance / total_time
+    
+    # Calculate exit speed (average speed in 2-5 second window after exiting)
+    exit_speed = float(&#34;nan&#34;)
+    if exit_idx &lt; len(tr.x) - 1:
+        # Find start of 2-5 second window after exit
+        exit_time = t_numeric[exit_idx]
+        window_start_time = exit_time + 2.0   # 2 seconds after
+        window_end_time = exit_time + 5.0     # 5 seconds after
+        
+        # Find indices for the time window
+        window_mask = (t_numeric &gt;= window_start_time) &amp; (t_numeric &lt;= window_end_time)
+        window_indices = np.where(window_mask)[0]
+        
+        if len(window_indices) &gt; 1:
+            # Calculate average speed in this window
+            x_window = tr.x[window_indices]
+            z_window = tr.z[window_indices]
+            t_window = t_numeric[window_indices]
+            
+            if len(x_window) &gt; 1:
+                dx = np.diff(x_window)
+                dz = np.diff(z_window)
+                segments = np.hypot(dx, dz)
+                total_distance = float(np.sum(segments))
+                total_time = float(t_window[-1] - t_window[0])
+                
+                if total_time &gt; 0:
+                    exit_speed = total_distance / total_time
+    
+    # Calculate average speed through junction
+    average_speed = float(&#34;nan&#34;)
+    if exit_idx &gt; entry_idx:
+        # Calculate total distance through junction
+        x_segment = tr.x[entry_idx:exit_idx+1]
+        z_segment = tr.z[entry_idx:exit_idx+1]
+        
+        if len(x_segment) &gt; 1:
+            dx = np.diff(x_segment)
+            dz = np.diff(z_segment)
+            segments = np.hypot(dx, dz)
+            total_distance = float(np.sum(segments))
+            
+            # Calculate total time through junction
+            total_time = t_numeric[exit_idx] - t_numeric[entry_idx]
+            
+            if total_time &gt; 0:
+                average_speed = total_distance / total_time
+    
+    return (entry_speed, exit_speed, average_speed)</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_metrics.shannon_entropy"><code class="name flex">
+<span>def <span class="ident">shannon_entropy</span></span>(<span>summary: pandas.core.frame.DataFrame) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute entropy (nats) from a branch summary with a 'percent' column.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def shannon_entropy(summary: pd.DataFrame) -&gt; float:
+    &#34;&#34;&#34;Compute entropy (nats) from a branch summary with a &#39;percent&#39; column.&#34;&#34;&#34;
+    if len(summary) == 0:
+        return float(&#34;nan&#34;)
+    p = summary[&#34;percent&#34;].to_numpy(dtype=float) / 100.0
+    p = p[p &gt; 0]
+    if len(p) == 0:
+        return 0.0
+    return float(-np.sum(p * np.log(p)))</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_metrics.speed_through_junction"><code class="name flex">
+<span>def <span class="ident">speed_through_junction</span></span>(<span>tr: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>, junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, decision_mode: str = 'pathlen', path_length: float = 100.0, r_outer: Optional[float] = None, window: int = 5, min_outward: float = 0.0) ‑> Tuple[float, str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate average speed through junction based on decision mode.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>tr</code></strong></dt>
+<dd>Trajectory object</dd>
+<dt><strong><code>junction</code></strong></dt>
+<dd>Junction circle</dd>
+<dt><strong><code>decision_mode</code></strong></dt>
+<dd>"pathlen", "radial", or "hybrid"</dd>
+<dt><strong><code>path_length</code></strong></dt>
+<dd>Path length for pathlen mode</dd>
+<dt><strong><code>r_outer</code></strong></dt>
+<dd>Outer radius for radial mode</dd>
+<dt><strong><code>window</code></strong></dt>
+<dd>Window size for radial mode</dd>
+<dt><strong><code>min_outward</code></strong></dt>
+<dd>Minimum outward movement for radial mode</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Tuple of (average_speed, mode_used)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def speed_through_junction(tr: Trajectory,
+                          junction: Circle,
+                          decision_mode: str = &#34;pathlen&#34;,
+                          path_length: float = 100.0,
+                          r_outer: Optional[float] = None,
+                          window: int = 5,
+                          min_outward: float = 0.0) -&gt; Tuple[float, str]:
+    &#34;&#34;&#34;
+    Calculate average speed through junction based on decision mode.
+    
+    Args:
+        tr: Trajectory object
+        junction: Junction circle
+        decision_mode: &#34;pathlen&#34;, &#34;radial&#34;, or &#34;hybrid&#34;
+        path_length: Path length for pathlen mode
+        r_outer: Outer radius for radial mode
+        window: Window size for radial mode
+        min_outward: Minimum outward movement for radial mode
+        
+    Returns:
+        Tuple of (average_speed, mode_used)
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return (float(&#34;nan&#34;), &#34;no_time_data&#34;)
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return (float(&#34;nan&#34;), &#34;no_time_data&#34;)
+    
+    # Find junction entry point
+    dist = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = dist &lt;= junction.r
+    if inside.any():
+        start_idx = int(np.argmax(inside))
+    else:
+        start_idx = int(np.argmin(dist))
+    
+    # Determine end point based on decision mode
+    end_idx = None
+    mode_used = decision_mode
+    
+    if decision_mode == &#34;pathlen&#34;:
+        # Calculate cumulative distance from start
+        dx = np.diff(tr.x[start_idx:])
+        dz = np.diff(tr.z[start_idx:])
+        seg = np.hypot(dx, dz)
+        if len(seg) == 0:
+            return (float(&#34;nan&#34;), &#34;no_movement&#34;)
+        
+        cum = np.cumsum(seg)
+        mask = cum &gt;= path_length
+        if mask.any():
+            end_idx = start_idx + int(np.argmax(mask)) + 1
+        else:
+            return (float(&#34;nan&#34;), &#34;pathlen_not_reached&#34;)
+    
+    elif decision_mode == &#34;radial&#34;:
+        # Find radial exit point
+        rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+        
+        for i in range(start_idx + 1, len(dist)):
+            if dist[i] &gt;= rout:
+                j0 = max(start_idx + 1, i - window)
+                seg = dist[j0:i+1]
+                if seg.size &gt;= 2 and float(np.nanmean(np.diff(seg))) &gt;= min_outward:
+                    end_idx = i
+                    break
+        
+        if end_idx is None:
+            return (float(&#34;nan&#34;), &#34;radial_not_reached&#34;)
+    
+    elif decision_mode == &#34;hybrid&#34;:
+        # Try radial first, fall back to pathlen
+        rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+        
+        # Try radial
+        for i in range(start_idx + 1, len(dist)):
+            if dist[i] &gt;= rout:
+                j0 = max(start_idx + 1, i - window)
+                seg = dist[j0:i+1]
+                if seg.size &gt;= 2 and float(np.nanmean(np.diff(seg))) &gt;= min_outward:
+                    end_idx = i
+                    mode_used = &#34;radial&#34;
+                    break
+        
+        # Fall back to pathlen if radial failed
+        if end_idx is None:
+            dx = np.diff(tr.x[start_idx:])
+            dz = np.diff(tr.z[start_idx:])
+            seg = np.hypot(dx, dz)
+            if len(seg) &gt; 0:
+                cum = np.cumsum(seg)
+                mask = cum &gt;= path_length
+                if mask.any():
+                    end_idx = start_idx + int(np.argmax(mask)) + 1
+                    mode_used = &#34;pathlen&#34;
+                else:
+                    return (float(&#34;nan&#34;), &#34;hybrid_not_reached&#34;)
+            else:
+                return (float(&#34;nan&#34;), &#34;hybrid_no_movement&#34;)
+    
+    # Calculate speed if we have valid start and end points
+    if end_idx is not None and end_idx &gt; start_idx:
+        # Calculate distance traveled
+        x_segment = tr.x[start_idx:end_idx+1]
+        z_segment = tr.z[start_idx:end_idx+1]
+        
+        if len(x_segment) &gt; 1:
+            dx = np.diff(x_segment)
+            dz = np.diff(z_segment)
+            segments = np.hypot(dx, dz)
+            total_distance = float(np.sum(segments))
+            
+            # Calculate time elapsed
+            total_time = float(t_numeric[end_idx] - t_numeric[start_idx])
+            
+            if total_time &gt; 0:
+                average_speed = total_distance / total_time
+                return (average_speed, mode_used)
+            else:
+                return (float(&#34;nan&#34;), f&#34;{mode_used}_zero_time&#34;)
+        else:
+            return (float(&#34;nan&#34;), f&#34;{mode_used}_single_point&#34;)
+    
+    return (float(&#34;nan&#34;), f&#34;{mode_used}_invalid&#34;)</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_metrics.time_between_regions"><code class="name flex">
+<span>def <span class="ident">time_between_regions</span></span>(<span>tr: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>, A: <a title="route_analyzer_ruedi99ms.ra_geometry.Rect" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Rect">Rect</a> | <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, B: <a title="route_analyzer_ruedi99ms.ra_geometry.Rect" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Rect">Rect</a> | <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>) ‑> Tuple[float, float, float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return (t_A, t_B, dt) where t_A is the first timestamp when trajectory is in region A, t_B for region B, and dt = t_B - t_A. Returns (nan, nan, nan) if timestamps missing or sequence invalid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def time_between_regions(tr: Trajectory,
+                         A: Rect | Circle,
+                         B: Rect | Circle) -&gt; Tuple[float, float, float]:
+    &#34;&#34;&#34;Return (t_A, t_B, dt) where t_A is the first timestamp when trajectory is in region A, t_B for region B, and dt = t_B - t_A. Returns (nan, nan, nan) if timestamps missing or sequence invalid.
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))
+    
+    inA = A.contains(tr.x, tr.z)
+    inB = B.contains(tr.x, tr.z)
+    iA = int(np.argmax(inA)) if inA.any() else None
+    iB = int(np.argmax(inB)) if inB.any() else None
+    if iA is not None and iB is not None and iB &gt; iA:
+        return float(t_numeric[iA]), float(t_numeric[iB]), float(t_numeric[iB] - t_numeric[iA])
+    return (float(&#34;nan&#34;), float(&#34;nan&#34;), float(&#34;nan&#34;))</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_metrics.time_from_junction_to_radial_exit"><code class="name flex">
+<span>def <span class="ident">time_from_junction_to_radial_exit</span></span>(<span>tr: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>, junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, r_outer: float, window: int = 5, min_outward: float = 0.0) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Time (seconds) from first entering <code>junction</code> until the trajectory crosses r_outer with a non-negative (or &gt;= min_outward) outward trend. NaN if no time or no crossing.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def time_from_junction_to_radial_exit(
+    tr: Trajectory,
+    junction: Circle,
+    r_outer: float,
+    window: int = 5,
+    min_outward: float = 0.0,
+) -&gt; float:
+    &#34;&#34;&#34;
+    Time (seconds) from first entering `junction` until the trajectory crosses r_outer with a non-negative (or &gt;= min_outward) outward trend. NaN if no time or no crossing.
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return float(&#34;nan&#34;)
+
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return float(&#34;nan&#34;)
+
+    # reuse your existing index finder but with a configurable outward threshold
+    r = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = r &lt;= junction.r
+    start = int(np.argmax(inside)) if inside.any() else int(np.argmin(r))
+
+    i_cross = None
+    for i in range(start + 1, len(r)):
+        if r[i] &gt;= r_outer:
+            j0 = max(start + 1, i - window)
+            seg = r[j0:i+1]
+            if seg.size &lt; 2 or float(np.nanmean(np.diff(seg))) &gt;= float(min_outward):
+                i_cross = i
+                break
+
+    if i_cross is None:
+        return float(&#34;nan&#34;)
+    return float(t_numeric[i_cross] - t_numeric[start])</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_metrics.time_to_distance_after_junction"><code class="name flex">
+<span>def <span class="ident">time_to_distance_after_junction</span></span>(<span>tr: <a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>, junction: <a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>, path_length: float) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Time (seconds) from first entering <code>junction</code> until cumulative traveled distance along the path reaches <code>path_length</code>. Returns NaN if no time data or cannot be computed.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def time_to_distance_after_junction(tr: Trajectory,
+                                    junction: Circle,
+                                    path_length: float) -&gt; float:
+    &#34;&#34;&#34;Time (seconds) from first entering `junction` until cumulative traveled distance along the path reaches `path_length`. Returns NaN if no time data or cannot be computed.
+    &#34;&#34;&#34;
+    if tr.t is None:
+        return float(&#34;nan&#34;)
+    
+    # Safely convert time data to numeric
+    t_numeric = _safe_convert_time_data(tr.t)
+    if t_numeric is None:
+        return float(&#34;nan&#34;)
+    
+    dist = np.hypot(tr.x - junction.cx, tr.z - junction.cz)
+    inside = dist &lt;= junction.r
+    if inside.any():
+        start = int(np.argmax(inside))
+    else:
+        start = int(np.argmin(dist))
+    dx = np.diff(tr.x[start:])
+    dz = np.diff(tr.z[start:])
+    seg = np.hypot(dx, dz)
+    if len(seg) == 0:
+        return float(&#34;nan&#34;)
+    cum = np.cumsum(seg)
+    mask = cum &gt;= path_length
+    if not mask.any():
+        return float(&#34;nan&#34;)
+    reach = int(np.argmax(mask))
+    return float(t_numeric[start + reach] - t_numeric[start])</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="route_analyzer_ruedi99ms" href="index.html">route_analyzer_ruedi99ms</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics.compute_basic_trajectory_metrics" href="#route_analyzer_ruedi99ms.ra_metrics.compute_basic_trajectory_metrics">compute_basic_trajectory_metrics</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics.junction_transit_speed" href="#route_analyzer_ruedi99ms.ra_metrics.junction_transit_speed">junction_transit_speed</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics.shannon_entropy" href="#route_analyzer_ruedi99ms.ra_metrics.shannon_entropy">shannon_entropy</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics.speed_through_junction" href="#route_analyzer_ruedi99ms.ra_metrics.speed_through_junction">speed_through_junction</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics.time_between_regions" href="#route_analyzer_ruedi99ms.ra_metrics.time_between_regions">time_between_regions</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics.time_from_junction_to_radial_exit" href="#route_analyzer_ruedi99ms.ra_metrics.time_from_junction_to_radial_exit">time_from_junction_to_radial_exit</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_metrics.time_to_distance_after_junction" href="#route_analyzer_ruedi99ms.ra_metrics.time_to_distance_after_junction">time_to_distance_after_junction</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

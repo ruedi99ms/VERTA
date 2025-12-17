@@ -45,35 +45,35 @@ import argparse
 import sys
 from typing import Optional, Sequence
 
-from route_analyzer.ra_commands import COMMANDS
-from route_analyzer.ra_config import load_config_file, overlay_config_on_namespace, parse_columns
-from route_analyzer.ra_validation import validate_args
-from route_analyzer.ra_logging import get_logger
+from route_analyzer_ruedi99ms.ra_commands import COMMANDS
+from route_analyzer_ruedi99ms.ra_config import load_config_file, overlay_config_on_namespace, parse_columns
+from route_analyzer_ruedi99ms.ra_validation import validate_args
+from route_analyzer_ruedi99ms.ra_logging import get_logger
 
 
 def main(argv: Optional[Sequence[str]] = None) -> None:
     """Main entry point for route analyzer"""
     logger = get_logger()
-    
+
     # Create main parser
     parser = argparse.ArgumentParser(description="Standalone route-decision analysis (x–z)")
     parser.add_argument("--config", help="Path to YAML/JSON config with defaults", default=None)
 
     # Create subparsers for commands
     subparsers = parser.add_subparsers(dest="cmd", help="Available commands")
-    
+
     # Register all commands (including chain-enhanced which is in COMMANDS)
     for cmd_name, cmd_class in COMMANDS.items():
         cmd_instance = cmd_class()
         subparser = subparsers.add_parser(cmd_name, help=f"{cmd_name} command")
         cmd_instance.add_arguments(subparser)
-    
+
     # Parse arguments
     args = parser.parse_args(argv)
 
     # Determine command (default to discover)
     cmd = args.cmd or "discover"
-    
+
     # Load configuration if provided
     if args.config:
         try:
@@ -92,14 +92,14 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         else:
             cols = parse_columns(args.columns)
         args.columns = cols
-    
+
     # Validate arguments
     try:
         args = validate_args(args, parser, strict=False)
     except Exception as e:
         logger.error(f"Argument validation failed: {e}")
         return
-    
+
     # Execute command
     try:
         cmd_instance = COMMANDS[cmd]()

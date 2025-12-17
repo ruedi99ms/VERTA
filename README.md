@@ -1,12 +1,12 @@
 # VERTA - Virtual Environment Route and Trajectory Analyzer
 
-VERTA is a comprehensive toolkit to analyze initial route choices from x–z movement trajectories: discover branch directions, assign trajectories to branches, compute timing metrics, visualize results, and predict future route choices based on behavioral patterns. Includes both command-line interface (CLI) and interactive web GUI.
+`VERTA` is a comprehensive toolkit to analyze initial (#MC why initial?) route choices from x–z movement trajectories: discover branch directions (#MC need to explain what a branch direction is. for example, it can be worded like; i.e., a direction of movement that  occurs after a participant passes a junction, or i.e., one possible route choice), assign trajectories to branches (#MC same here, what are trajectories and branches), compute timing metrics, visualize results, and predict future route choices based on behavioral patterns. `VERTA` includes both command-line interface (CLI) and interactive web GUI.
 
 ## Installation
 
 ```bash
 # Core installation
-pip install .
+pip install . #MC remember to change this to pip install verta
 
 # With optional extras
 pip install .[yaml]      # YAML configuration support
@@ -22,7 +22,7 @@ For an interactive, user-friendly interface, try the web-based GUI:
 
 ```bash
 # Install GUI dependencies
-pip install -r gui/requirements.txt
+pip install -r gui/requirements.txt #MC is this the same as/ a duplicate of pip install .[gui] mentioned above
 
 # Launch the web interface
 python gui/launch.py
@@ -61,9 +61,7 @@ Predict user route choices **before** they reach decision points using machine l
 - Dynamic environment optimization
 - A/B testing of early interventions
 
-📚 **Documentation**: See [`examples_intent/README.md`](examples_intent/README.md) for a comprehensive guide to Intent Recognition, including usage examples, model loading, and integration into VR systems.
-
-See [`gui/README.md`](gui/README.md) for detailed GUI documentation.
+📚 **Documentation**: See [`examples/README.md`](examples/README.md) for a comprehensive guide to Intent Recognition, including usage examples, model loading, and integration into VR systems. (#MC usually the folder at the root level is called only examples)
 
 ## CLI Commands
 
@@ -91,7 +89,7 @@ route-analyzer discover \
 - `--decision_mode`: `pathlen`, `radial`, or `hybrid` (default: `hybrid`)
 - `--k`: Number of clusters for kmeans (default: 3)
 - `--k_min`, `--k_max`: Range for auto clustering (default: 2-6)
-- `--r_outer`: Outer radius for radial decision mode
+- `--r_outer`: Outer radius for radial decision mode (#MC what is a devision mode?)
 - `--linger_delta`: Distance beyond junction for decision detection (default: 5.0)
 - `--epsilon`: Minimum step size for trajectory processing (default: 0.015)
 - `--angle_eps`: Angle epsilon for DBSCAN clustering (default: 15.0 degrees)
@@ -405,6 +403,8 @@ discover:
 - **tqdm** (≥4.60.0) - Progress bars
 - **seaborn** (≥0.12.0) - Statistical data visualization
 
+(#MC is there a requirement for Python versions)
+
 ### ML Capabilities (Intent Recognition)
 - **scikit-learn** (≥1.0.0) - Machine learning algorithms (Random Forest, Gradient Boosting)
 - **plotly** (≥5.15.0) - Interactive visualization for feature importance and accuracy analysis
@@ -413,7 +413,7 @@ discover:
 
 Install with `pip install .[yaml]`, `pip install .[parquet]`, `pip install .[gui]`, or `pip install .[test]`:
 
-- **yaml** - YAML configuration file support (`pyyaml`)
+- **config** - YAML configuration file support (`pyyaml`)
 - **parquet** - Parquet file format support (`pyarrow`)
 - **gui** - Web GUI dependencies (`streamlit`, `plotly`)
 - **test** - Testing dependencies (`pytest>=7.0.0`)

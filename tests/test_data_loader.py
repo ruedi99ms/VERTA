@@ -8,15 +8,15 @@ import os
 import tempfile
 from pathlib import Path
 
-from route_analyzer.ra_data_loader import (
-    Trajectory, ColumnMapping, 
+from route_analyzer_ruedi99ms.ra_data_loader import (
+    Trajectory, ColumnMapping,
     has_gaze_data, has_physio_data
 )
 
 
 class TestTrajectory:
     """Test cases for Trajectory dataclass."""
-    
+
     def test_trajectory_creation_basic(self):
         """Test creating a basic trajectory."""
         traj = Trajectory(
@@ -28,7 +28,7 @@ class TestTrajectory:
         assert len(traj.x) == 3
         assert len(traj.z) == 3
         assert traj.t is None
-    
+
     def test_trajectory_creation_with_time(self):
         """Test creating a trajectory with time data."""
         traj = Trajectory(
@@ -39,7 +39,7 @@ class TestTrajectory:
         )
         assert traj.t is not None
         assert len(traj.t) == 3
-    
+
     def test_trajectory_creation_with_gaze(self):
         """Test creating a trajectory with gaze data."""
         traj = Trajectory(
@@ -58,21 +58,21 @@ class TestTrajectory:
 
 class TestColumnMapping:
     """Test cases for ColumnMapping dataclass."""
-    
+
     def test_column_mapping_defaults(self):
         """Test ColumnMapping with default values."""
         mapping = ColumnMapping()
         assert mapping.x == "x"
         assert mapping.z == "z"
         assert mapping.t == "t"
-    
+
     def test_column_mapping_vr_defaults(self):
         """Test VR default column mapping."""
         mapping = ColumnMapping.vr_defaults()
         assert mapping.headset_x == "Headset.Head.Position.X"
         assert mapping.headset_z == "Headset.Head.Position.Z"
         assert mapping.gaze_x == "Headset.Gaze.X"
-    
+
     def test_column_mapping_from_dict(self):
         """Test creating ColumnMapping from dictionary."""
         custom_mapping = {
@@ -90,15 +90,15 @@ class TestColumnMapping:
 
 class TestHasGazeData:
     """Test cases for has_gaze_data function."""
-    
+
     def test_has_gaze_data_true(self, sample_trajectory_with_gaze):
         """Test has_gaze_data returns True when gaze data is present."""
         assert has_gaze_data(sample_trajectory_with_gaze) == True
-    
+
     def test_has_gaze_data_false(self, sample_trajectory):
         """Test has_gaze_data returns False when gaze data is missing."""
         assert has_gaze_data(sample_trajectory) == False
-    
+
     def test_has_gaze_data_partial(self):
         """Test has_gaze_data returns False when only partial gaze data exists."""
         traj = Trajectory(
@@ -114,7 +114,7 @@ class TestHasGazeData:
 
 class TestHasPhysioData:
     """Test cases for has_physio_data function."""
-    
+
     def test_has_physio_data_true(self):
         """Test has_physio_data returns True when physio data is present."""
         traj = Trajectory(
@@ -126,11 +126,11 @@ class TestHasPhysioData:
             pupil_r=np.array([3.5, 3.6])
         )
         assert has_physio_data(traj) == True
-    
+
     def test_has_physio_data_false(self, sample_trajectory):
         """Test has_physio_data returns False when physio data is missing."""
         assert has_physio_data(sample_trajectory) == False
-    
+
     def test_has_physio_data_partial(self):
         """Test has_physio_data returns False when only partial physio data exists."""
         traj = Trajectory(
@@ -142,4 +142,3 @@ class TestHasPhysioData:
             # Missing pupil_r - requires all three fields
         )
         assert has_physio_data(traj) == False
-

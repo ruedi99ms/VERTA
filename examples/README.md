@@ -77,19 +77,19 @@ Instead of just analyzing which branch users **chose** at a junction (which we k
 - **🟢 Excellent (85-100%)**: Highly predictable behavior
   - Use for: Proactive systems, critical navigation decisions
   - Examples: Clear paths, learned patterns, obvious destinations
-  
+
 - **🟡 Good (70-85%)**: Moderately predictable
   - Use for: Assisted navigation, likely predictions
   - Examples: Multi-option paths with preferences
-  
+
 - **🔴 Moderate (50-70%)**: Variable behavior
   - Use for: Exploratory systems, probabilistic predictions
   - Consider: Per-user models, additional features
 
 ### Accuracy vs. Distance
 
-- **Farther away (100u)**: Lower accuracy - less information available
-- **Closer (25u)**: Higher accuracy - more behavioral cues available
+- **Farther away from destination (100 units)**: Lower accuracy - less information available
+- **Closer (25 units)**: Higher accuracy - more behavioral cues available
 - **Analysis**: Shows how early you can reliably predict choices
 
 ### Feature Importance
@@ -109,7 +109,7 @@ Shows which behavioral cues the model relies on:
 1. **Data Upload**: Load trajectory data
 2. **Junction Editor**: Define decision points
 3. **Analysis → Discover Branches**: Set clustering parameters (affects ground truth)
-4. **Analysis → Intent Recognition**: 
+4. **Analysis → Intent Recognition**:
    - Select prediction distances (100, 75, 50, 25 units)
    - Choose model type (Random Forest or Gradient Boosting)
    - Set cross-validation folds (default: 5)
@@ -145,11 +145,11 @@ Shows which behavioral cues the model relies on:
 ### Accuracy Table
 
 ```
-Junction  Distance  Accuracy  Std Dev  Samples
-0        100       45.3%     ±8.9%    139
-0        75        40.3%     ±6.3%    139
-0        50        49.0%     ±4.8%    139
-0        25        51.7%     ±5.4%    139
+Junction  Distance      Accuracy  Std Dev  Samples
+0         100 units      45.3%     ±8.9%    139
+0         75 units       40.3%     ±6.3%    139
+0         50 units       49.0%     ±4.8%    139
+0         25 units       51.7%     ±5.4%    139
 ```
 
 **Reading the table:**
@@ -163,7 +163,7 @@ Junction  Distance  Accuracy  Std Dev  Samples
 - Junction 0: Poor predictability (40-52%)
   - Consider: Per-user models, contextual features
   - Likely: Exploratory behavior, multiple attractive options
-  
+
 ### Feature Importance
 
 Visualization showing which features matter:
@@ -186,11 +186,11 @@ Top Features for Junction 0 (100 units):
 Shows how well model predicted actual choices:
 
 ```
-Distance  Predicted  Confidence  Correct
-100u      Branch 2   65.3%       ✓
-75u       Branch 2   72.1%       ✓
-50u       Branch 2   88.4%       ✓
-25u       Branch 2   95.2%       ✓
+Distance       Predicted  Confidence  Correct
+100 units      Branch 2   65.3%       ✓
+75 units       Branch 2   72.1%       ✓
+50 units       Branch 2   88.4%       ✓
+25 units       Branch 2   95.2%       ✓
 ```
 
 All correct + increasing confidence = Strong predictor!
@@ -245,10 +245,10 @@ gui_outputs/intent_recognition/
 ### Before Running
 
 1. **Run Discover Branches first**: This sets ground truth labels
-2. **Ensure sufficient data**: 
+2. **Ensure sufficient data**:
    - Minimum 30-50 trajectories per junction
    - At least 10-15 trajectories per branch
-3. **Check data quality**: 
+3. **Check data quality**:
    - Trajectories should pass through junction
    - Time data available (for kinematic features)
 
@@ -458,18 +458,18 @@ See `example_load_intent_models.py` for:
 class NavigationSystem:
     def __init__(self):
         self.model_loader = IntentModelLoader("path/to/models")
-    
+
     def update(self, user):
         """Called every frame"""
         junction = detect_upcoming_junction(user)
         distance = calculate_distance(user, junction)
-        
+
         # Predict intent
         prediction, confidence, _ = self.model_loader.predict(
             extract_features(user.trajectory, junction),
             distance
         )
-        
+
         # Take action if confident
         if confidence > 0.8 and distance < 75:
             show_navigation_hint(prediction)
@@ -490,4 +490,3 @@ Intent Recognition enables **predictive** rather than **reactive** systems by le
 ---
 
 For more information, see [`gui/README.md`](../gui/README.md) and the main [README.md](../README.md).
-

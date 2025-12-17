@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>route_analyzer_ruedi99ms.ra_prediction API documentation</title>
+<meta name="description" content="Junction-based choice prediction and analysis module …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>route_analyzer_ruedi99ms.ra_prediction</code></h1>
+</header>
+<section id="section-intro">
+<p>Junction-based choice prediction and analysis module.</p>
+<p>This module provides functionality for analyzing trajectory patterns at junctions,
+predicting user choices, and generating behavioral insights for VR experiments.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Junction-based choice prediction and analysis module.
+
+This module provides functionality for analyzing trajectory patterns at junctions,
+predicting user choices, and generating behavioral insights for VR experiments.
+&#34;&#34;&#34;
+
+import os
+import json
+import logging
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from typing import List, Dict, Tuple, Optional, Any
+from collections import defaultdict
+from dataclasses import dataclass
+
+# Try relative imports first (when used as package)
+try:
+    from .ra_data_loader import Trajectory
+    from .ra_geometry import Circle
+    from .ra_plotting import plot_flow_graph_map, plot_per_junction_flow_graph, _track_trajectory_junction_sequence
+    from .ra_progress import AnalysisProgressManager, show_analysis_estimate
+except ImportError:
+    # Fall back to absolute imports (when used standalone)
+    from .ra_data_loader import Trajectory
+    from .ra_geometry import Circle
+    from .ra_plotting import plot_flow_graph_map, plot_per_junction_flow_graph, _track_trajectory_junction_sequence
+    from .ra_progress import AnalysisProgressManager, show_analysis_estimate
+
+# Get logger
+try:
+    from .ra_logging import get_logger
+    logger = get_logger()
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
+
+
+@dataclass
+class JunctionChoiceAnalyzer:
+    &#34;&#34;&#34;Analyzer for junction-based choice patterns.&#34;&#34;&#34;
+
+    trajectories: List[Trajectory]
+    junctions: List[Circle]
+    r_outer_list: List[float]
+
+    def __init__(self, trajectories: List[Trajectory], junctions: List[Circle], r_outer_list: List[float]):
+        self.trajectories = trajectories
+        self.junctions = junctions
+        self.r_outer_list = r_outer_list
+
+
+def analyze_junction_choice_patterns(
+    trajectories: List[Trajectory],
+    chain_df: pd.DataFrame,
+    junctions: List[Circle],
+    output_dir: str,
+    r_outer_list: List[float],
+    gui_mode: bool = False
+) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;
+    Analyze junction-based choice patterns and generate predictions.
+
+    Args:
+        trajectories: List of trajectory objects
+        chain_df: DataFrame with decision chain data
+        junctions: List of junction circles
+        output_dir: Output directory for results
+        r_outer_list: List of r_outer values for each junction
+
+    Returns:
+        Dictionary containing analysis results
+    &#34;&#34;&#34;
+    logger.info(&#34;Starting junction choice pattern analysis...&#34;)
+
+    # Show analysis estimate
+    show_analysis_estimate(len(trajectories), len(junctions), &#34;predict&#34;, gui_mode)
+
+    # Initialize progress manager
+    progress_manager = AnalysisProgressManager(gui_mode)
+    progress_manager.add_step(&#34;Conditional Probabilities&#34;, weight=2.0)
+    progress_manager.add_step(&#34;Visualizations&#34;, weight=1.5)
+
+    progress_manager.start_analysis(len(trajectories))
+
+    # Analyze conditional probabilities
+    step_tracker = progress_manager.start_step(&#34;Conditional Probabilities&#34;, len(trajectories))
+    conditional_probs, cached_sequences = _analyze_conditional_probabilities(trajectories, junctions, r_outer_list, step_tracker)
+    step_tracker.close()
+    progress_manager.update_overall_progress(1.0)
+
+    # Create visualizations
+    step_tracker = progress_manager.start_step(&#34;Visualizations&#34;, 1)
+    _create_conditional_probability_visualization(conditional_probs, output_dir)
+    _create_flow_graph_visualizations(trajectories, junctions, r_outer_list, output_dir, chain_df, cached_sequences)
+    _create_pattern_visualizations(conditional_probs, output_dir)
+    step_tracker.close()
+    progress_manager.update_overall_progress(1.0)
+
+    # Compile results
+    results = {
+        &#39;conditional_probabilities&#39;: conditional_probs,
+        &#39;cached_sequences&#39;: cached_sequences,  # Cached for interactive prediction tool
+        &#39;summary&#39;: {
+            &#39;total_trajectories&#39;: len(trajectories),
+            &#39;total_junctions&#39;: len(junctions),
+            &#39;total_transitions&#39;: sum(len(probs) for probs in conditional_probs.values()),
+            &#39;unique_patterns&#39;: len(conditional_probs)
+        }
+    }
+
+    # Save results to JSON
+    _save_results_to_json(results, output_dir)
+
+    progress_manager.finish_analysis()
+    logger.info(&#34;Junction choice pattern analysis completed successfully&#34;)
+    return results
+
+
+def _analyze_conditional_probabilities(
+    trajectories: List[Trajectory],
+    junctions: List[Circle],
+    r_outer_list: List[float],
+    progress_tracker=None
+) -&gt; Tuple[Dict[str, Dict[str, float]], Dict[int, List[int]]]:
+    &#34;&#34;&#34;
+    Analyze conditional probabilities based on actual trajectory sequences.
+
+    This function tracks each trajectory step-by-step to identify the temporal
+    order of junction visits, then calculates conditional probabilities based
+    on these actual sequences.
+
+    Returns:
+        Tuple of (conditional_probs, cached_sequences) where cached_sequences
+        is a dict mapping trajectory index to node sequence for reuse.
+    &#34;&#34;&#34;
+    logger.info(&#34;Analyzing conditional probabilities from trajectory sequences...&#34;)
+
+    # Track trajectory-based flows and conditional probabilities in one pass
+    flow_matrix, cached_sequences = _calculate_trajectory_based_flows(trajectories, junctions, r_outer_list, progress_tracker)
+    conditional_probs = {}
+
+    # Calculate conditional probabilities for ALL origin-destination pairs
+    for origin_idx in range(len(junctions)):
+        origin_probs = {}
+
+        # Calculate total exits from this origin junction
+        total_exits = np.sum(flow_matrix[origin_idx, :])
+
+        if total_exits &gt; 0:
+            # Calculate destination probabilities for this origin
+            for dest_idx in range(len(junctions)):
+                if origin_idx != dest_idx and flow_matrix[origin_idx, dest_idx] &gt; 0:
+                    percentage = (flow_matrix[origin_idx, dest_idx] / total_exits) * 100
+                    origin_probs[f&#34;J{dest_idx}&#34;] = percentage
+
+            if origin_probs:  # Only add if there are actual destinations
+                conditional_probs[f&#34;from_J{origin_idx}&#34;] = origin_probs
+
+    logger.info(f&#34;Calculated conditional probabilities for {len(conditional_probs)} origin junctions&#34;)
+    return conditional_probs, cached_sequences
+
+
+def _calculate_trajectory_based_flows(
+    trajectories: List[Trajectory],
+    junctions: List[Circle],
+    r_outer_list: List[float],
+    progress_tracker=None
+) -&gt; Tuple[np.ndarray, Dict[int, List[int]]]:
+    &#34;&#34;&#34;
+    Calculate flow matrix based on actual trajectory movements.
+
+    This function tracks actual trajectory paths through space, accounting for
+    multiple entries/exits into junctions and not relying heavily on spatial proximity.
+
+    Returns:
+        Tuple of (flow_matrix, cached_sequences) where cached_sequences
+        maps trajectory index to junction sequence for reuse.
+    &#34;&#34;&#34;
+    logger.info(&#34;Calculating trajectory-based flow matrix...&#34;)
+
+    flow_matrix = np.zeros((len(junctions), len(junctions)))
+    cached_sequences = {}
+
+    for traj_idx, trajectory in enumerate(trajectories):
+        if traj_idx &lt; 5 or traj_idx % 50 == 0:
+            logger.debug(f&#34;Processing trajectory {traj_idx + 1}/{len(trajectories)}&#34;)
+
+        # Update progress if tracker is provided
+        if progress_tracker:
+            progress_tracker.update(1, f&#34;Processing trajectory {traj_idx + 1}/{len(trajectories)}&#34;)
+
+        # Track junction sequence for this trajectory (cache for reuse)
+        junction_sequence = _track_trajectory_junction_sequence(trajectory, junctions, r_outer_list)
+        cached_sequences[traj_idx] = junction_sequence
+
+        # Extract transitions from sequence (only count real transitions between different junctions)
+        transitions = []
+        for i in range(len(junction_sequence) - 1):
+            origin_idx = junction_sequence[i]
+            dest_idx = junction_sequence[i + 1]
+            # Only count transitions between different junctions
+            if origin_idx != dest_idx:
+                transitions.append((origin_idx, dest_idx))
+
+        # Update flow matrix
+        for origin_idx, dest_idx in transitions:
+            flow_matrix[origin_idx][dest_idx] += 1
+
+    logger.info(f&#34;Flow matrix calculated with {np.sum(flow_matrix)} total transitions&#34;)
+    return flow_matrix, cached_sequences
+
+
+def _track_junction_transitions(
+    trajectory: Trajectory,
+    junctions: List[Circle],
+    r_outer_list: List[float]
+) -&gt; List[Tuple[int, int]]:
+    &#34;&#34;&#34;
+    Track junction transitions for a single trajectory.
+
+    Returns list of (origin_junction_idx, destination_junction_idx) tuples.
+    &#34;&#34;&#34;
+    transitions = []
+
+    # Find all junction visits in temporal order
+    junction_sequence = _track_trajectory_junction_sequence(trajectory, junctions, r_outer_list)
+
+    # Extract transitions from sequence (only count real transitions between different junctions)
+    for i in range(len(junction_sequence) - 1):
+        origin_idx = junction_sequence[i]
+        dest_idx = junction_sequence[i + 1]
+        # Only count transitions between different junctions
+        if origin_idx != dest_idx:
+            transitions.append((origin_idx, dest_idx))
+
+    return transitions
+
+
+def _analyze_start_end_patterns(
+    trajectories: List[Trajectory],
+    start_zones: Optional[List[Dict]] = None,
+    end_zones: Optional[List[Dict]] = None,
+    progress_tracker=None
+) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;
+    Analyze start and end zone patterns.
+
+    Args:
+        trajectories: List of trajectory objects
+        start_zones: Optional list of start zone definitions
+        end_zones: Optional list of end zone definitions
+
+    Returns:
+        Dictionary containing start/end analysis results
+    &#34;&#34;&#34;
+    logger.info(&#34;Analyzing start and end zone patterns...&#34;)
+
+    # Use default zones if not provided
+    if start_zones is None:
+        start_zones = [{
+            &#34;type&#34;: &#34;circle&#34;,
+            &#34;center_x&#34;: 180,
+            &#34;center_z&#34;: -250,
+            &#34;radius&#34;: 50,
+            &#34;proximity_tolerance&#34;: 0
+        }]
+
+    if end_zones is None:
+        end_zones = [{
+            &#34;type&#34;: &#34;rectangle&#34;,
+            &#34;x1&#34;: 600,
+            &#34;z1&#34;: 520,
+            &#34;x2&#34;: 720,
+            &#34;z2&#34;: 450,
+            &#34;tilt&#34;: 0,
+            &#34;proximity_tolerance&#34;: 0
+        }]
+
+    # Track zone visits
+    start_zone_visits = 0
+    end_zone_visits = 0
+
+    for traj_idx, trajectory in enumerate(trajectories):
+        # Update progress if tracker is provided
+        if progress_tracker:
+            progress_tracker.update(1, f&#34;Analyzing trajectory {traj_idx + 1}/{len(trajectories)}&#34;)
+
+        for point_idx in range(len(trajectory.x)):
+            x, z = trajectory.x[point_idx], trajectory.z[point_idx]
+
+            # Check start zones
+            for zone in start_zones:
+                if _identify_zone(x, z, zone):
+                    start_zone_visits += 1
+                    break
+
+            # Check end zones
+            for zone in end_zones:
+                if _identify_zone(x, z, zone):
+                    end_zone_visits += 1
+                    break
+
+    results = {
+        &#39;start_zone_visits&#39;: start_zone_visits,
+        &#39;end_zone_visits&#39;: end_zone_visits,
+        &#39;total_trajectories&#39;: len(trajectories),
+        &#39;start_zones&#39;: start_zones,
+        &#39;end_zones&#39;: end_zones
+    }
+
+    logger.info(f&#34;Start zone visits: {start_zone_visits}, End zone visits: {end_zone_visits}&#34;)
+    return results
+
+
+def _identify_zone(x: float, z: float, zone: Dict[str, Any]) -&gt; bool:
+    &#34;&#34;&#34;
+    Check if a point is within a zone (circular or rectangular).
+
+    Args:
+        x, z: Point coordinates
+        zone: Zone definition dictionary
+
+    Returns:
+        True if point is within zone (including proximity tolerance)
+    &#34;&#34;&#34;
+    proximity_tolerance = zone.get(&#39;proximity_tolerance&#39;, 0)
+
+    if zone[&#39;type&#39;] == &#39;circle&#39;:
+        center_x = zone[&#39;center_x&#39;]
+        center_z = zone[&#39;center_z&#39;]
+        radius = zone[&#39;radius&#39;]
+
+        distance = np.sqrt((x - center_x)**2 + (z - center_z)**2)
+        return distance &lt;= (radius + proximity_tolerance)
+
+    elif zone[&#39;type&#39;] == &#39;rectangle&#39;:
+        # Handle GUI format (x_min, x_max, z_min, z_max)
+        x_min, x_max = zone[&#39;x_min&#39;], zone[&#39;x_max&#39;]
+        z_min, z_max = zone[&#39;z_min&#39;], zone[&#39;z_max&#39;]
+
+        tilt = zone.get(&#39;tilt&#39;, 0)
+
+        # Apply inverse rotation if tilted
+        if tilt != 0:
+            cos_tilt = np.cos(-np.radians(tilt))
+            sin_tilt = np.sin(-np.radians(tilt))
+
+            # Translate to origin
+            x_rel = x - (x_min + x_max) / 2
+            z_rel = z - (z_min + z_max) / 2
+
+            # Apply inverse rotation
+            x_rot = x_rel * cos_tilt - z_rel * sin_tilt
+            z_rot = x_rel * sin_tilt + z_rel * cos_tilt
+
+            # Translate back
+            x = x_rot + (x_min + x_max) / 2
+            z = z_rot + (z_min + z_max) / 2
+
+        # Check if point is within rectangle bounds (with proximity tolerance)
+        return (x_min - proximity_tolerance &lt;= x &lt;= x_max + proximity_tolerance and
+                z_min - proximity_tolerance &lt;= z &lt;= z_max + proximity_tolerance)
+
+    return False
+
+
+def _generate_prediction_examples(
+    analyzer: JunctionChoiceAnalyzer,
+    conditional_probs: Dict[str, Dict[str, float]]
+) -&gt; List[Dict[str, Any]]:
+    &#34;&#34;&#34;
+    Generate prediction examples based on conditional probabilities.
+    &#34;&#34;&#34;
+    examples = []
+
+    for origin_key, destinations in conditional_probs.items():
+        # Extract origin junction number from &#34;from_J0&#34; format
+        origin_idx = int(origin_key.split(&#39;_&#39;)[1][1:])  # Extract origin number from &#34;from_J0&#34;
+
+        # Find most likely destination
+        if destinations:
+            best_dest = max(destinations.items(), key=lambda x: x[1])
+            confidence = min(best_dest[1] / 100.0, 0.9)  # Cap at 90%
+
+            example = {
+                &#39;origin&#39;: origin_key,
+                &#39;predicted_destination&#39;: best_dest[0],
+                &#39;confidence&#39;: confidence,
+                &#39;all_probabilities&#39;: destinations
+            }
+            examples.append(example)
+
+    return examples[:20]  # Return top 20 examples
+
+
+def _create_conditional_probability_visualization(
+    conditional_probs: Dict[str, Dict[str, float]],
+    output_dir: str
+):
+    &#34;&#34;&#34;Create conditional probability heatmap visualization.&#34;&#34;&#34;
+    if not conditional_probs:
+        logger.warning(&#34;No conditional probabilities to visualize&#34;)
+        return
+
+    # Prepare data for heatmap - new structure: {from_J0: {J1: 100.0, J2: 0.0}, ...}
+    origins = sorted(conditional_probs.keys(), key=lambda x: int(x.split(&#39;_&#39;)[1][1:]))
+    destinations = set()
+
+    # Collect all possible destinations
+    for origin_probs in conditional_probs.values():
+        destinations.update(origin_probs.keys())
+
+    destinations = sorted(destinations, key=lambda x: int(x[1:]))
+
+    # Create heatmap data
+    heatmap_data = np.zeros((len(origins), len(destinations)))
+
+    for i, origin in enumerate(origins):
+        for j, dest in enumerate(destinations):
+            # Get the probability for this origin-destination pair
+            if origin in conditional_probs and dest in conditional_probs[origin]:
+                heatmap_data[i, j] = conditional_probs[origin][dest]
+
+    # Create visualization
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(
+        heatmap_data,
+        xticklabels=destinations,
+        yticklabels=origins,
+        annot=True,
+        fmt=&#39;.1f&#39;,
+        cmap=&#39;YlOrRd&#39;,
+        cbar_kws={&#39;label&#39;: &#39;Probability (%)&#39;}
+    )
+
+    plt.title(&#39;Conditional Probability Heatmap\n(Origin → Destination)&#39;, fontsize=14, fontweight=&#39;bold&#39;)
+    plt.xlabel(&#39;Destination Junction&#39;, fontsize=12)
+    plt.ylabel(&#39;Origin Junction&#39;, fontsize=12)
+    plt.xticks(rotation=45)
+    plt.yticks(rotation=0)
+    plt.tight_layout()
+
+    # Save plot
+    output_path = os.path.join(output_dir, &#39;conditional_probability_heatmap.png&#39;)
+    plt.savefig(output_path, dpi=300, bbox_inches=&#39;tight&#39;)
+    plt.close()
+
+    logger.info(f&#34;Conditional probability heatmap saved to {output_path}&#34;)
+
+
+def _create_flow_graph_visualizations(
+    trajectories: List[Trajectory],
+    junctions: List[Circle],
+    r_outer_list: List[float],
+    output_dir: str,
+    chain_df: pd.DataFrame = None,
+    cached_sequences: Optional[Dict[int, List[int]]] = None
+):
+    &#34;&#34;&#34;Create flow graph visualizations.&#34;&#34;&#34;
+    try:
+        # Use provided chain_df or create empty one
+        if chain_df is None:
+            chain_df = pd.DataFrame()
+
+        # Create flow graph map
+        plot_flow_graph_map(
+            trajectories=trajectories,
+            chain_df=chain_df,  # Use the actual chain_df
+            junctions=junctions,
+            r_outer_list=r_outer_list,
+            out_path=os.path.join(output_dir, &#34;Flow_Graph_Map.png&#34;),
+            cached_sequences=cached_sequences
+        )
+
+        # Create per-junction flow graph
+        plot_per_junction_flow_graph(
+            trajectories=trajectories,
+            chain_df=chain_df,  # Use the actual chain_df
+            junctions=junctions,
+            r_outer_list=r_outer_list,
+            out_path=os.path.join(output_dir, &#34;Per_Junction_Flow_Graph.png&#34;),
+            cached_sequences=cached_sequences
+        )
+
+        logger.info(&#34;Flow graph visualizations created successfully&#34;)
+    except Exception as e:
+        logger.error(f&#34;Error creating flow graph visualizations: {e}&#34;)
+
+
+def _create_pattern_visualizations(
+    conditional_probs: Dict[str, Dict[str, float]],
+    output_dir: str
+):
+    &#34;&#34;&#34;Create behavioral pattern visualization based on actual trajectory routing.&#34;&#34;&#34;
+    if not conditional_probs:
+        logger.warning(&#34;No patterns to visualize&#34;)
+        return
+
+    # Count behavioral pattern types based on actual routing
+    pattern_types = defaultdict(int)
+
+    for origin_key, dest_probs in conditional_probs.items():
+        num_destinations = len(dest_probs)
+        if num_destinations == 1:
+            pattern_types[&#39;Single Route&#39;] += 1
+        elif num_destinations == 2:
+            pattern_types[&#39;Two Routes&#39;] += 1
+        else:
+            pattern_types[&#39;Multiple Routes&#39;] += 1
+
+    # Filter out zero values
+    pattern_types = {k: v for k, v in pattern_types.items() if v &gt; 0}
+
+    if not pattern_types:
+        logger.warning(&#34;No patterns found for visualization&#34;)
+        return
+
+    # Create pie chart
+    plt.figure(figsize=(8, 6))
+    plt.pie(pattern_types.values(), labels=pattern_types.keys(), autopct=&#39;%1.1f%%&#39;, startangle=90)
+    plt.title(&#39;Behavioral Pattern Distribution\n(Actual Trajectory Routing)&#39;, fontsize=14, fontweight=&#39;bold&#39;)
+    plt.axis(&#39;equal&#39;)
+    plt.tight_layout()
+
+    # Save plot
+    output_path = os.path.join(output_dir, &#39;behavioral_patterns.png&#39;)
+    plt.savefig(output_path, dpi=300, bbox_inches=&#39;tight&#39;)
+    plt.close()
+
+    logger.info(f&#34;Behavioral pattern visualization saved to {output_path}&#34;)
+
+
+def _create_start_end_visualization(
+    start_end_results: Dict[str, Any],
+    output_dir: str
+):
+    &#34;&#34;&#34;Create start/end zone visualization.&#34;&#34;&#34;
+    # Create summary visualization
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+    # Zone visit statistics
+    visits_data = {
+        &#39;Start Zone&#39;: start_end_results[&#39;start_zone_visits&#39;],
+        &#39;End Zone&#39;: start_end_results[&#39;end_zone_visits&#39;]
+    }
+
+    # Filter out zero values
+    visits_data = {k: v for k, v in visits_data.items() if v &gt; 0}
+
+    if visits_data:
+        ax1.bar(visits_data.keys(), visits_data.values(), color=[&#39;green&#39;, &#39;red&#39;])
+        ax1.set_title(&#39;Zone Visit Statistics&#39;, fontweight=&#39;bold&#39;)
+        ax1.set_ylabel(&#39;Number of Visits&#39;)
+        ax1.tick_params(axis=&#39;x&#39;, rotation=45)
+
+    # Zone definitions
+    ax2.text(0.1, 0.8, &#39;Start Zones:&#39;, fontsize=12, fontweight=&#39;bold&#39;, transform=ax2.transAxes)
+    y_pos = 0.7
+    for i, zone in enumerate(start_end_results[&#39;start_zones&#39;]):
+        if zone[&#39;type&#39;] == &#39;circle&#39;:
+            text = f&#34;Zone {i+1}: Circle at ({zone[&#39;center_x&#39;]}, {zone[&#39;center_z&#39;]}), r={zone[&#39;radius&#39;]}&#34;
+        else:
+            text = f&#34;Zone {i+1}: Rectangle ({zone[&#39;x_min&#39;]}, {zone[&#39;z_min&#39;]}) to ({zone[&#39;x_max&#39;]}, {zone[&#39;z_max&#39;]})&#34;
+        ax2.text(0.1, y_pos, text, fontsize=10, transform=ax2.transAxes)
+        y_pos -= 0.1
+
+    ax2.text(0.1, y_pos-0.1, &#39;End Zones:&#39;, fontsize=12, fontweight=&#39;bold&#39;, transform=ax2.transAxes)
+    y_pos -= 0.2
+    for i, zone in enumerate(start_end_results[&#39;end_zones&#39;]):
+        if zone[&#39;type&#39;] == &#39;circle&#39;:
+            text = f&#34;Zone {i+1}: Circle at ({zone[&#39;center_x&#39;]}, {zone[&#39;center_z&#39;]}), r={zone[&#39;radius&#39;]}&#34;
+        else:
+            text = f&#34;Zone {i+1}: Rectangle ({zone[&#39;x_min&#39;]}, {zone[&#39;z_min&#39;]}) to ({zone[&#39;x_max&#39;]}, {zone[&#39;z_max&#39;]})&#34;
+        ax2.text(0.1, y_pos, text, fontsize=10, transform=ax2.transAxes)
+        y_pos -= 0.1
+
+    ax2.set_xlim(0, 1)
+    ax2.set_ylim(0, 1)
+    ax2.axis(&#39;off&#39;)
+    ax2.set_title(&#39;Zone Definitions&#39;, fontweight=&#39;bold&#39;)
+
+    plt.tight_layout()
+
+    # Save plot
+    output_path = os.path.join(output_dir, &#39;start_end_analysis.png&#39;)
+    plt.savefig(output_path, dpi=300, bbox_inches=&#39;tight&#39;)
+    plt.close()
+
+    logger.info(f&#34;Start/end analysis visualization saved to {output_path}&#34;)
+
+
+def _save_results_to_json(results: Dict[str, Any], output_dir: str):
+    &#34;&#34;&#34;Save analysis results to JSON file.&#34;&#34;&#34;
+    def _convert_numpy_to_list(obj):
+        &#34;&#34;&#34;Recursively convert numpy arrays to lists for JSON serialization.&#34;&#34;&#34;
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {key: _convert_numpy_to_list(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [_convert_numpy_to_list(item) for item in obj]
+        else:
+            return obj
+
+    # Convert numpy arrays to lists
+    json_results = _convert_numpy_to_list(results)
+
+    # Save to file
+    output_path = os.path.join(output_dir, &#39;analysis_results.json&#39;)
+    with open(output_path, &#39;w&#39;) as f:
+        json.dump(json_results, f, indent=2)
+
+    logger.info(f&#34;Analysis results saved to {output_path}&#34;)
+
+
+def predict_next_choice(
+    current_junction: int,
+    origin_junction: int,
+    conditional_probs: Dict[str, Dict[str, float]]
+) -&gt; Tuple[str, float]:
+    &#34;&#34;&#34;
+    Predict the next junction choice based on current and origin junctions.
+
+    Args:
+        current_junction: Index of current junction
+        origin_junction: Index of origin junction
+        conditional_probs: Conditional probability data
+
+    Returns:
+        Tuple of (predicted_destination, confidence)
+    &#34;&#34;&#34;
+    junction_key = f&#34;J{current_junction}&#34;
+    origin_key = f&#34;from_J{origin_junction}&#34;
+
+    if junction_key in conditional_probs and origin_key in conditional_probs[junction_key]:
+        destinations = conditional_probs[junction_key][origin_key]
+        if destinations:
+            best_dest = max(destinations.items(), key=lambda x: x[1])
+            confidence = min(best_dest[1] / 100.0, 0.9)
+            return best_dest[0], confidence
+
+    return &#34;Unknown&#34;, 0.0</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_prediction.analyze_junction_choice_patterns"><code class="name flex">
+<span>def <span class="ident">analyze_junction_choice_patterns</span></span>(<span>trajectories: List[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>], chain_df: pandas.core.frame.DataFrame, junctions: List[<a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>], output_dir: str, r_outer_list: List[float], gui_mode: bool = False) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Analyze junction-based choice patterns and generate predictions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories</code></strong></dt>
+<dd>List of trajectory objects</dd>
+<dt><strong><code>chain_df</code></strong></dt>
+<dd>DataFrame with decision chain data</dd>
+<dt><strong><code>junctions</code></strong></dt>
+<dd>List of junction circles</dd>
+<dt><strong><code>output_dir</code></strong></dt>
+<dd>Output directory for results</dd>
+<dt><strong><code>r_outer_list</code></strong></dt>
+<dd>List of r_outer values for each junction</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Dictionary containing analysis results</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_junction_choice_patterns(
+    trajectories: List[Trajectory],
+    chain_df: pd.DataFrame,
+    junctions: List[Circle],
+    output_dir: str,
+    r_outer_list: List[float],
+    gui_mode: bool = False
+) -&gt; Dict[str, Any]:
+    &#34;&#34;&#34;
+    Analyze junction-based choice patterns and generate predictions.
+
+    Args:
+        trajectories: List of trajectory objects
+        chain_df: DataFrame with decision chain data
+        junctions: List of junction circles
+        output_dir: Output directory for results
+        r_outer_list: List of r_outer values for each junction
+
+    Returns:
+        Dictionary containing analysis results
+    &#34;&#34;&#34;
+    logger.info(&#34;Starting junction choice pattern analysis...&#34;)
+
+    # Show analysis estimate
+    show_analysis_estimate(len(trajectories), len(junctions), &#34;predict&#34;, gui_mode)
+
+    # Initialize progress manager
+    progress_manager = AnalysisProgressManager(gui_mode)
+    progress_manager.add_step(&#34;Conditional Probabilities&#34;, weight=2.0)
+    progress_manager.add_step(&#34;Visualizations&#34;, weight=1.5)
+
+    progress_manager.start_analysis(len(trajectories))
+
+    # Analyze conditional probabilities
+    step_tracker = progress_manager.start_step(&#34;Conditional Probabilities&#34;, len(trajectories))
+    conditional_probs, cached_sequences = _analyze_conditional_probabilities(trajectories, junctions, r_outer_list, step_tracker)
+    step_tracker.close()
+    progress_manager.update_overall_progress(1.0)
+
+    # Create visualizations
+    step_tracker = progress_manager.start_step(&#34;Visualizations&#34;, 1)
+    _create_conditional_probability_visualization(conditional_probs, output_dir)
+    _create_flow_graph_visualizations(trajectories, junctions, r_outer_list, output_dir, chain_df, cached_sequences)
+    _create_pattern_visualizations(conditional_probs, output_dir)
+    step_tracker.close()
+    progress_manager.update_overall_progress(1.0)
+
+    # Compile results
+    results = {
+        &#39;conditional_probabilities&#39;: conditional_probs,
+        &#39;cached_sequences&#39;: cached_sequences,  # Cached for interactive prediction tool
+        &#39;summary&#39;: {
+            &#39;total_trajectories&#39;: len(trajectories),
+            &#39;total_junctions&#39;: len(junctions),
+            &#39;total_transitions&#39;: sum(len(probs) for probs in conditional_probs.values()),
+            &#39;unique_patterns&#39;: len(conditional_probs)
+        }
+    }
+
+    # Save results to JSON
+    _save_results_to_json(results, output_dir)
+
+    progress_manager.finish_analysis()
+    logger.info(&#34;Junction choice pattern analysis completed successfully&#34;)
+    return results</code></pre>
+</details>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_prediction.predict_next_choice"><code class="name flex">
+<span>def <span class="ident">predict_next_choice</span></span>(<span>current_junction: int, origin_junction: int, conditional_probs: Dict[str, Dict[str, float]]) ‑> Tuple[str, float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Predict the next junction choice based on current and origin junctions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>current_junction</code></strong></dt>
+<dd>Index of current junction</dd>
+<dt><strong><code>origin_junction</code></strong></dt>
+<dd>Index of origin junction</dd>
+<dt><strong><code>conditional_probs</code></strong></dt>
+<dd>Conditional probability data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Tuple of (predicted_destination, confidence)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def predict_next_choice(
+    current_junction: int,
+    origin_junction: int,
+    conditional_probs: Dict[str, Dict[str, float]]
+) -&gt; Tuple[str, float]:
+    &#34;&#34;&#34;
+    Predict the next junction choice based on current and origin junctions.
+
+    Args:
+        current_junction: Index of current junction
+        origin_junction: Index of origin junction
+        conditional_probs: Conditional probability data
+
+    Returns:
+        Tuple of (predicted_destination, confidence)
+    &#34;&#34;&#34;
+    junction_key = f&#34;J{current_junction}&#34;
+    origin_key = f&#34;from_J{origin_junction}&#34;
+
+    if junction_key in conditional_probs and origin_key in conditional_probs[junction_key]:
+        destinations = conditional_probs[junction_key][origin_key]
+        if destinations:
+            best_dest = max(destinations.items(), key=lambda x: x[1])
+            confidence = min(best_dest[1] / 100.0, 0.9)
+            return best_dest[0], confidence
+
+    return &#34;Unknown&#34;, 0.0</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer"><code class="flex name class">
+<span>class <span class="ident">JunctionChoiceAnalyzer</span></span>
+<span>(</span><span>trajectories: List[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>], junctions: List[<a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>], r_outer_list: List[float])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Analyzer for junction-based choice patterns.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class JunctionChoiceAnalyzer:
+    &#34;&#34;&#34;Analyzer for junction-based choice patterns.&#34;&#34;&#34;
+
+    trajectories: List[Trajectory]
+    junctions: List[Circle]
+    r_outer_list: List[float]
+
+    def __init__(self, trajectories: List[Trajectory], junctions: List[Circle], r_outer_list: List[float]):
+        self.trajectories = trajectories
+        self.junctions = junctions
+        self.r_outer_list = r_outer_list</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.junctions"><code class="name">var <span class="ident">junctions</span> : List[<a title="route_analyzer_ruedi99ms.ra_geometry.Circle" href="ra_geometry.html#route_analyzer_ruedi99ms.ra_geometry.Circle">Circle</a>]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.r_outer_list"><code class="name">var <span class="ident">r_outer_list</span> : List[float]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.trajectories"><code class="name">var <span class="ident">trajectories</span> : List[<a title="route_analyzer_ruedi99ms.ra_data_loader.Trajectory" href="ra_data_loader.html#route_analyzer_ruedi99ms.ra_data_loader.Trajectory">Trajectory</a>]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="route_analyzer_ruedi99ms" href="index.html">route_analyzer_ruedi99ms</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.ra_prediction.analyze_junction_choice_patterns" href="#route_analyzer_ruedi99ms.ra_prediction.analyze_junction_choice_patterns">analyze_junction_choice_patterns</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_prediction.predict_next_choice" href="#route_analyzer_ruedi99ms.ra_prediction.predict_next_choice">predict_next_choice</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer" href="#route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer">JunctionChoiceAnalyzer</a></code></h4>
+<ul class="">
+<li><code><a title="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.junctions" href="#route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.junctions">junctions</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.r_outer_list" href="#route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.r_outer_list">r_outer_list</a></code></li>
+<li><code><a title="route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.trajectories" href="#route_analyzer_ruedi99ms.ra_prediction.JunctionChoiceAnalyzer.trajectories">trajectories</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

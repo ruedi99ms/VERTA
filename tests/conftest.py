@@ -10,8 +10,8 @@ import sys
 from pathlib import Path
 
 # Import from package
-from route_analyzer.ra_data_loader import Trajectory, ColumnMapping
-from route_analyzer.ra_geometry import Circle, Rect
+from route_analyzer_ruedi99ms.ra_data_loader import Trajectory, ColumnMapping
+from route_analyzer_ruedi99ms.ra_geometry import Circle, Rect
 
 
 @pytest.fixture
@@ -89,7 +89,7 @@ def sample_csv_folder(temp_dir):
     """Create a folder with multiple sample CSV files."""
     folder = os.path.join(temp_dir, "trajectories")
     os.makedirs(folder, exist_ok=True)
-    
+
     for i in range(3):
         csv_path = os.path.join(folder, f"traj_{i}.csv")
         df = pd.DataFrame({
@@ -98,7 +98,7 @@ def sample_csv_folder(temp_dir):
             't': np.linspace(0, 0.4, 5)
         })
         df.to_csv(csv_path, index=False)
-    
+
     return folder
 
 
@@ -120,7 +120,7 @@ def mock_args():
             self.decision_mode = "hybrid"
             self.r_outer = None
             self.linger_delta = 5.0
-    
+
     return MockArgs()
 
 
@@ -128,4 +128,3 @@ def mock_args():
 def column_mapping():
     """Create a default column mapping."""
     return ColumnMapping()
-
