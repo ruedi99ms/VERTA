@@ -3,7 +3,7 @@ route_analysis.py — Standalone route-decision analysis on x–z trajectories
 
 This module provides a small, dependency-light toolkit to analyze route choices
 from movement trajectories on a Cartesian x–z plane. It is **generic**: no
-experiment-specific names or parameters are baked in. You can:
+study-specific names or parameters are baked in. You can:
 
 - Load one or many "movement files" (CSV/TSV/parquet). Only coordinates are
   required; time is optional but enables timing metrics.

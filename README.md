@@ -635,6 +635,15 @@ Time,X,Z
 - Use `--config` for complex multi-command setups
 - Try `--cluster_method auto` for automatic cluster detection
 
+## AI Usage Disclosure
+
+This project utilized AI-assisted development tools for various aspects of the codebase:
+
+- **Cursor** and **ChatGPT** were used for:
+  - Code refactoring
+  - Test scaffolding
+  - Documentation refactoring and elaboration
+
 ## License
 
 MIT
