@@ -2,7 +2,7 @@
 Junction-based choice prediction and analysis module.
 
 This module provides functionality for analyzing trajectory patterns at junctions,
-predicting user choices, and generating behavioral insights for VR experiments.
+predicting user choices, and generating behavioral insights for XR spatial studies.
 """
 
 import os

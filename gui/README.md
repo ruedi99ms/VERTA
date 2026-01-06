@@ -6,7 +6,7 @@ A modern, interactive web interface for VERTA (Virtual Environment Route and Tra
 
 ### 1. Install GUI Dependencies
 ```bash
-pip install -r gui/requirements.txt
+pip install verta[gui]
 ```
 
 ### 2. Launch the GUI
@@ -114,7 +114,7 @@ VERTA GUI provides 7 comprehensive analysis types:
 
 ### Advanced Usage
 - **Custom Parameters**: Fine-tune analysis settings
-- **Multiple Datasets**: Compare different experiments
+- **Multiple Datasets**: Compare different XR spatial studies
 - **Batch Processing**: Analyze multiple trajectory sets
 - **Custom Visualizations**: Create specialized plots
 
@@ -139,7 +139,7 @@ VERTA GUI provides 7 comprehensive analysis types:
 **GUI won't start:**
 ```bash
 # Check dependencies
-pip install -r gui/requirements.txt
+pip install verta[gui]
 
 # Verify Python path
 python -c "import streamlit; print('Streamlit OK')"

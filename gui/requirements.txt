@@ -1,5 +1,6 @@
 # GUI Dependencies for VERTA (Virtual Environment Route and Trajectory Analyzer)
-# Install with: pip install -r requirements_gui.txt
+# Install with: pip install verta[gui]
+# (This file is for reference; the recommended installation method is above)
 #
 # Note: Core dependencies (numpy, pandas, matplotlib, seaborn) are included
 # in the main package. This file lists GUI-specific dependencies.

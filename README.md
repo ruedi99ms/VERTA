@@ -1,17 +1,19 @@
 # VERTA - Virtual Environment Route and Trajectory Analyzer
 
-`VERTA` is a comprehensive toolkit to analyze initial (#MC why initial?) route choices from x–z movement trajectories: discover branch directions (#MC need to explain what a branch direction is. for example, it can be worded like; i.e., a direction of movement that  occurs after a participant passes a junction, or i.e., one possible route choice), assign trajectories to branches (#MC same here, what are trajectories and branches), compute timing metrics, visualize results, and predict future route choices based on behavioral patterns. `VERTA` includes both command-line interface (CLI) and interactive web GUI.
+`VERTA` is a comprehensive toolkit to analyze route choices from x–z movement trajectories: discover branch directions (common route choices that occur at an intersection), assign movement trajectories to existing branches (if new data was recorded), compute timing metrics, visualize results, and predict future route choices based on behavioral patterns. `VERTA` includes both command-line interface (CLI) and interactive web GUI.
 
 ## Installation
 
+**Requirements:** Python ≥3.8
+
 ```bash
 # Core installation
-pip install . #MC remember to change this to pip install verta
+pip install verta
 
 # With optional extras
-pip install .[yaml]      # YAML configuration support
-pip install .[parquet]    # Parquet file format support  
-pip install .[gui]        # GUI dependencies (streamlit, plotly)
+pip install verta[yaml]      # YAML configuration support
+pip install verta[parquet]    # Parquet file format support  
+pip install verta[gui]        # GUI dependencies (streamlit, plotly)
 ```
 
 This installs a console script `verta` and enables the web GUI.
@@ -21,8 +23,8 @@ This installs a console script `verta` and enables the web GUI.
 For an interactive, user-friendly interface, try the web-based GUI:
 
 ```bash
-# Install GUI dependencies
-pip install -r gui/requirements.txt #MC is this the same as/ a duplicate of pip install .[gui] mentioned above
+# Install GUI dependencies (same as: pip install verta[gui])
+pip install verta[gui]
 
 # Launch the web interface
 python gui/launch.py
@@ -61,11 +63,116 @@ Predict user route choices **before** they reach decision points using machine l
 - Dynamic environment optimization
 - A/B testing of early interventions
 
-📚 **Documentation**: See [`examples/README.md`](examples/README.md) for a comprehensive guide to Intent Recognition, including usage examples, model loading, and integration into VR systems. (#MC usually the folder at the root level is called only examples)
+📚 **Documentation**: See [`examples`](examples) for a comprehensive guide to Intent Recognition, including usage examples, model loading, and integration into VR systems.
 
 ## CLI Commands
 
 VERTA provides 7 main commands for different types of analysis:
+
+### Decision Modes
+
+VERTA uses **decision modes** to determine where along a trajectory a route choice (branch decision) is made after passing through a junction. The decision point is used to extract the direction vector that represents the chosen route. Three modes are available:
+
+- **`pathlen`**: Measures the path length traveled after entering the junction. The decision point is where the trajectory has traveled a specified distance (set by `--distance`, default: 100 units) from the junction entry point. This mode works well for consistent movement speeds and is computationally efficient.
+
+- **`radial`**: Uses radial distance from the junction center. The decision point is where the trajectory crosses an outer radius (`--r_outer`) with an outward trend (moving away from the junction center). This mode is useful when trajectories move at varying speeds, as it's based on spatial position rather than path length.
+
+- **`hybrid`** (recommended): Tries radial mode first, and if that doesn't find a decision point, falls back to pathlen mode. This provides the best of both approaches and handles a wider variety of trajectory patterns.
+
+**When to use each mode:**
+- Use `pathlen` for fast processing when trajectories have consistent speeds
+- Use `radial` when trajectories vary significantly in speed or when you want spatial-based detection
+- Use `hybrid` (default) for the most robust detection across different scenarios
+
+### Parameters Reference
+
+This section provides a comprehensive overview of all parameters used across VERTA commands. Individual command sections highlight only the most relevant parameters for that command.
+
+#### Common Parameters
+
+These parameters are used across most commands:
+
+- **`--input`** (required): Path to input directory or file containing trajectory data
+- **`--out`** / **`--output`**: Path to output directory for results (default: current directory)
+- **`--glob`**: File pattern to match input files (default: `"*.csv"`)
+- **`--columns`**: Column mapping in format `x=ColumnX,z=ColumnZ,t=TimeColumn`. Maps your CSV columns to VERTA's expected coordinate names
+- **`--scale`**: Coordinate scaling factor (default: 1.0). Use if your coordinates need scaling (e.g., `0.2` to convert from millimeters to meters)
+- **`--config`**: Path to YAML configuration file for batch parameter settings
+
+#### Junction Parameters
+
+Define the location and size of junctions (decision points):
+
+- **`--junction`**: Junction center coordinates and radius as `x y radius` (e.g., `520 330 20`)
+- **`--junctions`**: Multiple junctions as space-separated triplets: `x1 y1 r1 x2 y2 r2 ...`
+- **`--radius`**: Junction radius (used with `--junction` when radius is specified separately)
+
+#### Decision Mode Parameters
+
+Control how decision points are detected (see [Decision Modes](#decision-modes) above):
+
+- **`--decision_mode`**: Choose `pathlen`, `radial`, or `hybrid` (default varies by command)
+- **`--distance`**: Path length after junction for decision detection in `pathlen` mode (default: 100.0 units)
+- **`--r_outer`**: Outer radius for `radial` decision mode. Trajectory must cross this radius with outward movement
+- **`--r_outer_list`**: List of outer radii for multiple junctions (one per junction)
+- **`--linger_delta`**: Additional distance beyond junction required for decision detection (default: 5.0)
+- **`--epsilon`**: Minimum step size for trajectory processing (default: 0.015). Smaller values detect finer movements
+- **`--trend_window`**: Window size for trend analysis in radial mode (default: 5)
+- **`--min_outward`**: Minimum outward movement threshold for radial detection (default: 0.0)
+
+#### Clustering Parameters
+
+Used by the `discover` command to identify branch directions:
+
+- **`--cluster_method`**: Clustering algorithm - `kmeans` (fast, requires known k), `auto` (finds optimal k), or `dbscan` (density-based, finds variable number of clusters)
+- **`--k`**: Number of clusters for kmeans (default: 3)
+- **`--k_min`**, **`--k_max`**: Range for auto clustering (default: 2-6)
+- **`--angle_eps`**: Angle epsilon for DBSCAN clustering in degrees (default: 15.0)
+- **`--min_samples`**: Minimum samples per cluster for DBSCAN (default: 5)
+- **`--min_sep_deg`**: Minimum angular separation in degrees between branch centers (default: 12.0). Branches closer than this are merged
+- **`--seed`**: Random seed for reproducibility (default: 0)
+
+#### Assignment Parameters
+
+Used when assigning trajectories to existing branches:
+
+- **`--centers`**: Path to previously discovered branch centers file (.npy format) - **required** for `assign` command
+- **`--assign_angle_eps`**: Angle tolerance in degrees for branch assignment (default: 15.0). Trajectory direction must be within this angle of a branch center
+
+#### Analysis Parameters
+
+Control analysis behavior and output:
+
+- **`--analyze_sequences`**: Enable route sequence analysis across multiple junctions
+- **`--predict_examples`**: Number of concrete prediction examples to generate (default: 50)
+- **`--physio_window`**: Time window in seconds for physiological data analysis (default: 3.0)
+
+#### Machine Learning Parameters (Intent Recognition)
+
+Parameters for ML-based intent recognition:
+
+- **`--prediction_distances`**: Distances before junction to make predictions (default: `100 75 50 25` units)
+- **`--model_type`**: ML model - `random_forest` (fast, robust) or `gradient_boosting` (higher accuracy, slower)
+- **`--cv_folds`**: Number of cross-validation folds for model evaluation (default: 5)
+- **`--test_split`**: Fraction of data reserved for testing (default: 0.2)
+- **`--with_gaze`**: Include gaze and physiological data in feature extraction (if available)
+- **`--assignments`**: Path to pre-computed branch assignments file (optional, speeds up analysis)
+
+#### Visualization Parameters
+
+Control plot generation:
+
+- **`--plot_intercepts`**: Generate decision intercepts visualization (default: True)
+- **`--show_paths`**: Show trajectory paths in plots (default: True)
+- Use `--no-plot_intercepts` and `--no-show_paths` to disable specific visualizations
+
+#### Chain Analysis Parameters
+
+For multi-junction analysis:
+
+- **`--evacuation_analysis`**: Enable evacuation efficiency analysis
+- **`--generate_recommendations`**: Generate traffic flow recommendations
+- **`--risk_assessment`**: Perform risk assessment metrics
 
 ### 1. Discover Branches
 
@@ -89,15 +196,8 @@ verta discover \
 - `--decision_mode`: `pathlen`, `radial`, or `hybrid` (default: `hybrid`)
 - `--k`: Number of clusters for kmeans (default: 3)
 - `--k_min`, `--k_max`: Range for auto clustering (default: 2-6)
-- `--r_outer`: Outer radius for radial decision mode (#MC what is a devision mode?)
-- `--linger_delta`: Distance beyond junction for decision detection (default: 5.0)
-- `--epsilon`: Minimum step size for trajectory processing (default: 0.015)
-- `--angle_eps`: Angle epsilon for DBSCAN clustering (default: 15.0 degrees)
-- `--min_samples`: Minimum samples for DBSCAN clustering (default: 5)
-- `--min_sep_deg`: Minimum separation in degrees between branches (default: 12.0)
-- `--seed`: Random seed for reproducibility (default: 0)
-- `--plot_intercepts`: Plot decision intercepts visualization (default: True)
-- `--show_paths`: Show trajectory paths in plots (default: True)
+
+See [Parameters Reference](#parameters-reference) for all available parameters including decision mode, clustering, and visualization options.
 
 ### 2. Assign Branches
 
@@ -116,9 +216,9 @@ verta assign \
 **Key Parameters:**
 - `--centers`: Path to previously discovered branch centers (.npy file) - **required**
 - `--decision_mode`: `pathlen`, `radial`, or `hybrid` (default: `pathlen`)
-- `--distance`: Path length after junction for decision detection (default: 100.0)
-- `--epsilon`: Minimum step size for trajectory processing (default: 0.015)
 - `--assign_angle_eps`: Angle tolerance for branch assignment (default: 15.0 degrees)
+
+See [Parameters Reference](#parameters-reference) for decision mode and other common parameters.
 
 **Use Cases:**
 - Assign new test data to previously discovered branches
@@ -141,10 +241,10 @@ verta metrics \
 
 **Key Parameters:**
 - `--decision_mode`: `pathlen`, `radial`, or `hybrid` (default: `pathlen`)
-- `--distance`: Path length after junction for timing calculation (default: 100.0)
-- `--r_outer`: Outer radius for radial decision mode
 - `--trend_window`: Window size for trend analysis (default: 5)
 - `--min_outward`: Minimum outward movement threshold (default: 0.0)
+
+See [Parameters Reference](#parameters-reference) for decision mode and junction parameters.
 
 **Metrics Computed:**
 - Time to travel specified path length after junction
@@ -165,6 +265,11 @@ verta gaze \
   --physio_window 3.0 \
   --out ./gaze_outputs
 ```
+
+**Key Parameters:**
+- `--physio_window`: Time window in seconds for physiological data analysis (default: 3.0)
+
+See [Parameters Reference](#parameters-reference) for decision mode, junction, and other common parameters.
 
 **Analysis Features:**
 - Head yaw direction at decision points
@@ -190,6 +295,12 @@ verta predict \
   --predict_examples 50 \
   --out ./outputs/prediction
 ```
+
+**Key Parameters:**
+- `--analyze_sequences`: Enable route sequence analysis across multiple junctions
+- `--predict_examples`: Number of concrete prediction examples to generate (default: 50)
+
+See [Parameters Reference](#parameters-reference) for clustering, decision mode, and junction parameters.
 
 **Prediction Features:**
 - Behavioral pattern recognition (preferred, learned, direct)
@@ -219,11 +330,11 @@ verta intent \
 **Key Parameters:**
 - `--prediction_distances`: Distances before junction to make predictions (default: 100, 75, 50, 25 units)
 - `--model_type`: Choose `random_forest` (fast) or `gradient_boosting` (higher accuracy)
-- `--cv_folds`: Cross-validation folds for model evaluation (default: 5)
-- `--test_split`: Fraction of data for testing (default: 0.2)
 - `--with_gaze`: Include gaze and physiological data if available
 - `--centers`: Use pre-computed branch centers (optional)
 - `--assignments`: Use pre-computed branch assignments (optional)
+
+See [Parameters Reference](#parameters-reference) for all ML and decision mode parameters.
 
 **Intent Recognition Features:**
 - Multi-distance prediction models (train at 100, 75, 50, 25 units before junction)
@@ -255,6 +366,13 @@ verta chain-enhanced \
   --risk_assessment \
   --out ./outputs/chain_analysis
 ```
+
+**Key Parameters:**
+- `--evacuation_analysis`: Enable evacuation efficiency analysis
+- `--generate_recommendations`: Generate traffic flow recommendations
+- `--risk_assessment`: Perform risk assessment metrics
+
+See [Parameters Reference](#parameters-reference) for decision mode, junction, and other common parameters.
 
 **Enhanced Features:**
 - Flow graph generation
@@ -396,6 +514,10 @@ discover:
 
 ## Dependencies
 
+### Python Version
+
+VERTA requires **Python ≥3.8**. Supported versions include Python 3.8, 3.9, 3.10, 3.11, and 3.12.
+
 ### Core Dependencies
 - **numpy** (≥1.20.0) - Numerical computations
 - **pandas** (≥1.3.0) - Data manipulation and analysis
@@ -403,15 +525,13 @@ discover:
 - **tqdm** (≥4.60.0) - Progress bars
 - **seaborn** (≥0.12.0) - Statistical data visualization
 
-(#MC is there a requirement for Python versions)
-
 ### ML Capabilities (Intent Recognition)
 - **scikit-learn** (≥1.0.0) - Machine learning algorithms (Random Forest, Gradient Boosting)
 - **plotly** (≥5.15.0) - Interactive visualization for feature importance and accuracy analysis
 
 ### Optional Dependencies
 
-Install with `pip install .[yaml]`, `pip install .[parquet]`, `pip install .[gui]`, or `pip install .[test]`:
+Install with `pip install verta[yaml]`, `pip install verta[parquet]`, `pip install verta[gui]`, or `pip install verta[test]`:
 
 - **config** - YAML configuration file support (`pyyaml`)
 - **parquet** - Parquet file format support (`pyarrow`)
@@ -422,10 +542,10 @@ Install with `pip install .[yaml]`, `pip install .[parquet]`, `pip install .[gui
 
 For the web interface, install:
 ```bash
-pip install -r gui/requirements.txt
+pip install verta[gui]
 ```
 
-Additional GUI packages:
+This installs:
 - **streamlit** (≥1.28.0) - Web framework
 - **plotly** (≥5.15.0) - Interactive plotting
 
@@ -447,7 +567,7 @@ python -c "import verta; print('Package OK')"
 **GUI won't start:**
 ```bash
 # Check GUI dependencies
-pip install -r gui/requirements.txt
+pip install verta[gui]
 
 # Verify Streamlit installation
 python -c "import streamlit; print('Streamlit OK')"

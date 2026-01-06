@@ -33,7 +33,7 @@ def main() -> int:
         import streamlit  # noqa: F401
     except Exception:
         print("Streamlit is not installed.")
-        print("Install GUI deps first: pip install -r gui/requirements.txt")
+        print("Install GUI deps first: pip install verta[gui]")
         return 1
 
     # Build streamlit command
