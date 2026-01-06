@@ -3,7 +3,7 @@ requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "route-analyzer"
+name = "verta"
 version = "1.0.0"
 description = "VERTA - Virtual Environment Route and Trajectory Analyzer: A comprehensive toolkit for analyzing route choices and trajectories in virtual environments"
 readme = "README.md"
@@ -54,7 +54,7 @@ gui = ["streamlit>=1.28.0", "plotly>=5.15.0"]
 test = ["pytest>=7.0.0"]
 
 [project.scripts]
-route-analyzer = "route_analyzer_RUEDI99MS.__main__:main"
+verta = "verta.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/ruedi99ms/VERTA"
@@ -63,7 +63,7 @@ Repository = "https://github.com/ruedi99ms/VERTA"
 Issues = "https://github.com/ruedi99ms/VERTA/issues"
 
 [tool.setuptools]
-packages = ["route_analyzer_RUEDI99MS"]
+packages = ["verta"]
 package-dir = {"" = "src"}
 
 [tool.pytest.ini_options]

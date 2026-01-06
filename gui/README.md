@@ -15,7 +15,7 @@ pip install -r gui/requirements.txt
 python gui/launch.py
 
 # Option 2: Direct Streamlit command to GUI module
-streamlit run src/route_analyzer/ra_gui.py
+streamlit run src/verta/verta_gui.py
 ```
 
 ### 3. Open in Browser
@@ -121,7 +121,7 @@ VERTA GUI provides 7 comprehensive analysis types:
 ## 🛠️ Development
 
 ### Adding New Features
-1. **Extend RouteAnalyzerGUI class**: Add new methods
+1. **Extend VERTAGUI class**: Add new methods
 2. **Create new render methods**: Follow naming convention `render_*`
 3. **Update navigation**: Add new steps to sidebar
 4. **Test thoroughly**: Ensure compatibility with package mode
@@ -148,10 +148,10 @@ python -c "import streamlit; print('Streamlit OK')"
 **Import errors:**
 ```bash
 # Ensure you're in the right directory
-cd /path/to/route_analyzer
+cd /path/to/verta
 
 # Check project structure
-ls src/route_analyzer/ra_gui.py
+ls src/verta/verta_gui.py
 ```
 
 **Performance issues:**

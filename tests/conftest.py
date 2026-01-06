@@ -1,5 +1,5 @@
 """
-Shared pytest fixtures for route_analyzer tests.
+Shared pytest fixtures for VERTA tests.
 """
 import pytest
 import numpy as np
@@ -10,8 +10,8 @@ import sys
 from pathlib import Path
 
 # Import from package
-from route_analyzer_ruedi99ms.ra_data_loader import Trajectory, ColumnMapping
-from route_analyzer_ruedi99ms.ra_geometry import Circle, Rect
+from verta.verta_data_loader import Trajectory, ColumnMapping
+from verta.verta_geometry import Circle, Rect
 
 
 @pytest.fixture

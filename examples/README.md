@@ -428,7 +428,7 @@ with open(f"gui_outputs/intent_recognition/junction_0/models/model_{distance}.pk
 with open(f"gui_outputs/intent_recognition/junction_0/models/scaler_{distance}.pkl", 'rb') as f:
     scaler = pickle.load(f)
 
-# Extract features from current trajectory (see ra_intent_recognition.py)
+# Extract features from current trajectory (see verta_intent_recognition.py)
 features = extract_features(trajectory, junction, distance)
 
 # Scale features

@@ -14,7 +14,7 @@ pip install .[parquet]    # Parquet file format support
 pip install .[gui]        # GUI dependencies (streamlit, plotly)
 ```
 
-This installs a console script `route-analyzer` and enables the web GUI.
+This installs a console script `verta` and enables the web GUI.
 
 ## 🖥️ Web GUI
 
@@ -27,7 +27,7 @@ pip install -r gui/requirements.txt #MC is this the same as/ a duplicate of pip 
 # Launch the web interface
 python gui/launch.py
 # or
-streamlit run src/route_analyzer/ra_gui.py
+streamlit run src/verta/verta_gui.py
 ```
 
 See [`gui/README.md`](gui/README.md) for detailed GUI documentation.
@@ -72,7 +72,7 @@ VERTA provides 7 main commands for different types of analysis:
 Discover branch directions from trajectory data using clustering algorithms:
 
 ```bash
-route-analyzer discover \
+verta discover \
   --input ./data \
   --glob "*.csv" \
   --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \
@@ -104,7 +104,7 @@ route-analyzer discover \
 Assign new trajectories to previously discovered branch centers:
 
 ```bash
-route-analyzer assign \
+verta assign \
   --input ./new_data \
   --columns x=X,z=Z,t=time \
   --junction 520 330 --radius 20 \
@@ -130,7 +130,7 @@ route-analyzer assign \
 Calculate timing and speed metrics for trajectories:
 
 ```bash
-route-analyzer metrics \
+verta metrics \
   --input ./data \
   --columns x=X,z=Z,t=time \
   --junction 520 330 --radius 20 \
@@ -157,7 +157,7 @@ route-analyzer metrics \
 Analyze head movement and physiological data at decision points:
 
 ```bash
-route-analyzer gaze \
+verta gaze \
   --input ./gaze_data \
   --columns x=X,z=Z,t=time,yaw=HeadYaw,pupil=PupilDilation \
   --junction 520 330 --radius 20 \
@@ -177,7 +177,7 @@ route-analyzer gaze \
 Analyze behavioral patterns and predict future route choices:
 
 ```bash
-route-analyzer predict \
+verta predict \
   --input ./data \
   --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \
   --scale 0.2 \
@@ -203,7 +203,7 @@ route-analyzer predict \
 ML-based early route prediction - predict user route choices **before** they reach decision points:
 
 ```bash
-route-analyzer intent \
+verta intent \
   --input ./data \
   --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \
   --scale 0.2 \
@@ -244,7 +244,7 @@ route-analyzer intent \
 Multi-junction analysis with evacuation planning features:
 
 ```bash
-route-analyzer chain-enhanced \
+verta chain-enhanced \
   --input ./data \
   --columns x=X,z=Z,t=time \
   --junctions 520 330 20  600 400 20  700 450 20 \
@@ -438,10 +438,10 @@ Note: Core dependencies (numpy, pandas, matplotlib, seaborn) are included in the
 **Import errors:**
 ```bash
 # Ensure you're in the project directory
-cd /path/to/route_analyzer
+cd /path/to/verta
 
 # Check Python path
-python -c "import route_analyzer; print('Package OK')"
+python -c "import verta; print('Package OK')"
 ```
 
 **GUI won't start:**
@@ -453,7 +453,7 @@ pip install -r gui/requirements.txt
 python -c "import streamlit; print('Streamlit OK')"
 
 # Launch with explicit path
-streamlit run src/route_analyzer/ra_gui.py
+streamlit run src/verta/verta_gui.py
 ```
 
 **No trajectories loaded:**

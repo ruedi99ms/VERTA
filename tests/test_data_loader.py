@@ -8,7 +8,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from route_analyzer_ruedi99ms.ra_data_loader import (
+from verta.verta_data_loader import (
     Trajectory, ColumnMapping,
     has_gaze_data, has_physio_data
 )

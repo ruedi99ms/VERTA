@@ -49,7 +49,7 @@ pytest -v
 
 ```bash
 pip install pytest-cov
-pytest --cov=route_analyzer --cov-report=html
+pytest --cov=verta --cov-report=html
 ```
 
 This generates an HTML coverage report in `htmlcov/index.html` showing which code is covered by tests.
@@ -87,7 +87,7 @@ When adding new test files:
 
 ```python
 import pytest
-from route_analyzer.ra_geometry import Circle
+from verta.verta_geometry import Circle
 
 class TestCircle:
     def test_circle_creation(self):
@@ -112,5 +112,5 @@ pip install -e ".[test]"
 **Tests skip with "package not available":**
 - Ensure you're running tests from the repository root
 - Install the package: `pip install -e .`
-- Verify installation: `python -c "import route_analyzer; print('OK')"`
+- Verify installation: `python -c "import verta; print('OK')"`
 

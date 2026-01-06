@@ -4,7 +4,7 @@ Tests for geometry module (Circle, Rect, and related functions).
 import pytest
 import numpy as np
 
-from route_analyzer_ruedi99ms.ra_geometry import Circle, Rect, entered_junction_idx
+from verta.verta_geometry import Circle, Rect, entered_junction_idx
 
 
 class TestCircle:

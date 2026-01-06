@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch, MagicMock
 Tests for command classes (BaseCommand, DiscoverCommand, AssignCommand, etc.).
 
 These tests verify that command classes can be instantiated and their argument
-parsers are correctly configured. The tests will skip if the route_analyzer package
+parsers are correctly configured. The tests will skip if the verta package
 is not installed (e.g., run `pip install -e .` from the repository root).
 """
 import sys
@@ -21,11 +21,11 @@ from pathlib import Path
 
 # Import from package
 try:
-    from route_analyzer.ra_commands import (
+    from verta.verta_commands import (
         BaseCommand, CommandConfig, DiscoverCommand, 
         AssignCommand, MetricsCommand, GazeCommand
     )
-    from route_analyzer.ra_geometry import Circle
+    from verta.verta_geometry import Circle
     COMMANDS_AVAILABLE = True
 except (ImportError, AttributeError) as e:
     # If package is not installed, mark as unavailable
@@ -39,17 +39,17 @@ except (ImportError, AttributeError) as e:
     Circle = None
 
 
-# Skip all command tests if route_analyzer package is not available
+# Skip all command tests if verta package is not available
 pytestmark = pytest.mark.skipif(
     not COMMANDS_AVAILABLE, 
-    reason="route_analyzer package not available - install with 'pip install -e .' from repository root"
+    reason="verta package not available - install with 'pip install -e .' from repository root"
 )
 
 
 class TestCommandConfig:
     """Test cases for CommandConfig dataclass."""
     
-    @pytest.mark.skipif(not COMMANDS_AVAILABLE, reason="ra_commands not available")
+    @pytest.mark.skipif(not COMMANDS_AVAILABLE, reason="verta_commands not available")
     def test_command_config_defaults(self):
         """Test CommandConfig with default values."""
         config = CommandConfig(input="/test/input")

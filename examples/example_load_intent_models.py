@@ -19,8 +19,8 @@ from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
 # Import your trajectory and geometry classes
-from route_analyzer.ra_data_loader import Trajectory
-from route_analyzer.ra_geometry import Circle
+from verta.verta_data_loader import Trajectory
+from verta.verta_geometry import Circle
 
 
 class IntentModelLoader:
@@ -113,7 +113,7 @@ def extract_simple_features(trajectory: List[np.ndarray], junction: Circle, dist
     Extract features from trajectory at given distance
     
     NOTE: This is a simplified example. In production, you should use
-    the full feature extraction from ra_intent_recognition.py
+    the full feature extraction from verta_intent_recognition.py
     
     Args:
         trajectory: List of (x, z) points
@@ -197,7 +197,7 @@ def example_usage():
             continue
         
         # Simulate features (in practice, extract from real trajectory)
-        # NOTE: You would use the actual feature extraction from ra_intent_recognition.py
+        # NOTE: You would use the actual feature extraction from verta_intent_recognition.py
         dummy_features = extract_simple_features(
             [np.array([520 - current_distance, 330 - current_distance])], 
             junction,
@@ -326,7 +326,7 @@ Run this example again after generating models!
             print("\n" + "=" * 60)
             print("✅ Examples completed!")
             print("\nFor production use, replace dummy feature extraction")
-            print("with actual feature extraction from ra_intent_recognition.py")
+            print("with actual feature extraction from verta_intent_recognition.py")
             
         except Exception as e:
             print(f"\n❌ Error: {e}")

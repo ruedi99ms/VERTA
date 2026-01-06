@@ -1,0 +1,1582 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>verta.verta_data_loader API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>verta.verta_data_loader</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># ------------------------------
+# Unified Data Loading System
+# ------------------------------
+
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Type, TypeVar, Union
+import glob
+import os
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
+from verta.verta_logging import get_logger
+
+T = TypeVar(&#39;T&#39;, bound=&#39;Trajectory&#39;)
+
+
+@dataclass
+class ColumnMapping:
+    &#34;&#34;&#34;Centralized column mapping configuration&#34;&#34;&#34;
+    x: str = &#34;x&#34;
+    z: str = &#34;z&#34;
+    t: str = &#34;t&#34;
+    # VR-specific columns
+    headset_x: str = &#34;Headset.Head.Position.X&#34;
+    headset_y: str = &#34;Headset.Head.Position.Y&#34;
+    headset_z: str = &#34;Headset.Head.Position.Z&#34;
+    headset_rot_x: str = &#34;Headset.Head.Rotation.X&#34;
+    headset_rot_y: str = &#34;Headset.Head.Rotation.Y&#34;
+    headset_rot_z: str = &#34;Headset.Head.Rotation.Z&#34;
+    headset_rot_w: str = &#34;Headset.Head.Rotation.W&#34;
+    controller_left_x: str = &#34;Controller.Left.Position.X&#34;
+    controller_left_y: str = &#34;Controller.Left.Position.Y&#34;
+    controller_left_z: str = &#34;Controller.Left.Position.Z&#34;
+    controller_right_x: str = &#34;Controller.Right.Position.X&#34;
+    controller_right_y: str = &#34;Controller.Right.Position.Y&#34;
+    controller_right_z: str = &#34;Controller.Right.Position.Z&#34;
+    time: str = &#34;Time&#34;
+    # VR headset gaze/physio columns
+    head_forward_x: str = &#34;Headset.Head.Forward.X&#34;
+    head_forward_y: str = &#34;Headset.Head.Forward.Y&#34;
+    head_forward_z: str = &#34;Headset.Head.Forward.Z&#34;
+    head_up_x: str = &#34;Headset.Head.Up.X&#34;
+    head_up_y: str = &#34;Headset.Head.Up.Y&#34;
+    head_up_z: str = &#34;Headset.Head.Up.Z&#34;
+    gaze_x: str = &#34;Headset.Gaze.X&#34;
+    gaze_y: str = &#34;Headset.Gaze.Y&#34;
+    pupil_l: str = &#34;Headset.PupilDilation.L&#34;
+    pupil_r: str = &#34;Headset.PupilDilation.R&#34;
+    heart_rate: str = &#34;Headset.HeartRate&#34;
+
+    @classmethod
+    def vr_defaults(cls) -&gt; &#39;ColumnMapping&#39;:
+        &#34;&#34;&#34;Create VR default column mapping&#34;&#34;&#34;
+        return cls()
+
+    @classmethod
+    def from_dict(cls, columns: Dict[str, str]) -&gt; &#39;ColumnMapping&#39;:
+        &#34;&#34;&#34;Create column mapping from dictionary&#34;&#34;&#34;
+        return cls(**columns)
+
+
+@dataclass
+class Trajectory:
+    &#34;&#34;&#34;Unified trajectory with optional gaze/physio fields.&#34;&#34;&#34;
+    tid: str
+    x: np.ndarray
+    z: np.ndarray
+    t: Optional[np.ndarray] = None
+    # Optional gaze/physio fields (present only when available)
+    head_forward_x: Optional[np.ndarray] = None
+    head_forward_y: Optional[np.ndarray] = None
+    head_forward_z: Optional[np.ndarray] = None
+    head_up_x: Optional[np.ndarray] = None
+    head_up_y: Optional[np.ndarray] = None
+    head_up_z: Optional[np.ndarray] = None
+    gaze_x: Optional[np.ndarray] = None
+    gaze_y: Optional[np.ndarray] = None
+    heart_rate: Optional[np.ndarray] = None
+    pupil_l: Optional[np.ndarray] = None
+    pupil_r: Optional[np.ndarray] = None
+
+# Backward-compatibility: treat GazeTrajectory as Trajectory
+# This alias is deprecated and will be removed in future versions
+GazeTrajectory = Trajectory
+
+
+def has_gaze_data(trajectory: Trajectory) -&gt; bool:
+    &#34;&#34;&#34;Check if trajectory has gaze tracking data.&#34;&#34;&#34;
+    return (trajectory.head_forward_x is not None and
+            trajectory.head_forward_z is not None and
+            trajectory.gaze_x is not None and
+            trajectory.gaze_y is not None)
+
+
+def has_physio_data(trajectory: Trajectory) -&gt; bool:
+    &#34;&#34;&#34;Check if trajectory has physiological data.&#34;&#34;&#34;
+    return (trajectory.pupil_l is not None and
+            trajectory.pupil_r is not None and
+            trajectory.heart_rate is not None)
+
+
+def has_vr_headset_data(trajectory: Trajectory) -&gt; bool:
+    &#34;&#34;&#34;Check if trajectory has VR headset data (head tracking + gaze + physio).&#34;&#34;&#34;
+    return has_gaze_data(trajectory) and has_physio_data(trajectory)
+
+
+class TrajectoryLoader:
+    &#34;&#34;&#34;Unified trajectory loading system&#34;&#34;&#34;
+
+    def __init__(self, column_mapping: ColumnMapping):
+        self.columns = column_mapping
+        self.logger = get_logger()
+
+    def _read_table(self, path: str) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Read table from various formats&#34;&#34;&#34;
+        ext = os.path.splitext(path)[1].lower()
+        if ext in {&#34;.csv&#34;, &#34;.tsv&#34;}:
+            sep = &#34;,&#34; if ext == &#34;.csv&#34; else &#34;\t&#34;
+            return pd.read_csv(path, sep=sep)
+        if ext in {&#34;.parquet&#34;, &#34;.pq&#34;}:
+            return pd.read_parquet(path)
+        # Fallback: try CSV
+        return pd.read_csv(path)
+
+    def _to_seconds(self, series: pd.Series) -&gt; np.ndarray:
+        &#34;&#34;&#34;Convert time series to seconds&#34;&#34;&#34;
+        if pd.api.types.is_numeric_dtype(series):
+            return series.to_numpy(dtype=float)
+        try:
+            td = pd.to_timedelta(series)
+            return td.dt.total_seconds().to_numpy(dtype=float)
+        except Exception:
+            return np.full(len(series), np.nan)
+
+    def _extract_coordinates(self, df: pd.DataFrame, mask: np.ndarray, scale: float) -&gt; tuple[np.ndarray, np.ndarray]:
+        &#34;&#34;&#34;Extract and scale x,z coordinates&#34;&#34;&#34;
+        x = df.loc[mask, self.columns.x].to_numpy(dtype=float) * scale
+        z = df.loc[mask, self.columns.z].to_numpy(dtype=float) * scale
+        return x, z
+
+    def _extract_time(self, df: pd.DataFrame, mask: np.ndarray) -&gt; Optional[np.ndarray]:
+        &#34;&#34;&#34;Extract time data if available&#34;&#34;&#34;
+        if self.columns.t in df.columns:
+            return self._to_seconds(df.loc[mask, self.columns.t])
+        return None
+
+    def _extract_gaze_data(self, df: pd.DataFrame, mask: np.ndarray) -&gt; Dict[str, Optional[np.ndarray]]:
+        &#34;&#34;&#34;Extract gaze/head tracking data if available&#34;&#34;&#34;
+        gaze_data = {}
+
+        gaze_fields = [
+            &#39;head_forward_x&#39;, &#39;head_forward_y&#39;, &#39;head_forward_z&#39;,
+            &#39;head_up_x&#39;, &#39;head_up_y&#39;, &#39;head_up_z&#39;,
+            &#39;gaze_x&#39;, &#39;gaze_y&#39;, &#39;heart_rate&#39;, &#39;pupil_l&#39;, &#39;pupil_r&#39;
+        ]
+
+        # Debug: Print available columns and mappings
+        self.logger.debug(f&#34;Available columns: {list(df.columns)}&#34;)
+        self.logger.debug(f&#34;Column mapping: {self.columns}&#34;)
+
+        for field in gaze_fields:
+            col_name = getattr(self.columns, field)
+            self.logger.debug(f&#34;Field {field} -&gt; Column {col_name}&#34;)
+            if col_name and col_name in df.columns:
+                gaze_data[field] = df.loc[mask, col_name].to_numpy(dtype=float)
+                self.logger.debug(f&#34;✅ Extracted {field} from {col_name}: {len(gaze_data[field])} values&#34;)
+            else:
+                gaze_data[field] = None
+                self.logger.debug(f&#34;❌ Field {field} not found (column: {col_name})&#34;)
+
+        return gaze_data
+
+    def _trim_static_segment(self, x: np.ndarray, z: np.ndarray, t: Optional[np.ndarray],
+                           motion_threshold: float) -&gt; tuple[np.ndarray, np.ndarray, Optional[np.ndarray]]:
+        &#34;&#34;&#34;Trim initial static segment and zero time&#34;&#34;&#34;
+        if len(x) &gt; 1:
+            dd = np.hypot(np.diff(x), np.diff(z))
+            idx0 = int(np.argmax(dd &gt; motion_threshold))
+            x, z = x[idx0:], z[idx0:]
+            if t is not None:
+                t = t[idx0:] - t[idx0]
+        return x, z, t
+
+    def _trim_gaze_data(self, gaze_data: Dict[str, Optional[np.ndarray]], idx0: int) -&gt; Dict[str, Optional[np.ndarray]]:
+        &#34;&#34;&#34;Trim gaze data arrays to match trimmed trajectory&#34;&#34;&#34;
+        trimmed = {}
+        for field, arr in gaze_data.items():
+            if arr is not None:
+                trimmed[field] = arr[idx0:]
+            else:
+                trimmed[field] = None
+        return trimmed
+
+    def load_folder(self,
+                   folder: str,
+                   pattern: str = &#34;*.csv&#34;,
+                   trajectory_class: Type[T] = Trajectory,
+                   require_time: bool = False,
+                   scale: float = 1.0,
+                   motion_threshold: float = 0.001,
+                   progress_callback: Optional[callable] = None) -&gt; List[T]:
+        &#34;&#34;&#34;
+        Unified loading logic for any trajectory type
+
+        Args:
+            folder: Folder to search
+            pattern: Glob pattern for files
+            trajectory_class: Class to instantiate trajectories
+            require_time: Whether time data is required
+            scale: Coordinate scaling factor
+            motion_threshold: Motion detection threshold
+            progress_callback: Optional callback function for progress updates (current, total, message)
+
+        Returns:
+            List of trajectory objects
+        &#34;&#34;&#34;
+        paths = sorted(glob.glob(os.path.join(folder, pattern)))
+        out: List[T] = []
+
+        self.logger.info(f&#34;Found {len(paths)} files matching &#39;{pattern}&#39;&#34;)
+
+        # Use progress callback if provided, otherwise use tqdm
+        if progress_callback:
+            for i, p in enumerate(paths):
+                try:
+                    # Update progress
+                    progress_callback(i, len(paths), f&#34;Loading file {i+1}/{len(paths)}: {os.path.basename(p)}&#34;)
+
+                    df = self._read_table(p)
+
+                    # Check for required coordinate columns
+                    coord_cols = [self.columns.x, self.columns.z]
+                    missing_cols = [col for col in coord_cols if col not in df.columns]
+                    if missing_cols:
+                        raise KeyError(f&#34;Missing columns: {missing_cols}&#34;)
+
+                    # Create mask for valid coordinates
+                    mask = df[coord_cols].notnull().all(axis=1)
+
+                    # Extract coordinates
+                    x, z = self._extract_coordinates(df, mask, scale)
+
+                    # Extract time
+                    t = self._extract_time(df, mask)
+
+                    # Check time requirements
+                    if require_time:
+                        if t is None or np.all(np.isnan(t)):
+                            continue
+
+                    # Trim static segment
+                    x, z, t = self._trim_static_segment(x, z, t, motion_threshold)
+
+                    # Extract gaze/physio data (optional, always attempted)
+                    gaze_data = self._extract_gaze_data(df, mask)
+                    # Trim gaze data to match trajectory length if we trimmed static segment
+                    if len(x) &lt; len(df[mask]):
+                        idx0 = len(df[mask]) - len(x)
+                        gaze_data = self._trim_gaze_data(gaze_data, idx0)
+
+                    # Create unified Trajectory with optional fields
+                    tid = os.path.splitext(os.path.basename(p))[0]
+                    trajectory = Trajectory(
+                        tid=tid, x=x, z=z, t=t, **gaze_data
+                    )
+
+                    out.append(trajectory)
+
+                except Exception as e:
+                    self.logger.warning(f&#34;Skip {p}: {e}&#34;)
+        else:
+            # Fallback to tqdm for console usage
+            for p in tqdm(paths, desc=&#34;Loading trajectories&#34;, unit=&#34;file&#34;):
+                try:
+                    df = self._read_table(p)
+
+                    # Check for required coordinate columns
+                    coord_cols = [self.columns.x, self.columns.z]
+                    missing_cols = [col for col in coord_cols if col not in df.columns]
+                    if missing_cols:
+                        raise KeyError(f&#34;Missing columns: {missing_cols}&#34;)
+
+                    # Create mask for valid coordinates
+                    mask = df[coord_cols].notnull().all(axis=1)
+
+                    # Extract coordinates
+                    x, z = self._extract_coordinates(df, mask, scale)
+
+                    # Extract time
+                    t = self._extract_time(df, mask)
+
+                    # Check time requirements
+                    if require_time:
+                        if t is None or np.all(np.isnan(t)):
+                            continue
+
+                    # Trim static segment
+                    x, z, t = self._trim_static_segment(x, z, t, motion_threshold)
+
+                    # Extract gaze/physio data (optional, always attempted)
+                    gaze_data = self._extract_gaze_data(df, mask)
+                    # Trim gaze data to match trajectory length if we trimmed static segment
+                    if len(x) &lt; len(df[mask]):
+                        idx0 = len(df[mask]) - len(x)
+                        gaze_data = self._trim_gaze_data(gaze_data, idx0)
+
+                    # Create unified Trajectory with optional fields
+                    tid = os.path.splitext(os.path.basename(p))[0]
+                    trajectory = Trajectory(
+                        tid=tid, x=x, z=z, t=t, **gaze_data
+                    )
+
+                    out.append(trajectory)
+
+                except Exception as e:
+                    self.logger.warning(f&#34;Skip {p}: {e}&#34;)
+
+        self.logger.info(f&#34;Loaded {len(out)} trajectories&#34;)
+        return out
+
+
+def load_folder(folder: str,
+                pattern: str = &#34;*.csv&#34;,
+                columns: Optional[Dict[str, str]] = None,
+                require_time: bool = False,
+                require_gaze: bool = False,
+                scale: float = 1.0,
+                motion_threshold: float = 0.001,
+                progress_callback: Optional[callable] = None) -&gt; List[Trajectory]:
+    &#34;&#34;&#34;
+    Load trajectories with optional gaze data support.
+
+    Args:
+        folder: Folder to search
+        pattern: Glob pattern for files
+        columns: Column mapping dictionary
+        require_time: Whether time data is required
+        require_gaze: Whether gaze data is required (legacy parameter for compatibility)
+        scale: Coordinate scaling factor
+        motion_threshold: Motion detection threshold
+
+    Returns:
+        List of Trajectory objects
+    &#34;&#34;&#34;
+    if columns is None:
+        # Use VR defaults for better compatibility with VR data files
+        column_mapping = ColumnMapping.vr_defaults()
+    else:
+        column_mapping = ColumnMapping.from_dict(columns)
+
+    loader = TrajectoryLoader(column_mapping)
+    return loader.load_folder(folder, pattern, Trajectory, require_time, scale, motion_threshold, progress_callback)
+
+
+def load_folder_with_gaze(folder: str,
+                         pattern: str = &#34;*.csv&#34;,
+                         columns: Optional[Dict[str, str]] = None,
+                         require_time: bool = False,
+                         scale: float = 1.0,
+                         motion_threshold: float = 0.001,
+                         progress_callback: Optional[callable] = None) -&gt; List[Trajectory]:
+    &#34;&#34;&#34;
+    Load gaze trajectories (backward compatibility).
+
+    DEPRECATED: Use load_folder() with require_gaze=True instead.
+
+    Args:
+        folder: Folder to search
+        pattern: Glob pattern for files
+        columns: Column mapping dictionary
+        require_time: Whether time data is required
+        scale: Coordinate scaling factor
+        motion_threshold: Motion detection threshold
+
+    Returns:
+        List of Trajectory objects
+    &#34;&#34;&#34;
+    # Delegate to the unified load_folder function
+    return load_folder(folder, pattern, columns, require_time, require_gaze=True, scale=scale, motion_threshold=motion_threshold, progress_callback=progress_callback)
+
+
+# I/O helper functions (moved from verta_io.py for backward compatibility)
+def save_centers(centers: np.ndarray, path: str) -&gt; None:
+    &#34;&#34;&#34;Save branch centers to numpy file&#34;&#34;&#34;
+    np.save(path, centers)
+
+
+def save_centers_json(centers: np.ndarray, path: str) -&gt; None:
+    &#34;&#34;&#34;Save branch centers to JSON file&#34;&#34;&#34;
+    import json
+    with open(path, &#34;w&#34;) as f:
+        json.dump(centers.tolist(), f)
+
+
+def save_assignments(assignments: pd.DataFrame, path: str) -&gt; None:
+    &#34;&#34;&#34;Save branch assignments to CSV&#34;&#34;&#34;
+    assignments.to_csv(path, index=False)
+
+
+def save_summary(summary: pd.DataFrame, path: str, with_entropy: bool = True) -&gt; None:
+    &#34;&#34;&#34;Save branch summary with optional entropy&#34;&#34;&#34;
+    import math
+    if with_entropy:
+        from .verta_metrics import shannon_entropy
+
+        ent = shannon_entropy(summary)
+        summary = summary.copy()
+        summary.loc[len(summary)] = {
+            &#34;branch&#34;: &#34;entropy&#34;,
+            &#34;count&#34;: math.nan,
+            &#34;percent&#34;: ent,
+        }
+    summary.to_csv(path, index=False)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="verta.verta_data_loader.has_gaze_data"><code class="name flex">
+<span>def <span class="ident">has_gaze_data</span></span>(<span>trajectory: <a title="verta.verta_data_loader.Trajectory" href="#verta.verta_data_loader.Trajectory">Trajectory</a>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if trajectory has gaze tracking data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_gaze_data(trajectory: Trajectory) -&gt; bool:
+    &#34;&#34;&#34;Check if trajectory has gaze tracking data.&#34;&#34;&#34;
+    return (trajectory.head_forward_x is not None and
+            trajectory.head_forward_z is not None and
+            trajectory.gaze_x is not None and
+            trajectory.gaze_y is not None)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.has_physio_data"><code class="name flex">
+<span>def <span class="ident">has_physio_data</span></span>(<span>trajectory: <a title="verta.verta_data_loader.Trajectory" href="#verta.verta_data_loader.Trajectory">Trajectory</a>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if trajectory has physiological data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_physio_data(trajectory: Trajectory) -&gt; bool:
+    &#34;&#34;&#34;Check if trajectory has physiological data.&#34;&#34;&#34;
+    return (trajectory.pupil_l is not None and
+            trajectory.pupil_r is not None and
+            trajectory.heart_rate is not None)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.has_vr_headset_data"><code class="name flex">
+<span>def <span class="ident">has_vr_headset_data</span></span>(<span>trajectory: <a title="verta.verta_data_loader.Trajectory" href="#verta.verta_data_loader.Trajectory">Trajectory</a>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if trajectory has VR headset data (head tracking + gaze + physio).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_vr_headset_data(trajectory: Trajectory) -&gt; bool:
+    &#34;&#34;&#34;Check if trajectory has VR headset data (head tracking + gaze + physio).&#34;&#34;&#34;
+    return has_gaze_data(trajectory) and has_physio_data(trajectory)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.load_folder"><code class="name flex">
+<span>def <span class="ident">load_folder</span></span>(<span>folder: str, pattern: str = '*.csv', columns: Optional[Dict[str, str]] = None, require_time: bool = False, require_gaze: bool = False, scale: float = 1.0, motion_threshold: float = 0.001, progress_callback: Optional[<built-in function callable>] = None) ‑> List[<a title="verta.verta_data_loader.Trajectory" href="#verta.verta_data_loader.Trajectory">Trajectory</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load trajectories with optional gaze data support.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>folder</code></strong></dt>
+<dd>Folder to search</dd>
+<dt><strong><code>pattern</code></strong></dt>
+<dd>Glob pattern for files</dd>
+<dt><strong><code>columns</code></strong></dt>
+<dd>Column mapping dictionary</dd>
+<dt><strong><code>require_time</code></strong></dt>
+<dd>Whether time data is required</dd>
+<dt><strong><code>require_gaze</code></strong></dt>
+<dd>Whether gaze data is required (legacy parameter for compatibility)</dd>
+<dt><strong><code>scale</code></strong></dt>
+<dd>Coordinate scaling factor</dd>
+<dt><strong><code>motion_threshold</code></strong></dt>
+<dd>Motion detection threshold</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of Trajectory objects</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_folder(folder: str,
+                pattern: str = &#34;*.csv&#34;,
+                columns: Optional[Dict[str, str]] = None,
+                require_time: bool = False,
+                require_gaze: bool = False,
+                scale: float = 1.0,
+                motion_threshold: float = 0.001,
+                progress_callback: Optional[callable] = None) -&gt; List[Trajectory]:
+    &#34;&#34;&#34;
+    Load trajectories with optional gaze data support.
+
+    Args:
+        folder: Folder to search
+        pattern: Glob pattern for files
+        columns: Column mapping dictionary
+        require_time: Whether time data is required
+        require_gaze: Whether gaze data is required (legacy parameter for compatibility)
+        scale: Coordinate scaling factor
+        motion_threshold: Motion detection threshold
+
+    Returns:
+        List of Trajectory objects
+    &#34;&#34;&#34;
+    if columns is None:
+        # Use VR defaults for better compatibility with VR data files
+        column_mapping = ColumnMapping.vr_defaults()
+    else:
+        column_mapping = ColumnMapping.from_dict(columns)
+
+    loader = TrajectoryLoader(column_mapping)
+    return loader.load_folder(folder, pattern, Trajectory, require_time, scale, motion_threshold, progress_callback)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.load_folder_with_gaze"><code class="name flex">
+<span>def <span class="ident">load_folder_with_gaze</span></span>(<span>folder: str, pattern: str = '*.csv', columns: Optional[Dict[str, str]] = None, require_time: bool = False, scale: float = 1.0, motion_threshold: float = 0.001, progress_callback: Optional[<built-in function callable>] = None) ‑> List[<a title="verta.verta_data_loader.Trajectory" href="#verta.verta_data_loader.Trajectory">Trajectory</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load gaze trajectories (backward compatibility).</p>
+<p>DEPRECATED: Use load_folder() with require_gaze=True instead.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>folder</code></strong></dt>
+<dd>Folder to search</dd>
+<dt><strong><code>pattern</code></strong></dt>
+<dd>Glob pattern for files</dd>
+<dt><strong><code>columns</code></strong></dt>
+<dd>Column mapping dictionary</dd>
+<dt><strong><code>require_time</code></strong></dt>
+<dd>Whether time data is required</dd>
+<dt><strong><code>scale</code></strong></dt>
+<dd>Coordinate scaling factor</dd>
+<dt><strong><code>motion_threshold</code></strong></dt>
+<dd>Motion detection threshold</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of Trajectory objects</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_folder_with_gaze(folder: str,
+                         pattern: str = &#34;*.csv&#34;,
+                         columns: Optional[Dict[str, str]] = None,
+                         require_time: bool = False,
+                         scale: float = 1.0,
+                         motion_threshold: float = 0.001,
+                         progress_callback: Optional[callable] = None) -&gt; List[Trajectory]:
+    &#34;&#34;&#34;
+    Load gaze trajectories (backward compatibility).
+
+    DEPRECATED: Use load_folder() with require_gaze=True instead.
+
+    Args:
+        folder: Folder to search
+        pattern: Glob pattern for files
+        columns: Column mapping dictionary
+        require_time: Whether time data is required
+        scale: Coordinate scaling factor
+        motion_threshold: Motion detection threshold
+
+    Returns:
+        List of Trajectory objects
+    &#34;&#34;&#34;
+    # Delegate to the unified load_folder function
+    return load_folder(folder, pattern, columns, require_time, require_gaze=True, scale=scale, motion_threshold=motion_threshold, progress_callback=progress_callback)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.save_assignments"><code class="name flex">
+<span>def <span class="ident">save_assignments</span></span>(<span>assignments: pandas.core.frame.DataFrame, path: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save branch assignments to CSV</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_assignments(assignments: pd.DataFrame, path: str) -&gt; None:
+    &#34;&#34;&#34;Save branch assignments to CSV&#34;&#34;&#34;
+    assignments.to_csv(path, index=False)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.save_centers"><code class="name flex">
+<span>def <span class="ident">save_centers</span></span>(<span>centers: numpy.ndarray, path: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save branch centers to numpy file</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_centers(centers: np.ndarray, path: str) -&gt; None:
+    &#34;&#34;&#34;Save branch centers to numpy file&#34;&#34;&#34;
+    np.save(path, centers)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.save_centers_json"><code class="name flex">
+<span>def <span class="ident">save_centers_json</span></span>(<span>centers: numpy.ndarray, path: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save branch centers to JSON file</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_centers_json(centers: np.ndarray, path: str) -&gt; None:
+    &#34;&#34;&#34;Save branch centers to JSON file&#34;&#34;&#34;
+    import json
+    with open(path, &#34;w&#34;) as f:
+        json.dump(centers.tolist(), f)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.save_summary"><code class="name flex">
+<span>def <span class="ident">save_summary</span></span>(<span>summary: pandas.core.frame.DataFrame, path: str, with_entropy: bool = True) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save branch summary with optional entropy</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_summary(summary: pd.DataFrame, path: str, with_entropy: bool = True) -&gt; None:
+    &#34;&#34;&#34;Save branch summary with optional entropy&#34;&#34;&#34;
+    import math
+    if with_entropy:
+        from .verta_metrics import shannon_entropy
+
+        ent = shannon_entropy(summary)
+        summary = summary.copy()
+        summary.loc[len(summary)] = {
+            &#34;branch&#34;: &#34;entropy&#34;,
+            &#34;count&#34;: math.nan,
+            &#34;percent&#34;: ent,
+        }
+    summary.to_csv(path, index=False)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="verta.verta_data_loader.ColumnMapping"><code class="flex name class">
+<span>class <span class="ident">ColumnMapping</span></span>
+<span>(</span><span>x: str = 'x', z: str = 'z', t: str = 't', headset_x: str = 'Headset.Head.Position.X', headset_y: str = 'Headset.Head.Position.Y', headset_z: str = 'Headset.Head.Position.Z', headset_rot_x: str = 'Headset.Head.Rotation.X', headset_rot_y: str = 'Headset.Head.Rotation.Y', headset_rot_z: str = 'Headset.Head.Rotation.Z', headset_rot_w: str = 'Headset.Head.Rotation.W', controller_left_x: str = 'Controller.Left.Position.X', controller_left_y: str = 'Controller.Left.Position.Y', controller_left_z: str = 'Controller.Left.Position.Z', controller_right_x: str = 'Controller.Right.Position.X', controller_right_y: str = 'Controller.Right.Position.Y', controller_right_z: str = 'Controller.Right.Position.Z', time: str = 'Time', head_forward_x: str = 'Headset.Head.Forward.X', head_forward_y: str = 'Headset.Head.Forward.Y', head_forward_z: str = 'Headset.Head.Forward.Z', head_up_x: str = 'Headset.Head.Up.X', head_up_y: str = 'Headset.Head.Up.Y', head_up_z: str = 'Headset.Head.Up.Z', gaze_x: str = 'Headset.Gaze.X', gaze_y: str = 'Headset.Gaze.Y', pupil_l: str = 'Headset.PupilDilation.L', pupil_r: str = 'Headset.PupilDilation.R', heart_rate: str = 'Headset.HeartRate')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Centralized column mapping configuration</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ColumnMapping:
+    &#34;&#34;&#34;Centralized column mapping configuration&#34;&#34;&#34;
+    x: str = &#34;x&#34;
+    z: str = &#34;z&#34;
+    t: str = &#34;t&#34;
+    # VR-specific columns
+    headset_x: str = &#34;Headset.Head.Position.X&#34;
+    headset_y: str = &#34;Headset.Head.Position.Y&#34;
+    headset_z: str = &#34;Headset.Head.Position.Z&#34;
+    headset_rot_x: str = &#34;Headset.Head.Rotation.X&#34;
+    headset_rot_y: str = &#34;Headset.Head.Rotation.Y&#34;
+    headset_rot_z: str = &#34;Headset.Head.Rotation.Z&#34;
+    headset_rot_w: str = &#34;Headset.Head.Rotation.W&#34;
+    controller_left_x: str = &#34;Controller.Left.Position.X&#34;
+    controller_left_y: str = &#34;Controller.Left.Position.Y&#34;
+    controller_left_z: str = &#34;Controller.Left.Position.Z&#34;
+    controller_right_x: str = &#34;Controller.Right.Position.X&#34;
+    controller_right_y: str = &#34;Controller.Right.Position.Y&#34;
+    controller_right_z: str = &#34;Controller.Right.Position.Z&#34;
+    time: str = &#34;Time&#34;
+    # VR headset gaze/physio columns
+    head_forward_x: str = &#34;Headset.Head.Forward.X&#34;
+    head_forward_y: str = &#34;Headset.Head.Forward.Y&#34;
+    head_forward_z: str = &#34;Headset.Head.Forward.Z&#34;
+    head_up_x: str = &#34;Headset.Head.Up.X&#34;
+    head_up_y: str = &#34;Headset.Head.Up.Y&#34;
+    head_up_z: str = &#34;Headset.Head.Up.Z&#34;
+    gaze_x: str = &#34;Headset.Gaze.X&#34;
+    gaze_y: str = &#34;Headset.Gaze.Y&#34;
+    pupil_l: str = &#34;Headset.PupilDilation.L&#34;
+    pupil_r: str = &#34;Headset.PupilDilation.R&#34;
+    heart_rate: str = &#34;Headset.HeartRate&#34;
+
+    @classmethod
+    def vr_defaults(cls) -&gt; &#39;ColumnMapping&#39;:
+        &#34;&#34;&#34;Create VR default column mapping&#34;&#34;&#34;
+        return cls()
+
+    @classmethod
+    def from_dict(cls, columns: Dict[str, str]) -&gt; &#39;ColumnMapping&#39;:
+        &#34;&#34;&#34;Create column mapping from dictionary&#34;&#34;&#34;
+        return cls(**columns)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="verta.verta_data_loader.ColumnMapping.controller_left_x"><code class="name">var <span class="ident">controller_left_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.controller_left_y"><code class="name">var <span class="ident">controller_left_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.controller_left_z"><code class="name">var <span class="ident">controller_left_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.controller_right_x"><code class="name">var <span class="ident">controller_right_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.controller_right_y"><code class="name">var <span class="ident">controller_right_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.controller_right_z"><code class="name">var <span class="ident">controller_right_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.headset_rot_w"><code class="name">var <span class="ident">headset_rot_w</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.headset_rot_x"><code class="name">var <span class="ident">headset_rot_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.headset_rot_y"><code class="name">var <span class="ident">headset_rot_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.headset_rot_z"><code class="name">var <span class="ident">headset_rot_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.headset_x"><code class="name">var <span class="ident">headset_x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.headset_y"><code class="name">var <span class="ident">headset_y</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.headset_z"><code class="name">var <span class="ident">headset_z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.t"><code class="name">var <span class="ident">t</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.time"><code class="name">var <span class="ident">time</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.x"><code class="name">var <span class="ident">x</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.z"><code class="name">var <span class="ident">z</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="verta.verta_data_loader.ColumnMapping.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>columns: Dict[str, str]) ‑> <a title="verta.verta_data_loader.ColumnMapping" href="#verta.verta_data_loader.ColumnMapping">ColumnMapping</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create column mapping from dictionary</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def from_dict(cls, columns: Dict[str, str]) -&gt; &#39;ColumnMapping&#39;:
+    &#34;&#34;&#34;Create column mapping from dictionary&#34;&#34;&#34;
+    return cls(**columns)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_data_loader.ColumnMapping.vr_defaults"><code class="name flex">
+<span>def <span class="ident">vr_defaults</span></span>(<span>) ‑> <a title="verta.verta_data_loader.ColumnMapping" href="#verta.verta_data_loader.ColumnMapping">ColumnMapping</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create VR default column mapping</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def vr_defaults(cls) -&gt; &#39;ColumnMapping&#39;:
+    &#34;&#34;&#34;Create VR default column mapping&#34;&#34;&#34;
+    return cls()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory"><code class="flex name class">
+<span>class <span class="ident">Trajectory</span></span>
+<span>(</span><span>tid: str, x: numpy.ndarray, z: numpy.ndarray, t: Optional[numpy.ndarray] = None, head_forward_x: Optional[numpy.ndarray] = None, head_forward_y: Optional[numpy.ndarray] = None, head_forward_z: Optional[numpy.ndarray] = None, head_up_x: Optional[numpy.ndarray] = None, head_up_y: Optional[numpy.ndarray] = None, head_up_z: Optional[numpy.ndarray] = None, gaze_x: Optional[numpy.ndarray] = None, gaze_y: Optional[numpy.ndarray] = None, heart_rate: Optional[numpy.ndarray] = None, pupil_l: Optional[numpy.ndarray] = None, pupil_r: Optional[numpy.ndarray] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unified trajectory with optional gaze/physio fields.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Trajectory:
+    &#34;&#34;&#34;Unified trajectory with optional gaze/physio fields.&#34;&#34;&#34;
+    tid: str
+    x: np.ndarray
+    z: np.ndarray
+    t: Optional[np.ndarray] = None
+    # Optional gaze/physio fields (present only when available)
+    head_forward_x: Optional[np.ndarray] = None
+    head_forward_y: Optional[np.ndarray] = None
+    head_forward_z: Optional[np.ndarray] = None
+    head_up_x: Optional[np.ndarray] = None
+    head_up_y: Optional[np.ndarray] = None
+    head_up_z: Optional[np.ndarray] = None
+    gaze_x: Optional[np.ndarray] = None
+    gaze_y: Optional[np.ndarray] = None
+    heart_rate: Optional[np.ndarray] = None
+    pupil_l: Optional[np.ndarray] = None
+    pupil_r: Optional[np.ndarray] = None</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="verta.verta_data_loader.Trajectory.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.t"><code class="name">var <span class="ident">t</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.tid"><code class="name">var <span class="ident">tid</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.x"><code class="name">var <span class="ident">x</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.z"><code class="name">var <span class="ident">z</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory"><code class="flex name class">
+<span>class <span class="ident">GazeTrajectory</span></span>
+<span>(</span><span>tid: str, x: numpy.ndarray, z: numpy.ndarray, t: Optional[numpy.ndarray] = None, head_forward_x: Optional[numpy.ndarray] = None, head_forward_y: Optional[numpy.ndarray] = None, head_forward_z: Optional[numpy.ndarray] = None, head_up_x: Optional[numpy.ndarray] = None, head_up_y: Optional[numpy.ndarray] = None, head_up_z: Optional[numpy.ndarray] = None, gaze_x: Optional[numpy.ndarray] = None, gaze_y: Optional[numpy.ndarray] = None, heart_rate: Optional[numpy.ndarray] = None, pupil_l: Optional[numpy.ndarray] = None, pupil_r: Optional[numpy.ndarray] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unified trajectory with optional gaze/physio fields.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class Trajectory:
+    &#34;&#34;&#34;Unified trajectory with optional gaze/physio fields.&#34;&#34;&#34;
+    tid: str
+    x: np.ndarray
+    z: np.ndarray
+    t: Optional[np.ndarray] = None
+    # Optional gaze/physio fields (present only when available)
+    head_forward_x: Optional[np.ndarray] = None
+    head_forward_y: Optional[np.ndarray] = None
+    head_forward_z: Optional[np.ndarray] = None
+    head_up_x: Optional[np.ndarray] = None
+    head_up_y: Optional[np.ndarray] = None
+    head_up_z: Optional[np.ndarray] = None
+    gaze_x: Optional[np.ndarray] = None
+    gaze_y: Optional[np.ndarray] = None
+    heart_rate: Optional[np.ndarray] = None
+    pupil_l: Optional[np.ndarray] = None
+    pupil_r: Optional[np.ndarray] = None</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="verta.verta_data_loader.Trajectory.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.t"><code class="name">var <span class="ident">t</span> : Optional[numpy.ndarray]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.tid"><code class="name">var <span class="ident">tid</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.x"><code class="name">var <span class="ident">x</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="verta.verta_data_loader.Trajectory.z"><code class="name">var <span class="ident">z</span> : numpy.ndarray</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="verta.verta_data_loader.TrajectoryLoader"><code class="flex name class">
+<span>class <span class="ident">TrajectoryLoader</span></span>
+<span>(</span><span>column_mapping: <a title="verta.verta_data_loader.ColumnMapping" href="#verta.verta_data_loader.ColumnMapping">ColumnMapping</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unified trajectory loading system</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TrajectoryLoader:
+    &#34;&#34;&#34;Unified trajectory loading system&#34;&#34;&#34;
+
+    def __init__(self, column_mapping: ColumnMapping):
+        self.columns = column_mapping
+        self.logger = get_logger()
+
+    def _read_table(self, path: str) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;Read table from various formats&#34;&#34;&#34;
+        ext = os.path.splitext(path)[1].lower()
+        if ext in {&#34;.csv&#34;, &#34;.tsv&#34;}:
+            sep = &#34;,&#34; if ext == &#34;.csv&#34; else &#34;\t&#34;
+            return pd.read_csv(path, sep=sep)
+        if ext in {&#34;.parquet&#34;, &#34;.pq&#34;}:
+            return pd.read_parquet(path)
+        # Fallback: try CSV
+        return pd.read_csv(path)
+
+    def _to_seconds(self, series: pd.Series) -&gt; np.ndarray:
+        &#34;&#34;&#34;Convert time series to seconds&#34;&#34;&#34;
+        if pd.api.types.is_numeric_dtype(series):
+            return series.to_numpy(dtype=float)
+        try:
+            td = pd.to_timedelta(series)
+            return td.dt.total_seconds().to_numpy(dtype=float)
+        except Exception:
+            return np.full(len(series), np.nan)
+
+    def _extract_coordinates(self, df: pd.DataFrame, mask: np.ndarray, scale: float) -&gt; tuple[np.ndarray, np.ndarray]:
+        &#34;&#34;&#34;Extract and scale x,z coordinates&#34;&#34;&#34;
+        x = df.loc[mask, self.columns.x].to_numpy(dtype=float) * scale
+        z = df.loc[mask, self.columns.z].to_numpy(dtype=float) * scale
+        return x, z
+
+    def _extract_time(self, df: pd.DataFrame, mask: np.ndarray) -&gt; Optional[np.ndarray]:
+        &#34;&#34;&#34;Extract time data if available&#34;&#34;&#34;
+        if self.columns.t in df.columns:
+            return self._to_seconds(df.loc[mask, self.columns.t])
+        return None
+
+    def _extract_gaze_data(self, df: pd.DataFrame, mask: np.ndarray) -&gt; Dict[str, Optional[np.ndarray]]:
+        &#34;&#34;&#34;Extract gaze/head tracking data if available&#34;&#34;&#34;
+        gaze_data = {}
+
+        gaze_fields = [
+            &#39;head_forward_x&#39;, &#39;head_forward_y&#39;, &#39;head_forward_z&#39;,
+            &#39;head_up_x&#39;, &#39;head_up_y&#39;, &#39;head_up_z&#39;,
+            &#39;gaze_x&#39;, &#39;gaze_y&#39;, &#39;heart_rate&#39;, &#39;pupil_l&#39;, &#39;pupil_r&#39;
+        ]
+
+        # Debug: Print available columns and mappings
+        self.logger.debug(f&#34;Available columns: {list(df.columns)}&#34;)
+        self.logger.debug(f&#34;Column mapping: {self.columns}&#34;)
+
+        for field in gaze_fields:
+            col_name = getattr(self.columns, field)
+            self.logger.debug(f&#34;Field {field} -&gt; Column {col_name}&#34;)
+            if col_name and col_name in df.columns:
+                gaze_data[field] = df.loc[mask, col_name].to_numpy(dtype=float)
+                self.logger.debug(f&#34;✅ Extracted {field} from {col_name}: {len(gaze_data[field])} values&#34;)
+            else:
+                gaze_data[field] = None
+                self.logger.debug(f&#34;❌ Field {field} not found (column: {col_name})&#34;)
+
+        return gaze_data
+
+    def _trim_static_segment(self, x: np.ndarray, z: np.ndarray, t: Optional[np.ndarray],
+                           motion_threshold: float) -&gt; tuple[np.ndarray, np.ndarray, Optional[np.ndarray]]:
+        &#34;&#34;&#34;Trim initial static segment and zero time&#34;&#34;&#34;
+        if len(x) &gt; 1:
+            dd = np.hypot(np.diff(x), np.diff(z))
+            idx0 = int(np.argmax(dd &gt; motion_threshold))
+            x, z = x[idx0:], z[idx0:]
+            if t is not None:
+                t = t[idx0:] - t[idx0]
+        return x, z, t
+
+    def _trim_gaze_data(self, gaze_data: Dict[str, Optional[np.ndarray]], idx0: int) -&gt; Dict[str, Optional[np.ndarray]]:
+        &#34;&#34;&#34;Trim gaze data arrays to match trimmed trajectory&#34;&#34;&#34;
+        trimmed = {}
+        for field, arr in gaze_data.items():
+            if arr is not None:
+                trimmed[field] = arr[idx0:]
+            else:
+                trimmed[field] = None
+        return trimmed
+
+    def load_folder(self,
+                   folder: str,
+                   pattern: str = &#34;*.csv&#34;,
+                   trajectory_class: Type[T] = Trajectory,
+                   require_time: bool = False,
+                   scale: float = 1.0,
+                   motion_threshold: float = 0.001,
+                   progress_callback: Optional[callable] = None) -&gt; List[T]:
+        &#34;&#34;&#34;
+        Unified loading logic for any trajectory type
+
+        Args:
+            folder: Folder to search
+            pattern: Glob pattern for files
+            trajectory_class: Class to instantiate trajectories
+            require_time: Whether time data is required
+            scale: Coordinate scaling factor
+            motion_threshold: Motion detection threshold
+            progress_callback: Optional callback function for progress updates (current, total, message)
+
+        Returns:
+            List of trajectory objects
+        &#34;&#34;&#34;
+        paths = sorted(glob.glob(os.path.join(folder, pattern)))
+        out: List[T] = []
+
+        self.logger.info(f&#34;Found {len(paths)} files matching &#39;{pattern}&#39;&#34;)
+
+        # Use progress callback if provided, otherwise use tqdm
+        if progress_callback:
+            for i, p in enumerate(paths):
+                try:
+                    # Update progress
+                    progress_callback(i, len(paths), f&#34;Loading file {i+1}/{len(paths)}: {os.path.basename(p)}&#34;)
+
+                    df = self._read_table(p)
+
+                    # Check for required coordinate columns
+                    coord_cols = [self.columns.x, self.columns.z]
+                    missing_cols = [col for col in coord_cols if col not in df.columns]
+                    if missing_cols:
+                        raise KeyError(f&#34;Missing columns: {missing_cols}&#34;)
+
+                    # Create mask for valid coordinates
+                    mask = df[coord_cols].notnull().all(axis=1)
+
+                    # Extract coordinates
+                    x, z = self._extract_coordinates(df, mask, scale)
+
+                    # Extract time
+                    t = self._extract_time(df, mask)
+
+                    # Check time requirements
+                    if require_time:
+                        if t is None or np.all(np.isnan(t)):
+                            continue
+
+                    # Trim static segment
+                    x, z, t = self._trim_static_segment(x, z, t, motion_threshold)
+
+                    # Extract gaze/physio data (optional, always attempted)
+                    gaze_data = self._extract_gaze_data(df, mask)
+                    # Trim gaze data to match trajectory length if we trimmed static segment
+                    if len(x) &lt; len(df[mask]):
+                        idx0 = len(df[mask]) - len(x)
+                        gaze_data = self._trim_gaze_data(gaze_data, idx0)
+
+                    # Create unified Trajectory with optional fields
+                    tid = os.path.splitext(os.path.basename(p))[0]
+                    trajectory = Trajectory(
+                        tid=tid, x=x, z=z, t=t, **gaze_data
+                    )
+
+                    out.append(trajectory)
+
+                except Exception as e:
+                    self.logger.warning(f&#34;Skip {p}: {e}&#34;)
+        else:
+            # Fallback to tqdm for console usage
+            for p in tqdm(paths, desc=&#34;Loading trajectories&#34;, unit=&#34;file&#34;):
+                try:
+                    df = self._read_table(p)
+
+                    # Check for required coordinate columns
+                    coord_cols = [self.columns.x, self.columns.z]
+                    missing_cols = [col for col in coord_cols if col not in df.columns]
+                    if missing_cols:
+                        raise KeyError(f&#34;Missing columns: {missing_cols}&#34;)
+
+                    # Create mask for valid coordinates
+                    mask = df[coord_cols].notnull().all(axis=1)
+
+                    # Extract coordinates
+                    x, z = self._extract_coordinates(df, mask, scale)
+
+                    # Extract time
+                    t = self._extract_time(df, mask)
+
+                    # Check time requirements
+                    if require_time:
+                        if t is None or np.all(np.isnan(t)):
+                            continue
+
+                    # Trim static segment
+                    x, z, t = self._trim_static_segment(x, z, t, motion_threshold)
+
+                    # Extract gaze/physio data (optional, always attempted)
+                    gaze_data = self._extract_gaze_data(df, mask)
+                    # Trim gaze data to match trajectory length if we trimmed static segment
+                    if len(x) &lt; len(df[mask]):
+                        idx0 = len(df[mask]) - len(x)
+                        gaze_data = self._trim_gaze_data(gaze_data, idx0)
+
+                    # Create unified Trajectory with optional fields
+                    tid = os.path.splitext(os.path.basename(p))[0]
+                    trajectory = Trajectory(
+                        tid=tid, x=x, z=z, t=t, **gaze_data
+                    )
+
+                    out.append(trajectory)
+
+                except Exception as e:
+                    self.logger.warning(f&#34;Skip {p}: {e}&#34;)
+
+        self.logger.info(f&#34;Loaded {len(out)} trajectories&#34;)
+        return out</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="verta.verta_data_loader.TrajectoryLoader.load_folder"><code class="name flex">
+<span>def <span class="ident">load_folder</span></span>(<span>self, folder: str, pattern: str = '*.csv', trajectory_class: Type[~T] = verta.verta_data_loader.Trajectory, require_time: bool = False, scale: float = 1.0, motion_threshold: float = 0.001, progress_callback: Optional[<built-in function callable>] = None) ‑> List[~T]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unified loading logic for any trajectory type</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>folder</code></strong></dt>
+<dd>Folder to search</dd>
+<dt><strong><code>pattern</code></strong></dt>
+<dd>Glob pattern for files</dd>
+<dt><strong><code>trajectory_class</code></strong></dt>
+<dd>Class to instantiate trajectories</dd>
+<dt><strong><code>require_time</code></strong></dt>
+<dd>Whether time data is required</dd>
+<dt><strong><code>scale</code></strong></dt>
+<dd>Coordinate scaling factor</dd>
+<dt><strong><code>motion_threshold</code></strong></dt>
+<dd>Motion detection threshold</dd>
+<dt><strong><code>progress_callback</code></strong></dt>
+<dd>Optional callback function for progress updates (current, total, message)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of trajectory objects</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_folder(self,
+               folder: str,
+               pattern: str = &#34;*.csv&#34;,
+               trajectory_class: Type[T] = Trajectory,
+               require_time: bool = False,
+               scale: float = 1.0,
+               motion_threshold: float = 0.001,
+               progress_callback: Optional[callable] = None) -&gt; List[T]:
+    &#34;&#34;&#34;
+    Unified loading logic for any trajectory type
+
+    Args:
+        folder: Folder to search
+        pattern: Glob pattern for files
+        trajectory_class: Class to instantiate trajectories
+        require_time: Whether time data is required
+        scale: Coordinate scaling factor
+        motion_threshold: Motion detection threshold
+        progress_callback: Optional callback function for progress updates (current, total, message)
+
+    Returns:
+        List of trajectory objects
+    &#34;&#34;&#34;
+    paths = sorted(glob.glob(os.path.join(folder, pattern)))
+    out: List[T] = []
+
+    self.logger.info(f&#34;Found {len(paths)} files matching &#39;{pattern}&#39;&#34;)
+
+    # Use progress callback if provided, otherwise use tqdm
+    if progress_callback:
+        for i, p in enumerate(paths):
+            try:
+                # Update progress
+                progress_callback(i, len(paths), f&#34;Loading file {i+1}/{len(paths)}: {os.path.basename(p)}&#34;)
+
+                df = self._read_table(p)
+
+                # Check for required coordinate columns
+                coord_cols = [self.columns.x, self.columns.z]
+                missing_cols = [col for col in coord_cols if col not in df.columns]
+                if missing_cols:
+                    raise KeyError(f&#34;Missing columns: {missing_cols}&#34;)
+
+                # Create mask for valid coordinates
+                mask = df[coord_cols].notnull().all(axis=1)
+
+                # Extract coordinates
+                x, z = self._extract_coordinates(df, mask, scale)
+
+                # Extract time
+                t = self._extract_time(df, mask)
+
+                # Check time requirements
+                if require_time:
+                    if t is None or np.all(np.isnan(t)):
+                        continue
+
+                # Trim static segment
+                x, z, t = self._trim_static_segment(x, z, t, motion_threshold)
+
+                # Extract gaze/physio data (optional, always attempted)
+                gaze_data = self._extract_gaze_data(df, mask)
+                # Trim gaze data to match trajectory length if we trimmed static segment
+                if len(x) &lt; len(df[mask]):
+                    idx0 = len(df[mask]) - len(x)
+                    gaze_data = self._trim_gaze_data(gaze_data, idx0)
+
+                # Create unified Trajectory with optional fields
+                tid = os.path.splitext(os.path.basename(p))[0]
+                trajectory = Trajectory(
+                    tid=tid, x=x, z=z, t=t, **gaze_data
+                )
+
+                out.append(trajectory)
+
+            except Exception as e:
+                self.logger.warning(f&#34;Skip {p}: {e}&#34;)
+    else:
+        # Fallback to tqdm for console usage
+        for p in tqdm(paths, desc=&#34;Loading trajectories&#34;, unit=&#34;file&#34;):
+            try:
+                df = self._read_table(p)
+
+                # Check for required coordinate columns
+                coord_cols = [self.columns.x, self.columns.z]
+                missing_cols = [col for col in coord_cols if col not in df.columns]
+                if missing_cols:
+                    raise KeyError(f&#34;Missing columns: {missing_cols}&#34;)
+
+                # Create mask for valid coordinates
+                mask = df[coord_cols].notnull().all(axis=1)
+
+                # Extract coordinates
+                x, z = self._extract_coordinates(df, mask, scale)
+
+                # Extract time
+                t = self._extract_time(df, mask)
+
+                # Check time requirements
+                if require_time:
+                    if t is None or np.all(np.isnan(t)):
+                        continue
+
+                # Trim static segment
+                x, z, t = self._trim_static_segment(x, z, t, motion_threshold)
+
+                # Extract gaze/physio data (optional, always attempted)
+                gaze_data = self._extract_gaze_data(df, mask)
+                # Trim gaze data to match trajectory length if we trimmed static segment
+                if len(x) &lt; len(df[mask]):
+                    idx0 = len(df[mask]) - len(x)
+                    gaze_data = self._trim_gaze_data(gaze_data, idx0)
+
+                # Create unified Trajectory with optional fields
+                tid = os.path.splitext(os.path.basename(p))[0]
+                trajectory = Trajectory(
+                    tid=tid, x=x, z=z, t=t, **gaze_data
+                )
+
+                out.append(trajectory)
+
+            except Exception as e:
+                self.logger.warning(f&#34;Skip {p}: {e}&#34;)
+
+    self.logger.info(f&#34;Loaded {len(out)} trajectories&#34;)
+    return out</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="verta" href="index.html">verta</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="verta.verta_data_loader.has_gaze_data" href="#verta.verta_data_loader.has_gaze_data">has_gaze_data</a></code></li>
+<li><code><a title="verta.verta_data_loader.has_physio_data" href="#verta.verta_data_loader.has_physio_data">has_physio_data</a></code></li>
+<li><code><a title="verta.verta_data_loader.has_vr_headset_data" href="#verta.verta_data_loader.has_vr_headset_data">has_vr_headset_data</a></code></li>
+<li><code><a title="verta.verta_data_loader.load_folder" href="#verta.verta_data_loader.load_folder">load_folder</a></code></li>
+<li><code><a title="verta.verta_data_loader.load_folder_with_gaze" href="#verta.verta_data_loader.load_folder_with_gaze">load_folder_with_gaze</a></code></li>
+<li><code><a title="verta.verta_data_loader.save_assignments" href="#verta.verta_data_loader.save_assignments">save_assignments</a></code></li>
+<li><code><a title="verta.verta_data_loader.save_centers" href="#verta.verta_data_loader.save_centers">save_centers</a></code></li>
+<li><code><a title="verta.verta_data_loader.save_centers_json" href="#verta.verta_data_loader.save_centers_json">save_centers_json</a></code></li>
+<li><code><a title="verta.verta_data_loader.save_summary" href="#verta.verta_data_loader.save_summary">save_summary</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="verta.verta_data_loader.ColumnMapping" href="#verta.verta_data_loader.ColumnMapping">ColumnMapping</a></code></h4>
+<ul class="two-column">
+<li><code><a title="verta.verta_data_loader.ColumnMapping.controller_left_x" href="#verta.verta_data_loader.ColumnMapping.controller_left_x">controller_left_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.controller_left_y" href="#verta.verta_data_loader.ColumnMapping.controller_left_y">controller_left_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.controller_left_z" href="#verta.verta_data_loader.ColumnMapping.controller_left_z">controller_left_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.controller_right_x" href="#verta.verta_data_loader.ColumnMapping.controller_right_x">controller_right_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.controller_right_y" href="#verta.verta_data_loader.ColumnMapping.controller_right_y">controller_right_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.controller_right_z" href="#verta.verta_data_loader.ColumnMapping.controller_right_z">controller_right_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.from_dict" href="#verta.verta_data_loader.ColumnMapping.from_dict">from_dict</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.gaze_x" href="#verta.verta_data_loader.ColumnMapping.gaze_x">gaze_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.gaze_y" href="#verta.verta_data_loader.ColumnMapping.gaze_y">gaze_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.head_forward_x" href="#verta.verta_data_loader.ColumnMapping.head_forward_x">head_forward_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.head_forward_y" href="#verta.verta_data_loader.ColumnMapping.head_forward_y">head_forward_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.head_forward_z" href="#verta.verta_data_loader.ColumnMapping.head_forward_z">head_forward_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.head_up_x" href="#verta.verta_data_loader.ColumnMapping.head_up_x">head_up_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.head_up_y" href="#verta.verta_data_loader.ColumnMapping.head_up_y">head_up_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.head_up_z" href="#verta.verta_data_loader.ColumnMapping.head_up_z">head_up_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.headset_rot_w" href="#verta.verta_data_loader.ColumnMapping.headset_rot_w">headset_rot_w</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.headset_rot_x" href="#verta.verta_data_loader.ColumnMapping.headset_rot_x">headset_rot_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.headset_rot_y" href="#verta.verta_data_loader.ColumnMapping.headset_rot_y">headset_rot_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.headset_rot_z" href="#verta.verta_data_loader.ColumnMapping.headset_rot_z">headset_rot_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.headset_x" href="#verta.verta_data_loader.ColumnMapping.headset_x">headset_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.headset_y" href="#verta.verta_data_loader.ColumnMapping.headset_y">headset_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.headset_z" href="#verta.verta_data_loader.ColumnMapping.headset_z">headset_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.heart_rate" href="#verta.verta_data_loader.ColumnMapping.heart_rate">heart_rate</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.pupil_l" href="#verta.verta_data_loader.ColumnMapping.pupil_l">pupil_l</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.pupil_r" href="#verta.verta_data_loader.ColumnMapping.pupil_r">pupil_r</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.t" href="#verta.verta_data_loader.ColumnMapping.t">t</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.time" href="#verta.verta_data_loader.ColumnMapping.time">time</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.vr_defaults" href="#verta.verta_data_loader.ColumnMapping.vr_defaults">vr_defaults</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.x" href="#verta.verta_data_loader.ColumnMapping.x">x</a></code></li>
+<li><code><a title="verta.verta_data_loader.ColumnMapping.z" href="#verta.verta_data_loader.ColumnMapping.z">z</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="verta.verta_data_loader.Trajectory" href="#verta.verta_data_loader.Trajectory">Trajectory</a></code></h4>
+<ul class="two-column">
+<li><code><a title="verta.verta_data_loader.Trajectory.gaze_x" href="#verta.verta_data_loader.Trajectory.gaze_x">gaze_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.gaze_y" href="#verta.verta_data_loader.Trajectory.gaze_y">gaze_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_forward_x" href="#verta.verta_data_loader.Trajectory.head_forward_x">head_forward_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_forward_y" href="#verta.verta_data_loader.Trajectory.head_forward_y">head_forward_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_forward_z" href="#verta.verta_data_loader.Trajectory.head_forward_z">head_forward_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_up_x" href="#verta.verta_data_loader.Trajectory.head_up_x">head_up_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_up_y" href="#verta.verta_data_loader.Trajectory.head_up_y">head_up_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_up_z" href="#verta.verta_data_loader.Trajectory.head_up_z">head_up_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.heart_rate" href="#verta.verta_data_loader.Trajectory.heart_rate">heart_rate</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.pupil_l" href="#verta.verta_data_loader.Trajectory.pupil_l">pupil_l</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.pupil_r" href="#verta.verta_data_loader.Trajectory.pupil_r">pupil_r</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.t" href="#verta.verta_data_loader.Trajectory.t">t</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.tid" href="#verta.verta_data_loader.Trajectory.tid">tid</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.x" href="#verta.verta_data_loader.Trajectory.x">x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.z" href="#verta.verta_data_loader.Trajectory.z">z</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="verta.verta_data_loader.Trajectory" href="#verta.verta_data_loader.Trajectory">Trajectory</a></code></h4>
+<ul class="two-column">
+<li><code><a title="verta.verta_data_loader.Trajectory.gaze_x" href="#verta.verta_data_loader.Trajectory.gaze_x">gaze_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.gaze_y" href="#verta.verta_data_loader.Trajectory.gaze_y">gaze_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_forward_x" href="#verta.verta_data_loader.Trajectory.head_forward_x">head_forward_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_forward_y" href="#verta.verta_data_loader.Trajectory.head_forward_y">head_forward_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_forward_z" href="#verta.verta_data_loader.Trajectory.head_forward_z">head_forward_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_up_x" href="#verta.verta_data_loader.Trajectory.head_up_x">head_up_x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_up_y" href="#verta.verta_data_loader.Trajectory.head_up_y">head_up_y</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.head_up_z" href="#verta.verta_data_loader.Trajectory.head_up_z">head_up_z</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.heart_rate" href="#verta.verta_data_loader.Trajectory.heart_rate">heart_rate</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.pupil_l" href="#verta.verta_data_loader.Trajectory.pupil_l">pupil_l</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.pupil_r" href="#verta.verta_data_loader.Trajectory.pupil_r">pupil_r</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.t" href="#verta.verta_data_loader.Trajectory.t">t</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.tid" href="#verta.verta_data_loader.Trajectory.tid">tid</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.x" href="#verta.verta_data_loader.Trajectory.x">x</a></code></li>
+<li><code><a title="verta.verta_data_loader.Trajectory.z" href="#verta.verta_data_loader.Trajectory.z">z</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="verta.verta_data_loader.TrajectoryLoader" href="#verta.verta_data_loader.TrajectoryLoader">TrajectoryLoader</a></code></h4>
+<ul class="">
+<li><code><a title="verta.verta_data_loader.TrajectoryLoader.load_folder" href="#verta.verta_data_loader.TrajectoryLoader.load_folder">load_folder</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

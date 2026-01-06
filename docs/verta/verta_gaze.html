@@ -1,0 +1,3674 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>verta.verta_gaze API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>verta.verta_gaze</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># Gaze and Head Tracking Analysis
+
+from dataclasses import dataclass
+from typing import List, Optional, Dict, Tuple, Sequence
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+try:
+    from .verta_geometry import Circle
+    from .verta_data_loader import Trajectory
+    from .verta_decisions import get_decision_index
+except ImportError:
+    from verta.verta_geometry import Circle
+    from verta.verta_data_loader import Trajectory
+    from verta.verta_decisions import get_decision_index
+
+
+
+def compute_head_yaw_at_decisions(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    assignments_df: pd.DataFrame,
+    decision_mode: str = &#34;hybrid&#34;,
+    r_outer_list: Optional[Sequence[float]] = None,
+    path_length: float = 100.0,
+    epsilon: float = 0.05,
+    linger_delta: float = 0.0,
+    base_index: int = 0,
+    decisions_df: Optional[pd.DataFrame] = None,
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Compute head yaw angles at decision points for each trajectory.&#34;&#34;&#34;
+    from tqdm import tqdm
+    
+    if r_outer_list is None:
+        r_outer_list = [None] * len(junctions)
+    
+    results = []
+    
+    def _nearest_valid_index(
+        tr: Trajectory,
+        start_idx: Optional[int],
+        max_window: int = 200,
+    ) -&gt; Optional[int]:
+        &#34;&#34;&#34;Return nearest index to start_idx with valid x,z and head_forward data.
+
+        Searches outward from start_idx up to max_window samples in both directions.
+        &#34;&#34;&#34;
+        if start_idx is None:
+            return None
+        length = min(len(tr.x), len(tr.z))
+        hf_len = min(
+            len(tr.head_forward_x) if tr.head_forward_x is not None else 0,
+            len(tr.head_forward_z) if tr.head_forward_z is not None else 0,
+        )
+        if length == 0 or hf_len == 0:
+            return None
+        # Clamp start index
+        start_idx = max(0, min(start_idx, length - 1, hf_len - 1))
+
+        def is_valid(i: int) -&gt; bool:
+            if i &lt; 0 or i &gt;= length or i &gt;= hf_len:
+                return False
+            x_ok = not np.isnan(tr.x[i])
+            z_ok = not np.isnan(tr.z[i])
+            hf_x_ok = tr.head_forward_x is not None and not np.isnan(tr.head_forward_x[i])
+            hf_z_ok = tr.head_forward_z is not None and not np.isnan(tr.head_forward_z[i])
+            return x_ok and z_ok and hf_x_ok and hf_z_ok
+
+        if is_valid(start_idx):
+            return start_idx
+
+        for delta in range(1, max_window + 1):
+            left = start_idx - delta
+            right = start_idx + delta
+            if is_valid(left):
+                return left
+            if is_valid(right):
+                return right
+        return None
+    
+    print(f&#34;[gaze] Computing head directions for {len(trajectories)} trajectories...&#34;)
+    
+    for tr in tqdm(trajectories, desc=&#34;Computing head directions&#34;, unit=&#34;traj&#34;):
+        # Get trajectory assignments for all junctions
+        traj_assignments = assignments_df[assignments_df[&#34;trajectory&#34;] == tr.tid]
+        
+        if traj_assignments.empty:
+            continue
+            
+        for i, junc in enumerate(junctions):
+            # CRITICAL FIX: Use the actual junction index (base_index + i) for branch column lookup
+            # This ensures we look in the correct branch_j{X} column for each junction
+            label_idx = base_index + i
+            label_str = f&#34;Junction {label_idx} ({junc.cx}, {junc.cz}, r={junc.r})&#34;
+            
+            # Use the actual junction index for branch column to ensure correct mapping
+            branch_col = f&#34;branch_j{label_idx}&#34;
+            branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
+            
+            # Debug: Show branch assignment details
+            print(f&#34;[gaze_debug] Junction {label_idx}: branch_col={branch_col}, branch={branch}&#34;)
+            
+            # If branch_col not found, try the generic &#39;branch&#39; column (for single-junction analysis)
+            if branch is None and &#34;branch&#34; in traj_assignments.columns:
+                branch = traj_assignments[&#34;branch&#34;].iloc[0]
+                print(f&#34;[gaze_debug] Junction {label_idx}: Using generic &#39;branch&#39; column, branch={branch}&#34;)
+            
+            if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) &lt; 0:
+                continue
+                
+            # Prefer precomputed decisions if provided via assignments_df.
+            # Look for decision points specific to this trajectory and junction
+            pre_idx = None
+            pre_x = np.nan
+            pre_z = np.nan
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                &#39;decision_idx&#39;: f&#34;decision_idx_j{label_idx}&#34;,
+                &#39;intercept_x&#39;: f&#34;intercept_x_j{label_idx}&#34;,
+                &#39;intercept_z&#39;: f&#34;intercept_z_j{label_idx}&#34;
+            }
+            
+            # Debug: Check what junction-specific columns are available
+            available_junction_cols = [col for col in traj_assignments.columns if col.startswith(&#39;decision_idx_j&#39;)]
+            if tr.tid &lt; 5:  # Only debug first 5 trajectories to avoid spam
+                print(f&#34;[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Available junction columns: {available_junction_cols}&#34;)
+                print(f&#34;[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Looking for: {list(junction_cols.values())}&#34;)
+            
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    decision_idx_val = traj_assignments_for_traj[junction_cols[&#39;decision_idx&#39;]].iloc[0]
+                    intercept_x_val = traj_assignments_for_traj[junction_cols[&#39;intercept_x&#39;]].iloc[0]
+                    intercept_z_val = traj_assignments_for_traj[junction_cols[&#39;intercept_z&#39;]].iloc[0]
+                    
+                    if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                        pre_idx = int(decision_idx_val)
+                    if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                        pre_x = float(intercept_x_val)
+                    if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                        pre_z = float(intercept_z_val)
+                        
+                if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                    print(f&#34;[gaze_debug] Using precomputed decision point for trajectory {tr.tid} at junction {label_idx}: idx={pre_idx}, x={pre_x}, z={pre_z}&#34;)
+            elif &#34;decision_idx&#34; in traj_assignments.columns:
+                # Filter to this specific trajectory
+                print(f&#34;[gaze_debug] Looking for trajectory {tr.tid} in assignments with trajectory IDs: {traj_assignments[&#39;trajectory&#39;].unique()[:10]}&#34;)
+                print(f&#34;[gaze_debug] Assignments DataFrame shape: {traj_assignments.shape}&#34;)
+                print(f&#34;[gaze_debug] Assignments DataFrame columns: {list(traj_assignments.columns)}&#34;)
+                print(f&#34;[gaze_debug] Sample assignments data: {traj_assignments[[&#39;trajectory&#39;, &#39;decision_idx&#39;, &#39;intercept_x&#39;, &#39;intercept_z&#39;]].head(3).to_dict(&#39;records&#39;)}&#34;)
+                
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                print(f&#34;[gaze_debug] Found {len(traj_assignments_for_traj)} assignments for trajectory {tr.tid}&#34;)
+                if not traj_assignments_for_traj.empty:
+                    # Get the decision point for this trajectory
+                    if &#34;decision_idx&#34; in traj_assignments_for_traj.columns:
+                        decision_idx_val = traj_assignments_for_traj[&#34;decision_idx&#34;].iloc[0]
+                        if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                            pre_idx = int(decision_idx_val)
+                    if &#34;intercept_x&#34; in traj_assignments_for_traj.columns:
+                        intercept_x_val = traj_assignments_for_traj[&#34;intercept_x&#34;].iloc[0]
+                        if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                            pre_x = float(intercept_x_val)
+                    if &#34;intercept_z&#34; in traj_assignments_for_traj.columns:
+                        intercept_z_val = traj_assignments_for_traj[&#34;intercept_z&#34;].iloc[0]
+                        if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                            pre_z = float(intercept_z_val)
+
+            if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                idx = pre_idx
+                method_used = &#34;precomputed&#34;
+                print(f&#34;[gaze_debug] Using precomputed decision point for trajectory {tr.tid}: idx={pre_idx}, x={pre_x}, z={pre_z}&#34;)
+            else:
+                print(f&#34;[gaze_debug] No precomputed decision point for trajectory {tr.tid}: pre_idx={pre_idx}, pre_x={pre_x}, pre_z={pre_z}&#34;)
+                # Find decision intercept using the same logic as discover analysis
+                # This ensures arrows are plotted at the exact same points used for branch assignment
+                r_out = r_outer_list[i]
+                
+                # Use the same decision point calculation with identical params
+                if decision_mode == &#34;radial&#34; or (decision_mode == &#34;hybrid&#34; and r_out is not None and float(r_out) &gt; float(junc.r)):
+                    idx = get_decision_index(
+                        tr.x, tr.z, junc, 
+                        decision_mode=&#34;radial&#34;,
+                        r_outer=r_out if r_out is not None else (junc.r + 10.0),
+                        window=5
+                    )
+                    method_used = &#34;radial&#34;
+                else:
+                    idx = get_decision_index(
+                        tr.x, tr.z, junc,
+                        decision_mode=&#34;pathlen&#34;, 
+                        path_length=path_length,
+                        epsilon=epsilon,
+                        linger_delta=linger_delta
+                    )
+                    method_used = &#34;pathlen&#34;
+            
+            # Debug: Track decision point calculation success
+            if idx is None:
+                print(f&#34;[decision_debug] FAILED to find decision point for trajectory {tr.tid} at {label_str}&#34;)
+                print(f&#34;[decision_debug] Method attempted: {method_used}&#34;)
+                print(f&#34;[decision_debug] Junction: cx={junc.cx}, cz={junc.cz}, r={junc.r}&#34;)
+                print(f&#34;[decision_debug] R_outer: {r_out}, path_length: {path_length}&#34;)
+                print(f&#34;[decision_debug] Trajectory bounds: x=[{np.min(tr.x):.1f}, {np.max(tr.x):.1f}], z=[{np.min(tr.z):.1f}, {np.max(tr.z):.1f}]&#34;)
+                
+                # Don&#39;t use fallback for trajectories without proper decision points
+                # These trajectories should not be assigned to any branch
+                print(f&#34;[decision_debug] NO FALLBACK: Trajectory {tr.tid} has no proper decision point - skipping&#34;)
+                continue
+            else:
+                print(f&#34;[decision_debug] SUCCESS: Found decision point for trajectory {tr.tid} at {label_str} using {method_used}&#34;)
+                print(f&#34;[decision_debug] Decision point: x={tr.x[idx]:.1f}, z={tr.z[idx]:.1f}&#34;)
+                print(f&#34;[decision_debug] Distance from junction center: {np.hypot(tr.x[idx] - junc.cx, tr.z[idx] - junc.cz):.1f}&#34;)
+            
+            # Debug: Check decision index calculation
+            if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                print(f&#34;[head_yaw_debug] Trajectory {tr.tid} at {label_str}: idx={idx}, decision_mode={decision_mode}&#34;)
+                print(f&#34;[head_yaw_debug] Junction: cx={junc.cx}, cz={junc.cz}, r={junc.r}&#34;)
+                print(f&#34;[head_yaw_debug] R_outer: {r_out}, path_length: {path_length}&#34;)
+                print(f&#34;[head_yaw_debug] Trajectory length: x={len(tr.x)}, z={len(tr.z)}&#34;)
+                print(f&#34;[head_yaw_debug] Head forward length: x={len(tr.head_forward_x) if tr.head_forward_x is not None else &#39;None&#39;}, z={len(tr.head_forward_z) if tr.head_forward_z is not None else &#39;None&#39;}&#34;)
+                if idx is not None:
+                    print(f&#34;[head_yaw_debug] Index bounds check: idx &lt; len(x) = {idx &lt; len(tr.x)}, idx &lt; len(head_forward_x) = {idx &lt; len(tr.head_forward_x) if tr.head_forward_x is not None else &#39;N/A&#39;}&#34;)
+                    if idx &lt; len(tr.x):
+                        print(f&#34;[head_yaw_debug] Decision point: x={tr.x[idx]}, z={tr.z[idx]}&#34;)
+                    else:
+                        print(f&#34;[head_yaw_debug] Decision index {idx} is out of bounds for trajectory length {len(tr.x)}!&#34;)
+                    print(f&#34;[head_yaw_debug] Head forward data available: {tr.head_forward_x is not None and tr.head_forward_z is not None}&#34;)
+                    if tr.head_forward_x is not None and tr.head_forward_z is not None and idx &lt; len(tr.head_forward_x):
+                        print(f&#34;[head_yaw_debug] Head forward at idx: x={tr.head_forward_x[idx]}, z={tr.head_forward_z[idx]}&#34;)
+                    else:
+                        print(f&#34;[head_yaw_debug] Head forward index {idx} is out of bounds for head_forward length {len(tr.head_forward_x) if tr.head_forward_x is not None else &#39;None&#39;} at {label_str}!&#34;)
+                else:
+                    print(f&#34;[head_yaw_debug] No decision index found at {label_str}!&#34;)
+            
+            # Choose nearest valid index around decision point for head-forward data
+            # Keep the intercept position anchored at the geometric decision index
+            # (or its boundary fallback), even if head-forward is taken from nearby.
+            valid_idx = _nearest_valid_index(tr, idx)
+            intercept_idx = idx
+            
+            # Debug: Show valid index adjustment
+            if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                print(f&#34;[head_yaw_debug] Valid index adjustment: idx={idx} -&gt; valid_idx={valid_idx}&#34;)
+                if valid_idx is not None:
+                    print(f&#34;[head_yaw_debug] Valid decision point: x={tr.x[valid_idx]}, z={tr.z[valid_idx]}&#34;)
+                    print(f&#34;[head_yaw_debug] Valid head forward: x={tr.head_forward_x[valid_idx]}, z={tr.head_forward_z[valid_idx]}&#34;)
+            
+            # Compute head yaw at decision point (VR convention: Z forward, X right)
+            if (
+                tr.head_forward_x is not None
+                and tr.head_forward_z is not None
+                and valid_idx is not None
+                and valid_idx &lt; len(tr.head_forward_x)
+                and valid_idx &lt; len(tr.head_forward_z)
+            ):
+                head_forward_x = tr.head_forward_x[valid_idx]
+                head_forward_z = tr.head_forward_z[valid_idx]
+                if not (np.isnan(head_forward_x) or np.isnan(head_forward_z)):
+                    head_yaw = np.degrees(np.arctan2(head_forward_x, head_forward_z))
+                    # Debug: Show calculated head_yaw
+                    if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                        print(f&#34;[head_yaw_debug] Calculated head_yaw: {head_yaw:.2f}° for trajectory {tr.tid}, branch {int(branch)}&#34;)
+                else:
+                    head_yaw = np.nan
+                    if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                        print(f&#34;[head_yaw_debug] Head forward data is NaN for trajectory {tr.tid}, branch {int(branch)}&#34;)
+            else:
+                head_yaw = np.nan
+                if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                    print(f&#34;[head_yaw_debug] Cannot calculate head_yaw for trajectory {tr.tid}, branch {int(branch)} - missing data or invalid index&#34;)
+            
+            # Movement direction at decision point
+            if (
+                valid_idx is not None
+                and valid_idx &gt; 0
+                and valid_idx &lt; len(tr.x) - 1
+                and valid_idx &lt; len(tr.z) - 1
+            ):
+                # Use velocity direction
+                dx = tr.x[valid_idx + 1] - tr.x[valid_idx - 1]
+                dz = tr.z[valid_idx + 1] - tr.z[valid_idx - 1]
+                # Check for NaN values in trajectory coordinates
+                if not (np.isnan(dx) or np.isnan(dz)) and np.hypot(dx, dz) &gt; 1e-6:
+                    movement_yaw = np.degrees(np.arctan2(dx, dz))
+                else:
+                    movement_yaw = np.nan
+            else:
+                movement_yaw = np.nan
+            
+            # Gaze-movement alignment
+            if not np.isnan(movement_yaw) and not np.isnan(head_yaw):
+                yaw_diff = ((head_yaw - movement_yaw + 180) % 360) - 180  # [-180, 180]
+            else:
+                yaw_diff = np.nan
+                
+            # Intercept position (use precomputed if available; else use decision index)
+            if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                intercept_x = float(pre_x)
+                intercept_z = float(pre_z)
+            elif (
+                intercept_idx is not None
+                and intercept_idx &lt; len(tr.x)
+                and intercept_idx &lt; len(tr.z)
+                and not np.isnan(tr.x[intercept_idx])
+                and not np.isnan(tr.z[intercept_idx])
+            ):
+                intercept_x = tr.x[intercept_idx]
+                intercept_z = tr.z[intercept_idx]
+            elif (
+                valid_idx is not None
+                and valid_idx &lt; len(tr.x)
+                and valid_idx &lt; len(tr.z)
+                and not np.isnan(tr.x[valid_idx])
+                and not np.isnan(tr.z[valid_idx])
+            ):
+                # Fallback to nearest valid sample if the decision index is unusable
+                intercept_x = tr.x[valid_idx]
+                intercept_z = tr.z[valid_idx]
+            else:
+                intercept_x = np.nan
+                intercept_z = np.nan
+                
+            results.append({
+                &#34;trajectory&#34;: tr.tid,
+                &#34;junction&#34;: label_idx,  # Use label_idx instead of i to match the actual junction index
+                &#34;branch&#34;: int(branch),
+                &#34;head_yaw&#34;: head_yaw,
+                &#34;movement_yaw&#34;: movement_yaw,
+                &#34;yaw_difference&#34;: yaw_diff,
+                &#34;intercept_x&#34;: intercept_x,
+                &#34;intercept_z&#34;: intercept_z,
+                &#34;gaze_x&#34;: tr.gaze_x[valid_idx] if tr.gaze_x is not None and valid_idx is not None and valid_idx &lt; len(tr.gaze_x) else np.nan,
+                &#34;gaze_y&#34;: tr.gaze_y[valid_idx] if tr.gaze_y is not None and valid_idx is not None and valid_idx &lt; len(tr.gaze_y) else np.nan,
+                &#34;heart_rate&#34;: tr.heart_rate[valid_idx] if tr.heart_rate is not None and valid_idx is not None and valid_idx &lt; len(tr.heart_rate) else np.nan,
+                &#34;pupil_avg&#34;: (tr.pupil_l[valid_idx] + tr.pupil_r[valid_idx]) / 2 if (tr.pupil_l is not None and tr.pupil_r is not None and valid_idx is not None and valid_idx &lt; len(tr.pupil_l)) else np.nan,
+            })
+    
+    return pd.DataFrame(results)
+
+
+def analyze_physiological_at_junctions(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    assignments_df: pd.DataFrame,
+    decision_mode: str = &#34;hybrid&#34;,
+    r_outer_list: Optional[Sequence[float]] = None,
+    path_length: float = 100.0,
+    epsilon: float = 0.05,
+    linger_delta: float = 0.0,
+    physio_window: float = 3.0,
+    base_index: int = 0,
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Analyze physiological data (heart rate, pupil dilation) at decision points.
+    
+    Calculation method:
+    - Baseline: Average during 2-5 seconds BEFORE entering junction radius (normal navigation)
+    - Decision: Average during junction approach period (from entry to exit) (decision-making context)
+    &#34;&#34;&#34;
+    from tqdm import tqdm
+    
+    if r_outer_list is None:
+        r_outer_list = [None] * len(junctions)
+    
+    results = []
+    
+    print(f&#34;[physio] Analyzing physiological data for {len(trajectories)} trajectories...&#34;)
+    
+    for tr in tqdm(trajectories, desc=&#34;Analyzing physiological data&#34;, unit=&#34;traj&#34;):
+        # Get trajectory assignments for all junctions
+        traj_assignments = assignments_df[assignments_df[&#34;trajectory&#34;] == tr.tid]
+        
+        if traj_assignments.empty:
+            continue
+            
+        for i, junc in enumerate(junctions):
+            # Use the actual junction index (base_index + i) for branch column lookup
+            label_idx = base_index + i
+            branch_col = f&#34;branch_j{label_idx}&#34;
+            branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
+            if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) &lt; 0:
+                continue
+                
+            # Prefer precomputed decisions if provided via assignments_df.
+            # Look for decision points specific to this trajectory and junction
+            pre_idx = None
+            pre_x = np.nan
+            pre_z = np.nan
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                &#39;decision_idx&#39;: f&#34;decision_idx_j{i}&#34;,
+                &#39;intercept_x&#39;: f&#34;intercept_x_j{i}&#34;,
+                &#39;intercept_z&#39;: f&#34;intercept_z_j{i}&#34;
+            }
+            
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    decision_idx_val = traj_assignments_for_traj[junction_cols[&#39;decision_idx&#39;]].iloc[0]
+                    intercept_x_val = traj_assignments_for_traj[junction_cols[&#39;intercept_x&#39;]].iloc[0]
+                    intercept_z_val = traj_assignments_for_traj[junction_cols[&#39;intercept_z&#39;]].iloc[0]
+                    
+                    if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                        pre_idx = int(decision_idx_val)
+                    if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                        pre_x = float(intercept_x_val)
+                    if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                        pre_z = float(intercept_z_val)
+                        
+                if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                    print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: Using precomputed decision point idx={pre_idx}, x={pre_x}, z={pre_z}&#34;)
+            elif &#34;decision_idx&#34; in traj_assignments.columns:
+                # Filter to this specific trajectory
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    # Get the decision point for this trajectory
+                    if &#34;decision_idx&#34; in traj_assignments_for_traj.columns:
+                        decision_idx_val = traj_assignments_for_traj[&#34;decision_idx&#34;].iloc[0]
+                        if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                            pre_idx = int(decision_idx_val)
+                    if &#34;intercept_x&#34; in traj_assignments_for_traj.columns:
+                        intercept_x_val = traj_assignments_for_traj[&#34;intercept_x&#34;].iloc[0]
+                        if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                            pre_x = float(intercept_x_val)
+                    if &#34;intercept_z&#34; in traj_assignments_for_traj.columns:
+                        intercept_z_val = traj_assignments_for_traj[&#34;intercept_z&#34;].iloc[0]
+                        if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                            pre_z = float(intercept_z_val)
+
+            if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                decision_idx = pre_idx
+                decision_time = tr.t[decision_idx] if decision_idx &lt; len(tr.t) else None
+                method_used = &#34;precomputed&#34;
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: Using precomputed decision point idx={pre_idx}, time={decision_time}&#34;)
+            else:
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: No precomputed decision point, calculating from scratch&#34;)
+                # Find junction entry point (first sample inside junction radius)
+                rx = tr.x - junc.cx
+                rz = tr.z - junc.cz
+                r = np.hypot(rx, rz)
+                inside = r &lt;= junc.r
+                entry_idx = int(np.argmax(inside)) if inside.any() else None
+                
+                if entry_idx is None:
+                    continue
+                    
+                entry_time = tr.t[entry_idx]
+                
+                # Find decision point (exit point) using the same logic as branch discovery
+                decision_time = None
+                decision_idx = None
+                
+                start = entry_idx
+                
+                # Find decision point based on mode
+                if decision_mode == &#34;radial&#34;:
+                    rout = r_outer_list[i] if (r_outer_list[i] is not None and r_outer_list[i] &gt; junc.r) else (junc.r + 10.0)
+                    i_cross = None
+                    for i_idx in range(start + 1, len(r)):
+                        if r[i_idx] &gt;= rout:
+                            j0 = max(start + 1, i_idx - 5)
+                            seg = r[j0:i_idx+1]
+                            outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0 if seg.size &gt;= 2 else True
+                            if outward:
+                                i_cross = i_idx
+                                break
+                    decision_idx = int(i_cross) if i_cross is not None else None
+                elif decision_mode == &#34;pathlen&#34;:
+                    dx = np.diff(tr.x[start:])
+                    dz = np.diff(tr.z[start:])
+                    seg = np.hypot(dx, dz)
+                    cum = np.cumsum(seg)
+                    reach_idx = int(np.argmax(cum &gt;= float(path_length))) if (cum &gt;= float(path_length)).any() else None
+                    decision_idx = int(start + reach_idx + 1) if reach_idx is not None else None
+                else:  # hybrid
+                    # Try radial first, fall back to pathlen
+                    rout = r_outer_list[i] if (r_outer_list[i] is not None and r_outer_list[i] &gt; junc.r) else (junc.r + 10.0)
+                    i_cross = None
+                    for i_idx in range(start + 1, len(r)):
+                        if r[i_idx] &gt;= rout:
+                            j0 = max(start + 1, i_idx - 5)
+                            seg = r[j0:i_idx+1]
+                            outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0 if seg.size &gt;= 2 else True
+                            if outward:
+                                i_cross = i_idx
+                                break
+                    
+                    if i_cross is not None:
+                        decision_idx = int(i_cross)
+                    else:
+                        # Fall back to pathlen
+                        dx = np.diff(tr.x[start:])
+                        dz = np.diff(tr.z[start:])
+                        seg = np.hypot(dx, dz)
+                        cum = np.cumsum(seg)
+                        reach_idx = int(np.argmax(cum &gt;= float(path_length))) if (cum &gt;= float(path_length)).any() else None
+                        decision_idx = int(start + reach_idx + 1) if reach_idx is not None else None
+                
+                if decision_idx is None or decision_idx &gt;= len(tr.t):
+                    continue
+                    
+                decision_time = tr.t[decision_idx]
+                method_used = &#34;calculated&#34;
+            
+            # CRITICAL FIX: Ensure we have a valid decision point before proceeding
+            if decision_idx is None or decision_idx &gt;= len(tr.t):
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: No valid decision point found, skipping&#34;)
+                continue
+            
+            # Find junction entry point for baseline calculation
+            rx = tr.x - junc.cx
+            rz = tr.z - junc.cz
+            r = np.hypot(rx, rz)
+            inside = r &lt;= junc.r
+            entry_idx = int(np.argmax(inside)) if inside.any() else None
+            
+            if entry_idx is None:
+                continue
+                
+            entry_time = tr.t[entry_idx]
+            
+            # OPTION A: Pre-entry baseline vs junction approach period
+            # Baseline: 2-5 seconds before junction entry (normal navigation)
+            baseline_start_time = entry_time - 5.0  # 5 seconds before entry
+            baseline_end_time = entry_time - 2.0    # 2 seconds before entry
+            baseline_mask = (tr.t &gt;= baseline_start_time) &amp; (tr.t &lt;= baseline_end_time)
+            
+            # Decision period: From junction entry to exit (decision-making context)
+            decision_mask = (tr.t &gt;= entry_time) &amp; (tr.t &lt;= decision_time)
+            
+            hr_baseline = hr_decision = np.nan
+            pupil_baseline = pupil_decision = np.nan
+            
+            # Heart rate analysis
+            if tr.heart_rate is not None:
+                # Baseline period (normal navigation: 2-5 seconds before junction entry)
+                if np.any(baseline_mask):
+                    hr_baseline_data = tr.heart_rate[baseline_mask]
+                    hr_baseline_data = hr_baseline_data[~np.isnan(hr_baseline_data)]
+                    if len(hr_baseline_data) &gt; 0:
+                        hr_baseline = np.mean(hr_baseline_data)
+                
+                # Decision period (decision-making context: from junction entry to exit)
+                if np.any(decision_mask):
+                    hr_decision_data = tr.heart_rate[decision_mask]
+                    hr_decision_data = hr_decision_data[~np.isnan(hr_decision_data)]
+                    if len(hr_decision_data) &gt; 0:
+                        hr_decision = np.mean(hr_decision_data)
+            
+            # Pupil dilation analysis
+            if tr.pupil_l is not None and tr.pupil_r is not None:
+                pupil_avg = (tr.pupil_l + tr.pupil_r) / 2
+                
+                # Baseline period (normal navigation: 2-5 seconds before junction entry)
+                if np.any(baseline_mask):
+                    pupil_baseline_data = pupil_avg[baseline_mask]
+                    pupil_baseline_data = pupil_baseline_data[~np.isnan(pupil_baseline_data)]
+                    if len(pupil_baseline_data) &gt; 0:
+                        pupil_baseline = np.mean(pupil_baseline_data)
+                
+                # Decision period (decision-making context: from junction entry to exit)
+                if np.any(decision_mask):
+                    pupil_decision_data = pupil_avg[decision_mask]
+                    pupil_decision_data = pupil_decision_data[~np.isnan(pupil_decision_data)]
+                    if len(pupil_decision_data) &gt; 0:
+                        pupil_decision = np.mean(pupil_decision_data)
+            
+            # Debug: Check if valid physiological data is available
+            if tr.tid in [0, 1, 2, 3, 4]:  # Debug first few trajectories
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: hr_baseline={hr_baseline}, hr_decision={hr_decision}, pupil_baseline={pupil_baseline}, pupil_decision={pupil_decision}&#34;)
+                print(f&#34;[physio_debug] Decision time: {decision_time}, Entry time: {entry_time}&#34;)
+                print(f&#34;[physio_debug] Baseline mask: {np.sum(baseline_mask)} samples, Decision mask: {np.sum(decision_mask)} samples&#34;)
+            
+            results.append({
+                &#34;trajectory&#34;: tr.tid,
+                &#34;junction&#34;: label_idx,  # Use label_idx instead of i to match the actual junction index
+                &#34;branch&#34;: int(branch),
+                &#34;heart_rate_baseline&#34;: hr_baseline,
+                &#34;heart_rate_decision&#34;: hr_decision,
+                &#34;heart_rate_change&#34;: hr_decision - hr_baseline if not (np.isnan(hr_baseline) or np.isnan(hr_decision)) else np.nan,
+                &#34;pupil_baseline&#34;: pupil_baseline,
+                &#34;pupil_decision&#34;: pupil_decision,
+                &#34;pupil_change&#34;: pupil_decision - pupil_baseline if not (np.isnan(pupil_baseline) or np.isnan(pupil_decision)) else np.nan,
+            })
+    
+    return pd.DataFrame(results)
+
+
+def analyze_pupil_dilation_trajectory(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    assignments_df: pd.DataFrame,
+    decision_mode: str = &#34;hybrid&#34;,
+    r_outer_list: Optional[Sequence[float]] = None,
+    path_length: float = 100.0,
+    epsilon: float = 0.05,
+    linger_delta: float = 0.0,
+    physio_window: float = 3.0,
+    base_index: int = 0,
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Analyze pupil dilation trajectory from junction entry to decision point.&#34;&#34;&#34;
+    from tqdm import tqdm
+    
+    if r_outer_list is None:
+        r_outer_list = [None] * len(junctions)
+    
+    results = []
+    
+    print(f&#34;[pupil] Analyzing pupil dilation trajectories for {len(trajectories)} trajectories...&#34;)
+    
+    for traj in tqdm(trajectories, desc=&#34;Analyzing pupil trajectories&#34;, unit=&#34;traj&#34;):
+        # Get trajectory assignments for all junctions
+        traj_assignments = assignments_df[assignments_df[&#34;trajectory&#34;] == traj.tid]
+        
+        if traj_assignments.empty:
+            continue
+            
+        for i, junc in enumerate(junctions):
+            # Use the actual junction index (base_index + i) for branch column lookup
+            label_idx = base_index + i
+            branch_col = f&#34;branch_j{label_idx}&#34;
+            branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
+            if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) &lt; 0:
+                continue
+                
+            # Find decision intercept using precomputed decision_idx when available
+            r_out = r_outer_list[i]
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                &#39;decision_idx&#39;: f&#34;decision_idx_j{i}&#34;,
+                &#39;intercept_x&#39;: f&#34;intercept_x_j{i}&#34;,
+                &#39;intercept_z&#39;: f&#34;intercept_z_j{i}&#34;
+            }
+            
+            idx = None
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                decision_idx_val = traj_assignments[junction_cols[&#39;decision_idx&#39;]].iloc[0]
+                if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                    idx = int(decision_idx_val)
+                    print(f&#34;[pupil_debug] Trajectory {traj.tid} at junction {i}: Using precomputed decision point idx={idx}&#34;)
+            elif &#34;decision_idx&#34; in traj_assignments.columns:
+                val = traj_assignments[&#34;decision_idx&#34;].iloc[0]
+                if not (isinstance(val, float) and np.isnan(val)):
+                    idx = int(val)
+                else:
+                    if decision_mode == &#34;radial&#34; or (decision_mode == &#34;hybrid&#34; and r_out is not None and float(r_out) &gt; float(junc.r)):
+                        idx = get_decision_index(
+                            traj.x, traj.z, junc,
+                            decision_mode=&#34;radial&#34;,
+                            r_outer=r_out if r_out is not None else (junc.r + 10.0),
+                            window=5
+                        )
+                    else:
+                        idx = get_decision_index(
+                            traj.x, traj.z, junc,
+                            decision_mode=&#34;pathlen&#34;,
+                            path_length=path_length,
+                            epsilon=epsilon,
+                            linger_delta=linger_delta
+                        )
+            else:
+                if decision_mode == &#34;radial&#34; or (decision_mode == &#34;hybrid&#34; and r_out is not None and float(r_out) &gt; float(junc.r)):
+                    idx = get_decision_index(
+                        traj.x, traj.z, junc,
+                        decision_mode=&#34;radial&#34;,
+                        r_outer=r_out if r_out is not None else (junc.r + 10.0),
+                        window=5
+                    )
+                else:
+                    idx = get_decision_index(
+                        traj.x, traj.z, junc,
+                        decision_mode=&#34;pathlen&#34;,
+                        path_length=path_length,
+                        epsilon=epsilon,
+                        linger_delta=linger_delta
+                    )
+            if idx is None:
+                # Don&#39;t use fallback for trajectories without proper decision points
+                # These trajectories should not be assigned to any branch
+                continue
+            
+            if traj.t is None or idx &gt;= len(traj.t):
+                continue
+            
+            # Extract pupil dilation data in time window
+            mask = (traj.t &gt;= traj.t[idx] - physio_window) &amp; (traj.t &lt;= traj.t[idx] + physio_window)
+            
+            pupil_baseline = pupil_decision = np.nan
+            
+            if traj.pupil_l is not None and traj.pupil_r is not None and np.any(mask):
+                pupil_avg = (traj.pupil_l + traj.pupil_r) / 2
+                pupil_window = pupil_avg[mask]
+                pupil_window = pupil_window[~np.isnan(pupil_window)]
+                if len(pupil_window) &gt; 0:
+                    pupil_decision = np.mean(pupil_window)
+                    
+                    # Baseline
+                    baseline_mask = traj.t &lt; traj.t[idx] - physio_window
+                    if np.any(baseline_mask):
+                        pupil_baseline_data = pupil_avg[baseline_mask]
+                        pupil_baseline_data = pupil_baseline_data[~np.isnan(pupil_baseline_data)]
+                        if len(pupil_baseline_data) &gt; 0:
+                            pupil_baseline = np.mean(pupil_baseline_data[-10:])
+            
+            results.append({
+                &#34;trajectory&#34;: traj.tid,
+                &#34;junction&#34;: label_idx,  # Use label_idx instead of i to match the actual junction index
+                &#34;branch&#34;: int(branch),
+                &#34;pupil_baseline&#34;: pupil_baseline,
+                &#34;pupil_decision&#34;: pupil_decision,
+                &#34;pupil_change&#34;: pupil_decision - pupil_baseline if not (np.isnan(pupil_baseline) or np.isnan(pupil_decision)) else np.nan,
+            })
+    
+    return pd.DataFrame(results)
+
+
+def plot_gaze_directions_at_junctions(
+    trajectories: List[Trajectory],
+    junctions: List[Circle],
+    gaze_df: pd.DataFrame,
+    out_path: str = &#34;Gaze_Directions.png&#34;,
+    r_outer_list: Optional[List[float]] = None,
+    junction_labels: Optional[List[str]] = None,
+    centers_list: Optional[List[np.ndarray]] = None,
+) -&gt; None:
+    &#34;&#34;&#34;Plot head directions at decision points with improved readability and minimap.&#34;&#34;&#34;
+    
+    # Create layout with minimap if multiple junctions
+    if len(junctions) &gt; 1:
+        fig = plt.figure(figsize=(5*len(junctions), 7))
+        gs = fig.add_gridspec(2, len(junctions), height_ratios=[4, 1], hspace=0.3)
+        main_axes = [fig.add_subplot(gs[0, i]) for i in range(len(junctions))]
+        mini_ax = fig.add_subplot(gs[1, :])
+    else:
+        fig = plt.figure(figsize=(8, 10))
+        gs = fig.add_gridspec(2, 1, height_ratios=[4, 1], hspace=0.3)
+        main_axes = [fig.add_subplot(gs[0])]
+        mini_ax = fig.add_subplot(gs[1])
+    
+    axes = main_axes
+    
+    # Plot each junction separately to reduce overlap
+    for j_idx, (ax, junction) in enumerate(zip(axes, junctions)):
+        # Background trajectories
+        for traj in trajectories:
+            ax.plot(traj.x, traj.z, color=&#34;lightgray&#34;, alpha=0.3, linewidth=0.5, zorder=1)
+        
+        # Junction circle (inner)
+        circle = plt.Circle((junction.cx, junction.cz), junction.r, 
+                          fill=False, color=&#34;black&#34;, linewidth=2, zorder=2)
+        ax.add_patch(circle)
+        
+        # Outer circle (if provided)
+        if r_outer_list and j_idx &lt; len(r_outer_list):
+            r_outer = r_outer_list[j_idx]
+            outer_circle = plt.Circle((junction.cx, junction.cz), r_outer, 
+                                    fill=False, color=&#34;red&#34;, linewidth=2, linestyle=&#34;--&#34;, 
+                                    zorder=2)
+            ax.add_patch(outer_circle)
+        
+        # Junction center point
+        ax.scatter([junction.cx], [junction.cz], color=&#34;black&#34;, s=30, zorder=3)
+        
+        # Filter gaze data for this junction
+        print(f&#34;[gaze_plot_debug] Junction {j_idx}: Looking for junction index {j_idx} in gaze_df&#34;)
+        print(f&#34;[gaze_plot_debug] Junction {j_idx}: Available junction indices in gaze_df: {sorted(gaze_df[&#39;junction&#39;].unique())}&#34;)
+        print(f&#34;[gaze_plot_debug] Junction {j_idx}: Total gaze_df rows: {len(gaze_df)}&#34;)
+        
+        # Handle individual junction data: if we only have data for one junction, use all the data regardless of junction index
+        available_junction_indices = sorted(gaze_df[&#39;junction&#39;].unique())
+        if len(available_junction_indices) == 1:
+            # Single junction data - use all data
+            junction_gaze = gaze_df.copy()
+            print(f&#34;[gaze_plot_debug] Junction {j_idx}: Single junction data detected, using all {len(junction_gaze)} rows&#34;)
+        else:
+            # Multi-junction data - filter by junction index
+            junction_gaze = gaze_df[gaze_df[&#34;junction&#34;] == j_idx]
+            print(f&#34;[gaze_plot_debug] Junction {j_idx}: Found {len(junction_gaze)} rows after filtering&#34;)
+        
+        # Drop unassigned/outlier branches to avoid confusing colors
+        if &#34;branch&#34; in junction_gaze.columns:
+            junction_gaze = junction_gaze.copy()
+            junction_gaze[&#34;branch&#34;] = pd.to_numeric(junction_gaze[&#34;branch&#34;], errors=&#34;coerce&#34;)
+            junction_gaze = junction_gaze.dropna(subset=[&#34;branch&#34;]).copy()
+            junction_gaze[&#34;branch&#34;] = junction_gaze[&#34;branch&#34;].astype(int)
+            junction_gaze = junction_gaze[junction_gaze[&#34;branch&#34;] &gt;= 0]
+            print(f&#34;[gaze_plot_debug] Junction {j_idx}: After branch filtering: {len(junction_gaze)} rows&#34;)
+        
+        # Debug: Check what gaze data we have
+        # Prefer user-provided label; otherwise use coordinates for clarity
+        label = None
+        try:
+            # junction_labels is passed from GUI; keep local if available
+            pass
+        except Exception:
+            pass
+        label_str = f&#34;Junction {j_idx}&#34;
+        if junction_labels is not None and j_idx &lt; len(junction_labels):
+            label_str = f&#34;Junction {junction_labels[j_idx]}&#34;
+        else:
+            label_str = f&#34;Junction ({junction.cx}, {junction.cz}, r={junction.r})&#34;
+        print(f&#34;[gaze_plot] {label_str}: {len(junction_gaze)} gaze records&#34;)
+        if len(junction_gaze) &gt; 0:
+            print(f&#34;[gaze_plot] Branches found: {sorted(junction_gaze[&#39;branch&#39;].unique())} for {label_str}&#34;)
+            print(f&#34;[gaze_plot] Sample head_yaw values: {junction_gaze[&#39;head_yaw&#39;].head().tolist()} at {label_str}&#34;)
+            print(f&#34;[gaze_plot] Sample intercept positions: x={junction_gaze[&#39;intercept_x&#39;].head().tolist()}, z={junction_gaze[&#39;intercept_z&#39;].head().tolist()} at {label_str}&#34;)
+            
+            # Debug: Show head_yaw values by branch
+            for branch in sorted(junction_gaze[&#39;branch&#39;].unique()):
+                branch_data = junction_gaze[junction_gaze[&#39;branch&#39;] == branch]
+                valid_head_yaw = branch_data[~np.isnan(branch_data[&#39;head_yaw&#39;])]
+                print(f&#34;[gaze_plot] Branch {int(branch)}: {len(valid_head_yaw)} valid head_yaw values out of {len(branch_data)} total at {label_str}&#34;)
+                if len(valid_head_yaw) &gt; 0:
+                    print(f&#34;[gaze_plot] Branch {int(branch)} head_yaw range: {valid_head_yaw[&#39;head_yaw&#39;].min():.1f}° to {valid_head_yaw[&#39;head_yaw&#39;].max():.1f}° at {label_str}&#34;)
+        
+        # Gaze arrows with scaling based on r_outer
+        cmap = plt.get_cmap(&#34;tab10&#34;)
+
+        # Use the original discover branch IDs directly for colors so they match the intercept plot
+        unique_branches = sorted(junction_gaze[&#34;branch&#34;].unique()) if len(junction_gaze) else []
+        branch_remap = {int(b): int(b) for b in unique_branches}
+        
+        # Scale arrow size and plot limits based on r_outer
+        if r_outer_list and j_idx &lt; len(r_outer_list):
+            r_outer = r_outer_list[j_idx]
+            arrow_scale = max(10, r_outer * 0.3)  # Scale arrows with r_outer
+            margin = max(50, r_outer * 1.5 + arrow_scale)  # Scale margin with r_outer + arrow length
+        else:
+            arrow_scale = 15
+            margin = 50
+        
+        print(f&#34;[gaze_plot] Arrow scale: {arrow_scale}, margin: {margin} at {label_str}&#34;)
+        
+        arrows_drawn = 0
+        from collections import defaultdict
+        arrows_by_branch = defaultdict(int)  # Count arrows by branch (after remap)
+        
+        # Optional consistency check vs centers (if provided)
+        mismatch_count = 0
+        checked = 0
+
+        for _, row in junction_gaze.iterrows():
+            if np.isnan(row[&#34;head_yaw&#34;]):
+                print(f&#34;[gaze_plot] Skipping NaN head_yaw for branch {row[&#39;branch&#39;]} at {label_str}&#34;)
+                continue
+            
+            # Use the actual intercept positions from the gaze DataFrame
+            # These should now be in the correct coordinate system
+            x = row[&#34;intercept_x&#34;]
+            z = row[&#34;intercept_z&#34;]
+            yaw = np.radians(row[&#34;head_yaw&#34;])
+            dx = arrow_scale * np.sin(yaw)
+            dz = arrow_scale * np.cos(yaw)
+            
+            original_branch = int(row[&#34;branch&#34;])
+            branch = branch_remap.get(original_branch, original_branch)
+            color = cmap(branch % 10)
+            
+            # Debug: Show arrow details for first few arrows of each branch
+            if arrows_by_branch[branch] &lt; 3:  # Show first 3 arrows of each branch
+                print(f&#34;[gaze_plot] Branch {original_branch}→{branch} arrow {arrows_by_branch[branch]+1}: pos=({x:.1f}, {z:.1f}), yaw={row[&#39;head_yaw&#39;]:.1f}°, dx={dx:.1f}, dz={dz:.1f}, color={color}&#34;)
+            
+            ax.arrow(x, z, dx, dz, head_width=arrow_scale*0.15, head_length=arrow_scale*0.2, 
+                    fc=color, ec=color, alpha=0.7, zorder=4, linewidth=1)
+            arrows_drawn += 1
+            arrows_by_branch[branch] += 1
+            
+            # Compare assignment to nearest center (if centers available)
+            if centers_list is not None and j_idx &lt; len(centers_list) and centers_list[j_idx] is not None:
+                c = centers_list[j_idx]
+                if c.size &gt; 0 and not (np.isnan(x) or np.isnan(z)):
+                    vx = x - junction.cx; vz = z - junction.cz
+                    vv = np.array([vx, vz], dtype=float)
+                    n = np.linalg.norm(vv)
+                    if n &gt; 1e-9:
+                        vv = vv / n
+                        dots = c @ vv
+                        nearest = int(np.argmax(dots))
+                        checked += 1
+                        if nearest != original_branch:
+                            mismatch_count += 1
+        
+            print(f&#34;[gaze_plot] Drew {arrows_drawn} arrows for {label_str}&#34;)
+            print(f&#34;[gaze_plot] Arrows by branch: {arrows_by_branch} at {label_str}&#34;)
+        
+        if checked &gt; 0 and mismatch_count &gt; 0:
+            rate = mismatch_count / checked * 100.0
+            print(f&#34;[gaze_plot] Branch-vs-center mismatch at {label_str}: {mismatch_count}/{checked} ({rate:.1f}%)&#34;)
+
+        # Set equal aspect and labels
+        ax.set_aspect(&#34;equal&#34;)
+        ax.set_xlabel(&#34;X&#34;)
+        ax.set_ylabel(&#34;Z&#34;)
+        if junction_labels and j_idx &lt; len(junction_labels):
+            this_label = junction_labels[j_idx]
+        else:
+            this_label = f&#34;J{j_idx}&#34;
+        ax.set_title(f&#34;{this_label}: Head Directions&#34;)
+        
+        # Set axis limits around junction with proper scaling
+        ax.set_xlim(junction.cx - margin, junction.cx + margin)
+        ax.set_ylim(junction.cz - margin, junction.cz + margin)
+        
+        # Add legend for branches (show original branch ids) in numeric order
+        branch_handles = []
+        legend_order = sorted([int(b) for b in unique_branches])
+        for original_branch in legend_order:
+            color = cmap(int(branch_remap[int(original_branch)]) % 10)
+            branch_handles.append(plt.Line2D([0], [0], color=color, linewidth=3, 
+                                           label=f&#34;Branch {int(original_branch)}&#34;))
+        if branch_handles:
+            ax.legend(handles=branch_handles, loc=&#34;upper right&#34;)
+    
+    # Add minimap showing overall view
+    if len(junctions) &gt; 0:
+        # Plot all trajectories in mini-map
+        for traj in trajectories:
+            mini_ax.plot(traj.x, traj.z, color=&#34;0.7&#34;, linewidth=0.3, alpha=0.2)
+        
+        # Plot all junctions
+        for i, junc in enumerate(junctions):
+            circle = plt.Circle((junc.cx, junc.cz), junc.r, fill=False, 
+                              color=&#39;red&#39;, linewidth=2, alpha=0.8)
+            mini_ax.add_patch(circle)
+            mini_ax.scatter([junc.cx], [junc.cz], c=&#39;red&#39;, s=30, marker=&#39;o&#39;, zorder=5)
+            
+            # Add junction labels
+            label_txt = junction_labels[i] if junction_labels and i &lt; len(junction_labels) else f&#39;J{i}&#39;
+            mini_ax.text(junc.cx, junc.cz + junc.r + 10, label_txt, 
+                        ha=&#39;center&#39;, va=&#39;bottom&#39;, fontsize=8, fontweight=&#39;bold&#39;)
+        
+        # Add rectangles showing the areas shown in main plots
+        for i, ax in enumerate(axes):
+            main_xlim = ax.get_xlim()
+            main_ylim = ax.get_ylim()
+            rect = plt.Rectangle((main_xlim[0], main_ylim[0]), 
+                               main_xlim[1] - main_xlim[0], 
+                               main_ylim[1] - main_ylim[0],
+                               fill=False, color=&#39;blue&#39;, linewidth=1, linestyle=&#39;--&#39;, alpha=0.6)
+            mini_ax.add_patch(rect)
+        
+        mini_ax.set_aspect(&#39;equal&#39;)
+        mini_ax.set_xlabel(&#39;X (Overall View)&#39;)
+        mini_ax.set_ylabel(&#39;Z (Overall View)&#39;)
+        mini_ax.set_title(&#39;Mini-map: All Junctions and Trajectories&#39;)
+        mini_ax.grid(True, alpha=0.3)
+        
+        # Set reasonable limits for mini-map
+        all_x = np.concatenate([traj.x for traj in trajectories])
+        all_z = np.concatenate([traj.z for traj in trajectories])
+        
+        # Handle NaN values in coordinates
+        valid_x = all_x[~np.isnan(all_x)]
+        valid_z = all_z[~np.isnan(all_z)]
+        
+        if len(valid_x) &gt; 0 and len(valid_z) &gt; 0:
+            x_margin = (np.max(valid_x) - np.min(valid_x)) * 0.1
+            z_margin = (np.max(valid_z) - np.min(valid_z)) * 0.1
+            mini_ax.set_xlim(np.min(valid_x) - x_margin, np.max(valid_x) + x_margin)
+            mini_ax.set_ylim(np.min(valid_z) - z_margin, np.max(valid_z) + z_margin)
+        else:
+            # Fallback: set reasonable default limits
+            mini_ax.set_xlim(-100, 100)
+            mini_ax.set_ylim(-100, 100)
+    
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
+    plt.close()
+
+
+def plot_physiological_by_branch(
+    physio_df: pd.DataFrame,
+    out_path: str = &#34;Physiological_Analysis.png&#34;
+) -&gt; None:
+    &#34;&#34;&#34;Plot heart rate and pupil dilation changes by branch choice.&#34;&#34;&#34;
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # Heart rate changes by branch
+    hr_data = physio_df.dropna(subset=[&#34;heart_rate_change&#34;])
+    if len(hr_data) &gt; 0:
+        branches = sorted(hr_data[&#34;branch&#34;].unique())
+        hr_by_branch = [hr_data[hr_data[&#34;branch&#34;] == b][&#34;heart_rate_change&#34;].values for b in branches]
+        
+        ax1.boxplot(hr_by_branch, labels=[f&#34;Branch {b}&#34; for b in branches])
+        ax1.set_ylabel(&#34;Heart Rate Change (bpm)&#34;)
+        ax1.set_title(&#34;Heart Rate Change at Decision Points\n(Baseline: Normal navigation 2-5s before junction entry)&#34;)
+        ax1.grid(True, alpha=0.3)
+    
+    # Pupil dilation changes by branch
+    pupil_data = physio_df.dropna(subset=[&#34;pupil_change&#34;])
+    if len(pupil_data) &gt; 0:
+        branches = sorted(pupil_data[&#34;branch&#34;].unique())
+        pupil_by_branch = [pupil_data[pupil_data[&#34;branch&#34;] == b][&#34;pupil_change&#34;].values for b in branches]
+        
+        ax2.boxplot(pupil_by_branch, labels=[f&#34;Branch {b}&#34; for b in branches])
+        ax2.set_ylabel(&#34;Pupil Dilation Change (mm)&#34;)
+        ax2.set_title(&#34;Pupil Dilation Change at Decision Points\n(Baseline: Normal navigation 2-5s before junction entry)&#34;)
+        ax2.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
+    plt.close()
+
+
+def plot_pupil_trajectory_analysis(
+    pupil_df: pd.DataFrame,
+    out_path: str = &#34;Pupil_Trajectory_Analysis.png&#34;
+) -&gt; None:
+    &#34;&#34;&#34;Plot pupil dilation trajectory analysis by junction.&#34;&#34;&#34;
+    
+    junctions = sorted(pupil_df[&#34;junction&#34;].unique())
+    n_junctions = len(junctions)
+    
+    fig, axes = plt.subplots(1, n_junctions, figsize=(5*n_junctions, 5))
+    if n_junctions == 1:
+        axes = [axes]
+    
+    for j_idx, ax in enumerate(axes):
+        junction_data = pupil_df[pupil_df[&#34;junction&#34;] == j_idx]
+        
+        if len(junction_data) == 0:
+            ax.set_title(f&#34;Junction {j_idx}: No Data&#34;)
+            continue
+        
+        # Box plot of pupil changes by branch
+        branches = sorted(junction_data[&#34;branch&#34;].unique())
+        pupil_by_branch = [junction_data[junction_data[&#34;branch&#34;] == b][&#34;pupil_change&#34;].values for b in branches]
+        
+        ax.boxplot(pupil_by_branch, labels=[f&#34;Branch {b}&#34; for b in branches])
+        ax.set_ylabel(&#34;Pupil Dilation Change (mm)&#34;)
+        ax.set_title(f&#34;Junction {j_idx}: Pupil Dilation Changes\n(Baseline: Normal navigation 2-5s before junction entry)&#34;)
+        ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
+    plt.close()
+
+
+def gaze_movement_consistency_report(gaze_df: pd.DataFrame) -&gt; Dict[str, float]:
+    &#34;&#34;&#34;Generate summary statistics for gaze-movement alignment.&#34;&#34;&#34;
+    
+    # Check if DataFrame is empty or missing required columns
+    if len(gaze_df) == 0:
+        return {&#34;error&#34;: &#34;Empty gaze DataFrame&#34;, &#34;total_decisions&#34;: 0}
+    
+    if &#34;yaw_difference&#34; not in gaze_df.columns:
+        return {
+            &#34;error&#34;: &#34;Missing yaw_difference column&#34;, 
+            &#34;total_decisions&#34;: len(gaze_df),
+            &#34;available_columns&#34;: list(gaze_df.columns)
+        }
+    
+    valid_data = gaze_df.dropna(subset=[&#34;yaw_difference&#34;])
+    
+    if len(valid_data) == 0:
+        return {&#34;error&#34;: &#34;No valid gaze-movement data&#34;, &#34;total_decisions&#34;: len(gaze_df)}
+    
+    # Alignment metrics
+    mean_abs_diff = np.mean(np.abs(valid_data[&#34;yaw_difference&#34;]))
+    aligned_threshold = 30  # degrees
+    aligned_pct = np.mean(np.abs(valid_data[&#34;yaw_difference&#34;]) &lt; aligned_threshold) * 100
+    
+    # By branch analysis
+    branch_consistency = {}
+    for branch in sorted(valid_data[&#34;branch&#34;].unique()):
+        branch_data = valid_data[valid_data[&#34;branch&#34;] == branch]
+        branch_consistency[f&#34;branch_{branch}_alignment&#34;] = np.mean(np.abs(branch_data[&#34;yaw_difference&#34;]))
+    
+    return {
+        &#34;mean_absolute_yaw_difference&#34;: mean_abs_diff,
+        &#34;aligned_percentage&#34;: aligned_pct,
+        &#34;total_decisions&#34;: len(valid_data),
+        **branch_consistency
+    }
+
+
+def create_pupil_dilation_heatmap(
+    trajectories: Sequence[Trajectory],
+    junctions: Optional[Sequence[Circle]] = None,
+    grid_size: Optional[int] = None,
+    cell_size: Optional[float] = None,
+    normalization: str = &#34;relative&#34;,
+    aggregation: str = &#34;mean&#34;,
+    x_bounds: Optional[Tuple[float, float]] = None,
+    y_bounds: Optional[Tuple[float, float]] = None
+) -&gt; Dict[str, any]:
+    &#34;&#34;&#34;
+    Create spatial heatmap of pupil dilation changes.
+    
+    Args:
+        trajectories: List of trajectory objects with pupil data
+        junctions: Optional list of junctions to overlay
+        grid_size: Number of grid cells per dimension (1-100)
+        normalization: &#34;relative&#34; (% change from baseline) or &#34;zscore&#34; (standard deviations)
+        aggregation: &#34;mean&#34; or &#34;max&#34; for combining values in bins
+        x_bounds: Optional (min, max) for x-axis, auto-calculated if None
+        y_bounds: Optional (min, max) for z-axis, auto-calculated if None
+    
+    Returns:
+        Dictionary containing:
+        - heatmap: 2D numpy array of pupil values (masked where no data)
+        - x_edges: Grid x boundaries
+        - z_edges: Grid z boundaries
+        - sample_counts: 2D array of sample counts per bin
+        - normalization_used: str
+        - aggregation_used: str
+    &#34;&#34;&#34;
+    print(f&#34;[heatmap] Creating pupil dilation heatmap with grid_size={grid_size}, normalization={normalization}&#34;)
+    
+    # Debug: Check trajectory data availability
+    print(f&#34;[heatmap_debug] Processing {len(trajectories)} trajectories&#34;)
+    pupil_data_count = 0
+    for i, traj in enumerate(trajectories[:5]):  # Check first 5 trajectories for better sampling
+        has_pupil_l = traj.pupil_l is not None
+        has_pupil_r = traj.pupil_r is not None
+        print(f&#34;[heatmap_debug] Trajectory {i}: pupil_l={has_pupil_l}, pupil_r={has_pupil_r}&#34;)
+        if has_pupil_l and has_pupil_r:
+            pupil_data_count += 1
+            print(f&#34;[heatmap_debug] Trajectory {i}: pupil_l length={len(traj.pupil_l)}, pupil_r length={len(traj.pupil_r)}&#34;)
+            if len(traj.pupil_l) &gt; 0:
+                print(f&#34;[heatmap_debug] Trajectory {i}: pupil_l sample values={traj.pupil_l[:5]}&#34;)
+    
+    print(f&#34;[heatmap_debug] {pupil_data_count}/{min(5, len(trajectories))} sampled trajectories have pupil data&#34;)
+    print(f&#34;[heatmap_debug] Note: This is a sample check - all {len(trajectories)} trajectories will be processed&#34;)
+    
+    # Collect all pupil data with spatial coordinates
+    all_x = []
+    all_z = []
+    all_pupil_changes = []
+    
+    valid_traj_count = 0
+    
+    for traj in trajectories:
+        # Check if trajectory has pupil data
+        if traj.pupil_l is None or traj.pupil_r is None:
+            continue
+        
+        # Calculate average pupil size
+        pupil_avg = (traj.pupil_l + traj.pupil_r) / 2.0
+        
+        # Filter out NaN values
+        valid_mask = ~(np.isnan(pupil_avg) | np.isnan(traj.x) | np.isnan(traj.z))
+        if not np.any(valid_mask):
+            continue
+        
+        pupil_valid = pupil_avg[valid_mask]
+        x_valid = traj.x[valid_mask]
+        z_valid = traj.z[valid_mask]
+        
+        if len(pupil_valid) &lt; 2:
+            continue
+        
+        # Calculate baseline (trajectory mean)
+        baseline = np.nanmean(pupil_valid)
+        
+        if baseline == 0 or np.isnan(baseline):
+            continue
+        
+        # Calculate pupil changes based on normalization method
+        if normalization == &#34;relative&#34;:
+            # Relative change as percentage
+            pupil_changes = ((pupil_valid - baseline) / baseline) * 100.0
+        elif normalization == &#34;zscore&#34;:
+            # Z-score normalization
+            std = np.nanstd(pupil_valid)
+            if std == 0 or np.isnan(std):
+                continue
+            pupil_changes = (pupil_valid - baseline) / std
+        else:
+            raise ValueError(f&#34;Unknown normalization method: {normalization}&#34;)
+        
+        # Add to collection
+        all_x.extend(x_valid)
+        all_z.extend(z_valid)
+        all_pupil_changes.extend(pupil_changes)
+        valid_traj_count += 1
+    
+    print(f&#34;[heatmap] Processed {valid_traj_count}/{len(trajectories)} trajectories with valid pupil data&#34;)
+    print(f&#34;[heatmap] Total data points: {len(all_x)}&#34;)
+    
+    if len(all_x) == 0:
+        print(&#34;[heatmap] WARNING: No valid pupil data found&#34;)
+        return {
+            &#34;heatmap&#34;: None,
+            &#34;x_edges&#34;: None,
+            &#34;z_edges&#34;: None,
+            &#34;sample_counts&#34;: None,
+            &#34;normalization_used&#34;: normalization,
+            &#34;aggregation_used&#34;: aggregation,
+            &#34;error&#34;: &#34;No valid pupil data&#34;
+        }
+    
+    # Convert to numpy arrays
+    all_x = np.array(all_x)
+    all_z = np.array(all_z)
+    all_pupil_changes = np.array(all_pupil_changes)
+    
+    # Determine bounds
+    if x_bounds is None:
+        x_min, x_max = np.min(all_x), np.max(all_x)
+        # Add 5% padding
+        x_padding = (x_max - x_min) * 0.05
+        x_bounds = (x_min - x_padding, x_max + x_padding)
+        print(f&#34;[heatmap] Calculated x_bounds from data: ({x_bounds[0]:.1f}, {x_bounds[1]:.1f})&#34;)
+    else:
+        print(f&#34;[heatmap] Using provided x_bounds: ({x_bounds[0]:.1f}, {x_bounds[1]:.1f})&#34;)
+    
+    if y_bounds is None:
+        z_min, z_max = np.min(all_z), np.max(all_z)
+        # Add 5% padding
+        z_padding = (z_max - z_min) * 0.05
+        y_bounds = (z_min - z_padding, z_max + z_padding)
+        print(f&#34;[heatmap] Calculated y_bounds from data: ({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+    else:
+        print(f&#34;[heatmap] Using provided y_bounds: ({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+    
+    # Calculate grid_size from cell_size if provided
+    if cell_size is not None:
+        x_range = x_bounds[1] - x_bounds[0]
+        z_range = y_bounds[1] - y_bounds[0]
+        # Ensure minimum grid size for visibility
+        grid_size = max(5, int(max(x_range, z_range) / cell_size))
+        print(f&#34;[heatmap] Calculated grid_size={grid_size} from cell_size={cell_size} (x_range={x_range:.1f}, z_range={z_range:.1f})&#34;)
+        print(f&#34;[heatmap] Using bounds: x=({x_bounds[0]:.1f}, {x_bounds[1]:.1f}), z=({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+    elif grid_size is None:
+        grid_size = 10  # Default fallback
+        print(f&#34;[heatmap] Using default grid_size={grid_size}&#34;)
+    
+    # Create grid edges
+    x_edges = np.linspace(x_bounds[0], x_bounds[1], grid_size + 1)
+    z_edges = np.linspace(y_bounds[0], y_bounds[1], grid_size + 1)
+    
+    # Bin the data - first get counts
+    sample_counts, _, _ = np.histogram2d(
+        all_x, all_z,
+        bins=[x_edges, z_edges]
+    )
+    
+    # Create heatmap based on aggregation method
+    if aggregation == &#34;mean&#34;:
+        # Calculate sum for each bin, then divide by count
+        pupil_sum, _, _ = np.histogram2d(
+            all_x, all_z,
+            bins=[x_edges, z_edges],
+            weights=all_pupil_changes
+        )
+        
+        # Avoid division by zero with better handling
+        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+            heatmap = np.where(sample_counts &gt; 0, pupil_sum / sample_counts, np.nan)
+        
+    elif aggregation == &#34;max&#34;:
+        # Use maximum absolute change in each bin
+        heatmap = np.full((grid_size, grid_size), np.nan)
+        
+        for i in range(grid_size):
+            for j in range(grid_size):
+                # Find points in this bin
+                mask = (
+                    (all_x &gt;= x_edges[i]) &amp; (all_x &lt; x_edges[i+1]) &amp;
+                    (all_z &gt;= z_edges[j]) &amp; (all_z &lt; z_edges[j+1])
+                )
+                
+                if np.any(mask):
+                    bin_values = all_pupil_changes[mask]
+                    # Take value with maximum absolute magnitude
+                    abs_max_idx = np.argmax(np.abs(bin_values))
+                    heatmap[i, j] = bin_values[abs_max_idx]
+    else:
+        raise ValueError(f&#34;Unknown aggregation method: {aggregation}&#34;)
+    
+    # Transpose to match imshow convention (z is first axis)
+    heatmap = heatmap.T
+    sample_counts = sample_counts.T
+    
+    print(f&#34;[heatmap] Heatmap created: {grid_size}x{grid_size} grid&#34;)
+    print(f&#34;[heatmap] Valid bins: {np.sum(~np.isnan(heatmap))}/{grid_size*grid_size}&#34;)
+    print(f&#34;[heatmap] Value range: {np.nanmin(heatmap):.2f} to {np.nanmax(heatmap):.2f}&#34;)
+    
+    return {
+        &#34;heatmap&#34;: heatmap,
+        &#34;x_edges&#34;: x_edges,
+        &#34;z_edges&#34;: z_edges,
+        &#34;sample_counts&#34;: sample_counts,
+        &#34;normalization_used&#34;: normalization,
+        &#34;aggregation_used&#34;: aggregation,
+        &#34;valid_trajectories&#34;: valid_traj_count,
+        &#34;total_points&#34;: len(all_x)
+    }
+
+
+def plot_pupil_dilation_heatmap(
+    heatmap_data: Dict[str, any],
+    junctions: Optional[Sequence[Circle]] = None,
+    trajectories: Optional[Sequence[Trajectory]] = None,
+    all_trajectories: Optional[Sequence[Trajectory]] = None,
+    title: str = &#34;Pupil Dilation Heatmap&#34;,
+    out_path: Optional[str] = None,
+    show_sample_counts: bool = False,
+    show_minimap: bool = True,
+    vmin: Optional[float] = None,
+    vmax: Optional[float] = None
+) -&gt; plt.Figure:
+    &#34;&#34;&#34;
+    Plot pupil dilation heatmap with overlays.
+    
+    Args:
+        heatmap_data: Dictionary from create_pupil_dilation_heatmap()
+        junctions: Optional list of junctions to overlay
+        trajectories: Optional list of trajectories to show as background
+        title: Plot title
+        out_path: Optional path to save figure
+        show_sample_counts: If True, annotate bins with sample counts
+        show_minimap: If True, show minimap (default True, disable for per-junction plots)
+    
+    Returns:
+        Matplotlib figure
+    &#34;&#34;&#34;
+    # Check for errors
+    if heatmap_data.get(&#34;error&#34;):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.text(0.5, 0.5, f&#34;Error: {heatmap_data[&#39;error&#39;]}&#34;, 
+                ha=&#39;center&#39;, va=&#39;center&#39;, fontsize=14)
+        ax.set_title(title)
+        return fig
+    
+    heatmap = heatmap_data[&#34;heatmap&#34;]
+    x_edges = heatmap_data[&#34;x_edges&#34;]
+    z_edges = heatmap_data[&#34;z_edges&#34;]
+    sample_counts = heatmap_data[&#34;sample_counts&#34;]
+    normalization = heatmap_data[&#34;normalization_used&#34;]
+    
+    # Create figure with main plot and optional minimap
+    if show_minimap:
+        fig = plt.figure(figsize=(16, 8))
+        gs = fig.add_gridspec(1, 5, width_ratios=[4, 0.2, 1, 0.2, 0.3], wspace=0.4)
+        ax_main = fig.add_subplot(gs[0, 0])
+        ax_minimap = fig.add_subplot(gs[0, 2])
+        ax_colorbar = fig.add_subplot(gs[0, 4])
+    else:
+        fig = plt.figure(figsize=(12, 9))
+        gs = fig.add_gridspec(1, 2, width_ratios=[5, 0.3], wspace=0.15)
+        ax_main = fig.add_subplot(gs[0, 0])
+        ax_colorbar = fig.add_subplot(gs[0, 1])
+        ax_minimap = None
+    
+    # Determine colormap scale
+    if vmin is not None and vmax is not None:
+        # Use provided consistent scaling
+        pass
+    else:
+        # Use dynamic scaling (fallback)
+        # Ensure heatmap is a numpy array
+        if not isinstance(heatmap, np.ndarray):
+            heatmap = np.array(heatmap)
+        valid_values = heatmap[~np.isnan(heatmap)]
+        if len(valid_values) == 0:
+            vmin, vmax = -10, 10
+        else:
+            # For relative changes, center at 0
+            if normalization == &#34;relative&#34;:
+                abs_max = np.max(np.abs(valid_values))
+                # Ensure minimum range for visibility
+                min_range = 1.0  # Minimum 1% range
+                abs_max = max(abs_max, min_range)
+                vmin, vmax = -abs_max, abs_max
+                print(f&#34;[plot_debug] Dynamic scaling: abs_max={abs_max:.2f}, range=[{vmin:.2f}, {vmax:.2f}]&#34;)
+            else:  # zscore
+                vmin, vmax = np.min(valid_values), np.max(valid_values)
+    
+    # Plot trajectories as background (before heatmap for context)
+    if trajectories:
+        for traj in trajectories:
+            if hasattr(traj, &#39;x&#39;) and hasattr(traj, &#39;z&#39;):
+                # Plot with moderate alpha for visible background
+                ax_main.plot(traj.x, traj.z, color=&#39;gray&#39;, alpha=0.35, linewidth=0.8, zorder=1)
+    
+    # Debug: Check heatmap data
+    # Ensure heatmap is a numpy array
+    if not isinstance(heatmap, np.ndarray):
+        heatmap = np.array(heatmap)
+    print(f&#34;[plot_debug] Heatmap shape: {heatmap.shape}&#34;)
+    print(f&#34;[plot_debug] Heatmap bounds: x=({x_edges[0]:.1f}, {x_edges[-1]:.1f}), z=({z_edges[0]:.1f}, {z_edges[-1]:.1f})&#34;)
+    print(f&#34;[plot_debug] Valid heatmap values: {np.sum(~np.isnan(heatmap))}/{heatmap.size}&#34;)
+    if np.sum(~np.isnan(heatmap)) &gt; 0:
+        print(f&#34;[plot_debug] Heatmap value range: {np.nanmin(heatmap):.2f} to {np.nanmax(heatmap):.2f}&#34;)
+        print(f&#34;[plot_debug] Color scale: vmin={vmin}, vmax={vmax}&#34;)
+    else:
+        print(f&#34;[plot_debug] WARNING: No valid heatmap data found!&#34;)
+    
+    # Plot main heatmap using pcolormesh for discrete grid data
+    im = ax_main.pcolormesh(
+        x_edges, z_edges, heatmap,
+        cmap=&#39;RdBu_r&#39;,  # Red for dilation, blue for constriction
+        vmin=vmin,
+        vmax=vmax,
+        shading=&#39;flat&#39;,  # No interpolation between cells
+        alpha=0.85,  # Slightly transparent to show trajectories
+        zorder=2
+    )
+    
+    # CRITICAL FIX: Set axis limits to match heatmap bounds to ensure proper zoom
+    ax_main.set_xlim(x_edges[0], x_edges[-1])
+    ax_main.set_ylim(z_edges[0], z_edges[-1])
+    
+    # Add explicit grid lines to make discrete cells more visible
+    ax_main.grid(True, linestyle=&#39;:&#39;, alpha=0.3, color=&#39;black&#39;, linewidth=0.5)
+    
+    # Add sample count annotations if requested
+    if show_sample_counts:
+        grid_size = heatmap.shape[0]
+        x_centers = (x_edges[:-1] + x_edges[1:]) / 2
+        z_centers = (z_edges[:-1] + z_edges[1:]) / 2
+        
+        for i in range(grid_size):
+            for j in range(grid_size):
+                count = int(sample_counts[i, j])
+                if count &gt; 0:
+                    # Only show if count is significant
+                    if count &gt;= 5:
+                        ax_main.text(x_centers[j], z_centers[i], str(count),
+                                   ha=&#39;center&#39;, va=&#39;center&#39;, fontsize=6,
+                                   color=&#39;black&#39; if abs(heatmap[i, j]) &lt; (vmax-vmin)/2 else &#39;white&#39;)
+    
+    # Overlay junctions (on top of everything)
+    if junctions:
+        for idx, junc in enumerate(junctions):
+            circle = plt.Circle((junc.cx, junc.cz), junc.r, 
+                              fill=False, edgecolor=&#39;green&#39;, linewidth=2, linestyle=&#39;--&#39;, zorder=5)
+            ax_main.add_patch(circle)
+            
+            # Use the correct junction index from heatmap data if available
+            junction_label_idx = idx
+            if &#39;junction_idx&#39; in heatmap_data:
+                junction_label_idx = heatmap_data[&#39;junction_idx&#39;]
+                print(f&#34;[plot_debug] Using junction index from heatmap data: {junction_label_idx}&#34;)
+            else:
+                print(f&#34;[plot_debug] Using local junction index: {idx}&#34;)
+            
+            ax_main.text(junc.cx, junc.cz, f&#39;J{junction_label_idx}&#39;, 
+                        ha=&#39;center&#39;, va=&#39;center&#39;, fontsize=10, 
+                        color=&#39;green&#39;, weight=&#39;bold&#39;, zorder=6,
+                        bbox=dict(boxstyle=&#39;circle,pad=0.1&#39;, facecolor=&#39;white&#39;, edgecolor=&#39;green&#39;))
+            
+            # Add junction radius display
+            radius_text = f&#39;r={junc.r:.1f}&#39;
+            ax_main.text(junc.cx, junc.cz + junc.r + 5, radius_text,
+                        ha=&#39;center&#39;, va=&#39;bottom&#39;, fontsize=8,
+                        color=&#39;green&#39;, weight=&#39;bold&#39;, zorder=6,
+                        bbox=dict(boxstyle=&#39;round,pad=0.2&#39;, facecolor=&#39;white&#39;, edgecolor=&#39;green&#39;, alpha=0.8))
+    
+    ax_main.set_xlabel(&#39;X Position&#39;, fontsize=12)
+    ax_main.set_ylabel(&#39;Z Position&#39;, fontsize=12)
+    ax_main.set_title(title, fontsize=14, weight=&#39;bold&#39;)
+    ax_main.grid(True, alpha=0.3, linestyle=&#39;:&#39;)
+    
+    # Add colorbar
+    if show_minimap:
+        cbar = plt.colorbar(im, cax=ax_colorbar, orientation=&#39;vertical&#39;)
+    else:
+        cbar = plt.colorbar(im, cax=ax_colorbar, orientation=&#39;vertical&#39;)
+    
+    if normalization == &#34;relative&#34;:
+        cbar.set_label(&#39;Pupil Dilation Change (%)&#39;, fontsize=11)
+        
+        # Create consistent colorbar labels: 0, 20, 40, &gt;60 (and negative equivalents)
+        print(f&#34;[colorbar_debug] vmin={vmin}, vmax={vmax}&#34;)
+        
+        # Use consistent scale for all heatmaps to improve comparability
+        # Normal pupil dilation range: ±60%, outliers get same color
+        ticks = [-60, -40, -20, 0, 20, 40, 60]
+        tick_labels = [&#39;&lt;-60&#39;, &#39;-40&#39;, &#39;-20&#39;, &#39;0&#39;, &#39;20&#39;, &#39;40&#39;, &#39;&gt;60&#39;]
+        
+        print(f&#34;[colorbar_debug] Using ticks: {ticks}&#34;)
+        print(f&#34;[colorbar_debug] Using labels: {tick_labels}&#34;)
+        
+        # Set consistent color scale limits to ensure same colors across all plots
+        im.set_clim(-60, 60)
+        
+        # Set ticks and labels
+        cbar.set_ticks(ticks)
+        cbar.set_ticklabels(tick_labels)
+    else:
+        cbar.set_label(&#39;Pupil Dilation (Z-score)&#39;, fontsize=11)
+    
+    # Create minimap (overview of all data) - only if requested
+    if show_minimap and ax_minimap is not None:
+        # Plot trajectories in minimap (use all_trajectories if available for full map view)
+        minimap_trajectories = all_trajectories if all_trajectories is not None else trajectories
+        if minimap_trajectories:
+            for traj in minimap_trajectories:
+                if hasattr(traj, &#39;x&#39;) and hasattr(traj, &#39;z&#39;):
+                    ax_minimap.plot(traj.x, traj.z, color=&#39;gray&#39;, alpha=0.4, linewidth=0.5)
+        
+        # Overlay junctions on minimap (no heatmap for global view)
+        if junctions:
+            for idx, junc in enumerate(junctions):
+                circle = plt.Circle((junc.cx, junc.cz), junc.r, 
+                                  fill=False, edgecolor=&#39;red&#39;, linewidth=1, zorder=10)
+                ax_minimap.add_patch(circle)
+                ax_minimap.plot(junc.cx, junc.cz, &#39;ro&#39;, markersize=4, zorder=10)
+        
+        ax_minimap.set_title(&#39;Overview&#39;, fontsize=10)
+        ax_minimap.set_xticks([])
+        ax_minimap.set_yticks([])
+        ax_minimap.set_aspect(&#39;equal&#39;)
+        
+        # CRITICAL FIX: Set minimap limits to show full data extent, not zoomed view
+        # For junction heatmaps, we need to show the full map extent
+        if minimap_trajectories:
+            all_x_coords = []
+            all_z_coords = []
+            for traj in minimap_trajectories:
+                if hasattr(traj, &#39;x&#39;) and hasattr(traj, &#39;z&#39;):
+                    all_x_coords.extend(traj.x)
+                    all_z_coords.extend(traj.z)
+            
+            if all_x_coords and all_z_coords:
+                x_margin = (max(all_x_coords) - min(all_x_coords)) * 0.1
+                z_margin = (max(all_z_coords) - min(all_z_coords)) * 0.1
+                ax_minimap.set_xlim(min(all_x_coords) - x_margin, max(all_x_coords) + x_margin)
+                ax_minimap.set_ylim(min(all_z_coords) - z_margin, max(all_z_coords) + z_margin)
+        
+        # Add statistics text below minimap
+        stats_text = f&#34;Valid bins: {np.sum(~np.isnan(heatmap))}/{heatmap.size}\n&#34;
+        stats_text += f&#34;Trajectories: {heatmap_data[&#39;valid_trajectories&#39;]}\n&#34;
+        stats_text += f&#34;Data points: {heatmap_data[&#39;total_points&#39;]}&#34;
+        
+        ax_minimap.text(0.5, -0.15, stats_text, fontsize=8, 
+                       ha=&#39;center&#39;, va=&#39;top&#39;, transform=ax_minimap.transAxes,
+                       bbox=dict(boxstyle=&#39;round&#39;, facecolor=&#39;wheat&#39;, alpha=0.5))
+    
+    plt.tight_layout()
+    
+    if out_path:
+        plt.savefig(out_path, dpi=150, bbox_inches=&#39;tight&#39;)
+        print(f&#34;[heatmap] Saved plot to {out_path}&#34;)
+    
+    return fig
+
+
+def get_consistent_pupil_scaling(heatmap_data_list, normalization=&#34;relative&#34;):
+    &#34;&#34;&#34;
+    Get consistent color scaling for pupil dilation heatmaps across all plots.
+    
+    Args:
+        heatmap_data_list: List of heatmap data dictionaries
+        normalization: &#34;relative&#34; or &#34;zscore&#34;
+    
+    Returns:
+        tuple: (vmin, vmax) for consistent scaling
+    &#34;&#34;&#34;
+    all_values = []
+    
+    # Collect all valid values from all heatmaps
+    for heatmap_data in heatmap_data_list:
+        if heatmap_data and &#39;heatmap&#39; in heatmap_data and heatmap_data[&#39;heatmap&#39;] is not None:
+            heatmap = heatmap_data[&#39;heatmap&#39;]
+            # Ensure heatmap is a numpy array
+            if not isinstance(heatmap, np.ndarray):
+                heatmap = np.array(heatmap)
+            valid_values = heatmap[~np.isnan(heatmap)]
+            all_values.extend(valid_values)
+    
+    if len(all_values) == 0:
+        return -10, 10  # Default fallback
+    
+    all_values = np.array(all_values)
+    
+    if normalization == &#34;relative&#34;:
+        # For relative changes, use consistent percentage-based scaling
+        # Cap extreme values but allow strong colors for outliers
+        abs_max = np.max(np.abs(all_values))
+        
+        # Use realistic limits for pupil dilation changes based on medical research
+        # Normal pupil dilation changes are typically 5-25% in most situations
+        if abs_max &lt;= 5:
+            vmin, vmax = -5, 5
+        elif abs_max &lt;= 10:
+            vmin, vmax = -10, 10
+        elif abs_max &lt;= 25:
+            vmin, vmax = -25, 25
+        elif abs_max &lt;= 50:
+            vmin, vmax = -50, 50
+        else:
+            # For extreme values (&gt;50%), cap at 60% to accommodate clipping labels
+            vmin, vmax = -60, 60
+            print(f&#34;[scaling_debug] Extreme values detected (abs_max={abs_max:.1f}%), capping at ±60%&#34;)
+    else:  # zscore
+        # For z-score, use standard deviation-based scaling
+        mean_val = np.mean(all_values)
+        std_val = np.std(all_values)
+        vmin = mean_val - 3 * std_val
+        vmax = mean_val + 3 * std_val
+    
+    print(f&#34;[scaling_debug] Final scaling: vmin={vmin}, vmax={vmax}&#34;)
+    return vmin, vmax
+
+
+def create_per_junction_pupil_heatmap(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    r_outer_list: Optional[Sequence[float]] = None,
+    grid_size: Optional[int] = None,
+    cell_size: Optional[float] = None,
+    normalization: str = &#34;relative&#34;,
+    base_index: int = 0,
+) -&gt; Dict[int, Dict[str, any]]:
+    &#34;&#34;&#34;
+    Create focused heatmaps for each junction separately.
+    
+    Args:
+        trajectories: List of trajectory objects with pupil data
+        junctions: List of junction circles
+        r_outer_list: List of r_outer values (analysis radius) for each junction
+        grid_size: Number of grid cells per dimension
+        normalization: &#34;relative&#34; or &#34;zscore&#34;
+    
+    Returns:
+        Dictionary mapping junction index to heatmap data
+    &#34;&#34;&#34;
+    if r_outer_list is None:
+        r_outer_list = [100.0] * len(junctions)
+    
+    junction_heatmaps = {}
+    
+    for idx, (junction, r_outer) in enumerate(zip(junctions, r_outer_list)):
+        global_idx = base_index + idx
+        label_str = f&#34;Junction {global_idx} ({junction.cx}, {junction.cz}, r={junction.r})&#34;
+        print(f&#34;[heatmap] Creating per-junction heatmap for {label_str}&#34;)
+        
+        # Filter trajectory points within junction area (including inlet)
+        filtered_trajs = []
+        
+        for traj in trajectories:
+            if traj.pupil_l is None or traj.pupil_r is None:
+                continue
+            
+            # Calculate distances from junction center
+            rx = traj.x - junction.cx
+            rz = traj.z - junction.cz
+            r = np.hypot(rx, rz)
+            
+            # Keep points within r_outer radius
+            inlet_mask = r &lt;= r_outer
+            
+            if not np.any(inlet_mask):
+                continue
+            
+            # Create filtered trajectory with only junction-relevant points
+            # Create a simple object to hold the filtered data
+            class FilteredTraj:
+                def __init__(self, tid, x, z, pupil_l, pupil_r):
+                    self.tid = tid
+                    self.x = x
+                    self.z = z
+                    self.pupil_l = pupil_l
+                    self.pupil_r = pupil_r
+            
+            filtered_traj = FilteredTraj(
+                tid=traj.tid,
+                x=traj.x[inlet_mask],
+                z=traj.z[inlet_mask],
+                pupil_l=traj.pupil_l[inlet_mask] if traj.pupil_l is not None else None,
+                pupil_r=traj.pupil_r[inlet_mask] if traj.pupil_r is not None else None
+            )
+            
+            filtered_trajs.append(filtered_traj)
+        
+        print(f&#34;[heatmap] {label_str}: {len(filtered_trajs)} trajectories pass through&#34;)
+        
+        if len(filtered_trajs) == 0:
+            junction_heatmaps[idx] = {
+                &#34;error&#34;: &#34;No trajectories pass through this junction&#34;,
+                &#34;junction&#34;: junction,
+                &#34;r_outer&#34;: r_outer
+            }
+            continue
+        
+        # Calculate bounds centered on junction
+        # Use r_outer + buffer to properly encompass the junction area
+        buffer = r_outer * 0.2  # 20% buffer beyond r_outer
+        plot_radius = r_outer + buffer
+        x_bounds = (junction.cx - plot_radius, junction.cx + plot_radius)
+        y_bounds = (junction.cz - plot_radius, junction.cz + plot_radius)
+        
+        print(f&#34;[heatmap] {label_str}: plot_radius={plot_radius:.1f}, buffer={buffer:.1f}&#34;)
+        print(f&#34;[heatmap] {label_str}: bounds x=({x_bounds[0]:.1f}, {x_bounds[1]:.1f}), z=({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+        
+        # Create heatmap for this junction
+        heatmap_data = create_pupil_dilation_heatmap(
+            trajectories=filtered_trajs,
+            junctions=[junction],
+            grid_size=grid_size,
+            cell_size=cell_size,
+            normalization=normalization,
+            x_bounds=x_bounds,
+            y_bounds=y_bounds
+        )
+        
+        # Add junction-specific metadata
+        heatmap_data[&#34;junction&#34;] = junction
+        heatmap_data[&#34;junction_idx&#34;] = global_idx
+        heatmap_data[&#34;r_outer&#34;] = r_outer
+        
+        # Debug: Print junction index information
+        print(f&#34;[heatmap_debug] Junction {global_idx}: base_index={base_index}, idx={idx}, global_idx={global_idx}&#34;)
+        print(f&#34;[heatmap_debug] Junction coordinates: ({junction.cx}, {junction.cz}), radius={junction.r}&#34;)
+        
+        junction_heatmaps[idx] = heatmap_data
+    
+    return junction_heatmaps</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="verta.verta_gaze.analyze_physiological_at_junctions"><code class="name flex">
+<span>def <span class="ident">analyze_physiological_at_junctions</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>], assignments_df: pandas.core.frame.DataFrame, decision_mode: str = 'hybrid', r_outer_list: Optional[Sequence[float]] = None, path_length: float = 100.0, epsilon: float = 0.05, linger_delta: float = 0.0, physio_window: float = 3.0, base_index: int = 0) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Analyze physiological data (heart rate, pupil dilation) at decision points.</p>
+<p>Calculation method:
+- Baseline: Average during 2-5 seconds BEFORE entering junction radius (normal navigation)
+- Decision: Average during junction approach period (from entry to exit) (decision-making context)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_physiological_at_junctions(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    assignments_df: pd.DataFrame,
+    decision_mode: str = &#34;hybrid&#34;,
+    r_outer_list: Optional[Sequence[float]] = None,
+    path_length: float = 100.0,
+    epsilon: float = 0.05,
+    linger_delta: float = 0.0,
+    physio_window: float = 3.0,
+    base_index: int = 0,
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Analyze physiological data (heart rate, pupil dilation) at decision points.
+    
+    Calculation method:
+    - Baseline: Average during 2-5 seconds BEFORE entering junction radius (normal navigation)
+    - Decision: Average during junction approach period (from entry to exit) (decision-making context)
+    &#34;&#34;&#34;
+    from tqdm import tqdm
+    
+    if r_outer_list is None:
+        r_outer_list = [None] * len(junctions)
+    
+    results = []
+    
+    print(f&#34;[physio] Analyzing physiological data for {len(trajectories)} trajectories...&#34;)
+    
+    for tr in tqdm(trajectories, desc=&#34;Analyzing physiological data&#34;, unit=&#34;traj&#34;):
+        # Get trajectory assignments for all junctions
+        traj_assignments = assignments_df[assignments_df[&#34;trajectory&#34;] == tr.tid]
+        
+        if traj_assignments.empty:
+            continue
+            
+        for i, junc in enumerate(junctions):
+            # Use the actual junction index (base_index + i) for branch column lookup
+            label_idx = base_index + i
+            branch_col = f&#34;branch_j{label_idx}&#34;
+            branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
+            if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) &lt; 0:
+                continue
+                
+            # Prefer precomputed decisions if provided via assignments_df.
+            # Look for decision points specific to this trajectory and junction
+            pre_idx = None
+            pre_x = np.nan
+            pre_z = np.nan
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                &#39;decision_idx&#39;: f&#34;decision_idx_j{i}&#34;,
+                &#39;intercept_x&#39;: f&#34;intercept_x_j{i}&#34;,
+                &#39;intercept_z&#39;: f&#34;intercept_z_j{i}&#34;
+            }
+            
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    decision_idx_val = traj_assignments_for_traj[junction_cols[&#39;decision_idx&#39;]].iloc[0]
+                    intercept_x_val = traj_assignments_for_traj[junction_cols[&#39;intercept_x&#39;]].iloc[0]
+                    intercept_z_val = traj_assignments_for_traj[junction_cols[&#39;intercept_z&#39;]].iloc[0]
+                    
+                    if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                        pre_idx = int(decision_idx_val)
+                    if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                        pre_x = float(intercept_x_val)
+                    if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                        pre_z = float(intercept_z_val)
+                        
+                if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                    print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: Using precomputed decision point idx={pre_idx}, x={pre_x}, z={pre_z}&#34;)
+            elif &#34;decision_idx&#34; in traj_assignments.columns:
+                # Filter to this specific trajectory
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    # Get the decision point for this trajectory
+                    if &#34;decision_idx&#34; in traj_assignments_for_traj.columns:
+                        decision_idx_val = traj_assignments_for_traj[&#34;decision_idx&#34;].iloc[0]
+                        if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                            pre_idx = int(decision_idx_val)
+                    if &#34;intercept_x&#34; in traj_assignments_for_traj.columns:
+                        intercept_x_val = traj_assignments_for_traj[&#34;intercept_x&#34;].iloc[0]
+                        if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                            pre_x = float(intercept_x_val)
+                    if &#34;intercept_z&#34; in traj_assignments_for_traj.columns:
+                        intercept_z_val = traj_assignments_for_traj[&#34;intercept_z&#34;].iloc[0]
+                        if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                            pre_z = float(intercept_z_val)
+
+            if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                decision_idx = pre_idx
+                decision_time = tr.t[decision_idx] if decision_idx &lt; len(tr.t) else None
+                method_used = &#34;precomputed&#34;
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: Using precomputed decision point idx={pre_idx}, time={decision_time}&#34;)
+            else:
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: No precomputed decision point, calculating from scratch&#34;)
+                # Find junction entry point (first sample inside junction radius)
+                rx = tr.x - junc.cx
+                rz = tr.z - junc.cz
+                r = np.hypot(rx, rz)
+                inside = r &lt;= junc.r
+                entry_idx = int(np.argmax(inside)) if inside.any() else None
+                
+                if entry_idx is None:
+                    continue
+                    
+                entry_time = tr.t[entry_idx]
+                
+                # Find decision point (exit point) using the same logic as branch discovery
+                decision_time = None
+                decision_idx = None
+                
+                start = entry_idx
+                
+                # Find decision point based on mode
+                if decision_mode == &#34;radial&#34;:
+                    rout = r_outer_list[i] if (r_outer_list[i] is not None and r_outer_list[i] &gt; junc.r) else (junc.r + 10.0)
+                    i_cross = None
+                    for i_idx in range(start + 1, len(r)):
+                        if r[i_idx] &gt;= rout:
+                            j0 = max(start + 1, i_idx - 5)
+                            seg = r[j0:i_idx+1]
+                            outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0 if seg.size &gt;= 2 else True
+                            if outward:
+                                i_cross = i_idx
+                                break
+                    decision_idx = int(i_cross) if i_cross is not None else None
+                elif decision_mode == &#34;pathlen&#34;:
+                    dx = np.diff(tr.x[start:])
+                    dz = np.diff(tr.z[start:])
+                    seg = np.hypot(dx, dz)
+                    cum = np.cumsum(seg)
+                    reach_idx = int(np.argmax(cum &gt;= float(path_length))) if (cum &gt;= float(path_length)).any() else None
+                    decision_idx = int(start + reach_idx + 1) if reach_idx is not None else None
+                else:  # hybrid
+                    # Try radial first, fall back to pathlen
+                    rout = r_outer_list[i] if (r_outer_list[i] is not None and r_outer_list[i] &gt; junc.r) else (junc.r + 10.0)
+                    i_cross = None
+                    for i_idx in range(start + 1, len(r)):
+                        if r[i_idx] &gt;= rout:
+                            j0 = max(start + 1, i_idx - 5)
+                            seg = r[j0:i_idx+1]
+                            outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0 if seg.size &gt;= 2 else True
+                            if outward:
+                                i_cross = i_idx
+                                break
+                    
+                    if i_cross is not None:
+                        decision_idx = int(i_cross)
+                    else:
+                        # Fall back to pathlen
+                        dx = np.diff(tr.x[start:])
+                        dz = np.diff(tr.z[start:])
+                        seg = np.hypot(dx, dz)
+                        cum = np.cumsum(seg)
+                        reach_idx = int(np.argmax(cum &gt;= float(path_length))) if (cum &gt;= float(path_length)).any() else None
+                        decision_idx = int(start + reach_idx + 1) if reach_idx is not None else None
+                
+                if decision_idx is None or decision_idx &gt;= len(tr.t):
+                    continue
+                    
+                decision_time = tr.t[decision_idx]
+                method_used = &#34;calculated&#34;
+            
+            # CRITICAL FIX: Ensure we have a valid decision point before proceeding
+            if decision_idx is None or decision_idx &gt;= len(tr.t):
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: No valid decision point found, skipping&#34;)
+                continue
+            
+            # Find junction entry point for baseline calculation
+            rx = tr.x - junc.cx
+            rz = tr.z - junc.cz
+            r = np.hypot(rx, rz)
+            inside = r &lt;= junc.r
+            entry_idx = int(np.argmax(inside)) if inside.any() else None
+            
+            if entry_idx is None:
+                continue
+                
+            entry_time = tr.t[entry_idx]
+            
+            # OPTION A: Pre-entry baseline vs junction approach period
+            # Baseline: 2-5 seconds before junction entry (normal navigation)
+            baseline_start_time = entry_time - 5.0  # 5 seconds before entry
+            baseline_end_time = entry_time - 2.0    # 2 seconds before entry
+            baseline_mask = (tr.t &gt;= baseline_start_time) &amp; (tr.t &lt;= baseline_end_time)
+            
+            # Decision period: From junction entry to exit (decision-making context)
+            decision_mask = (tr.t &gt;= entry_time) &amp; (tr.t &lt;= decision_time)
+            
+            hr_baseline = hr_decision = np.nan
+            pupil_baseline = pupil_decision = np.nan
+            
+            # Heart rate analysis
+            if tr.heart_rate is not None:
+                # Baseline period (normal navigation: 2-5 seconds before junction entry)
+                if np.any(baseline_mask):
+                    hr_baseline_data = tr.heart_rate[baseline_mask]
+                    hr_baseline_data = hr_baseline_data[~np.isnan(hr_baseline_data)]
+                    if len(hr_baseline_data) &gt; 0:
+                        hr_baseline = np.mean(hr_baseline_data)
+                
+                # Decision period (decision-making context: from junction entry to exit)
+                if np.any(decision_mask):
+                    hr_decision_data = tr.heart_rate[decision_mask]
+                    hr_decision_data = hr_decision_data[~np.isnan(hr_decision_data)]
+                    if len(hr_decision_data) &gt; 0:
+                        hr_decision = np.mean(hr_decision_data)
+            
+            # Pupil dilation analysis
+            if tr.pupil_l is not None and tr.pupil_r is not None:
+                pupil_avg = (tr.pupil_l + tr.pupil_r) / 2
+                
+                # Baseline period (normal navigation: 2-5 seconds before junction entry)
+                if np.any(baseline_mask):
+                    pupil_baseline_data = pupil_avg[baseline_mask]
+                    pupil_baseline_data = pupil_baseline_data[~np.isnan(pupil_baseline_data)]
+                    if len(pupil_baseline_data) &gt; 0:
+                        pupil_baseline = np.mean(pupil_baseline_data)
+                
+                # Decision period (decision-making context: from junction entry to exit)
+                if np.any(decision_mask):
+                    pupil_decision_data = pupil_avg[decision_mask]
+                    pupil_decision_data = pupil_decision_data[~np.isnan(pupil_decision_data)]
+                    if len(pupil_decision_data) &gt; 0:
+                        pupil_decision = np.mean(pupil_decision_data)
+            
+            # Debug: Check if valid physiological data is available
+            if tr.tid in [0, 1, 2, 3, 4]:  # Debug first few trajectories
+                print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: hr_baseline={hr_baseline}, hr_decision={hr_decision}, pupil_baseline={pupil_baseline}, pupil_decision={pupil_decision}&#34;)
+                print(f&#34;[physio_debug] Decision time: {decision_time}, Entry time: {entry_time}&#34;)
+                print(f&#34;[physio_debug] Baseline mask: {np.sum(baseline_mask)} samples, Decision mask: {np.sum(decision_mask)} samples&#34;)
+            
+            results.append({
+                &#34;trajectory&#34;: tr.tid,
+                &#34;junction&#34;: label_idx,  # Use label_idx instead of i to match the actual junction index
+                &#34;branch&#34;: int(branch),
+                &#34;heart_rate_baseline&#34;: hr_baseline,
+                &#34;heart_rate_decision&#34;: hr_decision,
+                &#34;heart_rate_change&#34;: hr_decision - hr_baseline if not (np.isnan(hr_baseline) or np.isnan(hr_decision)) else np.nan,
+                &#34;pupil_baseline&#34;: pupil_baseline,
+                &#34;pupil_decision&#34;: pupil_decision,
+                &#34;pupil_change&#34;: pupil_decision - pupil_baseline if not (np.isnan(pupil_baseline) or np.isnan(pupil_decision)) else np.nan,
+            })
+    
+    return pd.DataFrame(results)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.analyze_pupil_dilation_trajectory"><code class="name flex">
+<span>def <span class="ident">analyze_pupil_dilation_trajectory</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>], assignments_df: pandas.core.frame.DataFrame, decision_mode: str = 'hybrid', r_outer_list: Optional[Sequence[float]] = None, path_length: float = 100.0, epsilon: float = 0.05, linger_delta: float = 0.0, physio_window: float = 3.0, base_index: int = 0) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Analyze pupil dilation trajectory from junction entry to decision point.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def analyze_pupil_dilation_trajectory(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    assignments_df: pd.DataFrame,
+    decision_mode: str = &#34;hybrid&#34;,
+    r_outer_list: Optional[Sequence[float]] = None,
+    path_length: float = 100.0,
+    epsilon: float = 0.05,
+    linger_delta: float = 0.0,
+    physio_window: float = 3.0,
+    base_index: int = 0,
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Analyze pupil dilation trajectory from junction entry to decision point.&#34;&#34;&#34;
+    from tqdm import tqdm
+    
+    if r_outer_list is None:
+        r_outer_list = [None] * len(junctions)
+    
+    results = []
+    
+    print(f&#34;[pupil] Analyzing pupil dilation trajectories for {len(trajectories)} trajectories...&#34;)
+    
+    for traj in tqdm(trajectories, desc=&#34;Analyzing pupil trajectories&#34;, unit=&#34;traj&#34;):
+        # Get trajectory assignments for all junctions
+        traj_assignments = assignments_df[assignments_df[&#34;trajectory&#34;] == traj.tid]
+        
+        if traj_assignments.empty:
+            continue
+            
+        for i, junc in enumerate(junctions):
+            # Use the actual junction index (base_index + i) for branch column lookup
+            label_idx = base_index + i
+            branch_col = f&#34;branch_j{label_idx}&#34;
+            branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
+            if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) &lt; 0:
+                continue
+                
+            # Find decision intercept using precomputed decision_idx when available
+            r_out = r_outer_list[i]
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                &#39;decision_idx&#39;: f&#34;decision_idx_j{i}&#34;,
+                &#39;intercept_x&#39;: f&#34;intercept_x_j{i}&#34;,
+                &#39;intercept_z&#39;: f&#34;intercept_z_j{i}&#34;
+            }
+            
+            idx = None
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                decision_idx_val = traj_assignments[junction_cols[&#39;decision_idx&#39;]].iloc[0]
+                if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                    idx = int(decision_idx_val)
+                    print(f&#34;[pupil_debug] Trajectory {traj.tid} at junction {i}: Using precomputed decision point idx={idx}&#34;)
+            elif &#34;decision_idx&#34; in traj_assignments.columns:
+                val = traj_assignments[&#34;decision_idx&#34;].iloc[0]
+                if not (isinstance(val, float) and np.isnan(val)):
+                    idx = int(val)
+                else:
+                    if decision_mode == &#34;radial&#34; or (decision_mode == &#34;hybrid&#34; and r_out is not None and float(r_out) &gt; float(junc.r)):
+                        idx = get_decision_index(
+                            traj.x, traj.z, junc,
+                            decision_mode=&#34;radial&#34;,
+                            r_outer=r_out if r_out is not None else (junc.r + 10.0),
+                            window=5
+                        )
+                    else:
+                        idx = get_decision_index(
+                            traj.x, traj.z, junc,
+                            decision_mode=&#34;pathlen&#34;,
+                            path_length=path_length,
+                            epsilon=epsilon,
+                            linger_delta=linger_delta
+                        )
+            else:
+                if decision_mode == &#34;radial&#34; or (decision_mode == &#34;hybrid&#34; and r_out is not None and float(r_out) &gt; float(junc.r)):
+                    idx = get_decision_index(
+                        traj.x, traj.z, junc,
+                        decision_mode=&#34;radial&#34;,
+                        r_outer=r_out if r_out is not None else (junc.r + 10.0),
+                        window=5
+                    )
+                else:
+                    idx = get_decision_index(
+                        traj.x, traj.z, junc,
+                        decision_mode=&#34;pathlen&#34;,
+                        path_length=path_length,
+                        epsilon=epsilon,
+                        linger_delta=linger_delta
+                    )
+            if idx is None:
+                # Don&#39;t use fallback for trajectories without proper decision points
+                # These trajectories should not be assigned to any branch
+                continue
+            
+            if traj.t is None or idx &gt;= len(traj.t):
+                continue
+            
+            # Extract pupil dilation data in time window
+            mask = (traj.t &gt;= traj.t[idx] - physio_window) &amp; (traj.t &lt;= traj.t[idx] + physio_window)
+            
+            pupil_baseline = pupil_decision = np.nan
+            
+            if traj.pupil_l is not None and traj.pupil_r is not None and np.any(mask):
+                pupil_avg = (traj.pupil_l + traj.pupil_r) / 2
+                pupil_window = pupil_avg[mask]
+                pupil_window = pupil_window[~np.isnan(pupil_window)]
+                if len(pupil_window) &gt; 0:
+                    pupil_decision = np.mean(pupil_window)
+                    
+                    # Baseline
+                    baseline_mask = traj.t &lt; traj.t[idx] - physio_window
+                    if np.any(baseline_mask):
+                        pupil_baseline_data = pupil_avg[baseline_mask]
+                        pupil_baseline_data = pupil_baseline_data[~np.isnan(pupil_baseline_data)]
+                        if len(pupil_baseline_data) &gt; 0:
+                            pupil_baseline = np.mean(pupil_baseline_data[-10:])
+            
+            results.append({
+                &#34;trajectory&#34;: traj.tid,
+                &#34;junction&#34;: label_idx,  # Use label_idx instead of i to match the actual junction index
+                &#34;branch&#34;: int(branch),
+                &#34;pupil_baseline&#34;: pupil_baseline,
+                &#34;pupil_decision&#34;: pupil_decision,
+                &#34;pupil_change&#34;: pupil_decision - pupil_baseline if not (np.isnan(pupil_baseline) or np.isnan(pupil_decision)) else np.nan,
+            })
+    
+    return pd.DataFrame(results)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.compute_head_yaw_at_decisions"><code class="name flex">
+<span>def <span class="ident">compute_head_yaw_at_decisions</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>], assignments_df: pandas.core.frame.DataFrame, decision_mode: str = 'hybrid', r_outer_list: Optional[Sequence[float]] = None, path_length: float = 100.0, epsilon: float = 0.05, linger_delta: float = 0.0, base_index: int = 0, decisions_df: Optional[pandas.core.frame.DataFrame] = None) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute head yaw angles at decision points for each trajectory.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_head_yaw_at_decisions(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    assignments_df: pd.DataFrame,
+    decision_mode: str = &#34;hybrid&#34;,
+    r_outer_list: Optional[Sequence[float]] = None,
+    path_length: float = 100.0,
+    epsilon: float = 0.05,
+    linger_delta: float = 0.0,
+    base_index: int = 0,
+    decisions_df: Optional[pd.DataFrame] = None,
+) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Compute head yaw angles at decision points for each trajectory.&#34;&#34;&#34;
+    from tqdm import tqdm
+    
+    if r_outer_list is None:
+        r_outer_list = [None] * len(junctions)
+    
+    results = []
+    
+    def _nearest_valid_index(
+        tr: Trajectory,
+        start_idx: Optional[int],
+        max_window: int = 200,
+    ) -&gt; Optional[int]:
+        &#34;&#34;&#34;Return nearest index to start_idx with valid x,z and head_forward data.
+
+        Searches outward from start_idx up to max_window samples in both directions.
+        &#34;&#34;&#34;
+        if start_idx is None:
+            return None
+        length = min(len(tr.x), len(tr.z))
+        hf_len = min(
+            len(tr.head_forward_x) if tr.head_forward_x is not None else 0,
+            len(tr.head_forward_z) if tr.head_forward_z is not None else 0,
+        )
+        if length == 0 or hf_len == 0:
+            return None
+        # Clamp start index
+        start_idx = max(0, min(start_idx, length - 1, hf_len - 1))
+
+        def is_valid(i: int) -&gt; bool:
+            if i &lt; 0 or i &gt;= length or i &gt;= hf_len:
+                return False
+            x_ok = not np.isnan(tr.x[i])
+            z_ok = not np.isnan(tr.z[i])
+            hf_x_ok = tr.head_forward_x is not None and not np.isnan(tr.head_forward_x[i])
+            hf_z_ok = tr.head_forward_z is not None and not np.isnan(tr.head_forward_z[i])
+            return x_ok and z_ok and hf_x_ok and hf_z_ok
+
+        if is_valid(start_idx):
+            return start_idx
+
+        for delta in range(1, max_window + 1):
+            left = start_idx - delta
+            right = start_idx + delta
+            if is_valid(left):
+                return left
+            if is_valid(right):
+                return right
+        return None
+    
+    print(f&#34;[gaze] Computing head directions for {len(trajectories)} trajectories...&#34;)
+    
+    for tr in tqdm(trajectories, desc=&#34;Computing head directions&#34;, unit=&#34;traj&#34;):
+        # Get trajectory assignments for all junctions
+        traj_assignments = assignments_df[assignments_df[&#34;trajectory&#34;] == tr.tid]
+        
+        if traj_assignments.empty:
+            continue
+            
+        for i, junc in enumerate(junctions):
+            # CRITICAL FIX: Use the actual junction index (base_index + i) for branch column lookup
+            # This ensures we look in the correct branch_j{X} column for each junction
+            label_idx = base_index + i
+            label_str = f&#34;Junction {label_idx} ({junc.cx}, {junc.cz}, r={junc.r})&#34;
+            
+            # Use the actual junction index for branch column to ensure correct mapping
+            branch_col = f&#34;branch_j{label_idx}&#34;
+            branch = traj_assignments[branch_col].iloc[0] if branch_col in traj_assignments.columns else None
+            
+            # Debug: Show branch assignment details
+            print(f&#34;[gaze_debug] Junction {label_idx}: branch_col={branch_col}, branch={branch}&#34;)
+            
+            # If branch_col not found, try the generic &#39;branch&#39; column (for single-junction analysis)
+            if branch is None and &#34;branch&#34; in traj_assignments.columns:
+                branch = traj_assignments[&#34;branch&#34;].iloc[0]
+                print(f&#34;[gaze_debug] Junction {label_idx}: Using generic &#39;branch&#39; column, branch={branch}&#34;)
+            
+            if branch is None or (isinstance(branch, float) and np.isnan(branch)) or int(branch) &lt; 0:
+                continue
+                
+            # Prefer precomputed decisions if provided via assignments_df.
+            # Look for decision points specific to this trajectory and junction
+            pre_idx = None
+            pre_x = np.nan
+            pre_z = np.nan
+            
+            # First try junction-specific columns (e.g., decision_idx_j0, intercept_x_j0, etc.)
+            junction_cols = {
+                &#39;decision_idx&#39;: f&#34;decision_idx_j{label_idx}&#34;,
+                &#39;intercept_x&#39;: f&#34;intercept_x_j{label_idx}&#34;,
+                &#39;intercept_z&#39;: f&#34;intercept_z_j{label_idx}&#34;
+            }
+            
+            # Debug: Check what junction-specific columns are available
+            available_junction_cols = [col for col in traj_assignments.columns if col.startswith(&#39;decision_idx_j&#39;)]
+            if tr.tid &lt; 5:  # Only debug first 5 trajectories to avoid spam
+                print(f&#34;[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Available junction columns: {available_junction_cols}&#34;)
+                print(f&#34;[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Looking for: {list(junction_cols.values())}&#34;)
+            
+            if all(col in traj_assignments.columns for col in junction_cols.values()):
+                # Use junction-specific columns
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                if not traj_assignments_for_traj.empty:
+                    decision_idx_val = traj_assignments_for_traj[junction_cols[&#39;decision_idx&#39;]].iloc[0]
+                    intercept_x_val = traj_assignments_for_traj[junction_cols[&#39;intercept_x&#39;]].iloc[0]
+                    intercept_z_val = traj_assignments_for_traj[junction_cols[&#39;intercept_z&#39;]].iloc[0]
+                    
+                    if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                        pre_idx = int(decision_idx_val)
+                    if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                        pre_x = float(intercept_x_val)
+                    if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                        pre_z = float(intercept_z_val)
+                        
+                if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                    print(f&#34;[gaze_debug] Using precomputed decision point for trajectory {tr.tid} at junction {label_idx}: idx={pre_idx}, x={pre_x}, z={pre_z}&#34;)
+            elif &#34;decision_idx&#34; in traj_assignments.columns:
+                # Filter to this specific trajectory
+                print(f&#34;[gaze_debug] Looking for trajectory {tr.tid} in assignments with trajectory IDs: {traj_assignments[&#39;trajectory&#39;].unique()[:10]}&#34;)
+                print(f&#34;[gaze_debug] Assignments DataFrame shape: {traj_assignments.shape}&#34;)
+                print(f&#34;[gaze_debug] Assignments DataFrame columns: {list(traj_assignments.columns)}&#34;)
+                print(f&#34;[gaze_debug] Sample assignments data: {traj_assignments[[&#39;trajectory&#39;, &#39;decision_idx&#39;, &#39;intercept_x&#39;, &#39;intercept_z&#39;]].head(3).to_dict(&#39;records&#39;)}&#34;)
+                
+                traj_assignments_for_traj = traj_assignments[traj_assignments[&#34;trajectory&#34;] == tr.tid]
+                print(f&#34;[gaze_debug] Found {len(traj_assignments_for_traj)} assignments for trajectory {tr.tid}&#34;)
+                if not traj_assignments_for_traj.empty:
+                    # Get the decision point for this trajectory
+                    if &#34;decision_idx&#34; in traj_assignments_for_traj.columns:
+                        decision_idx_val = traj_assignments_for_traj[&#34;decision_idx&#34;].iloc[0]
+                        if not (isinstance(decision_idx_val, float) and np.isnan(decision_idx_val)):
+                            pre_idx = int(decision_idx_val)
+                    if &#34;intercept_x&#34; in traj_assignments_for_traj.columns:
+                        intercept_x_val = traj_assignments_for_traj[&#34;intercept_x&#34;].iloc[0]
+                        if not (isinstance(intercept_x_val, float) and np.isnan(intercept_x_val)):
+                            pre_x = float(intercept_x_val)
+                    if &#34;intercept_z&#34; in traj_assignments_for_traj.columns:
+                        intercept_z_val = traj_assignments_for_traj[&#34;intercept_z&#34;].iloc[0]
+                        if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
+                            pre_z = float(intercept_z_val)
+
+            if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                idx = pre_idx
+                method_used = &#34;precomputed&#34;
+                print(f&#34;[gaze_debug] Using precomputed decision point for trajectory {tr.tid}: idx={pre_idx}, x={pre_x}, z={pre_z}&#34;)
+            else:
+                print(f&#34;[gaze_debug] No precomputed decision point for trajectory {tr.tid}: pre_idx={pre_idx}, pre_x={pre_x}, pre_z={pre_z}&#34;)
+                # Find decision intercept using the same logic as discover analysis
+                # This ensures arrows are plotted at the exact same points used for branch assignment
+                r_out = r_outer_list[i]
+                
+                # Use the same decision point calculation with identical params
+                if decision_mode == &#34;radial&#34; or (decision_mode == &#34;hybrid&#34; and r_out is not None and float(r_out) &gt; float(junc.r)):
+                    idx = get_decision_index(
+                        tr.x, tr.z, junc, 
+                        decision_mode=&#34;radial&#34;,
+                        r_outer=r_out if r_out is not None else (junc.r + 10.0),
+                        window=5
+                    )
+                    method_used = &#34;radial&#34;
+                else:
+                    idx = get_decision_index(
+                        tr.x, tr.z, junc,
+                        decision_mode=&#34;pathlen&#34;, 
+                        path_length=path_length,
+                        epsilon=epsilon,
+                        linger_delta=linger_delta
+                    )
+                    method_used = &#34;pathlen&#34;
+            
+            # Debug: Track decision point calculation success
+            if idx is None:
+                print(f&#34;[decision_debug] FAILED to find decision point for trajectory {tr.tid} at {label_str}&#34;)
+                print(f&#34;[decision_debug] Method attempted: {method_used}&#34;)
+                print(f&#34;[decision_debug] Junction: cx={junc.cx}, cz={junc.cz}, r={junc.r}&#34;)
+                print(f&#34;[decision_debug] R_outer: {r_out}, path_length: {path_length}&#34;)
+                print(f&#34;[decision_debug] Trajectory bounds: x=[{np.min(tr.x):.1f}, {np.max(tr.x):.1f}], z=[{np.min(tr.z):.1f}, {np.max(tr.z):.1f}]&#34;)
+                
+                # Don&#39;t use fallback for trajectories without proper decision points
+                # These trajectories should not be assigned to any branch
+                print(f&#34;[decision_debug] NO FALLBACK: Trajectory {tr.tid} has no proper decision point - skipping&#34;)
+                continue
+            else:
+                print(f&#34;[decision_debug] SUCCESS: Found decision point for trajectory {tr.tid} at {label_str} using {method_used}&#34;)
+                print(f&#34;[decision_debug] Decision point: x={tr.x[idx]:.1f}, z={tr.z[idx]:.1f}&#34;)
+                print(f&#34;[decision_debug] Distance from junction center: {np.hypot(tr.x[idx] - junc.cx, tr.z[idx] - junc.cz):.1f}&#34;)
+            
+            # Debug: Check decision index calculation
+            if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                print(f&#34;[head_yaw_debug] Trajectory {tr.tid} at {label_str}: idx={idx}, decision_mode={decision_mode}&#34;)
+                print(f&#34;[head_yaw_debug] Junction: cx={junc.cx}, cz={junc.cz}, r={junc.r}&#34;)
+                print(f&#34;[head_yaw_debug] R_outer: {r_out}, path_length: {path_length}&#34;)
+                print(f&#34;[head_yaw_debug] Trajectory length: x={len(tr.x)}, z={len(tr.z)}&#34;)
+                print(f&#34;[head_yaw_debug] Head forward length: x={len(tr.head_forward_x) if tr.head_forward_x is not None else &#39;None&#39;}, z={len(tr.head_forward_z) if tr.head_forward_z is not None else &#39;None&#39;}&#34;)
+                if idx is not None:
+                    print(f&#34;[head_yaw_debug] Index bounds check: idx &lt; len(x) = {idx &lt; len(tr.x)}, idx &lt; len(head_forward_x) = {idx &lt; len(tr.head_forward_x) if tr.head_forward_x is not None else &#39;N/A&#39;}&#34;)
+                    if idx &lt; len(tr.x):
+                        print(f&#34;[head_yaw_debug] Decision point: x={tr.x[idx]}, z={tr.z[idx]}&#34;)
+                    else:
+                        print(f&#34;[head_yaw_debug] Decision index {idx} is out of bounds for trajectory length {len(tr.x)}!&#34;)
+                    print(f&#34;[head_yaw_debug] Head forward data available: {tr.head_forward_x is not None and tr.head_forward_z is not None}&#34;)
+                    if tr.head_forward_x is not None and tr.head_forward_z is not None and idx &lt; len(tr.head_forward_x):
+                        print(f&#34;[head_yaw_debug] Head forward at idx: x={tr.head_forward_x[idx]}, z={tr.head_forward_z[idx]}&#34;)
+                    else:
+                        print(f&#34;[head_yaw_debug] Head forward index {idx} is out of bounds for head_forward length {len(tr.head_forward_x) if tr.head_forward_x is not None else &#39;None&#39;} at {label_str}!&#34;)
+                else:
+                    print(f&#34;[head_yaw_debug] No decision index found at {label_str}!&#34;)
+            
+            # Choose nearest valid index around decision point for head-forward data
+            # Keep the intercept position anchored at the geometric decision index
+            # (or its boundary fallback), even if head-forward is taken from nearby.
+            valid_idx = _nearest_valid_index(tr, idx)
+            intercept_idx = idx
+            
+            # Debug: Show valid index adjustment
+            if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                print(f&#34;[head_yaw_debug] Valid index adjustment: idx={idx} -&gt; valid_idx={valid_idx}&#34;)
+                if valid_idx is not None:
+                    print(f&#34;[head_yaw_debug] Valid decision point: x={tr.x[valid_idx]}, z={tr.z[valid_idx]}&#34;)
+                    print(f&#34;[head_yaw_debug] Valid head forward: x={tr.head_forward_x[valid_idx]}, z={tr.head_forward_z[valid_idx]}&#34;)
+            
+            # Compute head yaw at decision point (VR convention: Z forward, X right)
+            if (
+                tr.head_forward_x is not None
+                and tr.head_forward_z is not None
+                and valid_idx is not None
+                and valid_idx &lt; len(tr.head_forward_x)
+                and valid_idx &lt; len(tr.head_forward_z)
+            ):
+                head_forward_x = tr.head_forward_x[valid_idx]
+                head_forward_z = tr.head_forward_z[valid_idx]
+                if not (np.isnan(head_forward_x) or np.isnan(head_forward_z)):
+                    head_yaw = np.degrees(np.arctan2(head_forward_x, head_forward_z))
+                    # Debug: Show calculated head_yaw
+                    if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                        print(f&#34;[head_yaw_debug] Calculated head_yaw: {head_yaw:.2f}° for trajectory {tr.tid}, branch {int(branch)}&#34;)
+                else:
+                    head_yaw = np.nan
+                    if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                        print(f&#34;[head_yaw_debug] Head forward data is NaN for trajectory {tr.tid}, branch {int(branch)}&#34;)
+            else:
+                head_yaw = np.nan
+                if tr.tid in [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;]:  # Debug first few trajectories
+                    print(f&#34;[head_yaw_debug] Cannot calculate head_yaw for trajectory {tr.tid}, branch {int(branch)} - missing data or invalid index&#34;)
+            
+            # Movement direction at decision point
+            if (
+                valid_idx is not None
+                and valid_idx &gt; 0
+                and valid_idx &lt; len(tr.x) - 1
+                and valid_idx &lt; len(tr.z) - 1
+            ):
+                # Use velocity direction
+                dx = tr.x[valid_idx + 1] - tr.x[valid_idx - 1]
+                dz = tr.z[valid_idx + 1] - tr.z[valid_idx - 1]
+                # Check for NaN values in trajectory coordinates
+                if not (np.isnan(dx) or np.isnan(dz)) and np.hypot(dx, dz) &gt; 1e-6:
+                    movement_yaw = np.degrees(np.arctan2(dx, dz))
+                else:
+                    movement_yaw = np.nan
+            else:
+                movement_yaw = np.nan
+            
+            # Gaze-movement alignment
+            if not np.isnan(movement_yaw) and not np.isnan(head_yaw):
+                yaw_diff = ((head_yaw - movement_yaw + 180) % 360) - 180  # [-180, 180]
+            else:
+                yaw_diff = np.nan
+                
+            # Intercept position (use precomputed if available; else use decision index)
+            if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
+                intercept_x = float(pre_x)
+                intercept_z = float(pre_z)
+            elif (
+                intercept_idx is not None
+                and intercept_idx &lt; len(tr.x)
+                and intercept_idx &lt; len(tr.z)
+                and not np.isnan(tr.x[intercept_idx])
+                and not np.isnan(tr.z[intercept_idx])
+            ):
+                intercept_x = tr.x[intercept_idx]
+                intercept_z = tr.z[intercept_idx]
+            elif (
+                valid_idx is not None
+                and valid_idx &lt; len(tr.x)
+                and valid_idx &lt; len(tr.z)
+                and not np.isnan(tr.x[valid_idx])
+                and not np.isnan(tr.z[valid_idx])
+            ):
+                # Fallback to nearest valid sample if the decision index is unusable
+                intercept_x = tr.x[valid_idx]
+                intercept_z = tr.z[valid_idx]
+            else:
+                intercept_x = np.nan
+                intercept_z = np.nan
+                
+            results.append({
+                &#34;trajectory&#34;: tr.tid,
+                &#34;junction&#34;: label_idx,  # Use label_idx instead of i to match the actual junction index
+                &#34;branch&#34;: int(branch),
+                &#34;head_yaw&#34;: head_yaw,
+                &#34;movement_yaw&#34;: movement_yaw,
+                &#34;yaw_difference&#34;: yaw_diff,
+                &#34;intercept_x&#34;: intercept_x,
+                &#34;intercept_z&#34;: intercept_z,
+                &#34;gaze_x&#34;: tr.gaze_x[valid_idx] if tr.gaze_x is not None and valid_idx is not None and valid_idx &lt; len(tr.gaze_x) else np.nan,
+                &#34;gaze_y&#34;: tr.gaze_y[valid_idx] if tr.gaze_y is not None and valid_idx is not None and valid_idx &lt; len(tr.gaze_y) else np.nan,
+                &#34;heart_rate&#34;: tr.heart_rate[valid_idx] if tr.heart_rate is not None and valid_idx is not None and valid_idx &lt; len(tr.heart_rate) else np.nan,
+                &#34;pupil_avg&#34;: (tr.pupil_l[valid_idx] + tr.pupil_r[valid_idx]) / 2 if (tr.pupil_l is not None and tr.pupil_r is not None and valid_idx is not None and valid_idx &lt; len(tr.pupil_l)) else np.nan,
+            })
+    
+    return pd.DataFrame(results)</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.create_per_junction_pupil_heatmap"><code class="name flex">
+<span>def <span class="ident">create_per_junction_pupil_heatmap</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>], r_outer_list: Optional[Sequence[float]] = None, grid_size: Optional[int] = None, cell_size: Optional[float] = None, normalization: str = 'relative', base_index: int = 0) ‑> Dict[int, Dict[str, <built-in function any>]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create focused heatmaps for each junction separately.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories</code></strong></dt>
+<dd>List of trajectory objects with pupil data</dd>
+<dt><strong><code>junctions</code></strong></dt>
+<dd>List of junction circles</dd>
+<dt><strong><code>r_outer_list</code></strong></dt>
+<dd>List of r_outer values (analysis radius) for each junction</dd>
+<dt><strong><code>grid_size</code></strong></dt>
+<dd>Number of grid cells per dimension</dd>
+<dt><strong><code>normalization</code></strong></dt>
+<dd>"relative" or "zscore"</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Dictionary mapping junction index to heatmap data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_per_junction_pupil_heatmap(
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    r_outer_list: Optional[Sequence[float]] = None,
+    grid_size: Optional[int] = None,
+    cell_size: Optional[float] = None,
+    normalization: str = &#34;relative&#34;,
+    base_index: int = 0,
+) -&gt; Dict[int, Dict[str, any]]:
+    &#34;&#34;&#34;
+    Create focused heatmaps for each junction separately.
+    
+    Args:
+        trajectories: List of trajectory objects with pupil data
+        junctions: List of junction circles
+        r_outer_list: List of r_outer values (analysis radius) for each junction
+        grid_size: Number of grid cells per dimension
+        normalization: &#34;relative&#34; or &#34;zscore&#34;
+    
+    Returns:
+        Dictionary mapping junction index to heatmap data
+    &#34;&#34;&#34;
+    if r_outer_list is None:
+        r_outer_list = [100.0] * len(junctions)
+    
+    junction_heatmaps = {}
+    
+    for idx, (junction, r_outer) in enumerate(zip(junctions, r_outer_list)):
+        global_idx = base_index + idx
+        label_str = f&#34;Junction {global_idx} ({junction.cx}, {junction.cz}, r={junction.r})&#34;
+        print(f&#34;[heatmap] Creating per-junction heatmap for {label_str}&#34;)
+        
+        # Filter trajectory points within junction area (including inlet)
+        filtered_trajs = []
+        
+        for traj in trajectories:
+            if traj.pupil_l is None or traj.pupil_r is None:
+                continue
+            
+            # Calculate distances from junction center
+            rx = traj.x - junction.cx
+            rz = traj.z - junction.cz
+            r = np.hypot(rx, rz)
+            
+            # Keep points within r_outer radius
+            inlet_mask = r &lt;= r_outer
+            
+            if not np.any(inlet_mask):
+                continue
+            
+            # Create filtered trajectory with only junction-relevant points
+            # Create a simple object to hold the filtered data
+            class FilteredTraj:
+                def __init__(self, tid, x, z, pupil_l, pupil_r):
+                    self.tid = tid
+                    self.x = x
+                    self.z = z
+                    self.pupil_l = pupil_l
+                    self.pupil_r = pupil_r
+            
+            filtered_traj = FilteredTraj(
+                tid=traj.tid,
+                x=traj.x[inlet_mask],
+                z=traj.z[inlet_mask],
+                pupil_l=traj.pupil_l[inlet_mask] if traj.pupil_l is not None else None,
+                pupil_r=traj.pupil_r[inlet_mask] if traj.pupil_r is not None else None
+            )
+            
+            filtered_trajs.append(filtered_traj)
+        
+        print(f&#34;[heatmap] {label_str}: {len(filtered_trajs)} trajectories pass through&#34;)
+        
+        if len(filtered_trajs) == 0:
+            junction_heatmaps[idx] = {
+                &#34;error&#34;: &#34;No trajectories pass through this junction&#34;,
+                &#34;junction&#34;: junction,
+                &#34;r_outer&#34;: r_outer
+            }
+            continue
+        
+        # Calculate bounds centered on junction
+        # Use r_outer + buffer to properly encompass the junction area
+        buffer = r_outer * 0.2  # 20% buffer beyond r_outer
+        plot_radius = r_outer + buffer
+        x_bounds = (junction.cx - plot_radius, junction.cx + plot_radius)
+        y_bounds = (junction.cz - plot_radius, junction.cz + plot_radius)
+        
+        print(f&#34;[heatmap] {label_str}: plot_radius={plot_radius:.1f}, buffer={buffer:.1f}&#34;)
+        print(f&#34;[heatmap] {label_str}: bounds x=({x_bounds[0]:.1f}, {x_bounds[1]:.1f}), z=({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+        
+        # Create heatmap for this junction
+        heatmap_data = create_pupil_dilation_heatmap(
+            trajectories=filtered_trajs,
+            junctions=[junction],
+            grid_size=grid_size,
+            cell_size=cell_size,
+            normalization=normalization,
+            x_bounds=x_bounds,
+            y_bounds=y_bounds
+        )
+        
+        # Add junction-specific metadata
+        heatmap_data[&#34;junction&#34;] = junction
+        heatmap_data[&#34;junction_idx&#34;] = global_idx
+        heatmap_data[&#34;r_outer&#34;] = r_outer
+        
+        # Debug: Print junction index information
+        print(f&#34;[heatmap_debug] Junction {global_idx}: base_index={base_index}, idx={idx}, global_idx={global_idx}&#34;)
+        print(f&#34;[heatmap_debug] Junction coordinates: ({junction.cx}, {junction.cz}), radius={junction.r}&#34;)
+        
+        junction_heatmaps[idx] = heatmap_data
+    
+    return junction_heatmaps</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.create_pupil_dilation_heatmap"><code class="name flex">
+<span>def <span class="ident">create_pupil_dilation_heatmap</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: Optional[Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>]] = None, grid_size: Optional[int] = None, cell_size: Optional[float] = None, normalization: str = 'relative', aggregation: str = 'mean', x_bounds: Optional[Tuple[float, float]] = None, y_bounds: Optional[Tuple[float, float]] = None) ‑> Dict[str, <built-in function any>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create spatial heatmap of pupil dilation changes.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trajectories</code></strong></dt>
+<dd>List of trajectory objects with pupil data</dd>
+<dt><strong><code>junctions</code></strong></dt>
+<dd>Optional list of junctions to overlay</dd>
+<dt><strong><code>grid_size</code></strong></dt>
+<dd>Number of grid cells per dimension (1-100)</dd>
+<dt><strong><code>normalization</code></strong></dt>
+<dd>"relative" (% change from baseline) or "zscore" (standard deviations)</dd>
+<dt><strong><code>aggregation</code></strong></dt>
+<dd>"mean" or "max" for combining values in bins</dd>
+<dt><strong><code>x_bounds</code></strong></dt>
+<dd>Optional (min, max) for x-axis, auto-calculated if None</dd>
+<dt><strong><code>y_bounds</code></strong></dt>
+<dd>Optional (min, max) for z-axis, auto-calculated if None</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Dictionary containing:
+- heatmap: 2D numpy array of pupil values (masked where no data)
+- x_edges: Grid x boundaries
+- z_edges: Grid z boundaries
+- sample_counts: 2D array of sample counts per bin
+- normalization_used: str
+- aggregation_used: str</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_pupil_dilation_heatmap(
+    trajectories: Sequence[Trajectory],
+    junctions: Optional[Sequence[Circle]] = None,
+    grid_size: Optional[int] = None,
+    cell_size: Optional[float] = None,
+    normalization: str = &#34;relative&#34;,
+    aggregation: str = &#34;mean&#34;,
+    x_bounds: Optional[Tuple[float, float]] = None,
+    y_bounds: Optional[Tuple[float, float]] = None
+) -&gt; Dict[str, any]:
+    &#34;&#34;&#34;
+    Create spatial heatmap of pupil dilation changes.
+    
+    Args:
+        trajectories: List of trajectory objects with pupil data
+        junctions: Optional list of junctions to overlay
+        grid_size: Number of grid cells per dimension (1-100)
+        normalization: &#34;relative&#34; (% change from baseline) or &#34;zscore&#34; (standard deviations)
+        aggregation: &#34;mean&#34; or &#34;max&#34; for combining values in bins
+        x_bounds: Optional (min, max) for x-axis, auto-calculated if None
+        y_bounds: Optional (min, max) for z-axis, auto-calculated if None
+    
+    Returns:
+        Dictionary containing:
+        - heatmap: 2D numpy array of pupil values (masked where no data)
+        - x_edges: Grid x boundaries
+        - z_edges: Grid z boundaries
+        - sample_counts: 2D array of sample counts per bin
+        - normalization_used: str
+        - aggregation_used: str
+    &#34;&#34;&#34;
+    print(f&#34;[heatmap] Creating pupil dilation heatmap with grid_size={grid_size}, normalization={normalization}&#34;)
+    
+    # Debug: Check trajectory data availability
+    print(f&#34;[heatmap_debug] Processing {len(trajectories)} trajectories&#34;)
+    pupil_data_count = 0
+    for i, traj in enumerate(trajectories[:5]):  # Check first 5 trajectories for better sampling
+        has_pupil_l = traj.pupil_l is not None
+        has_pupil_r = traj.pupil_r is not None
+        print(f&#34;[heatmap_debug] Trajectory {i}: pupil_l={has_pupil_l}, pupil_r={has_pupil_r}&#34;)
+        if has_pupil_l and has_pupil_r:
+            pupil_data_count += 1
+            print(f&#34;[heatmap_debug] Trajectory {i}: pupil_l length={len(traj.pupil_l)}, pupil_r length={len(traj.pupil_r)}&#34;)
+            if len(traj.pupil_l) &gt; 0:
+                print(f&#34;[heatmap_debug] Trajectory {i}: pupil_l sample values={traj.pupil_l[:5]}&#34;)
+    
+    print(f&#34;[heatmap_debug] {pupil_data_count}/{min(5, len(trajectories))} sampled trajectories have pupil data&#34;)
+    print(f&#34;[heatmap_debug] Note: This is a sample check - all {len(trajectories)} trajectories will be processed&#34;)
+    
+    # Collect all pupil data with spatial coordinates
+    all_x = []
+    all_z = []
+    all_pupil_changes = []
+    
+    valid_traj_count = 0
+    
+    for traj in trajectories:
+        # Check if trajectory has pupil data
+        if traj.pupil_l is None or traj.pupil_r is None:
+            continue
+        
+        # Calculate average pupil size
+        pupil_avg = (traj.pupil_l + traj.pupil_r) / 2.0
+        
+        # Filter out NaN values
+        valid_mask = ~(np.isnan(pupil_avg) | np.isnan(traj.x) | np.isnan(traj.z))
+        if not np.any(valid_mask):
+            continue
+        
+        pupil_valid = pupil_avg[valid_mask]
+        x_valid = traj.x[valid_mask]
+        z_valid = traj.z[valid_mask]
+        
+        if len(pupil_valid) &lt; 2:
+            continue
+        
+        # Calculate baseline (trajectory mean)
+        baseline = np.nanmean(pupil_valid)
+        
+        if baseline == 0 or np.isnan(baseline):
+            continue
+        
+        # Calculate pupil changes based on normalization method
+        if normalization == &#34;relative&#34;:
+            # Relative change as percentage
+            pupil_changes = ((pupil_valid - baseline) / baseline) * 100.0
+        elif normalization == &#34;zscore&#34;:
+            # Z-score normalization
+            std = np.nanstd(pupil_valid)
+            if std == 0 or np.isnan(std):
+                continue
+            pupil_changes = (pupil_valid - baseline) / std
+        else:
+            raise ValueError(f&#34;Unknown normalization method: {normalization}&#34;)
+        
+        # Add to collection
+        all_x.extend(x_valid)
+        all_z.extend(z_valid)
+        all_pupil_changes.extend(pupil_changes)
+        valid_traj_count += 1
+    
+    print(f&#34;[heatmap] Processed {valid_traj_count}/{len(trajectories)} trajectories with valid pupil data&#34;)
+    print(f&#34;[heatmap] Total data points: {len(all_x)}&#34;)
+    
+    if len(all_x) == 0:
+        print(&#34;[heatmap] WARNING: No valid pupil data found&#34;)
+        return {
+            &#34;heatmap&#34;: None,
+            &#34;x_edges&#34;: None,
+            &#34;z_edges&#34;: None,
+            &#34;sample_counts&#34;: None,
+            &#34;normalization_used&#34;: normalization,
+            &#34;aggregation_used&#34;: aggregation,
+            &#34;error&#34;: &#34;No valid pupil data&#34;
+        }
+    
+    # Convert to numpy arrays
+    all_x = np.array(all_x)
+    all_z = np.array(all_z)
+    all_pupil_changes = np.array(all_pupil_changes)
+    
+    # Determine bounds
+    if x_bounds is None:
+        x_min, x_max = np.min(all_x), np.max(all_x)
+        # Add 5% padding
+        x_padding = (x_max - x_min) * 0.05
+        x_bounds = (x_min - x_padding, x_max + x_padding)
+        print(f&#34;[heatmap] Calculated x_bounds from data: ({x_bounds[0]:.1f}, {x_bounds[1]:.1f})&#34;)
+    else:
+        print(f&#34;[heatmap] Using provided x_bounds: ({x_bounds[0]:.1f}, {x_bounds[1]:.1f})&#34;)
+    
+    if y_bounds is None:
+        z_min, z_max = np.min(all_z), np.max(all_z)
+        # Add 5% padding
+        z_padding = (z_max - z_min) * 0.05
+        y_bounds = (z_min - z_padding, z_max + z_padding)
+        print(f&#34;[heatmap] Calculated y_bounds from data: ({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+    else:
+        print(f&#34;[heatmap] Using provided y_bounds: ({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+    
+    # Calculate grid_size from cell_size if provided
+    if cell_size is not None:
+        x_range = x_bounds[1] - x_bounds[0]
+        z_range = y_bounds[1] - y_bounds[0]
+        # Ensure minimum grid size for visibility
+        grid_size = max(5, int(max(x_range, z_range) / cell_size))
+        print(f&#34;[heatmap] Calculated grid_size={grid_size} from cell_size={cell_size} (x_range={x_range:.1f}, z_range={z_range:.1f})&#34;)
+        print(f&#34;[heatmap] Using bounds: x=({x_bounds[0]:.1f}, {x_bounds[1]:.1f}), z=({y_bounds[0]:.1f}, {y_bounds[1]:.1f})&#34;)
+    elif grid_size is None:
+        grid_size = 10  # Default fallback
+        print(f&#34;[heatmap] Using default grid_size={grid_size}&#34;)
+    
+    # Create grid edges
+    x_edges = np.linspace(x_bounds[0], x_bounds[1], grid_size + 1)
+    z_edges = np.linspace(y_bounds[0], y_bounds[1], grid_size + 1)
+    
+    # Bin the data - first get counts
+    sample_counts, _, _ = np.histogram2d(
+        all_x, all_z,
+        bins=[x_edges, z_edges]
+    )
+    
+    # Create heatmap based on aggregation method
+    if aggregation == &#34;mean&#34;:
+        # Calculate sum for each bin, then divide by count
+        pupil_sum, _, _ = np.histogram2d(
+            all_x, all_z,
+            bins=[x_edges, z_edges],
+            weights=all_pupil_changes
+        )
+        
+        # Avoid division by zero with better handling
+        with np.errstate(divide=&#39;ignore&#39;, invalid=&#39;ignore&#39;):
+            heatmap = np.where(sample_counts &gt; 0, pupil_sum / sample_counts, np.nan)
+        
+    elif aggregation == &#34;max&#34;:
+        # Use maximum absolute change in each bin
+        heatmap = np.full((grid_size, grid_size), np.nan)
+        
+        for i in range(grid_size):
+            for j in range(grid_size):
+                # Find points in this bin
+                mask = (
+                    (all_x &gt;= x_edges[i]) &amp; (all_x &lt; x_edges[i+1]) &amp;
+                    (all_z &gt;= z_edges[j]) &amp; (all_z &lt; z_edges[j+1])
+                )
+                
+                if np.any(mask):
+                    bin_values = all_pupil_changes[mask]
+                    # Take value with maximum absolute magnitude
+                    abs_max_idx = np.argmax(np.abs(bin_values))
+                    heatmap[i, j] = bin_values[abs_max_idx]
+    else:
+        raise ValueError(f&#34;Unknown aggregation method: {aggregation}&#34;)
+    
+    # Transpose to match imshow convention (z is first axis)
+    heatmap = heatmap.T
+    sample_counts = sample_counts.T
+    
+    print(f&#34;[heatmap] Heatmap created: {grid_size}x{grid_size} grid&#34;)
+    print(f&#34;[heatmap] Valid bins: {np.sum(~np.isnan(heatmap))}/{grid_size*grid_size}&#34;)
+    print(f&#34;[heatmap] Value range: {np.nanmin(heatmap):.2f} to {np.nanmax(heatmap):.2f}&#34;)
+    
+    return {
+        &#34;heatmap&#34;: heatmap,
+        &#34;x_edges&#34;: x_edges,
+        &#34;z_edges&#34;: z_edges,
+        &#34;sample_counts&#34;: sample_counts,
+        &#34;normalization_used&#34;: normalization,
+        &#34;aggregation_used&#34;: aggregation,
+        &#34;valid_trajectories&#34;: valid_traj_count,
+        &#34;total_points&#34;: len(all_x)
+    }</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.gaze_movement_consistency_report"><code class="name flex">
+<span>def <span class="ident">gaze_movement_consistency_report</span></span>(<span>gaze_df: pandas.core.frame.DataFrame) ‑> Dict[str, float]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate summary statistics for gaze-movement alignment.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gaze_movement_consistency_report(gaze_df: pd.DataFrame) -&gt; Dict[str, float]:
+    &#34;&#34;&#34;Generate summary statistics for gaze-movement alignment.&#34;&#34;&#34;
+    
+    # Check if DataFrame is empty or missing required columns
+    if len(gaze_df) == 0:
+        return {&#34;error&#34;: &#34;Empty gaze DataFrame&#34;, &#34;total_decisions&#34;: 0}
+    
+    if &#34;yaw_difference&#34; not in gaze_df.columns:
+        return {
+            &#34;error&#34;: &#34;Missing yaw_difference column&#34;, 
+            &#34;total_decisions&#34;: len(gaze_df),
+            &#34;available_columns&#34;: list(gaze_df.columns)
+        }
+    
+    valid_data = gaze_df.dropna(subset=[&#34;yaw_difference&#34;])
+    
+    if len(valid_data) == 0:
+        return {&#34;error&#34;: &#34;No valid gaze-movement data&#34;, &#34;total_decisions&#34;: len(gaze_df)}
+    
+    # Alignment metrics
+    mean_abs_diff = np.mean(np.abs(valid_data[&#34;yaw_difference&#34;]))
+    aligned_threshold = 30  # degrees
+    aligned_pct = np.mean(np.abs(valid_data[&#34;yaw_difference&#34;]) &lt; aligned_threshold) * 100
+    
+    # By branch analysis
+    branch_consistency = {}
+    for branch in sorted(valid_data[&#34;branch&#34;].unique()):
+        branch_data = valid_data[valid_data[&#34;branch&#34;] == branch]
+        branch_consistency[f&#34;branch_{branch}_alignment&#34;] = np.mean(np.abs(branch_data[&#34;yaw_difference&#34;]))
+    
+    return {
+        &#34;mean_absolute_yaw_difference&#34;: mean_abs_diff,
+        &#34;aligned_percentage&#34;: aligned_pct,
+        &#34;total_decisions&#34;: len(valid_data),
+        **branch_consistency
+    }</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.get_consistent_pupil_scaling"><code class="name flex">
+<span>def <span class="ident">get_consistent_pupil_scaling</span></span>(<span>heatmap_data_list, normalization='relative')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get consistent color scaling for pupil dilation heatmaps across all plots.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>heatmap_data_list</code></strong></dt>
+<dd>List of heatmap data dictionaries</dd>
+<dt><strong><code>normalization</code></strong></dt>
+<dd>"relative" or "zscore"</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>(vmin, vmax) for consistent scaling</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_consistent_pupil_scaling(heatmap_data_list, normalization=&#34;relative&#34;):
+    &#34;&#34;&#34;
+    Get consistent color scaling for pupil dilation heatmaps across all plots.
+    
+    Args:
+        heatmap_data_list: List of heatmap data dictionaries
+        normalization: &#34;relative&#34; or &#34;zscore&#34;
+    
+    Returns:
+        tuple: (vmin, vmax) for consistent scaling
+    &#34;&#34;&#34;
+    all_values = []
+    
+    # Collect all valid values from all heatmaps
+    for heatmap_data in heatmap_data_list:
+        if heatmap_data and &#39;heatmap&#39; in heatmap_data and heatmap_data[&#39;heatmap&#39;] is not None:
+            heatmap = heatmap_data[&#39;heatmap&#39;]
+            # Ensure heatmap is a numpy array
+            if not isinstance(heatmap, np.ndarray):
+                heatmap = np.array(heatmap)
+            valid_values = heatmap[~np.isnan(heatmap)]
+            all_values.extend(valid_values)
+    
+    if len(all_values) == 0:
+        return -10, 10  # Default fallback
+    
+    all_values = np.array(all_values)
+    
+    if normalization == &#34;relative&#34;:
+        # For relative changes, use consistent percentage-based scaling
+        # Cap extreme values but allow strong colors for outliers
+        abs_max = np.max(np.abs(all_values))
+        
+        # Use realistic limits for pupil dilation changes based on medical research
+        # Normal pupil dilation changes are typically 5-25% in most situations
+        if abs_max &lt;= 5:
+            vmin, vmax = -5, 5
+        elif abs_max &lt;= 10:
+            vmin, vmax = -10, 10
+        elif abs_max &lt;= 25:
+            vmin, vmax = -25, 25
+        elif abs_max &lt;= 50:
+            vmin, vmax = -50, 50
+        else:
+            # For extreme values (&gt;50%), cap at 60% to accommodate clipping labels
+            vmin, vmax = -60, 60
+            print(f&#34;[scaling_debug] Extreme values detected (abs_max={abs_max:.1f}%), capping at ±60%&#34;)
+    else:  # zscore
+        # For z-score, use standard deviation-based scaling
+        mean_val = np.mean(all_values)
+        std_val = np.std(all_values)
+        vmin = mean_val - 3 * std_val
+        vmax = mean_val + 3 * std_val
+    
+    print(f&#34;[scaling_debug] Final scaling: vmin={vmin}, vmax={vmax}&#34;)
+    return vmin, vmax</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.plot_gaze_directions_at_junctions"><code class="name flex">
+<span>def <span class="ident">plot_gaze_directions_at_junctions</span></span>(<span>trajectories: List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: List[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>], gaze_df: pandas.core.frame.DataFrame, out_path: str = 'Gaze_Directions.png', r_outer_list: Optional[List[float]] = None, junction_labels: Optional[List[str]] = None, centers_list: Optional[List[numpy.ndarray]] = None) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot head directions at decision points with improved readability and minimap.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_gaze_directions_at_junctions(
+    trajectories: List[Trajectory],
+    junctions: List[Circle],
+    gaze_df: pd.DataFrame,
+    out_path: str = &#34;Gaze_Directions.png&#34;,
+    r_outer_list: Optional[List[float]] = None,
+    junction_labels: Optional[List[str]] = None,
+    centers_list: Optional[List[np.ndarray]] = None,
+) -&gt; None:
+    &#34;&#34;&#34;Plot head directions at decision points with improved readability and minimap.&#34;&#34;&#34;
+    
+    # Create layout with minimap if multiple junctions
+    if len(junctions) &gt; 1:
+        fig = plt.figure(figsize=(5*len(junctions), 7))
+        gs = fig.add_gridspec(2, len(junctions), height_ratios=[4, 1], hspace=0.3)
+        main_axes = [fig.add_subplot(gs[0, i]) for i in range(len(junctions))]
+        mini_ax = fig.add_subplot(gs[1, :])
+    else:
+        fig = plt.figure(figsize=(8, 10))
+        gs = fig.add_gridspec(2, 1, height_ratios=[4, 1], hspace=0.3)
+        main_axes = [fig.add_subplot(gs[0])]
+        mini_ax = fig.add_subplot(gs[1])
+    
+    axes = main_axes
+    
+    # Plot each junction separately to reduce overlap
+    for j_idx, (ax, junction) in enumerate(zip(axes, junctions)):
+        # Background trajectories
+        for traj in trajectories:
+            ax.plot(traj.x, traj.z, color=&#34;lightgray&#34;, alpha=0.3, linewidth=0.5, zorder=1)
+        
+        # Junction circle (inner)
+        circle = plt.Circle((junction.cx, junction.cz), junction.r, 
+                          fill=False, color=&#34;black&#34;, linewidth=2, zorder=2)
+        ax.add_patch(circle)
+        
+        # Outer circle (if provided)
+        if r_outer_list and j_idx &lt; len(r_outer_list):
+            r_outer = r_outer_list[j_idx]
+            outer_circle = plt.Circle((junction.cx, junction.cz), r_outer, 
+                                    fill=False, color=&#34;red&#34;, linewidth=2, linestyle=&#34;--&#34;, 
+                                    zorder=2)
+            ax.add_patch(outer_circle)
+        
+        # Junction center point
+        ax.scatter([junction.cx], [junction.cz], color=&#34;black&#34;, s=30, zorder=3)
+        
+        # Filter gaze data for this junction
+        print(f&#34;[gaze_plot_debug] Junction {j_idx}: Looking for junction index {j_idx} in gaze_df&#34;)
+        print(f&#34;[gaze_plot_debug] Junction {j_idx}: Available junction indices in gaze_df: {sorted(gaze_df[&#39;junction&#39;].unique())}&#34;)
+        print(f&#34;[gaze_plot_debug] Junction {j_idx}: Total gaze_df rows: {len(gaze_df)}&#34;)
+        
+        # Handle individual junction data: if we only have data for one junction, use all the data regardless of junction index
+        available_junction_indices = sorted(gaze_df[&#39;junction&#39;].unique())
+        if len(available_junction_indices) == 1:
+            # Single junction data - use all data
+            junction_gaze = gaze_df.copy()
+            print(f&#34;[gaze_plot_debug] Junction {j_idx}: Single junction data detected, using all {len(junction_gaze)} rows&#34;)
+        else:
+            # Multi-junction data - filter by junction index
+            junction_gaze = gaze_df[gaze_df[&#34;junction&#34;] == j_idx]
+            print(f&#34;[gaze_plot_debug] Junction {j_idx}: Found {len(junction_gaze)} rows after filtering&#34;)
+        
+        # Drop unassigned/outlier branches to avoid confusing colors
+        if &#34;branch&#34; in junction_gaze.columns:
+            junction_gaze = junction_gaze.copy()
+            junction_gaze[&#34;branch&#34;] = pd.to_numeric(junction_gaze[&#34;branch&#34;], errors=&#34;coerce&#34;)
+            junction_gaze = junction_gaze.dropna(subset=[&#34;branch&#34;]).copy()
+            junction_gaze[&#34;branch&#34;] = junction_gaze[&#34;branch&#34;].astype(int)
+            junction_gaze = junction_gaze[junction_gaze[&#34;branch&#34;] &gt;= 0]
+            print(f&#34;[gaze_plot_debug] Junction {j_idx}: After branch filtering: {len(junction_gaze)} rows&#34;)
+        
+        # Debug: Check what gaze data we have
+        # Prefer user-provided label; otherwise use coordinates for clarity
+        label = None
+        try:
+            # junction_labels is passed from GUI; keep local if available
+            pass
+        except Exception:
+            pass
+        label_str = f&#34;Junction {j_idx}&#34;
+        if junction_labels is not None and j_idx &lt; len(junction_labels):
+            label_str = f&#34;Junction {junction_labels[j_idx]}&#34;
+        else:
+            label_str = f&#34;Junction ({junction.cx}, {junction.cz}, r={junction.r})&#34;
+        print(f&#34;[gaze_plot] {label_str}: {len(junction_gaze)} gaze records&#34;)
+        if len(junction_gaze) &gt; 0:
+            print(f&#34;[gaze_plot] Branches found: {sorted(junction_gaze[&#39;branch&#39;].unique())} for {label_str}&#34;)
+            print(f&#34;[gaze_plot] Sample head_yaw values: {junction_gaze[&#39;head_yaw&#39;].head().tolist()} at {label_str}&#34;)
+            print(f&#34;[gaze_plot] Sample intercept positions: x={junction_gaze[&#39;intercept_x&#39;].head().tolist()}, z={junction_gaze[&#39;intercept_z&#39;].head().tolist()} at {label_str}&#34;)
+            
+            # Debug: Show head_yaw values by branch
+            for branch in sorted(junction_gaze[&#39;branch&#39;].unique()):
+                branch_data = junction_gaze[junction_gaze[&#39;branch&#39;] == branch]
+                valid_head_yaw = branch_data[~np.isnan(branch_data[&#39;head_yaw&#39;])]
+                print(f&#34;[gaze_plot] Branch {int(branch)}: {len(valid_head_yaw)} valid head_yaw values out of {len(branch_data)} total at {label_str}&#34;)
+                if len(valid_head_yaw) &gt; 0:
+                    print(f&#34;[gaze_plot] Branch {int(branch)} head_yaw range: {valid_head_yaw[&#39;head_yaw&#39;].min():.1f}° to {valid_head_yaw[&#39;head_yaw&#39;].max():.1f}° at {label_str}&#34;)
+        
+        # Gaze arrows with scaling based on r_outer
+        cmap = plt.get_cmap(&#34;tab10&#34;)
+
+        # Use the original discover branch IDs directly for colors so they match the intercept plot
+        unique_branches = sorted(junction_gaze[&#34;branch&#34;].unique()) if len(junction_gaze) else []
+        branch_remap = {int(b): int(b) for b in unique_branches}
+        
+        # Scale arrow size and plot limits based on r_outer
+        if r_outer_list and j_idx &lt; len(r_outer_list):
+            r_outer = r_outer_list[j_idx]
+            arrow_scale = max(10, r_outer * 0.3)  # Scale arrows with r_outer
+            margin = max(50, r_outer * 1.5 + arrow_scale)  # Scale margin with r_outer + arrow length
+        else:
+            arrow_scale = 15
+            margin = 50
+        
+        print(f&#34;[gaze_plot] Arrow scale: {arrow_scale}, margin: {margin} at {label_str}&#34;)
+        
+        arrows_drawn = 0
+        from collections import defaultdict
+        arrows_by_branch = defaultdict(int)  # Count arrows by branch (after remap)
+        
+        # Optional consistency check vs centers (if provided)
+        mismatch_count = 0
+        checked = 0
+
+        for _, row in junction_gaze.iterrows():
+            if np.isnan(row[&#34;head_yaw&#34;]):
+                print(f&#34;[gaze_plot] Skipping NaN head_yaw for branch {row[&#39;branch&#39;]} at {label_str}&#34;)
+                continue
+            
+            # Use the actual intercept positions from the gaze DataFrame
+            # These should now be in the correct coordinate system
+            x = row[&#34;intercept_x&#34;]
+            z = row[&#34;intercept_z&#34;]
+            yaw = np.radians(row[&#34;head_yaw&#34;])
+            dx = arrow_scale * np.sin(yaw)
+            dz = arrow_scale * np.cos(yaw)
+            
+            original_branch = int(row[&#34;branch&#34;])
+            branch = branch_remap.get(original_branch, original_branch)
+            color = cmap(branch % 10)
+            
+            # Debug: Show arrow details for first few arrows of each branch
+            if arrows_by_branch[branch] &lt; 3:  # Show first 3 arrows of each branch
+                print(f&#34;[gaze_plot] Branch {original_branch}→{branch} arrow {arrows_by_branch[branch]+1}: pos=({x:.1f}, {z:.1f}), yaw={row[&#39;head_yaw&#39;]:.1f}°, dx={dx:.1f}, dz={dz:.1f}, color={color}&#34;)
+            
+            ax.arrow(x, z, dx, dz, head_width=arrow_scale*0.15, head_length=arrow_scale*0.2, 
+                    fc=color, ec=color, alpha=0.7, zorder=4, linewidth=1)
+            arrows_drawn += 1
+            arrows_by_branch[branch] += 1
+            
+            # Compare assignment to nearest center (if centers available)
+            if centers_list is not None and j_idx &lt; len(centers_list) and centers_list[j_idx] is not None:
+                c = centers_list[j_idx]
+                if c.size &gt; 0 and not (np.isnan(x) or np.isnan(z)):
+                    vx = x - junction.cx; vz = z - junction.cz
+                    vv = np.array([vx, vz], dtype=float)
+                    n = np.linalg.norm(vv)
+                    if n &gt; 1e-9:
+                        vv = vv / n
+                        dots = c @ vv
+                        nearest = int(np.argmax(dots))
+                        checked += 1
+                        if nearest != original_branch:
+                            mismatch_count += 1
+        
+            print(f&#34;[gaze_plot] Drew {arrows_drawn} arrows for {label_str}&#34;)
+            print(f&#34;[gaze_plot] Arrows by branch: {arrows_by_branch} at {label_str}&#34;)
+        
+        if checked &gt; 0 and mismatch_count &gt; 0:
+            rate = mismatch_count / checked * 100.0
+            print(f&#34;[gaze_plot] Branch-vs-center mismatch at {label_str}: {mismatch_count}/{checked} ({rate:.1f}%)&#34;)
+
+        # Set equal aspect and labels
+        ax.set_aspect(&#34;equal&#34;)
+        ax.set_xlabel(&#34;X&#34;)
+        ax.set_ylabel(&#34;Z&#34;)
+        if junction_labels and j_idx &lt; len(junction_labels):
+            this_label = junction_labels[j_idx]
+        else:
+            this_label = f&#34;J{j_idx}&#34;
+        ax.set_title(f&#34;{this_label}: Head Directions&#34;)
+        
+        # Set axis limits around junction with proper scaling
+        ax.set_xlim(junction.cx - margin, junction.cx + margin)
+        ax.set_ylim(junction.cz - margin, junction.cz + margin)
+        
+        # Add legend for branches (show original branch ids) in numeric order
+        branch_handles = []
+        legend_order = sorted([int(b) for b in unique_branches])
+        for original_branch in legend_order:
+            color = cmap(int(branch_remap[int(original_branch)]) % 10)
+            branch_handles.append(plt.Line2D([0], [0], color=color, linewidth=3, 
+                                           label=f&#34;Branch {int(original_branch)}&#34;))
+        if branch_handles:
+            ax.legend(handles=branch_handles, loc=&#34;upper right&#34;)
+    
+    # Add minimap showing overall view
+    if len(junctions) &gt; 0:
+        # Plot all trajectories in mini-map
+        for traj in trajectories:
+            mini_ax.plot(traj.x, traj.z, color=&#34;0.7&#34;, linewidth=0.3, alpha=0.2)
+        
+        # Plot all junctions
+        for i, junc in enumerate(junctions):
+            circle = plt.Circle((junc.cx, junc.cz), junc.r, fill=False, 
+                              color=&#39;red&#39;, linewidth=2, alpha=0.8)
+            mini_ax.add_patch(circle)
+            mini_ax.scatter([junc.cx], [junc.cz], c=&#39;red&#39;, s=30, marker=&#39;o&#39;, zorder=5)
+            
+            # Add junction labels
+            label_txt = junction_labels[i] if junction_labels and i &lt; len(junction_labels) else f&#39;J{i}&#39;
+            mini_ax.text(junc.cx, junc.cz + junc.r + 10, label_txt, 
+                        ha=&#39;center&#39;, va=&#39;bottom&#39;, fontsize=8, fontweight=&#39;bold&#39;)
+        
+        # Add rectangles showing the areas shown in main plots
+        for i, ax in enumerate(axes):
+            main_xlim = ax.get_xlim()
+            main_ylim = ax.get_ylim()
+            rect = plt.Rectangle((main_xlim[0], main_ylim[0]), 
+                               main_xlim[1] - main_xlim[0], 
+                               main_ylim[1] - main_ylim[0],
+                               fill=False, color=&#39;blue&#39;, linewidth=1, linestyle=&#39;--&#39;, alpha=0.6)
+            mini_ax.add_patch(rect)
+        
+        mini_ax.set_aspect(&#39;equal&#39;)
+        mini_ax.set_xlabel(&#39;X (Overall View)&#39;)
+        mini_ax.set_ylabel(&#39;Z (Overall View)&#39;)
+        mini_ax.set_title(&#39;Mini-map: All Junctions and Trajectories&#39;)
+        mini_ax.grid(True, alpha=0.3)
+        
+        # Set reasonable limits for mini-map
+        all_x = np.concatenate([traj.x for traj in trajectories])
+        all_z = np.concatenate([traj.z for traj in trajectories])
+        
+        # Handle NaN values in coordinates
+        valid_x = all_x[~np.isnan(all_x)]
+        valid_z = all_z[~np.isnan(all_z)]
+        
+        if len(valid_x) &gt; 0 and len(valid_z) &gt; 0:
+            x_margin = (np.max(valid_x) - np.min(valid_x)) * 0.1
+            z_margin = (np.max(valid_z) - np.min(valid_z)) * 0.1
+            mini_ax.set_xlim(np.min(valid_x) - x_margin, np.max(valid_x) + x_margin)
+            mini_ax.set_ylim(np.min(valid_z) - z_margin, np.max(valid_z) + z_margin)
+        else:
+            # Fallback: set reasonable default limits
+            mini_ax.set_xlim(-100, 100)
+            mini_ax.set_ylim(-100, 100)
+    
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.plot_physiological_by_branch"><code class="name flex">
+<span>def <span class="ident">plot_physiological_by_branch</span></span>(<span>physio_df: pandas.core.frame.DataFrame, out_path: str = 'Physiological_Analysis.png') ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot heart rate and pupil dilation changes by branch choice.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_physiological_by_branch(
+    physio_df: pd.DataFrame,
+    out_path: str = &#34;Physiological_Analysis.png&#34;
+) -&gt; None:
+    &#34;&#34;&#34;Plot heart rate and pupil dilation changes by branch choice.&#34;&#34;&#34;
+    
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # Heart rate changes by branch
+    hr_data = physio_df.dropna(subset=[&#34;heart_rate_change&#34;])
+    if len(hr_data) &gt; 0:
+        branches = sorted(hr_data[&#34;branch&#34;].unique())
+        hr_by_branch = [hr_data[hr_data[&#34;branch&#34;] == b][&#34;heart_rate_change&#34;].values for b in branches]
+        
+        ax1.boxplot(hr_by_branch, labels=[f&#34;Branch {b}&#34; for b in branches])
+        ax1.set_ylabel(&#34;Heart Rate Change (bpm)&#34;)
+        ax1.set_title(&#34;Heart Rate Change at Decision Points\n(Baseline: Normal navigation 2-5s before junction entry)&#34;)
+        ax1.grid(True, alpha=0.3)
+    
+    # Pupil dilation changes by branch
+    pupil_data = physio_df.dropna(subset=[&#34;pupil_change&#34;])
+    if len(pupil_data) &gt; 0:
+        branches = sorted(pupil_data[&#34;branch&#34;].unique())
+        pupil_by_branch = [pupil_data[pupil_data[&#34;branch&#34;] == b][&#34;pupil_change&#34;].values for b in branches]
+        
+        ax2.boxplot(pupil_by_branch, labels=[f&#34;Branch {b}&#34; for b in branches])
+        ax2.set_ylabel(&#34;Pupil Dilation Change (mm)&#34;)
+        ax2.set_title(&#34;Pupil Dilation Change at Decision Points\n(Baseline: Normal navigation 2-5s before junction entry)&#34;)
+        ax2.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
+    plt.close()</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.plot_pupil_dilation_heatmap"><code class="name flex">
+<span>def <span class="ident">plot_pupil_dilation_heatmap</span></span>(<span>heatmap_data: Dict[str, <built-in function any>], junctions: Optional[Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>]] = None, trajectories: Optional[Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>]] = None, all_trajectories: Optional[Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>]] = None, title: str = 'Pupil Dilation Heatmap', out_path: Optional[str] = None, show_sample_counts: bool = False, show_minimap: bool = True, vmin: Optional[float] = None, vmax: Optional[float] = None) ‑> matplotlib.figure.Figure</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot pupil dilation heatmap with overlays.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>heatmap_data</code></strong></dt>
+<dd>Dictionary from create_pupil_dilation_heatmap()</dd>
+<dt><strong><code>junctions</code></strong></dt>
+<dd>Optional list of junctions to overlay</dd>
+<dt><strong><code>trajectories</code></strong></dt>
+<dd>Optional list of trajectories to show as background</dd>
+<dt><strong><code>title</code></strong></dt>
+<dd>Plot title</dd>
+<dt><strong><code>out_path</code></strong></dt>
+<dd>Optional path to save figure</dd>
+<dt><strong><code>show_sample_counts</code></strong></dt>
+<dd>If True, annotate bins with sample counts</dd>
+<dt><strong><code>show_minimap</code></strong></dt>
+<dd>If True, show minimap (default True, disable for per-junction plots)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Matplotlib figure</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_pupil_dilation_heatmap(
+    heatmap_data: Dict[str, any],
+    junctions: Optional[Sequence[Circle]] = None,
+    trajectories: Optional[Sequence[Trajectory]] = None,
+    all_trajectories: Optional[Sequence[Trajectory]] = None,
+    title: str = &#34;Pupil Dilation Heatmap&#34;,
+    out_path: Optional[str] = None,
+    show_sample_counts: bool = False,
+    show_minimap: bool = True,
+    vmin: Optional[float] = None,
+    vmax: Optional[float] = None
+) -&gt; plt.Figure:
+    &#34;&#34;&#34;
+    Plot pupil dilation heatmap with overlays.
+    
+    Args:
+        heatmap_data: Dictionary from create_pupil_dilation_heatmap()
+        junctions: Optional list of junctions to overlay
+        trajectories: Optional list of trajectories to show as background
+        title: Plot title
+        out_path: Optional path to save figure
+        show_sample_counts: If True, annotate bins with sample counts
+        show_minimap: If True, show minimap (default True, disable for per-junction plots)
+    
+    Returns:
+        Matplotlib figure
+    &#34;&#34;&#34;
+    # Check for errors
+    if heatmap_data.get(&#34;error&#34;):
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.text(0.5, 0.5, f&#34;Error: {heatmap_data[&#39;error&#39;]}&#34;, 
+                ha=&#39;center&#39;, va=&#39;center&#39;, fontsize=14)
+        ax.set_title(title)
+        return fig
+    
+    heatmap = heatmap_data[&#34;heatmap&#34;]
+    x_edges = heatmap_data[&#34;x_edges&#34;]
+    z_edges = heatmap_data[&#34;z_edges&#34;]
+    sample_counts = heatmap_data[&#34;sample_counts&#34;]
+    normalization = heatmap_data[&#34;normalization_used&#34;]
+    
+    # Create figure with main plot and optional minimap
+    if show_minimap:
+        fig = plt.figure(figsize=(16, 8))
+        gs = fig.add_gridspec(1, 5, width_ratios=[4, 0.2, 1, 0.2, 0.3], wspace=0.4)
+        ax_main = fig.add_subplot(gs[0, 0])
+        ax_minimap = fig.add_subplot(gs[0, 2])
+        ax_colorbar = fig.add_subplot(gs[0, 4])
+    else:
+        fig = plt.figure(figsize=(12, 9))
+        gs = fig.add_gridspec(1, 2, width_ratios=[5, 0.3], wspace=0.15)
+        ax_main = fig.add_subplot(gs[0, 0])
+        ax_colorbar = fig.add_subplot(gs[0, 1])
+        ax_minimap = None
+    
+    # Determine colormap scale
+    if vmin is not None and vmax is not None:
+        # Use provided consistent scaling
+        pass
+    else:
+        # Use dynamic scaling (fallback)
+        # Ensure heatmap is a numpy array
+        if not isinstance(heatmap, np.ndarray):
+            heatmap = np.array(heatmap)
+        valid_values = heatmap[~np.isnan(heatmap)]
+        if len(valid_values) == 0:
+            vmin, vmax = -10, 10
+        else:
+            # For relative changes, center at 0
+            if normalization == &#34;relative&#34;:
+                abs_max = np.max(np.abs(valid_values))
+                # Ensure minimum range for visibility
+                min_range = 1.0  # Minimum 1% range
+                abs_max = max(abs_max, min_range)
+                vmin, vmax = -abs_max, abs_max
+                print(f&#34;[plot_debug] Dynamic scaling: abs_max={abs_max:.2f}, range=[{vmin:.2f}, {vmax:.2f}]&#34;)
+            else:  # zscore
+                vmin, vmax = np.min(valid_values), np.max(valid_values)
+    
+    # Plot trajectories as background (before heatmap for context)
+    if trajectories:
+        for traj in trajectories:
+            if hasattr(traj, &#39;x&#39;) and hasattr(traj, &#39;z&#39;):
+                # Plot with moderate alpha for visible background
+                ax_main.plot(traj.x, traj.z, color=&#39;gray&#39;, alpha=0.35, linewidth=0.8, zorder=1)
+    
+    # Debug: Check heatmap data
+    # Ensure heatmap is a numpy array
+    if not isinstance(heatmap, np.ndarray):
+        heatmap = np.array(heatmap)
+    print(f&#34;[plot_debug] Heatmap shape: {heatmap.shape}&#34;)
+    print(f&#34;[plot_debug] Heatmap bounds: x=({x_edges[0]:.1f}, {x_edges[-1]:.1f}), z=({z_edges[0]:.1f}, {z_edges[-1]:.1f})&#34;)
+    print(f&#34;[plot_debug] Valid heatmap values: {np.sum(~np.isnan(heatmap))}/{heatmap.size}&#34;)
+    if np.sum(~np.isnan(heatmap)) &gt; 0:
+        print(f&#34;[plot_debug] Heatmap value range: {np.nanmin(heatmap):.2f} to {np.nanmax(heatmap):.2f}&#34;)
+        print(f&#34;[plot_debug] Color scale: vmin={vmin}, vmax={vmax}&#34;)
+    else:
+        print(f&#34;[plot_debug] WARNING: No valid heatmap data found!&#34;)
+    
+    # Plot main heatmap using pcolormesh for discrete grid data
+    im = ax_main.pcolormesh(
+        x_edges, z_edges, heatmap,
+        cmap=&#39;RdBu_r&#39;,  # Red for dilation, blue for constriction
+        vmin=vmin,
+        vmax=vmax,
+        shading=&#39;flat&#39;,  # No interpolation between cells
+        alpha=0.85,  # Slightly transparent to show trajectories
+        zorder=2
+    )
+    
+    # CRITICAL FIX: Set axis limits to match heatmap bounds to ensure proper zoom
+    ax_main.set_xlim(x_edges[0], x_edges[-1])
+    ax_main.set_ylim(z_edges[0], z_edges[-1])
+    
+    # Add explicit grid lines to make discrete cells more visible
+    ax_main.grid(True, linestyle=&#39;:&#39;, alpha=0.3, color=&#39;black&#39;, linewidth=0.5)
+    
+    # Add sample count annotations if requested
+    if show_sample_counts:
+        grid_size = heatmap.shape[0]
+        x_centers = (x_edges[:-1] + x_edges[1:]) / 2
+        z_centers = (z_edges[:-1] + z_edges[1:]) / 2
+        
+        for i in range(grid_size):
+            for j in range(grid_size):
+                count = int(sample_counts[i, j])
+                if count &gt; 0:
+                    # Only show if count is significant
+                    if count &gt;= 5:
+                        ax_main.text(x_centers[j], z_centers[i], str(count),
+                                   ha=&#39;center&#39;, va=&#39;center&#39;, fontsize=6,
+                                   color=&#39;black&#39; if abs(heatmap[i, j]) &lt; (vmax-vmin)/2 else &#39;white&#39;)
+    
+    # Overlay junctions (on top of everything)
+    if junctions:
+        for idx, junc in enumerate(junctions):
+            circle = plt.Circle((junc.cx, junc.cz), junc.r, 
+                              fill=False, edgecolor=&#39;green&#39;, linewidth=2, linestyle=&#39;--&#39;, zorder=5)
+            ax_main.add_patch(circle)
+            
+            # Use the correct junction index from heatmap data if available
+            junction_label_idx = idx
+            if &#39;junction_idx&#39; in heatmap_data:
+                junction_label_idx = heatmap_data[&#39;junction_idx&#39;]
+                print(f&#34;[plot_debug] Using junction index from heatmap data: {junction_label_idx}&#34;)
+            else:
+                print(f&#34;[plot_debug] Using local junction index: {idx}&#34;)
+            
+            ax_main.text(junc.cx, junc.cz, f&#39;J{junction_label_idx}&#39;, 
+                        ha=&#39;center&#39;, va=&#39;center&#39;, fontsize=10, 
+                        color=&#39;green&#39;, weight=&#39;bold&#39;, zorder=6,
+                        bbox=dict(boxstyle=&#39;circle,pad=0.1&#39;, facecolor=&#39;white&#39;, edgecolor=&#39;green&#39;))
+            
+            # Add junction radius display
+            radius_text = f&#39;r={junc.r:.1f}&#39;
+            ax_main.text(junc.cx, junc.cz + junc.r + 5, radius_text,
+                        ha=&#39;center&#39;, va=&#39;bottom&#39;, fontsize=8,
+                        color=&#39;green&#39;, weight=&#39;bold&#39;, zorder=6,
+                        bbox=dict(boxstyle=&#39;round,pad=0.2&#39;, facecolor=&#39;white&#39;, edgecolor=&#39;green&#39;, alpha=0.8))
+    
+    ax_main.set_xlabel(&#39;X Position&#39;, fontsize=12)
+    ax_main.set_ylabel(&#39;Z Position&#39;, fontsize=12)
+    ax_main.set_title(title, fontsize=14, weight=&#39;bold&#39;)
+    ax_main.grid(True, alpha=0.3, linestyle=&#39;:&#39;)
+    
+    # Add colorbar
+    if show_minimap:
+        cbar = plt.colorbar(im, cax=ax_colorbar, orientation=&#39;vertical&#39;)
+    else:
+        cbar = plt.colorbar(im, cax=ax_colorbar, orientation=&#39;vertical&#39;)
+    
+    if normalization == &#34;relative&#34;:
+        cbar.set_label(&#39;Pupil Dilation Change (%)&#39;, fontsize=11)
+        
+        # Create consistent colorbar labels: 0, 20, 40, &gt;60 (and negative equivalents)
+        print(f&#34;[colorbar_debug] vmin={vmin}, vmax={vmax}&#34;)
+        
+        # Use consistent scale for all heatmaps to improve comparability
+        # Normal pupil dilation range: ±60%, outliers get same color
+        ticks = [-60, -40, -20, 0, 20, 40, 60]
+        tick_labels = [&#39;&lt;-60&#39;, &#39;-40&#39;, &#39;-20&#39;, &#39;0&#39;, &#39;20&#39;, &#39;40&#39;, &#39;&gt;60&#39;]
+        
+        print(f&#34;[colorbar_debug] Using ticks: {ticks}&#34;)
+        print(f&#34;[colorbar_debug] Using labels: {tick_labels}&#34;)
+        
+        # Set consistent color scale limits to ensure same colors across all plots
+        im.set_clim(-60, 60)
+        
+        # Set ticks and labels
+        cbar.set_ticks(ticks)
+        cbar.set_ticklabels(tick_labels)
+    else:
+        cbar.set_label(&#39;Pupil Dilation (Z-score)&#39;, fontsize=11)
+    
+    # Create minimap (overview of all data) - only if requested
+    if show_minimap and ax_minimap is not None:
+        # Plot trajectories in minimap (use all_trajectories if available for full map view)
+        minimap_trajectories = all_trajectories if all_trajectories is not None else trajectories
+        if minimap_trajectories:
+            for traj in minimap_trajectories:
+                if hasattr(traj, &#39;x&#39;) and hasattr(traj, &#39;z&#39;):
+                    ax_minimap.plot(traj.x, traj.z, color=&#39;gray&#39;, alpha=0.4, linewidth=0.5)
+        
+        # Overlay junctions on minimap (no heatmap for global view)
+        if junctions:
+            for idx, junc in enumerate(junctions):
+                circle = plt.Circle((junc.cx, junc.cz), junc.r, 
+                                  fill=False, edgecolor=&#39;red&#39;, linewidth=1, zorder=10)
+                ax_minimap.add_patch(circle)
+                ax_minimap.plot(junc.cx, junc.cz, &#39;ro&#39;, markersize=4, zorder=10)
+        
+        ax_minimap.set_title(&#39;Overview&#39;, fontsize=10)
+        ax_minimap.set_xticks([])
+        ax_minimap.set_yticks([])
+        ax_minimap.set_aspect(&#39;equal&#39;)
+        
+        # CRITICAL FIX: Set minimap limits to show full data extent, not zoomed view
+        # For junction heatmaps, we need to show the full map extent
+        if minimap_trajectories:
+            all_x_coords = []
+            all_z_coords = []
+            for traj in minimap_trajectories:
+                if hasattr(traj, &#39;x&#39;) and hasattr(traj, &#39;z&#39;):
+                    all_x_coords.extend(traj.x)
+                    all_z_coords.extend(traj.z)
+            
+            if all_x_coords and all_z_coords:
+                x_margin = (max(all_x_coords) - min(all_x_coords)) * 0.1
+                z_margin = (max(all_z_coords) - min(all_z_coords)) * 0.1
+                ax_minimap.set_xlim(min(all_x_coords) - x_margin, max(all_x_coords) + x_margin)
+                ax_minimap.set_ylim(min(all_z_coords) - z_margin, max(all_z_coords) + z_margin)
+        
+        # Add statistics text below minimap
+        stats_text = f&#34;Valid bins: {np.sum(~np.isnan(heatmap))}/{heatmap.size}\n&#34;
+        stats_text += f&#34;Trajectories: {heatmap_data[&#39;valid_trajectories&#39;]}\n&#34;
+        stats_text += f&#34;Data points: {heatmap_data[&#39;total_points&#39;]}&#34;
+        
+        ax_minimap.text(0.5, -0.15, stats_text, fontsize=8, 
+                       ha=&#39;center&#39;, va=&#39;top&#39;, transform=ax_minimap.transAxes,
+                       bbox=dict(boxstyle=&#39;round&#39;, facecolor=&#39;wheat&#39;, alpha=0.5))
+    
+    plt.tight_layout()
+    
+    if out_path:
+        plt.savefig(out_path, dpi=150, bbox_inches=&#39;tight&#39;)
+        print(f&#34;[heatmap] Saved plot to {out_path}&#34;)
+    
+    return fig</code></pre>
+</details>
+</dd>
+<dt id="verta.verta_gaze.plot_pupil_trajectory_analysis"><code class="name flex">
+<span>def <span class="ident">plot_pupil_trajectory_analysis</span></span>(<span>pupil_df: pandas.core.frame.DataFrame, out_path: str = 'Pupil_Trajectory_Analysis.png') ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot pupil dilation trajectory analysis by junction.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_pupil_trajectory_analysis(
+    pupil_df: pd.DataFrame,
+    out_path: str = &#34;Pupil_Trajectory_Analysis.png&#34;
+) -&gt; None:
+    &#34;&#34;&#34;Plot pupil dilation trajectory analysis by junction.&#34;&#34;&#34;
+    
+    junctions = sorted(pupil_df[&#34;junction&#34;].unique())
+    n_junctions = len(junctions)
+    
+    fig, axes = plt.subplots(1, n_junctions, figsize=(5*n_junctions, 5))
+    if n_junctions == 1:
+        axes = [axes]
+    
+    for j_idx, ax in enumerate(axes):
+        junction_data = pupil_df[pupil_df[&#34;junction&#34;] == j_idx]
+        
+        if len(junction_data) == 0:
+            ax.set_title(f&#34;Junction {j_idx}: No Data&#34;)
+            continue
+        
+        # Box plot of pupil changes by branch
+        branches = sorted(junction_data[&#34;branch&#34;].unique())
+        pupil_by_branch = [junction_data[junction_data[&#34;branch&#34;] == b][&#34;pupil_change&#34;].values for b in branches]
+        
+        ax.boxplot(pupil_by_branch, labels=[f&#34;Branch {b}&#34; for b in branches])
+        ax.set_ylabel(&#34;Pupil Dilation Change (mm)&#34;)
+        ax.set_title(f&#34;Junction {j_idx}: Pupil Dilation Changes\n(Baseline: Normal navigation 2-5s before junction entry)&#34;)
+        ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
+    plt.close()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="verta" href="index.html">verta</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="verta.verta_gaze.analyze_physiological_at_junctions" href="#verta.verta_gaze.analyze_physiological_at_junctions">analyze_physiological_at_junctions</a></code></li>
+<li><code><a title="verta.verta_gaze.analyze_pupil_dilation_trajectory" href="#verta.verta_gaze.analyze_pupil_dilation_trajectory">analyze_pupil_dilation_trajectory</a></code></li>
+<li><code><a title="verta.verta_gaze.compute_head_yaw_at_decisions" href="#verta.verta_gaze.compute_head_yaw_at_decisions">compute_head_yaw_at_decisions</a></code></li>
+<li><code><a title="verta.verta_gaze.create_per_junction_pupil_heatmap" href="#verta.verta_gaze.create_per_junction_pupil_heatmap">create_per_junction_pupil_heatmap</a></code></li>
+<li><code><a title="verta.verta_gaze.create_pupil_dilation_heatmap" href="#verta.verta_gaze.create_pupil_dilation_heatmap">create_pupil_dilation_heatmap</a></code></li>
+<li><code><a title="verta.verta_gaze.gaze_movement_consistency_report" href="#verta.verta_gaze.gaze_movement_consistency_report">gaze_movement_consistency_report</a></code></li>
+<li><code><a title="verta.verta_gaze.get_consistent_pupil_scaling" href="#verta.verta_gaze.get_consistent_pupil_scaling">get_consistent_pupil_scaling</a></code></li>
+<li><code><a title="verta.verta_gaze.plot_gaze_directions_at_junctions" href="#verta.verta_gaze.plot_gaze_directions_at_junctions">plot_gaze_directions_at_junctions</a></code></li>
+<li><code><a title="verta.verta_gaze.plot_physiological_by_branch" href="#verta.verta_gaze.plot_physiological_by_branch">plot_physiological_by_branch</a></code></li>
+<li><code><a title="verta.verta_gaze.plot_pupil_dilation_heatmap" href="#verta.verta_gaze.plot_pupil_dilation_heatmap">plot_pupil_dilation_heatmap</a></code></li>
+<li><code><a title="verta.verta_gaze.plot_pupil_trajectory_analysis" href="#verta.verta_gaze.plot_pupil_trajectory_analysis">plot_pupil_trajectory_analysis</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
