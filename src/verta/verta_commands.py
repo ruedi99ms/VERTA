@@ -1431,6 +1431,52 @@ class EnhancedChainCommand(BaseCommand):
             traceback.print_exc()
 
 
+class GUICommand(BaseCommand):
+    """Command handler for launching the web GUI"""
+
+    def add_arguments(self, parser: argparse.ArgumentParser) -> None:
+        parser.add_argument("--port", type=int, default=8501, help="Port to run the GUI on (default: 8501)")
+        parser.add_argument("--host", type=str, default="localhost", help="Host to run the GUI on (default: localhost)")
+
+    def execute(self, args: argparse.Namespace) -> None:
+        """Launch the Streamlit GUI"""
+        try:
+            import streamlit
+        except ImportError:
+            self.logger.error("Streamlit is not installed. Install GUI dependencies with: pip install verta[gui]")
+            return
+
+        import subprocess
+        import sys
+        from pathlib import Path
+
+        # Get the path to verta_gui.py
+        gui_path = Path(__file__).parent / "verta_gui.py"
+        
+        if not gui_path.exists():
+            self.logger.error(f"GUI file not found at: {gui_path}")
+            return
+
+        # Build streamlit command
+        cmd = [
+            sys.executable, "-m", "streamlit", "run",
+            str(gui_path),
+            "--server.port", str(args.port),
+            "--server.address", args.host
+        ]
+
+        self.logger.info(f"Launching VERTA GUI on http://{args.host}:{args.port}")
+        self.logger.info("Press Ctrl+C to stop the server")
+
+        try:
+            subprocess.run(cmd)
+        except KeyboardInterrupt:
+            self.logger.info("GUI stopped by user")
+        except Exception as e:
+            self.logger.error(f"Failed to launch GUI: {e}")
+            raise
+
+
 # Command registry
 COMMANDS = {
     "discover": DiscoverCommand,
@@ -1440,4 +1486,5 @@ COMMANDS = {
     "predict": PredictCommand,
     "intent": IntentRecognitionCommand,
     "chain-enhanced": EnhancedChainCommand,
+    "gui": GUICommand,
 }
