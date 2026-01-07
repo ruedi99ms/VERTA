@@ -11,15 +11,31 @@ pip install verta[gui]
 
 ### 2. Launch the GUI
 ```bash
-# Option 1: Using the launcher script (recommended)
+# Option 1: Using the verta command (recommended)
+verta gui
+
+# Option 2: Using the launcher script
 python gui/launch.py
 
-# Option 2: Direct Streamlit command to GUI module
+# Option 3: Direct Streamlit command to GUI module
 streamlit run src/verta/verta_gui.py
+```
+
+**Customize the server:**
+```bash
+verta gui --port 8502              # Use a different port (default: 8501)
+verta gui --host 0.0.0.0           # Allow external connections (default: localhost)
 ```
 
 ### 3. Open in Browser
 The GUI will automatically open at `http://localhost:8501`
+
+**Output Location:** All analysis results are saved to a `gui_outputs/` directory in your current working directory (where you run `verta gui`). The structure includes:
+- `gui_outputs/junction_{N}/` - Results for each junction (discover, assign operations)
+- `gui_outputs/metrics/` - Movement metrics results
+- `gui_outputs/gaze_analysis/` - Gaze and physiological analysis results
+- `gui_outputs/gaze_plots/` - Global gaze visualizations
+- `gui_outputs/intent_recognition/` - Intent recognition model outputs
 
 ## 🎯 Features
 

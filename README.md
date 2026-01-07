@@ -26,11 +26,22 @@ For an interactive, user-friendly interface, try the web-based GUI:
 # Install GUI dependencies (same as: pip install verta[gui])
 pip install verta[gui]
 
-# Launch the web interface
+# Launch the web interface (recommended)
+verta gui
+
+# Alternative methods
 python gui/launch.py
 # or
 streamlit run src/verta/verta_gui.py
 ```
+
+You can also customize the port and host:
+```bash
+verta gui --port 8502              # Use a different port
+verta gui --host 0.0.0.0           # Allow external connections
+```
+
+**Output Location:** The GUI saves all analysis results to a `gui_outputs/` directory in your current working directory. Different analysis types create subdirectories (e.g., `gui_outputs/junction_0/`, `gui_outputs/metrics/`, `gui_outputs/gaze_analysis/`).
 
 See [`gui/README.md`](gui/README.md) for detailed GUI documentation.
 
@@ -572,7 +583,10 @@ pip install verta[gui]
 # Verify Streamlit installation
 python -c "import streamlit; print('Streamlit OK')"
 
-# Launch with explicit path
+# Launch the GUI (recommended)
+verta gui
+
+# Alternative: Launch with explicit path
 streamlit run src/verta/verta_gui.py
 ```
 
