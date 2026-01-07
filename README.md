@@ -641,6 +641,7 @@ This project utilized AI-assisted development tools for various aspects of the c
 
 - **Cursor** and **ChatGPT** were used for:
   - Code refactoring
+  - GUI design
   - Test scaffolding
   - Documentation refactoring and elaboration
   - Paper refinement

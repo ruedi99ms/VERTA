@@ -21,39 +21,33 @@ authors:
 affiliations:
     -   name: Institute of Transport Planning and Traffic Engineering, Technical University of Darmstadt, Germany
         index: 1
-date: 15 January 2026
 bibliography: paper.bib
+csl: apa_style.csl
 ---
 
 # Summary
 
-#Add
+VERTA (Virtual Environment Route and Trajectory Analyzer) is a Python package that helps researchers understand how people choose routes in virtual environments. While originally developed for emergency evacuation research, VERTA can be applied to any study where route decisions in virtual environments need to be analyzed, such as wayfinding studies, navigation research, spatial cognition experiments, or urban planning simulations. When researchers study movement behavior using virtual reality, they collect data about where people move, but analyzing this movement data to identify decision-making patterns is complex. VERTA automates this analysis by detecting what route choices people make at intersections, identifying common routes taken, calculating timing and speed metrics, and predicting future route choices based on behavioral patterns. The software provides both a command-line interface for automated batch processing and a web-based graphical interface for interactive exploration. By standardizing how route choice data is analyzed, VERTA enables researchers to compare findings across different scenarios. This helps professionals in fields such as urban planning, emergency management, and human-computer interaction design more effective environments based on evidence from behavioral studies.
 
 # Statement of need
 
-#Add citations
+As extreme events become more common due to climate change, the need for evacuations will grow as well [@Kuhl2014; @Thompson2017]. E.g., urban areas may need to be evacuated due to flooding, or buildings due to fires. Virtual Reality (VR) has become an important study tool in this context because it enables researchers to analyze people's behavior in controlled evacuation scenarios, including the crucial question of which routes people choose when there is limited or no guidance [@Hung2025].
 
-As extreme events become more common due to climate change, the need for evacuations will grow as well. For example, city blocks may need to be evacuated due to flooding, or villages due to wildfires. The characteristics of real-world extreme events vary greatly (e.g., spatial distribution, their impacts, strength, etc.). Because of this variability, it is difficult to draw conclusions from one event to another. 
+Beyond evacuation research, understanding route choice behavior in virtual environments is relevant for a wide range of applications, including wayfinding studies, navigation research, spatial cognition experiments, urban planning simulations, and human-computer interaction research (e.g. @Ahmad2024100472[], @Li2019120[]). In all these domains, researchers face the same fundamental challenge: turning raw movement trajectories from VR experiments into meaningful insights about how and why people choose particular routes.
 
-Virtual Reality (VR) has become an increasingly important study tool in this field because it enables researchers to analyze people's behaviors in controlled scenarios. Route choice is a crucial factor for successful evacuations, especially when there is no guidance e.g. from trained evacuation helpers. Routes can be thought of as "correct" when they lead away from the extreme event, or "incorrect" when they lead toward it. However, with limited information available - such as during internet outages - people can't always choose the correct and most efficient path to safety. 
-
-This is why researchers, urban planners, and evacuation helpers need to understand how to design evacuation routes as intuitively as possible. But to do this effectively, they first need to understand how evacuees actually behave.
-
-This is where the Virtual Environment Route and Trajectory Analyzer (VERTA) comes in. VERTA addresses a critical gap in analyzing route choice behavior from VR evacuation experiments. While VR enables controlled behavioral studies, extracting meaningful insights from movement trajectories is not straightforward. Researchers need specialized methods to identify where and how route decisions are made at intersections. This task becomes particularly challenging when dealing with varying movement speeds, incomplete information, and the need to distinguish between correct and incorrect route choices. 
-
-VERTA provides researchers with standardized, reproducible methods to analyze these complex behavioral patterns. This enables systematic comparison across different evacuation scenarios and experimental conditions. Such capability is essential for building an evidence base that can inform evacuation route design. It allows researchers to move beyond individual case studies and identify generalizable patterns in how people navigate under stress and uncertainty. By making route choice analysis accessible through both programmatic and interactive interfaces, VERTA helps translate VR experimental data into actionable insights for urban planners and evacuation management professionals.
+The Virtual Environment Route and Trajectory Analyzer (VERTA) addresses this gap by providing standardized, reproducible methods to analyze route choice behavior from VR experiments. VERTA detects where route decisions are made, summarizes which routes are preferred under different conditions, and enables systematic comparison across scenarios and experimental settings. This helps build an evidence base for designing more effective evacuation routes, wayfinding systems, and virtual environments. VERTA makes route choice analysis accessible to both technical and non-technical users through programmatic tools and an interactive graphical interface.
 
 # State of the field
 
-#Add
+Current research on evacuation and pedestrian movement typically relies on a mix of custom scripts and general-purpose tools (e.g., R, Python, scikit-learn, microscopic crowd or traffic simulators) rather than a dedicated, standardized pipeline for route choice analysis in virtual environments. These tools are powerful, but they usually work either at an aggregate level (e.g., discrete choice models on already-encoded alternatives (e.g. @Hu2026105335[], @Lovreglio2022104452[])) or at the level of (simulated) flows (e.g. @Wang2024[], @Zhang2023106041[]). They do not directly help researchers analyze route choices at specific junctions or how those decisions unfold across multiple junctions in a standardized way. VERTA is intended to complement this existing ecosystem. Given user-defined junction locations and decision regions, it processes raw x–z VR trajectories and derives standardized decision outcomes (branch assignments), timing metrics, gaze- and physiology-based summaries, and junction-level patterns (including conditional probabilities and early intent predictions). This provides a shared, reproducible analysis layer that existing simulators and statistical models can build on.
 
 # Software Design
 
-#Add
+VERTA uses a modular architecture that keeps the core analysis components (decision detection, clustering, metrics, prediction) separate from the user interface. We built the command-line interface first as researchers need reproducible, scriptable workflows for batch processing and comparing different evacuation scenarios. Later, we added a web-based GUI using Streamlit that uses the same underlying code, making the tool accessible to users who are not comfortable with command-line tools. The GUI includes advanced interactive features such as visual junction editing with click-to-add functionality, real-time parameter adjustment with live visual feedback, interactive conditional probability analysis showing route transition patterns between junctions, and interactive Plotly visualizations with zoom and pan capabilities. These features enhance exploratory analysis beyond what the CLI provides. The software offers multiple ways to detect decision points (pathlen, radial, hybrid) and different clustering methods (k-means, DBSCAN, automatic) as VR experiments produce varying outputs: people move at different speeds, pause at intersections, and make decisions in varied ways. This flexibility matters for research: keeping decision detection separate from branch assignment means we can compare results across studies, the modular design lets us add new features without breaking existing workflows, and having both CLI and GUI means technical researchers can automate their analyses while domain experts can explore data interactively with advanced analysis and visualization tools.
 
 # Research Impact Statement
 
-We have already used VERTA in the "RESCUE" (Routing Efficiency Study of 2D and 3D Cartography for Urban Evacuations in Emergencies) research project. It has given us valuable insights in the route choice behavior and evacuation efficiency of a simulated flooding event in Frankfurt am Main (Germany). #Add bib output
+We have already used VERTA in the "RESCUE" (Routing Efficiency Study of 2D and 3D Cartography for Urban Evacuations in Emergencies) research project. It has given us valuable insights in the route choice behavior and evacuation efficiency of a simulated flooding event in Frankfurt am Main (Germany) [@Suhre2025] in addition to the evacuees' perspectives [@Cai2025].
 
 # AI usage disclosure
 
@@ -61,6 +55,7 @@ This project utilized AI-assisted development tools for various aspects of the c
 
 - **Cursor** and **ChatGPT** were used for:
   - Code refactoring
+  - GUI design
   - Test scaffolding
   - Documentation refactoring and elaboration
   - Paper refinement

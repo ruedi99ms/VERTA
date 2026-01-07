@@ -20,3 +20,4 @@ dist/
 build/
 *.egg
 /.pytest_cache/
+paper/paper.pdf
