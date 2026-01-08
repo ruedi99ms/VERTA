@@ -1,19 +1,33 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
 <title>verta API documentation</title>
-<meta name="description" content="VERTA - Virtual Environment Route and Trajectory Analyzer …" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="VERTA - Virtual Environment Route and Trajectory Analyzer …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
 </head>
 <body>
 <main>
@@ -24,63 +38,6 @@
 <section id="section-intro">
 <p>VERTA - Virtual Environment Route and Trajectory Analyzer</p>
 <p>A comprehensive toolkit for analyzing route choices and trajectories in virtual environments.</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-VERTA - Virtual Environment Route and Trajectory Analyzer
-
-A comprehensive toolkit for analyzing route choices and trajectories in virtual environments.
-&#34;&#34;&#34;
-
-__version__ = &#34;0.1.0&#34;
-
-# Import main classes and functions for convenient access
-from verta.verta_data_loader import (
-    Trajectory,
-    ColumnMapping,
-    load_folder,
-    load_folder_with_gaze,
-)
-
-from verta.verta_geometry import Circle, Rect
-
-from verta.verta_decisions import (
-    discover_branches,
-    assign_branches,
-    discover_decision_chain,
-)
-
-from verta.verta_commands import (
-    BaseCommand,
-    CommandConfig,
-    DiscoverCommand,
-    AssignCommand,
-    MetricsCommand,
-    GazeCommand,
-    COMMANDS,
-)
-
-__all__ = [
-    &#34;Trajectory&#34;,
-    &#34;ColumnMapping&#34;,
-    &#34;load_folder&#34;,
-    &#34;load_folder_with_gaze&#34;,
-    &#34;Circle&#34;,
-    &#34;Rect&#34;,
-    &#34;discover_branches&#34;,
-    &#34;assign_branches&#34;,
-    &#34;discover_decision_chain&#34;,
-    &#34;BaseCommand&#34;,
-    &#34;CommandConfig&#34;,
-    &#34;DiscoverCommand&#34;,
-    &#34;AssignCommand&#34;,
-    &#34;MetricsCommand&#34;,
-    &#34;GazeCommand&#34;,
-    &#34;COMMANDS&#34;,
-]</code></pre>
-</details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
@@ -158,10 +115,9 @@ __all__ = [
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="verta.assign_branches"><code class="name flex">
-<span>def <span class="ident">assign_branches</span></span>(<span>trajectories, centers: numpy.ndarray, junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, path_length: float = 100.0, decision_mode='pathlen', r_outer=None, epsilon: float = 0.05, linger_delta: float = 0.0, assign_angle_eps: float = 15.0, out_dir=None) ‑> pandas.core.frame.DataFrame</span>
+<span>def <span class="ident">assign_branches</span></span>(<span>trajectories,<br>centers: numpy.ndarray,<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>path_length: float = 100.0,<br>decision_mode='pathlen',<br>r_outer=None,<br>epsilon: float = 0.05,<br>linger_delta: float = 0.0,<br>assign_angle_eps: float = 15.0,<br>out_dir=None) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Assign branches using fixed centers, consistent with discover.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -219,23 +175,12 @@ __all__ = [
         pd.DataFrame(mode_rows).to_csv(os.path.join(out_dir, &#34;assign_mode_used.csv&#34;), index=False)
     return df</code></pre>
 </details>
+<div class="desc"><p>Assign branches using fixed centers, consistent with discover.</p></div>
 </dd>
 <dt id="verta.discover_branches"><code class="name flex">
-<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, k: int = 3, path_length: float = 100.0, epsilon: float = 0.05, seed: int = 0, decision_mode='hybrid', r_outer=None, linger_delta: float = 0.0, out_dir=None, cluster_method: str = 'kmeans', k_min: int = 2, k_max: int = 6, min_sep_deg: float = 12.0, angle_eps: float = 15.0, min_samples: int = 5, junction_number: int = 0, all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
+<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>k: int = 3,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode='hybrid',<br>r_outer=None,<br>linger_delta: float = 0.0,<br>out_dir=None,<br>cluster_method: str = 'kmeans',<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>junction_number: int = 0,<br>all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compute initial movement vectors and cluster them into k branches.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>assignments</code></strong> :&ensp;<code>DataFrame with columns ["trajectory", "branch"]</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>summary
-: DataFrame with columns ["branch", "count", "percent"]</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>centers
-: (k,2) ndarray</code> of <code>unit vectors (sorted by angle)</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -530,24 +475,23 @@ __all__ = [
 
     return assignments, summary, centers</code></pre>
 </details>
-</dd>
-<dt id="verta.discover_decision_chain"><code class="name flex">
-<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>], *, path_length: float = 100.0, epsilon: float = 0.05, seed: int = 0, decision_mode: str = 'hybrid', r_outer_list: Optional[Sequence[float]] = None, linger_delta: float = 0.0, out_dir: Optional[str] = None, cluster_method: str = 'kmeans', k: int = 3, k_min: int = 2, k_max: int = 6, min_sep_deg: float = 12.0, angle_eps: float = 15.0, min_samples: int = 5) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Discover branches at multiple junctions (a decision chain).</p>
+<div class="desc"><p>Compute initial movement vectors and cluster them into k branches.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>chain_df</code></strong> :&ensp;<code>DataFrame with one row per trajectory and columns:</code></dt>
-<dd>
-<ul>
-<li>trajectory</li>
-<li>branch_j0, branch_j1, &hellip; for each junction index</li>
-</ul>
-</dd>
-<dt><strong><code>centers_list</code></strong> :&ensp;<code>list</code> of <code>(C,2) arrays</code> of <code>unit vectors per junction</code></dt>
+<dt><strong><code>assignments</code></strong> :&ensp;<code>DataFrame with columns ["trajectory", "branch"]</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>summary
+: DataFrame with columns ["branch", "count", "percent"]</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>centers
+: (k,2) ndarray</code> of <code>unit vectors (sorted by angle)</code></dt>
 <dd>&nbsp;</dd>
 </dl></div>
+</dd>
+<dt id="verta.discover_decision_chain"><code class="name flex">
+<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>*,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode: str = 'hybrid',<br>r_outer_list: Sequence[float] | None = None,<br>linger_delta: float = 0.0,<br>out_dir: str | None = None,<br>cluster_method: str = 'kmeans',<br>k: int = 3,<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -674,31 +618,24 @@ __all__ = [
 
     return chain_df, all_centers, decisions_chain_df</code></pre>
 </details>
+<div class="desc"><p>Discover branches at multiple junctions (a decision chain).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>chain_df</code></strong> :&ensp;<code>DataFrame with one row per trajectory and columns:</code></dt>
+<dd>
+<ul>
+<li>trajectory</li>
+<li>branch_j0, branch_j1, &hellip; for each junction index</li>
+</ul>
+</dd>
+<dt><strong><code>centers_list</code></strong> :&ensp;<code>list</code> of <code>(C,2) arrays</code> of <code>unit vectors per junction</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 </dd>
 <dt id="verta.load_folder"><code class="name flex">
-<span>def <span class="ident">load_folder</span></span>(<span>folder: str, pattern: str = '*.csv', columns: Optional[Dict[str, str]] = None, require_time: bool = False, require_gaze: bool = False, scale: float = 1.0, motion_threshold: float = 0.001, progress_callback: Optional[<built-in function callable>] = None) ‑> List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>]</span>
+<span>def <span class="ident">load_folder</span></span>(<span>folder: str,<br>pattern: str = '*.csv',<br>columns: Dict[str, str] | None = None,<br>require_time: bool = False,<br>require_gaze: bool = False,<br>scale: float = 1.0,<br>motion_threshold: float = 0.001,<br>progress_callback: <built-in function callable> | None = None) ‑> List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Load trajectories with optional gaze data support.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>folder</code></strong></dt>
-<dd>Folder to search</dd>
-<dt><strong><code>pattern</code></strong></dt>
-<dd>Glob pattern for files</dd>
-<dt><strong><code>columns</code></strong></dt>
-<dd>Column mapping dictionary</dd>
-<dt><strong><code>require_time</code></strong></dt>
-<dd>Whether time data is required</dd>
-<dt><strong><code>require_gaze</code></strong></dt>
-<dd>Whether gaze data is required (legacy parameter for compatibility)</dd>
-<dt><strong><code>scale</code></strong></dt>
-<dd>Coordinate scaling factor</dd>
-<dt><strong><code>motion_threshold</code></strong></dt>
-<dd>Motion detection threshold</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>List of Trajectory objects</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -735,13 +672,7 @@ __all__ = [
     loader = TrajectoryLoader(column_mapping)
     return loader.load_folder(folder, pattern, Trajectory, require_time, scale, motion_threshold, progress_callback)</code></pre>
 </details>
-</dd>
-<dt id="verta.load_folder_with_gaze"><code class="name flex">
-<span>def <span class="ident">load_folder_with_gaze</span></span>(<span>folder: str, pattern: str = '*.csv', columns: Optional[Dict[str, str]] = None, require_time: bool = False, scale: float = 1.0, motion_threshold: float = 0.001, progress_callback: Optional[<built-in function callable>] = None) ‑> List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Load gaze trajectories (backward compatibility).</p>
-<p>DEPRECATED: Use load_folder() with require_gaze=True instead.</p>
+<div class="desc"><p>Load trajectories with optional gaze data support.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>folder</code></strong></dt>
@@ -752,6 +683,8 @@ __all__ = [
 <dd>Column mapping dictionary</dd>
 <dt><strong><code>require_time</code></strong></dt>
 <dd>Whether time data is required</dd>
+<dt><strong><code>require_gaze</code></strong></dt>
+<dd>Whether gaze data is required (legacy parameter for compatibility)</dd>
 <dt><strong><code>scale</code></strong></dt>
 <dd>Coordinate scaling factor</dd>
 <dt><strong><code>motion_threshold</code></strong></dt>
@@ -759,6 +692,11 @@ __all__ = [
 </dl>
 <h2 id="returns">Returns</h2>
 <p>List of Trajectory objects</p></div>
+</dd>
+<dt id="verta.load_folder_with_gaze"><code class="name flex">
+<span>def <span class="ident">load_folder_with_gaze</span></span>(<span>folder: str,<br>pattern: str = '*.csv',<br>columns: Dict[str, str] | None = None,<br>require_time: bool = False,<br>scale: float = 1.0,<br>motion_threshold: float = 0.001,<br>progress_callback: <built-in function callable> | None = None) ‑> List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>]</span>
+</code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -789,6 +727,25 @@ __all__ = [
     # Delegate to the unified load_folder function
     return load_folder(folder, pattern, columns, require_time, require_gaze=True, scale=scale, motion_threshold=motion_threshold, progress_callback=progress_callback)</code></pre>
 </details>
+<div class="desc"><p>Load gaze trajectories (backward compatibility).</p>
+<p>DEPRECATED: Use load_folder() with require_gaze=True instead.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>folder</code></strong></dt>
+<dd>Folder to search</dd>
+<dt><strong><code>pattern</code></strong></dt>
+<dd>Glob pattern for files</dd>
+<dt><strong><code>columns</code></strong></dt>
+<dd>Column mapping dictionary</dd>
+<dt><strong><code>require_time</code></strong></dt>
+<dd>Whether time data is required</dd>
+<dt><strong><code>scale</code></strong></dt>
+<dd>Coordinate scaling factor</dd>
+<dt><strong><code>motion_threshold</code></strong></dt>
+<dd>Motion detection threshold</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of Trajectory objects</p></div>
 </dd>
 </dl>
 </section>
@@ -799,7 +756,6 @@ __all__ = [
 <span>class <span class="ident">AssignCommand</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Command handler for branch assignment using precomputed centers</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -872,6 +828,7 @@ __all__ = [
         self._save_run_args(args, args.out)
         self.logger.info(f&#34;Assignment completed. Results saved to {args.out}&#34;)</code></pre>
 </details>
+<div class="desc"><p>Command handler for branch assignment using precomputed centers</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></li>
@@ -891,7 +848,6 @@ __all__ = [
 <span>class <span class="ident">BaseCommand</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Abstract base class for all commands</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -900,7 +856,7 @@ __all__ = [
     &#34;&#34;&#34;Abstract base class for all commands&#34;&#34;&#34;
 
     def __init__(self):
-        self.logger = RouteAnalyzerLogger()
+        self.logger = VERTALogger()
 
     @abstractmethod
     def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
@@ -922,6 +878,7 @@ __all__ = [
         with open(args_path, &#34;w&#34;) as f:
             json.dump(vars(args), f, indent=2)</code></pre>
 </details>
+<div class="desc"><p>Abstract base class for all commands</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>abc.ABC</li>
@@ -931,6 +888,7 @@ __all__ = [
 <li><a title="verta.verta_commands.AssignCommand" href="verta_commands.html#verta.verta_commands.AssignCommand">AssignCommand</a></li>
 <li><a title="verta.verta_commands.DiscoverCommand" href="verta_commands.html#verta.verta_commands.DiscoverCommand">DiscoverCommand</a></li>
 <li><a title="verta.verta_commands.EnhancedChainCommand" href="verta_commands.html#verta.verta_commands.EnhancedChainCommand">EnhancedChainCommand</a></li>
+<li><a title="verta.verta_commands.GUICommand" href="verta_commands.html#verta.verta_commands.GUICommand">GUICommand</a></li>
 <li><a title="verta.verta_commands.GazeCommand" href="verta_commands.html#verta.verta_commands.GazeCommand">GazeCommand</a></li>
 <li><a title="verta.verta_commands.IntentRecognitionCommand" href="verta_commands.html#verta.verta_commands.IntentRecognitionCommand">IntentRecognitionCommand</a></li>
 <li><a title="verta.verta_commands.MetricsCommand" href="verta_commands.html#verta.verta_commands.MetricsCommand">MetricsCommand</a></li>
@@ -939,10 +897,9 @@ __all__ = [
 <h3>Methods</h3>
 <dl>
 <dt id="verta.BaseCommand.add_arguments"><code class="name flex">
-<span>def <span class="ident">add_arguments</span></span>(<span>self, parser: argparse.ArgumentParser) ‑> NoneType</span>
+<span>def <span class="ident">add_arguments</span></span>(<span>self, parser: argparse.ArgumentParser) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Add command-specific arguments</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -952,12 +909,12 @@ def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
     &#34;&#34;&#34;Add command-specific arguments&#34;&#34;&#34;
     pass</code></pre>
 </details>
+<div class="desc"><p>Add command-specific arguments</p></div>
 </dd>
 <dt id="verta.BaseCommand.execute"><code class="name flex">
-<span>def <span class="ident">execute</span></span>(<span>self, args: argparse.Namespace) ‑> NoneType</span>
+<span>def <span class="ident">execute</span></span>(<span>self, args: argparse.Namespace) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Execute the command</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -967,6 +924,7 @@ def execute(self, args: argparse.Namespace) -&gt; None:
     &#34;&#34;&#34;Execute the command&#34;&#34;&#34;
     pass</code></pre>
 </details>
+<div class="desc"><p>Execute the command</p></div>
 </dd>
 </dl>
 </dd>
@@ -975,7 +933,6 @@ def execute(self, args: argparse.Namespace) -&gt; None:
 <span>(</span><span>cx: float, cz: float, r: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Circle(cx: float, cz: float, r: float)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -989,19 +946,20 @@ class Circle:
     def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
         return (x - self.cx) ** 2 + (z - self.cz) ** 2 &lt;= self.r ** 2</code></pre>
 </details>
-<h3>Class variables</h3>
+<div class="desc"><p>Circle(cx: float, cz: float, r: float)</p></div>
+<h3>Instance variables</h3>
 <dl>
 <dt id="verta.Circle.cx"><code class="name">var <span class="ident">cx</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Circle.cz"><code class="name">var <span class="ident">cz</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Circle.r"><code class="name">var <span class="ident">r</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -1010,7 +968,6 @@ class Circle:
 <span>def <span class="ident">contains</span></span>(<span>self, x: numpy.ndarray, z: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1018,15 +975,15 @@ class Circle:
 <pre><code class="python">def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
     return (x - self.cx) ** 2 + (z - self.cz) ** 2 &lt;= self.r ** 2</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
 <dt id="verta.ColumnMapping"><code class="flex name class">
 <span>class <span class="ident">ColumnMapping</span></span>
-<span>(</span><span>x: str = 'x', z: str = 'z', t: str = 't', headset_x: str = 'Headset.Head.Position.X', headset_y: str = 'Headset.Head.Position.Y', headset_z: str = 'Headset.Head.Position.Z', headset_rot_x: str = 'Headset.Head.Rotation.X', headset_rot_y: str = 'Headset.Head.Rotation.Y', headset_rot_z: str = 'Headset.Head.Rotation.Z', headset_rot_w: str = 'Headset.Head.Rotation.W', controller_left_x: str = 'Controller.Left.Position.X', controller_left_y: str = 'Controller.Left.Position.Y', controller_left_z: str = 'Controller.Left.Position.Z', controller_right_x: str = 'Controller.Right.Position.X', controller_right_y: str = 'Controller.Right.Position.Y', controller_right_z: str = 'Controller.Right.Position.Z', time: str = 'Time', head_forward_x: str = 'Headset.Head.Forward.X', head_forward_y: str = 'Headset.Head.Forward.Y', head_forward_z: str = 'Headset.Head.Forward.Z', head_up_x: str = 'Headset.Head.Up.X', head_up_y: str = 'Headset.Head.Up.Y', head_up_z: str = 'Headset.Head.Up.Z', gaze_x: str = 'Headset.Gaze.X', gaze_y: str = 'Headset.Gaze.Y', pupil_l: str = 'Headset.PupilDilation.L', pupil_r: str = 'Headset.PupilDilation.R', heart_rate: str = 'Headset.HeartRate')</span>
+<span>(</span><span>x: str = 'x',<br>z: str = 'z',<br>t: str = 't',<br>headset_x: str = 'Headset.Head.Position.X',<br>headset_y: str = 'Headset.Head.Position.Y',<br>headset_z: str = 'Headset.Head.Position.Z',<br>headset_rot_x: str = 'Headset.Head.Rotation.X',<br>headset_rot_y: str = 'Headset.Head.Rotation.Y',<br>headset_rot_z: str = 'Headset.Head.Rotation.Z',<br>headset_rot_w: str = 'Headset.Head.Rotation.W',<br>controller_left_x: str = 'Controller.Left.Position.X',<br>controller_left_y: str = 'Controller.Left.Position.Y',<br>controller_left_z: str = 'Controller.Left.Position.Z',<br>controller_right_x: str = 'Controller.Right.Position.X',<br>controller_right_y: str = 'Controller.Right.Position.Y',<br>controller_right_z: str = 'Controller.Right.Position.Z',<br>time: str = 'Time',<br>head_forward_x: str = 'Headset.Head.Forward.X',<br>head_forward_y: str = 'Headset.Head.Forward.Y',<br>head_forward_z: str = 'Headset.Head.Forward.Z',<br>head_up_x: str = 'Headset.Head.Up.X',<br>head_up_y: str = 'Headset.Head.Up.Y',<br>head_up_z: str = 'Headset.Head.Up.Z',<br>gaze_x: str = 'Headset.Gaze.X',<br>gaze_y: str = 'Headset.Gaze.Y',<br>pupil_l: str = 'Headset.PupilDilation.L',<br>pupil_r: str = 'Headset.PupilDilation.R',<br>heart_rate: str = 'Headset.HeartRate')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Centralized column mapping configuration</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1075,121 +1032,7 @@ class ColumnMapping:
         &#34;&#34;&#34;Create column mapping from dictionary&#34;&#34;&#34;
         return cls(**columns)</code></pre>
 </details>
-<h3>Class variables</h3>
-<dl>
-<dt id="verta.ColumnMapping.controller_left_x"><code class="name">var <span class="ident">controller_left_x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.controller_left_y"><code class="name">var <span class="ident">controller_left_y</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.controller_left_z"><code class="name">var <span class="ident">controller_left_z</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.controller_right_x"><code class="name">var <span class="ident">controller_right_x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.controller_right_y"><code class="name">var <span class="ident">controller_right_y</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.controller_right_z"><code class="name">var <span class="ident">controller_right_z</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.headset_rot_w"><code class="name">var <span class="ident">headset_rot_w</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.headset_rot_x"><code class="name">var <span class="ident">headset_rot_x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.headset_rot_y"><code class="name">var <span class="ident">headset_rot_y</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.headset_rot_z"><code class="name">var <span class="ident">headset_rot_z</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.headset_x"><code class="name">var <span class="ident">headset_x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.headset_y"><code class="name">var <span class="ident">headset_y</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.headset_z"><code class="name">var <span class="ident">headset_z</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.t"><code class="name">var <span class="ident">t</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.time"><code class="name">var <span class="ident">time</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.x"><code class="name">var <span class="ident">x</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="verta.ColumnMapping.z"><code class="name">var <span class="ident">z</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
+<div class="desc"><p>Centralized column mapping configuration</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="verta.ColumnMapping.from_dict"><code class="name flex">
@@ -1197,39 +1040,135 @@ class ColumnMapping:
 </code></dt>
 <dd>
 <div class="desc"><p>Create column mapping from dictionary</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def from_dict(cls, columns: Dict[str, str]) -&gt; &#39;ColumnMapping&#39;:
-    &#34;&#34;&#34;Create column mapping from dictionary&#34;&#34;&#34;
-    return cls(**columns)</code></pre>
-</details>
 </dd>
 <dt id="verta.ColumnMapping.vr_defaults"><code class="name flex">
 <span>def <span class="ident">vr_defaults</span></span>(<span>) ‑> <a title="verta.verta_data_loader.ColumnMapping" href="verta_data_loader.html#verta.verta_data_loader.ColumnMapping">ColumnMapping</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Create VR default column mapping</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def vr_defaults(cls) -&gt; &#39;ColumnMapping&#39;:
-    &#34;&#34;&#34;Create VR default column mapping&#34;&#34;&#34;
-    return cls()</code></pre>
-</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="verta.ColumnMapping.controller_left_x"><code class="name">var <span class="ident">controller_left_x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.controller_left_y"><code class="name">var <span class="ident">controller_left_y</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.controller_left_z"><code class="name">var <span class="ident">controller_left_z</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.controller_right_x"><code class="name">var <span class="ident">controller_right_x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.controller_right_y"><code class="name">var <span class="ident">controller_right_y</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.controller_right_z"><code class="name">var <span class="ident">controller_right_z</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.headset_rot_w"><code class="name">var <span class="ident">headset_rot_w</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.headset_rot_x"><code class="name">var <span class="ident">headset_rot_x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.headset_rot_y"><code class="name">var <span class="ident">headset_rot_y</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.headset_rot_z"><code class="name">var <span class="ident">headset_rot_z</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.headset_x"><code class="name">var <span class="ident">headset_x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.headset_y"><code class="name">var <span class="ident">headset_y</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.headset_z"><code class="name">var <span class="ident">headset_z</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.t"><code class="name">var <span class="ident">t</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.time"><code class="name">var <span class="ident">time</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.x"><code class="name">var <span class="ident">x</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
+</dd>
+<dt id="verta.ColumnMapping.z"><code class="name">var <span class="ident">z</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 </dl>
 </dd>
 <dt id="verta.CommandConfig"><code class="flex name class">
 <span>class <span class="ident">CommandConfig</span></span>
-<span>(</span><span>input: str, glob: str = '*.csv', columns: Optional[Dict[str, str]] = None, scale: float = 1.0, motion_threshold: float = 0.001, out: Optional[str] = None, config: Optional[str] = None)</span>
+<span>(</span><span>input: str,<br>glob: str = '*.csv',<br>columns: Dict[str, str] | None = None,<br>scale: float = 1.0,<br>motion_threshold: float = 0.001,<br>out: str | None = None,<br>config: str | None = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Shared configuration for all commands</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1245,35 +1184,36 @@ class CommandConfig:
     out: Optional[str] = None
     config: Optional[str] = None # Added for consistency, though handled by main</code></pre>
 </details>
-<h3>Class variables</h3>
+<div class="desc"><p>Shared configuration for all commands</p></div>
+<h3>Instance variables</h3>
 <dl>
-<dt id="verta.CommandConfig.columns"><code class="name">var <span class="ident">columns</span> : Optional[Dict[str, str]]</code></dt>
+<dt id="verta.CommandConfig.columns"><code class="name">var <span class="ident">columns</span> : Dict[str, str] | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.CommandConfig.config"><code class="name">var <span class="ident">config</span> : Optional[str]</code></dt>
+<dt id="verta.CommandConfig.config"><code class="name">var <span class="ident">config</span> : str | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.CommandConfig.glob"><code class="name">var <span class="ident">glob</span> : str</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.CommandConfig.input"><code class="name">var <span class="ident">input</span> : str</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.CommandConfig.motion_threshold"><code class="name">var <span class="ident">motion_threshold</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.CommandConfig.out"><code class="name">var <span class="ident">out</span> : Optional[str]</code></dt>
+<dt id="verta.CommandConfig.out"><code class="name">var <span class="ident">out</span> : str | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.CommandConfig.scale"><code class="name">var <span class="ident">scale</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 </dl>
 </dd>
@@ -1281,7 +1221,6 @@ class CommandConfig:
 <span>class <span class="ident">DiscoverCommand</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Command handler for branch discovery</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1500,6 +1439,7 @@ class CommandConfig:
         except (ImportError, AttributeError, NameError) as e:
             self.logger.warning(f&#34;plot_discover_map not available, skipping: {e}&#34;)</code></pre>
 </details>
+<div class="desc"><p>Command handler for branch discovery</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></li>
@@ -1519,7 +1459,6 @@ class CommandConfig:
 <span>class <span class="ident">GazeCommand</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Command handler for gaze and physiological analysis</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1717,6 +1656,7 @@ class CommandConfig:
         except Exception as e:
             self.logger.error(f&#34;Pupil trajectory plot failed: {e}&#34;)</code></pre>
 </details>
+<div class="desc"><p>Command handler for gaze and physiological analysis</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></li>
@@ -1736,7 +1676,6 @@ class CommandConfig:
 <span>class <span class="ident">MetricsCommand</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Command handler for timing metrics computation</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1855,6 +1794,7 @@ class CommandConfig:
         self._save_run_args(args, args.out)
         self.logger.info(f&#34;Metrics computation completed. Results saved to {args.out}&#34;)</code></pre>
 </details>
+<div class="desc"><p>Command handler for timing metrics computation</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></li>
@@ -1875,7 +1815,6 @@ class CommandConfig:
 <span>(</span><span>xmin: float, xmax: float, zmin: float, zmax: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Rect(xmin: float, xmax: float, zmin: float, zmax: float)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1890,23 +1829,24 @@ class Rect:
     def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
         return (x &gt;= self.xmin) &amp; (x &lt;= self.xmax) &amp; (z &gt;= self.zmin) &amp; (z &lt;= self.zmax)</code></pre>
 </details>
-<h3>Class variables</h3>
+<div class="desc"><p>Rect(xmin: float, xmax: float, zmin: float, zmax: float)</p></div>
+<h3>Instance variables</h3>
 <dl>
 <dt id="verta.Rect.xmax"><code class="name">var <span class="ident">xmax</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Rect.xmin"><code class="name">var <span class="ident">xmin</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Rect.zmax"><code class="name">var <span class="ident">zmax</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Rect.zmin"><code class="name">var <span class="ident">zmin</span> : float</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -1915,7 +1855,6 @@ class Rect:
 <span>def <span class="ident">contains</span></span>(<span>self, x: numpy.ndarray, z: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1923,15 +1862,15 @@ class Rect:
 <pre><code class="python">def contains(self, x: np.ndarray, z: np.ndarray) -&gt; np.ndarray:
     return (x &gt;= self.xmin) &amp; (x &lt;= self.xmax) &amp; (z &gt;= self.zmin) &amp; (z &lt;= self.zmax)</code></pre>
 </details>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
 <dt id="verta.Trajectory"><code class="flex name class">
 <span>class <span class="ident">Trajectory</span></span>
-<span>(</span><span>tid: str, x: numpy.ndarray, z: numpy.ndarray, t: Optional[numpy.ndarray] = None, head_forward_x: Optional[numpy.ndarray] = None, head_forward_y: Optional[numpy.ndarray] = None, head_forward_z: Optional[numpy.ndarray] = None, head_up_x: Optional[numpy.ndarray] = None, head_up_y: Optional[numpy.ndarray] = None, head_up_z: Optional[numpy.ndarray] = None, gaze_x: Optional[numpy.ndarray] = None, gaze_y: Optional[numpy.ndarray] = None, heart_rate: Optional[numpy.ndarray] = None, pupil_l: Optional[numpy.ndarray] = None, pupil_r: Optional[numpy.ndarray] = None)</span>
+<span>(</span><span>tid: str,<br>x: numpy.ndarray,<br>z: numpy.ndarray,<br>t: numpy.ndarray | None = None,<br>head_forward_x: numpy.ndarray | None = None,<br>head_forward_y: numpy.ndarray | None = None,<br>head_forward_z: numpy.ndarray | None = None,<br>head_up_x: numpy.ndarray | None = None,<br>head_up_y: numpy.ndarray | None = None,<br>head_up_z: numpy.ndarray | None = None,<br>gaze_x: numpy.ndarray | None = None,<br>gaze_y: numpy.ndarray | None = None,<br>heart_rate: numpy.ndarray | None = None,<br>pupil_l: numpy.ndarray | None = None,<br>pupil_r: numpy.ndarray | None = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Unified trajectory with optional gaze/physio fields.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1956,67 +1895,68 @@ class Trajectory:
     pupil_l: Optional[np.ndarray] = None
     pupil_r: Optional[np.ndarray] = None</code></pre>
 </details>
-<h3>Class variables</h3>
+<div class="desc"><p>Unified trajectory with optional gaze/physio fields.</p></div>
+<h3>Instance variables</h3>
 <dl>
-<dt id="verta.Trajectory.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.gaze_x"><code class="name">var <span class="ident">gaze_x</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.gaze_y"><code class="name">var <span class="ident">gaze_y</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.head_forward_x"><code class="name">var <span class="ident">head_forward_x</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.head_forward_y"><code class="name">var <span class="ident">head_forward_y</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.head_forward_z"><code class="name">var <span class="ident">head_forward_z</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.head_up_x"><code class="name">var <span class="ident">head_up_x</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.head_up_y"><code class="name">var <span class="ident">head_up_y</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.head_up_z"><code class="name">var <span class="ident">head_up_z</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.heart_rate"><code class="name">var <span class="ident">heart_rate</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.pupil_l"><code class="name">var <span class="ident">pupil_l</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.pupil_r"><code class="name">var <span class="ident">pupil_r</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
-<dt id="verta.Trajectory.t"><code class="name">var <span class="ident">t</span> : Optional[numpy.ndarray]</code></dt>
+<dt id="verta.Trajectory.t"><code class="name">var <span class="ident">t</span> : numpy.ndarray | None</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Trajectory.tid"><code class="name">var <span class="ident">tid</span> : str</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Trajectory.x"><code class="name">var <span class="ident">x</span> : numpy.ndarray</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 <dt id="verta.Trajectory.z"><code class="name">var <span class="ident">z</span> : numpy.ndarray</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The type of the None singleton.</p></div>
 </dd>
 </dl>
 </dd>
@@ -2024,7 +1964,6 @@ class Trajectory:
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -2171,7 +2110,7 @@ class Trajectory:
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
 </footer>
 </body>
 </html>

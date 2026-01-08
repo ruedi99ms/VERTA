@@ -1,19 +1,33 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.9.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
 <title>verta.verta_decisions API documentation</title>
-<meta name="description" content="" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
 </head>
 <body>
 <main>
@@ -22,825 +36,6 @@
 <h1 class="title">Module <code>verta.verta_decisions</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># Route-decision extraction
-
-from collections import Counter
-import math
-import os
-from typing import Optional, Sequence, Tuple
-import numpy as np
-import pandas as pd
-
-from verta.verta_clustering import best_k_by_silhouette, cluster_angles_dbscan, kmeans_2d, merge_close_centers
-from verta.verta_geometry import Circle, entered_junction_idx
-from verta.verta_data_loader import Trajectory
-from verta.verta_plotting import plot_decision_intercepts
-from verta.verta_logging import get_logger
-
-logger = get_logger()
-
-def get_decision_index(
-    x: np.ndarray,
-    z: np.ndarray,
-    junction: Circle,
-    decision_mode: str,
-    path_length: float = 100.0,
-    r_outer: Optional[float] = None,
-    epsilon: float = 0.05,
-    linger_delta: float = 0.0,
-    window: int = 5
-) -&gt; Optional[int]:
-    &#34;&#34;&#34;
-    Get decision index using the specified decision mode.
-
-    Args:
-        x, z: Trajectory coordinates
-        junction: Junction circle
-        decision_mode: &#34;pathlen&#34;, &#34;radial&#34;, or &#34;hybrid&#34;
-        path_length: Path length for pathlen mode
-        r_outer: Outer radius for radial mode
-        epsilon: Minimum step size
-        linger_delta: Linger distance beyond junction
-        window: Window size for radial mode
-
-    Returns:
-        Decision index or None if not found
-    &#34;&#34;&#34;
-    if len(x) &lt; 2:
-        return None
-
-    # Find junction entry point
-    rx = x - junction.cx
-    rz = z - junction.cz
-    r = np.hypot(rx, rz)
-    inside = r &lt;= junction.r
-    start = int(np.argmax(inside)) if inside.any() else int(np.argmin(r))
-
-    if decision_mode == &#34;radial&#34;:
-        rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
-        return _get_radial_decision_index(x, z, junction, rout, start, window)
-    elif decision_mode == &#34;pathlen&#34;:
-        return _get_pathlen_decision_index(x, z, junction, path_length, epsilon, linger_delta, start)
-    elif decision_mode == &#34;hybrid&#34;:
-        # Try radial first, fall back to pathlen
-        rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
-        idx = _get_radial_decision_index(x, z, junction, rout, start, window)
-        if idx is not None:
-            return idx
-        return _get_pathlen_decision_index(x, z, junction, path_length, epsilon, linger_delta, start)
-
-    return None
-
-
-def _get_radial_decision_index(
-    x: np.ndarray,
-    z: np.ndarray,
-    junction: Circle,
-    r_outer: float,
-    start: int,
-    window: int
-) -&gt; Optional[int]:
-    &#34;&#34;&#34;Get decision index using radial mode.&#34;&#34;&#34;
-    rx = x - junction.cx
-    rz = z - junction.cz
-    r = np.hypot(rx, rz)
-
-    # Find the first index crossing r_outer with outward trend
-    for i in range(start + 1, len(r)):
-        if r[i] &gt;= r_outer:
-            j0 = max(start + 1, i - window)
-            seg = r[j0:i+1]
-            if seg.size &gt;= 2:
-                outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0
-            else:
-                outward = True
-            if outward:
-                return i
-    return None
-
-
-def _get_pathlen_decision_index(
-    x: np.ndarray,
-    z: np.ndarray,
-    junction: Circle,
-    path_length: float,
-    epsilon: float,
-    linger_delta: float,
-    start: int
-) -&gt; Optional[int]:
-    &#34;&#34;&#34;Get decision index using path length mode.&#34;&#34;&#34;
-    dx = np.diff(x[start:])
-    dz = np.diff(z[start:])
-    seg = np.hypot(dx, dz)
-    if len(seg) == 0:
-        return None
-
-    cum = np.cumsum(seg)
-    reach_idx = int(np.argmax(cum &gt;= path_length)) if (cum &gt;= path_length).any() else None
-
-    if reach_idx is not None:
-        return start + reach_idx + 1
-    return None
-
-
-def first_unit_vector_after_distance(
-    x: np.ndarray,
-    z: np.ndarray,
-    origin_region: Circle,
-    path_length: float = 100.0,
-    epsilon: float = 0.05,
-    fallback_window: int = 10,
-    linger_delta: float = 0.0
-) -&gt; Optional[np.ndarray]:
-    &#34;&#34;&#34;
-    Returns a single unit direction vector capturing initial route choice.
-    Fallback order:
-      T1. First step &gt;= epsilon after reaching `path_length`.
-      T2. Largest single step anywhere &gt;= epsilon.
-      T3. Net displacement over last `fallback_window` steps (ignores epsilon).
-    Returns None only if there is no motion at all.
-    &#34;&#34;&#34;
-    if len(x) &lt; 2 or len(z) &lt; 2:
-        return None
-
-    min_radial = origin_region.r + max(5.0, linger_delta)  # Require at least 5 units from junction center
-
-    # Start: first time inside the circle; else closest approach
-    dist = np.hypot(x - origin_region.cx, z - origin_region.cz)
-    inside = dist &lt;= origin_region.r
-    start = int(np.argmax(inside)) if inside.any() else int(np.argmin(dist))
-
-    dx = np.diff(x[start:])
-    dz = np.diff(z[start:])
-    seg = np.hypot(dx, dz)
-    if len(seg) == 0:
-        return None
-
-    cum = np.cumsum(seg)
-    reach_idx = int(np.argmax(cum &gt;= path_length)) if (cum &gt;= path_length).any() else None
-
-    # T1: first step &gt;= epsilon after we reached the requested path length
-    if reach_idx is not None:
-        for j in range(reach_idx, len(dx)):
-            if seg[j] &gt;= epsilon:
-                i = j  # step index after &#39;start&#39;
-                rad_now = float(np.hypot(x[start + i] - origin_region.cx,
-                                        z[start + i] - origin_region.cz))
-                if rad_now &lt; min_radial:
-                    continue  # keep scanning for a later, farther step
-                v = np.array([dx[j], dz[j]]) / seg[j]
-                return v
-
-    # T2: largest single step anywhere
-    jmax = int(np.argmax(seg))
-    if seg[jmax] &gt; 0:
-        rad_at_jmax = float(np.hypot(x[start + jmax] - origin_region.cx,
-                                    z[start + jmax] - origin_region.cz))
-        if rad_at_jmax &gt;= min_radial:  # NEW
-            v = np.array([dx[jmax], dz[jmax]]) / seg[jmax]
-            return v
-
-    # T3: windowed net displacement (ignores epsilon threshold)
-    w = min(fallback_window, len(dx))
-    if w &gt; 0:
-        end_i = start + len(dx) - 1
-        rad_now = float(np.hypot(x[end_i] - origin_region.cx, z[end_i] - origin_region.cz))
-        if rad_now &gt;= min_radial:  # NEW
-            ddx = float(np.sum(dx[-w:]))
-            ddz = float(np.sum(dz[-w:]))
-            n = float(np.hypot(ddx, ddz))
-            if n &gt; 0:
-                return np.array([ddx / n, ddz / n])
-
-    return None
-
-def first_unit_vector_after_radial_exit(
-    x: np.ndarray,
-    z: np.ndarray,
-    junction: Circle,
-    r_outer: float,
-    epsilon: float = 0.05,
-    window: int = 5,          # default smoothing window
-) -&gt; Optional[np.ndarray]:
-    &#34;&#34;&#34;
-    Direction when the path *exits* an outer radius around the junction.
-    Start at first time inside junction.r (else nearest approach).
-    Trigger when r &gt;= r_outer (with non-negative outward trend).
-    Direction is the unit vector of the summed step vectors over a short window.
-    &#34;&#34;&#34;
-    if len(x) &lt; 2:
-        return None
-
-    rx = x - junction.cx
-    rz = z - junction.cz
-    r  = np.hypot(rx, rz)
-
-    inside = r &lt;= junction.r
-    start = int(np.argmax(inside)) if inside.any() else int(np.argmin(r))
-
-    # find the first index crossing r_outer with outward trend
-    i_cross = None
-    for i in range(start + 1, len(r)):
-        if r[i] &gt;= r_outer:
-            j0 = max(start + 1, i - window)
-            seg = r[j0:i+1]
-            # Robust outward-trend test: if we don&#39;t have at least 2 samples, accept (avoids &#34;mean of empty slice&#34; warning)
-            if seg.size &gt;= 2:
-                outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0
-            else:
-                outward = True
-            if outward:
-                i_cross = i
-                break
-    if i_cross is None:
-        return None
-
-    # Smooth direction over the last `window` steps ending at i_cross
-    j0 = max(start, i_cross - window)
-    dx = np.diff(x[j0:i_cross+1])
-    dz = np.diff(z[j0:i_cross+1])
-    step = np.hypot(dx, dz)
-
-    # Use meaningful steps if available; otherwise fall back to max step in window
-    mask = step &gt;= epsilon
-    if np.any(mask):
-        vx = dx[mask].sum()
-        vz = dz[mask].sum()
-    else:
-        if step.size == 0 or float(np.nanmax(step)) &lt;= 0:
-            return None
-        k = int(np.nanargmax(step))
-        vx, vz = dx[k], dz[k]
-
-    n = float(np.hypot(vx, vz))
-    if n == 0:
-        return None
-    return np.array([vx / n, vz / n])
-
-def _pick_vector_and_source(
-    tr: Trajectory,
-    junction: Circle,
-    decision_mode: str,
-    path_length: float,
-    r_outer: Optional[float],
-    epsilon: float,
-    linger_delta: float = 0.0
-) -&gt; tuple[Optional[np.ndarray], str]:
-    &#34;&#34;&#34;Return (v, &#39;radial&#39;|&#39;pathlen&#39;) without changing existing APIs.&#34;&#34;&#34;
-    if decision_mode in (&#34;radial&#34;, &#34;hybrid&#34;):
-        rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
-        v_rad = first_unit_vector_after_radial_exit(tr.x, tr.z, junction, rout, epsilon=epsilon)
-        if decision_mode == &#34;radial&#34;:
-            return v_rad, &#34;radial&#34;
-        if v_rad is not None:
-            return v_rad, &#34;radial&#34;
-        # fallback
-        v_pl = first_unit_vector_after_distance(tr.x, tr.z, junction, path_length=path_length, epsilon=epsilon, linger_delta=linger_delta)
-        return v_pl, &#34;pathlen&#34;
-    # pathlen only
-    v_pl = first_unit_vector_after_distance(tr.x, tr.z, junction, path_length=path_length, epsilon=epsilon, linger_delta=linger_delta)
-    return v_pl, &#34;pathlen&#34;
-
-def discover_branches(trajectories: Sequence[Trajectory],
-                      junction: Circle,
-                      k: int = 3,
-                      path_length: float = 100.0,
-                      epsilon: float = 0.05,
-                      seed: int = 0,
-                      decision_mode=&#34;hybrid&#34;,
-                      r_outer=None,
-                      linger_delta: float = 0.0,
-                      out_dir = None,
-                      cluster_method: str = &#34;kmeans&#34;,
-                      k_min: int = 2,
-                      k_max: int = 6,
-                      min_sep_deg: float = 12.0,
-                      angle_eps: float = 15.0,
-                      min_samples: int = 5,
-                      junction_number: int = 0,
-                      all_junctions: Sequence[Circle] = None
-                      ) -&gt; Tuple[pd.DataFrame, pd.DataFrame, np.ndarray]:
-    &#34;&#34;&#34;Compute initial movement vectors and cluster them into k branches.
-
-    Returns
-    -------
-    assignments : DataFrame with columns [&#34;trajectory&#34;, &#34;branch&#34;]
-    summary     : DataFrame with columns [&#34;branch&#34;, &#34;count&#34;, &#34;percent&#34;]
-    centers     : (k,2) ndarray of unit vectors (sorted by angle)
-    &#34;&#34;&#34;
-    from tqdm import tqdm
-
-    # --- Extract one direction vector per trajectory ---
-    vecs, ids, diags, mode_log = [], [], [], []
-    decisions_rows = []  # persist decision index/coords per trajectory
-    assign_all_rows = []  # holds rows for −2 (no entry)
-
-    logger.info(f&#34;Processing {len(trajectories)} trajectories...&#34;)
-
-    for tr in tqdm(trajectories, desc=&#34;Analyzing trajectories&#34;, unit=&#34;traj&#34;):
-        # 0) Hard &#34;no entry&#34; → branch -2 (kept only in *all* table for plotting/stats)
-        entered, _ = entered_junction_idx(tr.x, tr.z, junction)
-        if not entered:
-            assign_all_rows.append({&#34;trajectory&#34;: tr.tid, &#34;branch&#34;: -2})
-            diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: False, &#34;reason&#34;: &#34;no_junction_entry&#34;})
-            continue
-
-        # 1) Get initial direction according to mode (hybrid tries radial, falls back to pathlen)
-        v, mode_used = _pick_vector_and_source(
-            tr=tr,
-            junction=junction,
-            decision_mode=str(decision_mode),
-            path_length=float(path_length),
-            r_outer=r_outer,
-            epsilon=float(epsilon),
-            linger_delta=float(linger_delta),
-        )
-        mode_log.append({&#34;trajectory&#34;: tr.tid, &#34;mode_used&#34;: mode_used})
-
-        # 2) If we still didn’t get a vector, mark as “entered but off-center” (branch -1 in *all*)
-        if v is None:
-            assign_all_rows.append({&#34;trajectory&#34;: tr.tid, &#34;branch&#34;: -1})
-            diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: False, &#34;reason&#34;: &#34;no_vector&#34;})
-            continue
-
-        # 3) Normalize and keep
-        v = v / max(1e-12, float(np.linalg.norm(v)))
-        vecs.append(v)
-        ids.append(tr.tid)
-        diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: True, &#34;reason&#34;: mode_used})
-
-        # Persist approximate decision index consistent with mode_used
-        try:
-            rx = tr.x - junction.cx
-            rz = tr.z - junction.cz
-            r = np.hypot(rx, rz)
-            inside = r &lt;= junction.r
-            start = int(np.argmax(inside)) if inside.any() else int(np.argmin(r))
-
-            decision_idx = None
-            if mode_used == &#34;radial&#34;:
-                rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
-                i_cross = None
-                for i in range(start + 1, len(r)):
-                    if r[i] &gt;= rout:
-                        j0 = max(start + 1, i - 5)
-                        seg = r[j0:i+1]
-                        outward = float(np.nanmean(np.diff(seg))) &gt;= 0.0 if seg.size &gt;= 2 else True
-                        if outward:
-                            i_cross = i
-                            break
-                decision_idx = int(i_cross) if i_cross is not None else None
-            else:
-                dx = np.diff(tr.x[start:])
-                dz = np.diff(tr.z[start:])
-                seg = np.hypot(dx, dz)
-                cum = np.cumsum(seg)
-                reach_idx = int(np.argmax(cum &gt;= float(path_length))) if (cum &gt;= float(path_length)).any() else None
-                decision_idx = int(start + reach_idx + 1) if reach_idx is not None else None
-
-            if decision_idx is None:
-                # Don&#39;t assign trajectories without proper decision points
-                # Mark as *entered but no decision* (branch -1 in *all*)
-                assign_all_rows.append({&#34;trajectory&#34;: tr.tid, &#34;branch&#34;: -1})
-                diags.append({&#34;trajectory&#34;: tr.tid, &#34;used&#34;: False, &#34;reason&#34;: &#34;no_decision_point&#34;})
-                continue
-
-            if 0 &lt;= decision_idx &lt; len(tr.x) and 0 &lt;= decision_idx &lt; len(tr.z):
-                ix = float(tr.x[decision_idx])
-                iz = float(tr.z[decision_idx])
-
-                # CRITICAL VALIDATION: Ensure decision point is not outside r_outer
-                decision_distance = np.hypot(ix - junction.cx, iz - junction.cz)
-                rout = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
-
-                # Calculate adaptive tolerance based on trajectory resolution
-                # Use the typical step size in the trajectory as tolerance
-                if len(tr.x) &gt; 1:
-                    step_sizes = np.hypot(np.diff(tr.x), np.diff(tr.z))
-                    typical_step = np.median(step_sizes) if len(step_sizes) &gt; 0 else 1.0
-                    tolerance = max(typical_step * 2.0, 1.0)  # At least 2 steps or 1 unit
-                else:
-                    tolerance = 1.0
-
-                if decision_distance &gt; rout + tolerance:
-                    logger.debug(f&#34;REJECTED: Decision point at distance {decision_distance:.1f} is outside r_outer {rout:.1f} (tolerance: {tolerance:.1f}) for trajectory {tr.tid}&#34;)
-                    continue
-            else:
-                # Don&#39;t use fallback if decision_idx is out of bounds
-                # This indicates an invalid decision point
-                continue
-
-            decisions_rows.append({
-                &#34;trajectory&#34;: tr.tid,
-                &#34;junction_index&#34;: 0,
-                &#34;decision_idx&#34;: int(decision_idx),
-                &#34;intercept_x&#34;: ix,
-                &#34;intercept_z&#34;: iz,
-                &#34;mode_used&#34;: str(mode_used),
-            })
-        except Exception:
-            pass
-
-
-
-
-
-    diag_df = pd.DataFrame(diags)
-    diag_df.to_csv(os.path.join(out_dir, &#34;discover_diag_reasons.csv&#34;), index=False)
-
-    logger.info(f&#34;trajectories: {len(trajectories)}  extracted_vectors: {len(vecs)}&#34;)
-
-    # Optional CSV diagnostics
-    if out_dir is not None:
-        try:
-            pd.DataFrame(diags).to_csv(os.path.join(out_dir, &#34;discover_diagnostics.csv&#34;), index=False)
-            logger.debug(f&#34;diagnostics -&gt; {os.path.join(out_dir, &#39;discover_diagnostics.csv&#39;)}&#34;)
-
-            pd.DataFrame(mode_log).to_csv(os.path.join(out_dir, &#34;decision_mode_used.csv&#34;), index=False)
-            logger.debug(f&#34;decision_mode_used -&gt; {os.path.join(out_dir, &#39;decision_mode_used.csv&#39;)}&#34;)
-        except Exception as e:
-            logger.warning(f&#34;could not write diagnostics: {e}&#34;)
-
-    n_noentry = sum(1 for r in assign_all_rows if r[&#34;branch&#34;] == -2)
-    n_off     = sum(1 for r in assign_all_rows if r[&#34;branch&#34;] == -1)
-    logger.info(f&#34;entered={len(vecs)+n_off}  no_vector={n_off}  no_entry={n_noentry}&#34;)
-
-    if len(vecs) == 0:
-        empty_assign = pd.DataFrame(columns=[&#34;trajectory&#34;, &#34;branch&#34;])
-        empty_sum = pd.DataFrame(columns=[&#34;branch&#34;, &#34;count&#34;, &#34;percent&#34;])
-        return empty_assign, empty_sum, np.zeros((0, 2))
-
-    V = np.vstack(vecs)
-
-    if out_dir is not None and len(vecs):
-        pd.DataFrame({&#34;trajectory&#34;: ids, &#34;vx&#34;: V[:, 0], &#34;vz&#34;: V[:, 1]}).to_csv(os.path.join(out_dir, &#34;vectors.csv&#34;), index=False)
-
-    # ---- CLUSTERING ----
-    if cluster_method in (&#34;kmeans&#34;, &#34;auto&#34;):
-        if cluster_method == &#34;auto&#34;:
-            k_auto, sil = best_k_by_silhouette(V, k_min=k_min, k_max=k_max, seed=seed)
-            logger.debug(f&#34;auto-k silhouette -&gt; {k_auto}  scores={sil}&#34;)
-            k = k_auto
-        if k &gt; len(V):
-            logger.debug(f&#34;Requested k={k} but only {len(V)} vectors; capping.&#34;)
-            k = len(V)
-
-        labels, centers = kmeans_2d(V, k=k, seed=seed)
-        logger.debug(f&#34;After kmeans: labels={np.unique(labels)}, centers.shape={centers.shape}&#34;)
-
-        # merge near-duplicate directions
-        centers, labels = merge_close_centers(centers, labels, min_sep_deg=min_sep_deg)
-        logger.debug(f&#34;After merge: labels={np.unique(labels)}, centers.shape={centers.shape}&#34;)
-
-        # angle-sort centers; remap labels to 0..C-1
-        ang = np.arctan2(centers[:, 1], centers[:, 0])
-        order = np.argsort(ang)
-        mapping = {old: new for new, old in enumerate(order)}
-        logger.debug(f&#34;Angle sort order={order}, mapping={mapping}&#34;)
-
-        centers = centers[order]
-        nrm = np.linalg.norm(centers, axis=1, keepdims=True)
-        centers = centers / np.clip(nrm, 1e-12, None)
-        labels = np.array([mapping[l] for l in labels], dtype=int)
-        logger.debug(f&#34;Final labels={np.unique(labels)}&#34;)
-
-    elif cluster_method == &#34;dbscan&#34;:
-        # density on angles; can yield outliers labeled -1
-        lab, centers = cluster_angles_dbscan(V, eps_deg=angle_eps, min_samples=min_samples)
-        labels = lab.copy()  # keep -1 for outliers
-
-        # If no clusters found, all are outliers; centers is (0,2)
-        if centers.size == 0:
-            pass  # labels already -1; centers OK
-        else:
-            # Sort centers by angle for stable numbering
-            ang = np.arctan2(centers[:, 1], centers[:, 0])
-            order = np.argsort(ang)                  # order gives new IDs
-            centers = centers[order]
-
-            # Old DBSCAN cluster ids are 0..C-1 in the order they were built.
-            # Build mapping: old_id -&gt; new_id (angle-sorted)
-            old_ids = np.arange(len(order))
-            remap = {int(old_id): int(new_id) for new_id, old_id in enumerate(order)}
-
-            # Remap labels &gt;= 0; keep -1 as is
-            for i, l in enumerate(labels):
-                if l &gt;= 0:
-                    labels[i] = remap[int(l)]
-
-
-    else:
-        raise ValueError(f&#34;Unknown cluster_method={cluster_method}&#34;)
-
-    assignments = pd.DataFrame({&#34;trajectory&#34;: ids, &#34;branch&#34;: labels})
-    assignments_all = pd.concat([assignments, pd.DataFrame(assign_all_rows)], ignore_index=True)
-
-    # Summary (main branches only, &gt;=0) stays the same using *assignments*
-    mask_main = assignments[&#34;branch&#34;] &gt;= 0
-    cnt = Counter(assignments.loc[mask_main, &#34;branch&#34;])
-    total = int(mask_main.sum())
-    summary = pd.DataFrame({
-        &#34;branch&#34;: sorted(cnt.keys()),
-        &#34;count&#34;: [cnt[b] for b in sorted(cnt.keys())],
-        &#34;percent&#34;: [cnt[b] / total * 100.0 if total else 0.0 for b in sorted(cnt.keys())],
-    })
-
-    # Write both CSVs if out_dir given and draw intercepts using the *all* table
-    if out_dir is not None:
-        assignments.to_csv(os.path.join(out_dir, &#34;branch_assignments.csv&#34;), index=False)
-        assignments_all.to_csv(os.path.join(out_dir, &#34;branch_assignments_all.csv&#34;), index=False)
-        mode_df = pd.DataFrame(mode_log)
-        mode_df.to_csv(os.path.join(out_dir, &#34;decision_mode_used.csv&#34;), index=False)
-        # persist decision points for reuse in gaze
-        try:
-            decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
-            pd.DataFrame(decisions_rows).to_csv(decision_points_path, index=False)
-            print(f&#34;[discover_debug] Junction {junction_number}: Saved {len(decisions_rows)} decision points to {decision_points_path}&#34;)
-        except Exception as e:
-            print(f&#34;[discover_debug] Junction {junction_number}: Error saving decision points: {e}&#34;)
-            pass
-
-        # Ensure r_outer has a proper default value for plotting
-        plot_r_outer = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
-
-        # Load decision points data for plotting
-        decision_points_df = None
-        try:
-            decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
-            if os.path.exists(decision_points_path):
-                decision_points_df = pd.read_csv(decision_points_path)
-        except Exception:
-            pass
-
-        plot_decision_intercepts(
-            trajectories=trajectories,
-            assignments_df=assignments_all,
-            mode_log_df=mode_df,
-            centers=centers,
-            junction=junction,
-            r_outer=plot_r_outer,
-            path_length=path_length,
-            epsilon=epsilon,
-            linger_delta=linger_delta,
-            out_path=os.path.join(out_dir, &#34;Decision_Intercepts.png&#34;),
-            show_paths=False,
-            junction_number=junction_number,
-            all_junctions=all_junctions,
-            decision_points_df=decision_points_df
-        )
-
-    return assignments, summary, centers
-
-
-def assign_branches(trajectories,
-                    centers: np.ndarray,
-                    junction: Circle,
-                    path_length: float = 100.0,
-                    decision_mode=&#34;pathlen&#34;,
-                    r_outer=None,
-                    epsilon: float = 0.05,
-                    linger_delta: float = 0.0,
-                    assign_angle_eps: float = 15.0,
-                    out_dir = None) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Assign branches using fixed centers, consistent with discover.&#34;&#34;&#34;
-    ids, labs = [], []
-    dbg_rows, mode_rows = [], []
-
-    min_dot = float(math.cos(math.radians(assign_angle_eps)))
-
-    for tr in trajectories:
-        # hard −2 if we never enter the junction
-        entered, _ = entered_junction_idx(tr.x, tr.z, junction)
-        if not entered:
-            ids.append(tr.tid); labs.append(-2)
-            continue
-
-        v, mode_used = _pick_vector_and_source(
-            tr, junction, decision_mode, path_length, r_outer, epsilon, linger_delta=linger_delta
-        )
-
-        # entered but no usable vector → −1
-        if v is None or centers.size == 0:
-            ids.append(tr.tid); labs.append(-1)
-            continue
-
-        v = v / max(1e-12, np.linalg.norm(v))
-        dots = centers @ v
-        lab = int(np.argmax(dots))
-        # too far from any center?  mark −1
-        lab = lab if float(dots[lab]) &gt;= min_dot else -1
-
-        ids.append(tr.tid); labs.append(lab)
-        dbg_rows.append({
-            &#34;trajectory&#34;: tr.tid, &#34;vx&#34;: float(v[0]), &#34;vz&#34;: float(v[1]),
-            &#34;assigned_branch&#34;: lab, &#34;argmax_dot&#34;: float(dots[lab] if lab&gt;=0 else np.max(dots)),
-            &#34;best_alt_branch&#34;: int(np.argsort(dots)[-2]) if len(dots) &gt; 1 else -1,
-            &#34;best_alt_dot&#34;: float(np.sort(dots)[-2]) if len(dots) &gt; 1 else float(&#34;nan&#34;),
-        })
-        mode_rows.append({&#34;trajectory&#34;: tr.tid, &#34;mode_used&#34;: mode_used})
-
-    df = pd.DataFrame({&#34;trajectory&#34;: ids, &#34;branch&#34;: labs})
-    if out_dir is not None:
-        pd.DataFrame(dbg_rows).to_csv(os.path.join(out_dir, &#34;assign_vectors.csv&#34;), index=False)
-        pd.DataFrame(mode_rows).to_csv(os.path.join(out_dir, &#34;assign_mode_used.csv&#34;), index=False)
-    return df
-
-
-def compute_assignment_vectors(
-    trajectories: Sequence[Trajectory],
-    junction: Circle,
-    *,
-    path_length: float = 100.0,
-    decision_mode: str = &#34;pathlen&#34;,
-    r_outer: Optional[float] = None,
-    epsilon: float = 0.05,
-    linger_delta: float = 0.0,
-) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Compute initial unit vectors per trajectory using the same logic as assignment.
-
-    Returns a DataFrame with columns:
-      - trajectory: trajectory id
-      - entered: bool (True if trajectory entered junction)
-      - usable: bool (True if a non-None vector was obtained)
-      - vx, vz: float components of the unit vector (NaN if not usable)
-      - mode_used: str (&#34;radial&#34; or &#34;pathlen&#34;) when usable
-    &#34;&#34;&#34;
-    rows = []
-    for tr in trajectories:
-        entered, _ = entered_junction_idx(tr.x, tr.z, junction)
-        if not entered:
-            rows.append({
-                &#34;trajectory&#34;: tr.tid,
-                &#34;entered&#34;: False,
-                &#34;usable&#34;: False,
-                &#34;vx&#34;: float(&#34;nan&#34;),
-                &#34;vz&#34;: float(&#34;nan&#34;),
-                &#34;mode_used&#34;: None,
-            })
-            continue
-
-        v, mode_used = _pick_vector_and_source(
-            tr=tr,
-            junction=junction,
-            decision_mode=str(decision_mode),
-            path_length=float(path_length),
-            r_outer=r_outer,
-            epsilon=float(epsilon),
-            linger_delta=float(linger_delta),
-        )
-
-        if v is None:
-            rows.append({
-                &#34;trajectory&#34;: tr.tid,
-                &#34;entered&#34;: True,
-                &#34;usable&#34;: False,
-                &#34;vx&#34;: float(&#34;nan&#34;),
-                &#34;vz&#34;: float(&#34;nan&#34;),
-                &#34;mode_used&#34;: None,
-            })
-            continue
-
-        v = v / max(1e-12, float(np.linalg.norm(v)))
-        rows.append({
-            &#34;trajectory&#34;: tr.tid,
-            &#34;entered&#34;: True,
-            &#34;usable&#34;: True,
-            &#34;vx&#34;: float(v[0]),
-            &#34;vz&#34;: float(v[1]),
-            &#34;mode_used&#34;: str(mode_used),
-        })
-
-    return pd.DataFrame(rows)
-
-
-# Multi-junction decision chains
-
-def discover_decision_chain(
-    trajectories: Sequence[Trajectory],
-    junctions: Sequence[Circle],
-    *,
-    path_length: float = 100.0,
-    epsilon: float = 0.05,
-    seed: int = 0,
-    decision_mode: str = &#34;hybrid&#34;,
-    r_outer_list: Optional[Sequence[float]] = None,
-    linger_delta: float = 0.0,
-    out_dir: Optional[str] = None,
-    cluster_method: str = &#34;kmeans&#34;,
-    k: int = 3,
-    k_min: int = 2,
-    k_max: int = 6,
-    min_sep_deg: float = 12.0,
-    angle_eps: float = 15.0,
-    min_samples: int = 5,
-) -&gt; tuple[pd.DataFrame, list[np.ndarray], pd.DataFrame]:
-    &#34;&#34;&#34;
-    Discover branches at multiple junctions (a decision chain).
-
-    Returns
-    -------
-    chain_df : DataFrame with one row per trajectory and columns:
-        - trajectory
-        - branch_j0, branch_j1, ... for each junction index
-    centers_list : list of (C,2) arrays of unit vectors per junction
-    &#34;&#34;&#34;
-    if r_outer_list is None:
-        r_outer_list = [None] * len(junctions)
-    if len(r_outer_list) != len(junctions):
-        raise ValueError(&#34;r_outer_list length must match junctions length or be omitted&#34;)
-
-    all_centers: list[np.ndarray] = []
-    per_j_assign: list[pd.DataFrame] = []
-    per_j_decisions: list[pd.DataFrame] = []
-
-    # make an optional folder structure: out_dir/junction_{i}
-    def _subdir(i: int) -&gt; Optional[str]:
-        if out_dir is None:
-            return None
-        d = os.path.join(out_dir, f&#34;junction_{i}&#34;)
-        os.makedirs(d, exist_ok=True)
-        return d
-
-    # Run discovery per junction
-    for i, (junc, r_out) in enumerate(zip(junctions, r_outer_list)):
-        sub_out = _subdir(i)
-        assign_i, _summary_i, centers_i = discover_branches(
-            trajectories=trajectories,
-            junction=junc,
-            k=int(k),
-            path_length=float(path_length),
-            epsilon=float(epsilon),
-            seed=int(seed + i),  # perturb seed per stage for stability if needed
-            decision_mode=str(decision_mode),
-            r_outer=r_out,
-            linger_delta=float(linger_delta),
-            out_dir=sub_out,
-            cluster_method=str(cluster_method),
-            k_min=int(k_min),
-            k_max=int(k_max),
-            min_sep_deg=float(min_sep_deg),
-            angle_eps=float(angle_eps),
-            min_samples=int(min_samples),
-            junction_number=i,  # Pass the correct junction number
-            all_junctions=junctions
-        )
-        # rename branch column to junction index specific
-        assign_i = assign_i.rename(columns={&#34;branch&#34;: f&#34;branch_j{i}&#34;})
-        per_j_assign.append(assign_i)
-        all_centers.append(centers_i)
-
-        # read decisions file written by discover_branches for this junction
-        sub = _subdir(i)
-        if sub is not None:
-            p = os.path.join(sub, &#34;decision_points.csv&#34;)
-            try:
-                if os.path.exists(p):
-                    dfi = pd.read_csv(p)
-                    dfi[&#34;junction_index&#34;] = i
-                    per_j_decisions.append(dfi)
-                    print(f&#34;[discover_debug] Junction {i}: Loaded {len(dfi)} decision points from {p}&#34;)
-                else:
-                    print(f&#34;[discover_debug] Junction {i}: No decision points file found at {p}&#34;)
-            except Exception as e:
-                print(f&#34;[discover_debug] Junction {i}: Error loading decision points: {e}&#34;)
-                pass
-        else:
-            print(f&#34;[discover_debug] Junction {i}: No output directory created&#34;)
-
-    # Merge per-junction assignments into a wide table
-    from functools import reduce
-    def _merge(a: pd.DataFrame, b: pd.DataFrame) -&gt; pd.DataFrame:
-        return a.merge(b, on=&#34;trajectory&#34;, how=&#34;outer&#34;)
-
-    chain_df = reduce(_merge, per_j_assign)
-
-    # Optional: order columns (trajectory first)
-    cols = [&#34;trajectory&#34;] + [f&#34;branch_j{i}&#34; for i in range(len(junctions))]
-    chain_df = chain_df.reindex(columns=cols)
-
-    if out_dir is not None:
-        chain_path = os.path.join(out_dir, &#34;branch_assignments_chain.csv&#34;)
-        chain_df.to_csv(chain_path, index=False)
-        # also write centers per junction
-        for i, c in enumerate(all_centers):
-            np.save(os.path.join(out_dir, f&#34;branch_centers_j{i}.npy&#34;), c)
-    # write consolidated decisions
-    decisions_chain_df = pd.concat(per_j_decisions, ignore_index=True) if per_j_decisions else pd.DataFrame(columns=[&#34;trajectory&#34;,&#34;junction_index&#34;,&#34;decision_idx&#34;,&#34;intercept_x&#34;,&#34;intercept_z&#34;,&#34;mode_used&#34;])
-    print(f&#34;[discover_debug] Created chain_decisions DataFrame with {len(decisions_chain_df)} rows&#34;)
-    print(f&#34;[discover_debug] Junction indices in chain_decisions: {sorted(decisions_chain_df[&#39;junction_index&#39;].unique()) if not decisions_chain_df.empty else &#39;None&#39;}&#34;)
-    if not decisions_chain_df.empty:
-        decisions_chain_df.to_csv(os.path.join(out_dir, &#34;branch_decisions_chain.csv&#34;), index=False)
-        print(f&#34;[discover_debug] Saved chain_decisions to {os.path.join(out_dir, &#39;branch_decisions_chain.csv&#39;)}&#34;)
-    else:
-        decisions_chain_df = pd.concat(per_j_decisions, ignore_index=True) if per_j_decisions else pd.DataFrame(columns=[&#34;trajectory&#34;,&#34;junction_index&#34;,&#34;decision_idx&#34;,&#34;intercept_x&#34;,&#34;intercept_z&#34;,&#34;mode_used&#34;])
-        print(f&#34;[discover_debug] Chain_decisions is empty, created empty DataFrame&#34;)
-
-    return chain_df, all_centers, decisions_chain_df</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -850,10 +45,9 @@ def discover_decision_chain(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="verta.verta_decisions.assign_branches"><code class="name flex">
-<span>def <span class="ident">assign_branches</span></span>(<span>trajectories, centers: numpy.ndarray, junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, path_length: float = 100.0, decision_mode='pathlen', r_outer=None, epsilon: float = 0.05, linger_delta: float = 0.0, assign_angle_eps: float = 15.0, out_dir=None) ‑> pandas.core.frame.DataFrame</span>
+<span>def <span class="ident">assign_branches</span></span>(<span>trajectories,<br>centers: numpy.ndarray,<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>path_length: float = 100.0,<br>decision_mode='pathlen',<br>r_outer=None,<br>epsilon: float = 0.05,<br>linger_delta: float = 0.0,<br>assign_angle_eps: float = 15.0,<br>out_dir=None) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Assign branches using fixed centers, consistent with discover.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -911,18 +105,12 @@ def discover_decision_chain(
         pd.DataFrame(mode_rows).to_csv(os.path.join(out_dir, &#34;assign_mode_used.csv&#34;), index=False)
     return df</code></pre>
 </details>
+<div class="desc"><p>Assign branches using fixed centers, consistent with discover.</p></div>
 </dd>
 <dt id="verta.verta_decisions.compute_assignment_vectors"><code class="name flex">
-<span>def <span class="ident">compute_assignment_vectors</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, *, path_length: float = 100.0, decision_mode: str = 'pathlen', r_outer: Optional[float] = None, epsilon: float = 0.05, linger_delta: float = 0.0) ‑> pandas.core.frame.DataFrame</span>
+<span>def <span class="ident">compute_assignment_vectors</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>*,<br>path_length: float = 100.0,<br>decision_mode: str = 'pathlen',<br>r_outer: float | None = None,<br>epsilon: float = 0.05,<br>linger_delta: float = 0.0) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compute initial unit vectors per trajectory using the same logic as assignment.</p>
-<p>Returns a DataFrame with columns:
-- trajectory: trajectory id
-- entered: bool (True if trajectory entered junction)
-- usable: bool (True if a non-None vector was obtained)
-- vx, vz: float components of the unit vector (NaN if not usable)
-- mode_used: str ("radial" or "pathlen") when usable</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -993,23 +181,18 @@ def discover_decision_chain(
 
     return pd.DataFrame(rows)</code></pre>
 </details>
+<div class="desc"><p>Compute initial unit vectors per trajectory using the same logic as assignment.</p>
+<p>Returns a DataFrame with columns:
+- trajectory: trajectory id
+- entered: bool (True if trajectory entered junction)
+- usable: bool (True if a non-None vector was obtained)
+- vx, vz: float components of the unit vector (NaN if not usable)
+- mode_used: str ("radial" or "pathlen") when usable</p></div>
 </dd>
 <dt id="verta.verta_decisions.discover_branches"><code class="name flex">
-<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, k: int = 3, path_length: float = 100.0, epsilon: float = 0.05, seed: int = 0, decision_mode='hybrid', r_outer=None, linger_delta: float = 0.0, out_dir=None, cluster_method: str = 'kmeans', k_min: int = 2, k_max: int = 6, min_sep_deg: float = 12.0, angle_eps: float = 15.0, min_samples: int = 5, junction_number: int = 0, all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
+<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>k: int = 3,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode='hybrid',<br>r_outer=None,<br>linger_delta: float = 0.0,<br>out_dir=None,<br>cluster_method: str = 'kmeans',<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>junction_number: int = 0,<br>all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compute initial movement vectors and cluster them into k branches.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>assignments</code></strong> :&ensp;<code>DataFrame with columns ["trajectory", "branch"]</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>summary
-: DataFrame with columns ["branch", "count", "percent"]</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>centers
-: (k,2) ndarray</code> of <code>unit vectors (sorted by angle)</code></dt>
-<dd>&nbsp;</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1304,24 +487,23 @@ def discover_decision_chain(
 
     return assignments, summary, centers</code></pre>
 </details>
-</dd>
-<dt id="verta.verta_decisions.discover_decision_chain"><code class="name flex">
-<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>], junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>], *, path_length: float = 100.0, epsilon: float = 0.05, seed: int = 0, decision_mode: str = 'hybrid', r_outer_list: Optional[Sequence[float]] = None, linger_delta: float = 0.0, out_dir: Optional[str] = None, cluster_method: str = 'kmeans', k: int = 3, k_min: int = 2, k_max: int = 6, min_sep_deg: float = 12.0, angle_eps: float = 15.0, min_samples: int = 5) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Discover branches at multiple junctions (a decision chain).</p>
+<div class="desc"><p>Compute initial movement vectors and cluster them into k branches.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>chain_df</code></strong> :&ensp;<code>DataFrame with one row per trajectory and columns:</code></dt>
-<dd>
-<ul>
-<li>trajectory</li>
-<li>branch_j0, branch_j1, &hellip; for each junction index</li>
-</ul>
-</dd>
-<dt><strong><code>centers_list</code></strong> :&ensp;<code>list</code> of <code>(C,2) arrays</code> of <code>unit vectors per junction</code></dt>
+<dt><strong><code>assignments</code></strong> :&ensp;<code>DataFrame with columns ["trajectory", "branch"]</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>summary
+: DataFrame with columns ["branch", "count", "percent"]</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>centers
+: (k,2) ndarray</code> of <code>unit vectors (sorted by angle)</code></dt>
 <dd>&nbsp;</dd>
 </dl></div>
+</dd>
+<dt id="verta.verta_decisions.discover_decision_chain"><code class="name flex">
+<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>*,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode: str = 'hybrid',<br>r_outer_list: Sequence[float] | None = None,<br>linger_delta: float = 0.0,<br>out_dir: str | None = None,<br>cluster_method: str = 'kmeans',<br>k: int = 3,<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1448,17 +630,24 @@ def discover_decision_chain(
 
     return chain_df, all_centers, decisions_chain_df</code></pre>
 </details>
+<div class="desc"><p>Discover branches at multiple junctions (a decision chain).</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>chain_df</code></strong> :&ensp;<code>DataFrame with one row per trajectory and columns:</code></dt>
+<dd>
+<ul>
+<li>trajectory</li>
+<li>branch_j0, branch_j1, &hellip; for each junction index</li>
+</ul>
+</dd>
+<dt><strong><code>centers_list</code></strong> :&ensp;<code>list</code> of <code>(C,2) arrays</code> of <code>unit vectors per junction</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
 </dd>
 <dt id="verta.verta_decisions.first_unit_vector_after_distance"><code class="name flex">
-<span>def <span class="ident">first_unit_vector_after_distance</span></span>(<span>x: numpy.ndarray, z: numpy.ndarray, origin_region: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, path_length: float = 100.0, epsilon: float = 0.05, fallback_window: int = 10, linger_delta: float = 0.0) ‑> Optional[numpy.ndarray]</span>
+<span>def <span class="ident">first_unit_vector_after_distance</span></span>(<span>x: numpy.ndarray,<br>z: numpy.ndarray,<br>origin_region: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>fallback_window: int = 10,<br>linger_delta: float = 0.0) ‑> numpy.ndarray | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a single unit direction vector capturing initial route choice.
-Fallback order:
-T1. First step &gt;= epsilon after reaching <code>path_length</code>.
-T2. Largest single step anywhere &gt;= epsilon.
-T3. Net displacement over last <code>fallback_window</code> steps (ignores epsilon).
-Returns None only if there is no motion at all.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1534,15 +723,17 @@ Returns None only if there is no motion at all.</p></div>
 
     return None</code></pre>
 </details>
+<div class="desc"><p>Returns a single unit direction vector capturing initial route choice.
+Fallback order:
+T1. First step &gt;= epsilon after reaching <code>path_length</code>.
+T2. Largest single step anywhere &gt;= epsilon.
+T3. Net displacement over last <code>fallback_window</code> steps (ignores epsilon).
+Returns None only if there is no motion at all.</p></div>
 </dd>
 <dt id="verta.verta_decisions.first_unit_vector_after_radial_exit"><code class="name flex">
-<span>def <span class="ident">first_unit_vector_after_radial_exit</span></span>(<span>x: numpy.ndarray, z: numpy.ndarray, junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, r_outer: float, epsilon: float = 0.05, window: int = 5) ‑> Optional[numpy.ndarray]</span>
+<span>def <span class="ident">first_unit_vector_after_radial_exit</span></span>(<span>x: numpy.ndarray,<br>z: numpy.ndarray,<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>r_outer: float,<br>epsilon: float = 0.05,<br>window: int = 5) ‑> numpy.ndarray | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Direction when the path <em>exits</em> an outer radius around the junction.
-Start at first time inside junction.r (else nearest approach).
-Trigger when r &gt;= r_outer (with non-negative outward trend).
-Direction is the unit vector of the summed step vectors over a short window.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1610,32 +801,15 @@ Direction is the unit vector of the summed step vectors over a short window.</p>
         return None
     return np.array([vx / n, vz / n])</code></pre>
 </details>
+<div class="desc"><p>Direction when the path <em>exits</em> an outer radius around the junction.
+Start at first time inside junction.r (else nearest approach).
+Trigger when r &gt;= r_outer (with non-negative outward trend).
+Direction is the unit vector of the summed step vectors over a short window.</p></div>
 </dd>
 <dt id="verta.verta_decisions.get_decision_index"><code class="name flex">
-<span>def <span class="ident">get_decision_index</span></span>(<span>x: numpy.ndarray, z: numpy.ndarray, junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>, decision_mode: str, path_length: float = 100.0, r_outer: Optional[float] = None, epsilon: float = 0.05, linger_delta: float = 0.0, window: int = 5) ‑> Optional[int]</span>
+<span>def <span class="ident">get_decision_index</span></span>(<span>x: numpy.ndarray,<br>z: numpy.ndarray,<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>decision_mode: str,<br>path_length: float = 100.0,<br>r_outer: float | None = None,<br>epsilon: float = 0.05,<br>linger_delta: float = 0.0,<br>window: int = 5) ‑> int | None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get decision index using the specified decision mode.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt>x, z: Trajectory coordinates</dt>
-<dt><strong><code>junction</code></strong></dt>
-<dd>Junction circle</dd>
-<dt><strong><code>decision_mode</code></strong></dt>
-<dd>"pathlen", "radial", or "hybrid"</dd>
-<dt><strong><code>path_length</code></strong></dt>
-<dd>Path length for pathlen mode</dd>
-<dt><strong><code>r_outer</code></strong></dt>
-<dd>Outer radius for radial mode</dd>
-<dt><strong><code>epsilon</code></strong></dt>
-<dd>Minimum step size</dd>
-<dt><strong><code>linger_delta</code></strong></dt>
-<dd>Linger distance beyond junction</dd>
-<dt><strong><code>window</code></strong></dt>
-<dd>Window size for radial mode</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>Decision index or None if not found</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1692,6 +866,27 @@ Direction is the unit vector of the summed step vectors over a short window.</p>
 
     return None</code></pre>
 </details>
+<div class="desc"><p>Get decision index using the specified decision mode.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt>x, z: Trajectory coordinates</dt>
+<dt><strong><code>junction</code></strong></dt>
+<dd>Junction circle</dd>
+<dt><strong><code>decision_mode</code></strong></dt>
+<dd>"pathlen", "radial", or "hybrid"</dd>
+<dt><strong><code>path_length</code></strong></dt>
+<dd>Path length for pathlen mode</dd>
+<dt><strong><code>r_outer</code></strong></dt>
+<dd>Outer radius for radial mode</dd>
+<dt><strong><code>epsilon</code></strong></dt>
+<dd>Minimum step size</dd>
+<dt><strong><code>linger_delta</code></strong></dt>
+<dd>Linger distance beyond junction</dd>
+<dt><strong><code>window</code></strong></dt>
+<dd>Window size for radial mode</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Decision index or None if not found</p></div>
 </dd>
 </dl>
 </section>
@@ -1699,7 +894,6 @@ Direction is the unit vector of the summed step vectors over a short window.</p>
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -1724,7 +918,7 @@ Direction is the unit vector of the summed step vectors over a short window.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
 </footer>
 </body>
 </html>
