@@ -1,7 +1,7 @@
 """
 VERTA - Virtual Environment Route and Trajectory Analyzer
 
-A comprehensive toolkit for analyzing route choices and trajectories in virtual environments.
+A Python tool for route and trajectory analysis in virtual environments.
 """
 
 __version__ = "0.1.0"

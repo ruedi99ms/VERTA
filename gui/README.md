@@ -121,7 +121,7 @@ VERTA GUI provides 7 comprehensive analysis types:
 ## 📱 Usage Examples
 
 ### Basic Workflow
-1. **Upload Data**: Load your VR trajectory CSV files
+1. **Upload Data**: Load your (VR) trajectory CSV files
 2. **Define Junctions**: Add decision points interactively
 3. **Set Zones**: Configure start and end areas
 4. **Run Analysis**: Execute junction-based choice prediction

@@ -155,7 +155,7 @@ class VERTAGUI:
         st.markdown('<h1 class="main-header">🗺️ VERTA</h1>', unsafe_allow_html=True)
         st.markdown("""
         <div style="text-align: center; color: #666; margin-bottom: 2rem;">
-            Interactive analysis tool for VR trajectory data and junction-based choice prediction
+            A Python tool for route and trajectory analysis in virtual environments
         </div>
         """, unsafe_allow_html=True)
         # Show any pending flash message at the very top
