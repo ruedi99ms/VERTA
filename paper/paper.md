@@ -68,6 +68,7 @@ This project utilized AI-assisted development tools for various aspects of the c
   - Test scaffolding
   - Documentation refactoring and elaboration
   - Paper refinement
+  - Logo design
 
 # Acknowledgements
 
