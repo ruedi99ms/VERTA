@@ -1,5 +1,7 @@
 # VERTA - Virtual Environment Route and Trajectory Analyzer
 
+![VERTA Logo](verta_logo.png)
+
 `VERTA` is a comprehensive toolkit to analyze route choices from x–z movement trajectories: discover branch directions (common route choices that occur at an intersection), assign movement trajectories to existing branches (if new data was recorded), compute timing metrics, visualize results, and predict future route choices based on behavioral patterns. `VERTA` includes both command-line interface (CLI) and interactive web GUI.
 
 ## Installation
