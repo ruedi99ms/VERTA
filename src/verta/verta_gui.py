@@ -152,6 +152,13 @@ class VERTAGUI:
 
     def render_header(self):
         """Render the main header"""
+        # Try to display logo if it exists
+        logo_path = self._get_logo_path()
+        if logo_path and os.path.exists(logo_path):
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                st.image(logo_path, use_container_width=True)
+        
         st.markdown('<h1 class="main-header">🗺️ VERTA</h1>', unsafe_allow_html=True)
         st.markdown("""
         <div style="text-align: center; color: #666; margin-bottom: 2rem;">
@@ -160,6 +167,26 @@ class VERTAGUI:
         """, unsafe_allow_html=True)
         # Show any pending flash message at the very top
         self._show_flash()
+    
+    def _get_logo_path(self) -> Optional[str]:
+        """Get the path to the VERTA logo"""
+        try:
+            # Try to find logo relative to repo root
+            # When running as package, __file__ is in src/verta/
+            current_file = Path(__file__).resolve()
+            # Go up to repo root: src/verta/verta_gui.py -> repo_root
+            repo_root = current_file.parent.parent.parent
+            logo_path = repo_root / "verta_logo.png"
+            if logo_path.exists():
+                return str(logo_path)
+            
+            # Fallback: try current working directory (when run from repo root)
+            cwd_logo = Path("verta_logo.png")
+            if cwd_logo.exists():
+                return str(cwd_logo)
+        except Exception:
+            pass
+        return None
 
     def _show_flash(self) -> None:
         """Display and clear one-time flash message stored in session state."""
