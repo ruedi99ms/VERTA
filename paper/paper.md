@@ -56,7 +56,7 @@ This flexibility is important because by separating decision detection from bran
 
 # Research Impact Statement
 
-We have already used VERTA in the "RESCUE" (Routing Efficiency Study of 2D and 3D Cartography for Urban Evacuations in Emergencies) research project. It has given us valuable insights in the route choice behavior and evacuation efficiency of a simulated flooding event in Frankfurt am Main (Germany) [@Suhre2025] in addition to the evacuees' perspectives [@Cai2025].
+We have already used VERTA in the "RESCUE" (Routing Efficiency Study of 2D and 3D Cartography for Urban Evacuations in Emergencies) research project. It has given us valuable insights in the route choice behavior and evacuation efficiency of a simulated flooding event in Frankfurt am Main (Germany) [@Suhre2026] in addition to the evacuees' perspectives [@Cai2025].
 
 # AI usage disclosure
 
