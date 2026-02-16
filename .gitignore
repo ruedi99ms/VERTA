@@ -21,3 +21,5 @@ build/
 *.egg
 /.pytest_cache/
 paper/paper.pdf
+paper/paper_softwarex.md
+paper/SOFTWAREX_RESTRUCTURE.md
