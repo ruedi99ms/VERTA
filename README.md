@@ -20,6 +20,16 @@ pip install verta[gui]        # GUI dependencies (streamlit, plotly)
 
 This installs a console script `verta` and enables the web GUI.
 
+## Sample Data
+
+The repository includes a **`sample_data/`** folder with example trajectory CSV files you can use to try VERTA without your own data. The files contain head position (X, Z), time, and optional gaze/physiological columns in the same format as the CLI examples (e.g. `Headset.Head.Position.X`, `Headset.Head.Position.Z`, `Time`). Use them with any command by pointing `--input` at the folder:
+
+```bash
+verta discover --input ./sample_data --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time --scale 0.2 --junction 520 330 --radius 20 --out ./outputs
+```
+
+See [Data Format Requirements](#data-format-requirements) for column details.
+
 ## 🖥️ Web GUI
 
 For an interactive, user-friendly interface, try the web-based GUI:
@@ -619,7 +629,7 @@ streamlit run src/verta/verta_gui.py
 
 1. **Check console output** for detailed error messages
 2. **Verify data format** - CSV files should have X, Z columns
-3. **Try sample data first** to test installation
+3. **Try the [sample data](sample_data/) first** to test installation
 4. **Check file permissions** for output directories
 5. **Review configuration** - use `--config` for complex setups
 
