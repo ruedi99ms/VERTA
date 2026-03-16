@@ -58,7 +58,8 @@ def analyze_junction_choice_patterns(
     junctions: List[Circle],
     output_dir: str,
     r_outer_list: List[float],
-    gui_mode: bool = False
+    gui_mode: bool = False,
+    skip_plots: bool = False
 ) -> Dict[str, Any]:
     """
     Analyze junction-based choice patterns and generate predictions.
@@ -93,9 +94,10 @@ def analyze_junction_choice_patterns(
 
     # Create visualizations
     step_tracker = progress_manager.start_step("Visualizations", 1)
-    _create_conditional_probability_visualization(conditional_probs, output_dir)
-    _create_flow_graph_visualizations(trajectories, junctions, r_outer_list, output_dir, chain_df, cached_sequences)
-    _create_pattern_visualizations(conditional_probs, output_dir)
+    if not skip_plots:
+        _create_conditional_probability_visualization(conditional_probs, output_dir)
+        _create_flow_graph_visualizations(trajectories, junctions, r_outer_list, output_dir, chain_df, cached_sequences)
+        _create_pattern_visualizations(conditional_probs, output_dir)
     step_tracker.close()
     progress_manager.update_overall_progress(1.0)
 

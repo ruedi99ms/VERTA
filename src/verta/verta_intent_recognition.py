@@ -558,7 +558,8 @@ def analyze_intent_recognition(
     actual_branches: pd.DataFrame,
     output_dir: str,
     prediction_distances: List[float] = [100.0, 75.0, 50.0, 25.0],
-    previous_choices: Optional[Dict[str, int]] = None
+    previous_choices: Optional[Dict[str, int]] = None,
+    skip_plots: bool = False
 ) -> Dict[str, Any]:
     """
     Complete intent recognition analysis
@@ -603,8 +604,9 @@ def analyze_intent_recognition(
         json.dump(training_results, f, indent=2)
     
     # Create visualizations
-    _visualize_feature_importance(analyzer, output_dir)
-    _visualize_prediction_accuracy(training_results, output_dir)
+    if not skip_plots:
+        _visualize_feature_importance(analyzer, output_dir)
+        _visualize_prediction_accuracy(training_results, output_dir)
     
     # Test predictions on sample trajectories
     test_predictions = _test_sample_predictions(

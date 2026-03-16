@@ -189,11 +189,6 @@ el.replaceWith(d);
     if n_junctions == 0:
         return
     
-    # Debug: Print chain_df info
-    print(f&#34;DEBUG: chain_df shape: {chain_df.shape}&#34;)
-    print(f&#34;DEBUG: chain_df columns: {list(chain_df.columns)}&#34;)
-    print(f&#34;DEBUG: centers_list length: {len(centers_list) if centers_list else &#39;None&#39;}&#34;)
-    
     # Calculate grid layout
     cols = min(3, n_junctions)  # Max 3 columns
     rows = (n_junctions + cols - 1) // cols
@@ -217,10 +212,8 @@ el.replaceWith(d);
         
         # Get branch assignments for this junction
         branch_col = f&#34;branch_j{i}&#34;
-        print(f&#34;DEBUG: Looking for column &#39;{branch_col}&#39; in chain_df&#34;)
         
         if branch_col in chain_df.columns:
-            print(f&#34;DEBUG: Found column &#39;{branch_col}&#39;, unique values: {chain_df[branch_col].unique()}&#34;)
             
             # Create trajectory to branch mapping
             traj_branches = {}
@@ -229,8 +222,6 @@ el.replaceWith(d);
                 branch = row.get(branch_col)
                 if pd.notna(branch) and branch &gt;= 0:  # Only valid branches
                     traj_branches[traj_id] = int(branch)
-            
-            print(f&#34;DEBUG: Junction {i} - traj_branches: {len(traj_branches)} trajectories assigned&#34;)
             
             # Plot trajectories colored by branch
             branch_colors = {}
@@ -247,22 +238,15 @@ el.replaceWith(d);
                         ax.plot(traj.x[mask], traj.z[mask], color=branch_colors[branch], 
                                alpha=0.6, linewidth=1)
             
-            print(f&#34;DEBUG: Junction {i} - branch_colors: {branch_colors}&#34;)
-            
             # Plot decision intercepts using the same logic as plot_decision_intercepts
             if centers_list and i &lt; len(centers_list) and centers_list[i] is not None:
                 centers = centers_list[i]
                 r_outer = r_outer_list[i] if r_outer_list and i &lt; len(r_outer_list) else junction.r * 2
                 
-                print(f&#34;DEBUG: Junction {i} - centers shape: {centers.shape if hasattr(centers, &#39;shape&#39;) else &#39;No shape&#39;}&#34;)
-                print(f&#34;DEBUG: Junction {i} - r_outer: {r_outer}&#34;)
-                
                 # Create assignments DataFrame for this junction
                 junction_assignments = chain_df[[&#39;trajectory&#39;, branch_col]].copy()
                 junction_assignments = junction_assignments.rename(columns={branch_col: &#39;branch&#39;})
                 junction_assignments = junction_assignments[junction_assignments[&#39;branch&#39;] &gt;= 0]
-                
-                print(f&#34;DEBUG: Junction {i} - junction_assignments shape: {junction_assignments.shape}&#34;)
                 
                 if len(junction_assignments) &gt; 0:
                     # Plot decision intercepts for each branch
@@ -272,8 +256,6 @@ el.replaceWith(d);
                             
                             # Get trajectories for this branch
                             branch_trajectories = junction_assignments[junction_assignments[&#39;branch&#39;] == branch_idx]
-                            
-                            print(f&#34;DEBUG: Junction {i}, Branch {branch_idx} - {len(branch_trajectories)} trajectories&#34;)
                             
                             # For each trajectory in this branch, find where it intersects the outer radius
                             for _, row in branch_trajectories.iterrows():
@@ -300,7 +282,7 @@ el.replaceWith(d);
                                             ax.plot(intersect_x, intersect_z, &#39;o&#39;, color=color, 
                                                    markersize=4, markeredgecolor=&#39;black&#39;, markeredgewidth=0.5)
             else:
-                print(f&#34;DEBUG: Junction {i} - No centers_list or centers is None&#34;)
+                pass
             
             # Create legend for branches
             if branch_colors:
@@ -310,7 +292,6 @@ el.replaceWith(d);
                                                     label=f&#39;Branch {branch}&#39;))
                 ax.legend(handles=legend_elements, loc=&#39;upper right&#39;, fontsize=8)
         else:
-            print(f&#34;DEBUG: Column &#39;{branch_col}&#39; not found in chain_df&#34;)
             # Fallback: plot all trajectories in blue if no branch data
             for traj in trajectories:
                 mask = ((traj.x &gt;= x_min) &amp; (traj.x &lt;= x_max) &amp; 
@@ -561,11 +542,7 @@ el.replaceWith(d);
                 merged_df = assignments_df_copy.merge(decision_points_df_copy, on=&#39;trajectory&#39;, how=&#39;inner&#39;)
             except Exception as e:
                 # If merge still fails, try alternative approach
-                print(f&#34;Warning: Merge failed with error: {e}&#34;)
-                print(f&#34;Assignments trajectory type: {assignments_df_copy[&#39;trajectory&#39;].dtype}&#34;)
-                print(f&#34;Decision points trajectory type: {decision_points_df_copy[&#39;trajectory&#39;].dtype}&#34;)
-                print(f&#34;Sample assignments trajectory values: {assignments_df_copy[&#39;trajectory&#39;].head().tolist()}&#34;)
-                print(f&#34;Sample decision points trajectory values: {decision_points_df_copy[&#39;trajectory&#39;].head().tolist()}&#34;)
+                logger.warning(f&#34;Merge failed: {e}&#34;)
                 # Fall back to theoretical positions
                 merged_df = None
             
@@ -585,7 +562,7 @@ el.replaceWith(d);
                                  label=f&#39;branch {i} (actual) - {len(branch_assignments)} trajectories&#39;)
             else:
                 # Fall back to theoretical positions if merge failed or no data
-                print(&#34;Falling back to theoretical positions due to merge issues&#34;)
+                logger.debug(&#34;Falling back to theoretical positions due to merge issues&#34;)
                 for i, center in enumerate(centers):
                     color = colors[i % len(colors)]
                     branch_assignments = assignments_df[assignments_df[&#39;branch&#39;] == i]
@@ -1041,9 +1018,6 @@ el.replaceWith(d);
     max_flow = np.max(flow_matrix) if flow_matrix.size &gt; 0 else 1.0
     min_arrow_size = 15
     max_arrow_size = 100
-    
-    print(f&#34;DEBUG: Per-junction flow matrix:\n{flow_matrix}&#34;)
-    print(f&#34;DEBUG: Max flow: {max_flow}&#34;)
     
     # Create node positions for arrow drawing
     node_positions = []

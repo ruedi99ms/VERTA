@@ -190,7 +190,7 @@ el.replaceWith(d);
 - mode_used: str ("radial" or "pathlen") when usable</p></div>
 </dd>
 <dt id="verta.verta_decisions.discover_branches"><code class="name flex">
-<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>k: int = 3,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode='hybrid',<br>r_outer=None,<br>linger_delta: float = 0.0,<br>out_dir=None,<br>cluster_method: str = 'kmeans',<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>junction_number: int = 0,<br>all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
+<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>k: int = 3,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode='hybrid',<br>r_outer=None,<br>linger_delta: float = 0.0,<br>out_dir=None,<br>cluster_method: str = 'kmeans',<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>junction_number: int = 0,<br>all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None,<br>skip_plots: bool = False) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -214,7 +214,8 @@ el.replaceWith(d);
                       angle_eps: float = 15.0,
                       min_samples: int = 5,
                       junction_number: int = 0,
-                      all_junctions: Sequence[Circle] = None
+                      all_junctions: Sequence[Circle] = None,
+                      skip_plots: bool = False
                       ) -&gt; Tuple[pd.DataFrame, pd.DataFrame, np.ndarray]:
     &#34;&#34;&#34;Compute initial movement vectors and cluster them into k branches.
 
@@ -456,34 +457,35 @@ el.replaceWith(d);
             print(f&#34;[discover_debug] Junction {junction_number}: Error saving decision points: {e}&#34;)
             pass
 
-        # Ensure r_outer has a proper default value for plotting
-        plot_r_outer = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+        if not skip_plots:
+            # Ensure r_outer has a proper default value for plotting
+            plot_r_outer = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
 
-        # Load decision points data for plotting
-        decision_points_df = None
-        try:
-            decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
-            if os.path.exists(decision_points_path):
-                decision_points_df = pd.read_csv(decision_points_path)
-        except Exception:
-            pass
+            # Load decision points data for plotting
+            decision_points_df = None
+            try:
+                decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
+                if os.path.exists(decision_points_path):
+                    decision_points_df = pd.read_csv(decision_points_path)
+            except Exception:
+                pass
 
-        plot_decision_intercepts(
-            trajectories=trajectories,
-            assignments_df=assignments_all,
-            mode_log_df=mode_df,
-            centers=centers,
-            junction=junction,
-            r_outer=plot_r_outer,
-            path_length=path_length,
-            epsilon=epsilon,
-            linger_delta=linger_delta,
-            out_path=os.path.join(out_dir, &#34;Decision_Intercepts.png&#34;),
-            show_paths=False,
-            junction_number=junction_number,
-            all_junctions=all_junctions,
-            decision_points_df=decision_points_df
-        )
+            plot_decision_intercepts(
+                trajectories=trajectories,
+                assignments_df=assignments_all,
+                mode_log_df=mode_df,
+                centers=centers,
+                junction=junction,
+                r_outer=plot_r_outer,
+                path_length=path_length,
+                epsilon=epsilon,
+                linger_delta=linger_delta,
+                out_path=os.path.join(out_dir, &#34;Decision_Intercepts.png&#34;),
+                show_paths=False,
+                junction_number=junction_number,
+                all_junctions=all_junctions,
+                decision_points_df=decision_points_df
+            )
 
     return assignments, summary, centers</code></pre>
 </details>
@@ -501,7 +503,7 @@ el.replaceWith(d);
 </dl></div>
 </dd>
 <dt id="verta.verta_decisions.discover_decision_chain"><code class="name flex">
-<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>*,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode: str = 'hybrid',<br>r_outer_list: Sequence[float] | None = None,<br>linger_delta: float = 0.0,<br>out_dir: str | None = None,<br>cluster_method: str = 'kmeans',<br>k: int = 3,<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
+<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>*,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode: str = 'hybrid',<br>r_outer_list: Sequence[float] | None = None,<br>linger_delta: float = 0.0,<br>out_dir: str | None = None,<br>cluster_method: str = 'kmeans',<br>k: int = 3,<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>skip_plots: bool = False) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -526,6 +528,7 @@ el.replaceWith(d);
     min_sep_deg: float = 12.0,
     angle_eps: float = 15.0,
     min_samples: int = 5,
+    skip_plots: bool = False,
 ) -&gt; tuple[pd.DataFrame, list[np.ndarray], pd.DataFrame]:
     &#34;&#34;&#34;
     Discover branches at multiple junctions (a decision chain).
@@ -575,7 +578,8 @@ el.replaceWith(d);
             angle_eps=float(angle_eps),
             min_samples=int(min_samples),
             junction_number=i,  # Pass the correct junction number
-            all_junctions=junctions
+            all_junctions=junctions,
+            skip_plots=skip_plots,
         )
         # rename branch column to junction index specific
         assign_i = assign_i.rename(columns={&#34;branch&#34;: f&#34;branch_j{i}&#34;})

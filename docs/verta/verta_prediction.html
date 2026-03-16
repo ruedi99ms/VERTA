@@ -48,7 +48,7 @@ predicting user choices, and generating behavioral insights for XR spatial studi
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="verta.verta_prediction.analyze_junction_choice_patterns"><code class="name flex">
-<span>def <span class="ident">analyze_junction_choice_patterns</span></span>(<span>trajectories: List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>chain_df: pandas.core.frame.DataFrame,<br>junctions: List[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>output_dir: str,<br>r_outer_list: List[float],<br>gui_mode: bool = False) ‑> Dict[str, Any]</span>
+<span>def <span class="ident">analyze_junction_choice_patterns</span></span>(<span>trajectories: List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>chain_df: pandas.core.frame.DataFrame,<br>junctions: List[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>output_dir: str,<br>r_outer_list: List[float],<br>gui_mode: bool = False,<br>skip_plots: bool = False) ‑> Dict[str, Any]</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -61,7 +61,8 @@ predicting user choices, and generating behavioral insights for XR spatial studi
     junctions: List[Circle],
     output_dir: str,
     r_outer_list: List[float],
-    gui_mode: bool = False
+    gui_mode: bool = False,
+    skip_plots: bool = False
 ) -&gt; Dict[str, Any]:
     &#34;&#34;&#34;
     Analyze junction-based choice patterns and generate predictions.
@@ -96,9 +97,10 @@ predicting user choices, and generating behavioral insights for XR spatial studi
 
     # Create visualizations
     step_tracker = progress_manager.start_step(&#34;Visualizations&#34;, 1)
-    _create_conditional_probability_visualization(conditional_probs, output_dir)
-    _create_flow_graph_visualizations(trajectories, junctions, r_outer_list, output_dir, chain_df, cached_sequences)
-    _create_pattern_visualizations(conditional_probs, output_dir)
+    if not skip_plots:
+        _create_conditional_probability_visualization(conditional_probs, output_dir)
+        _create_flow_graph_visualizations(trajectories, junctions, r_outer_list, output_dir, chain_df, cached_sequences)
+        _create_pattern_visualizations(conditional_probs, output_dir)
     step_tracker.close()
     progress_manager.update_overall_progress(1.0)
 

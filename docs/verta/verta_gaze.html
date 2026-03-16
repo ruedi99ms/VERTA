@@ -282,7 +282,7 @@ el.replaceWith(d);
                         pupil_decision = np.mean(pupil_decision_data)
             
             # Debug: Check if valid physiological data is available
-            if tr.tid in [0, 1, 2, 3, 4]:  # Debug first few trajectories
+            if isinstance(tr.tid, (int, float, np.integer)) and tr.tid in [0, 1, 2, 3, 4]:
                 print(f&#34;[physio_debug] Trajectory {tr.tid} at junction {i}: hr_baseline={hr_baseline}, hr_decision={hr_decision}, pupil_baseline={pupil_baseline}, pupil_decision={pupil_decision}&#34;)
                 print(f&#34;[physio_debug] Decision time: {decision_time}, Entry time: {entry_time}&#34;)
                 print(f&#34;[physio_debug] Baseline mask: {np.sum(baseline_mask)} samples, Decision mask: {np.sum(decision_mask)} samples&#34;)
@@ -560,7 +560,7 @@ el.replaceWith(d);
             
             # Debug: Check what junction-specific columns are available
             available_junction_cols = [col for col in traj_assignments.columns if col.startswith(&#39;decision_idx_j&#39;)]
-            if tr.tid &lt; 5:  # Only debug first 5 trajectories to avoid spam
+            if isinstance(tr.tid, (int, float, np.integer)) and tr.tid &lt; 5:
                 print(f&#34;[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Available junction columns: {available_junction_cols}&#34;)
                 print(f&#34;[gaze_debug] Trajectory {tr.tid} at junction {label_idx}: Looking for: {list(junction_cols.values())}&#34;)
             
@@ -605,15 +605,14 @@ el.replaceWith(d);
                         if not (isinstance(intercept_z_val, float) and np.isnan(intercept_z_val)):
                             pre_z = float(intercept_z_val)
 
+            r_out = r_outer_list[i]
+
             if pre_idx is not None and not np.isnan(pre_x) and not np.isnan(pre_z):
                 idx = pre_idx
                 method_used = &#34;precomputed&#34;
                 print(f&#34;[gaze_debug] Using precomputed decision point for trajectory {tr.tid}: idx={pre_idx}, x={pre_x}, z={pre_z}&#34;)
             else:
                 print(f&#34;[gaze_debug] No precomputed decision point for trajectory {tr.tid}: pre_idx={pre_idx}, pre_x={pre_x}, pre_z={pre_z}&#34;)
-                # Find decision intercept using the same logic as discover analysis
-                # This ensures arrows are plotted at the exact same points used for branch assignment
-                r_out = r_outer_list[i]
                 
                 # Use the same decision point calculation with identical params
                 if decision_mode == &#34;radial&#34; or (decision_mode == &#34;hybrid&#34; and r_out is not None and float(r_out) &gt; float(junc.r)):
@@ -1649,15 +1648,22 @@ el.replaceWith(d);
     sample_counts = heatmap_data[&#34;sample_counts&#34;]
     normalization = heatmap_data[&#34;normalization_used&#34;]
     
+    # Compute data aspect ratio for proportional figure sizing
+    x_range = float(x_edges[-1] - x_edges[0]) if len(x_edges) &gt; 1 else 1.0
+    z_range = float(z_edges[-1] - z_edges[0]) if len(z_edges) &gt; 1 else 1.0
+    data_aspect = z_range / max(x_range, 1e-6)
+    base_width = 10
+    main_height = max(6, min(14, base_width * data_aspect))
+
     # Create figure with main plot and optional minimap
     if show_minimap:
-        fig = plt.figure(figsize=(16, 8))
+        fig = plt.figure(figsize=(base_width + 6, main_height))
         gs = fig.add_gridspec(1, 5, width_ratios=[4, 0.2, 1, 0.2, 0.3], wspace=0.4)
         ax_main = fig.add_subplot(gs[0, 0])
         ax_minimap = fig.add_subplot(gs[0, 2])
         ax_colorbar = fig.add_subplot(gs[0, 4])
     else:
-        fig = plt.figure(figsize=(12, 9))
+        fig = plt.figure(figsize=(base_width + 2, main_height))
         gs = fig.add_gridspec(1, 2, width_ratios=[5, 0.3], wspace=0.15)
         ax_main = fig.add_subplot(gs[0, 0])
         ax_colorbar = fig.add_subplot(gs[0, 1])
@@ -1721,6 +1727,7 @@ el.replaceWith(d);
     # CRITICAL FIX: Set axis limits to match heatmap bounds to ensure proper zoom
     ax_main.set_xlim(x_edges[0], x_edges[-1])
     ax_main.set_ylim(z_edges[0], z_edges[-1])
+    ax_main.set_aspect(&#39;equal&#39;)
     
     # Add explicit grid lines to make discrete cells more visible
     ax_main.grid(True, linestyle=&#39;:&#39;, alpha=0.3, color=&#39;black&#39;, linewidth=0.5)

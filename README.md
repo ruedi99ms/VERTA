@@ -185,6 +185,7 @@ Parameters for ML-based intent recognition:
 
 Control plot generation:
 
+- **`--skip_plots`**: Skip all plot generation (compute only). Useful for benchmarking or headless batch runs where only CSV/JSON outputs are needed. Available on all commands.
 - **`--plot_intercepts`**: Generate decision intercepts visualization (default: True)
 - **`--show_paths`**: Show trajectory paths in plots (default: True)
 - Use `--no-plot_intercepts` and `--no-show_paths` to disable specific visualizations
@@ -619,6 +620,7 @@ streamlit run src/verta/verta_gui.py
 - Use sample data for initial setup
 - Close other browser tabs when using GUI
 - Consider using `--decision_mode pathlen` for faster analysis
+- Use `--skip_plots` to skip plot generation for faster batch processing
 
 **Memory errors:**
 - Process data in smaller batches
@@ -655,11 +657,58 @@ Time,X,Z
 
 ## Tips
 
-- Use `--no-plot_intercepts` and `--no-show_paths` to disable plotting
+- Use `--skip_plots` to disable all plot generation (compute-only mode)
+- Use `--no-plot_intercepts` and `--no-show_paths` to disable specific visualizations
 - The tool prints a suggested `--epsilon` based on step statistics
 - For Parquet inputs, install the `[parquet]` extra
 - Use `--config` for complex multi-command setups
 - Try `--cluster_method auto` for automatic cluster detection
+
+## Benchmarking
+
+VERTA ships with a standalone benchmarking script (`benchmark.py`) that measures **wall-clock duration** and **peak memory usage** for the core analysis algorithms: `discover`, `predict`, and `intent`.
+
+Each command is run twice per dataset size — once in **compute-only** mode (`skip_plots=True`) and once **with plot generation** — so you can see exactly how much time the visualization adds.
+
+### Quick Start
+
+```bash
+python benchmark.py \
+  --input ./sample_data \
+  --junctions 685 170 30  550 -90 30  730 440 20
+```
+
+### Options
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--input` | *(required)* | Folder containing trajectory CSV files |
+| `--junctions` | *(required)* | Junction coordinates as `x z r` triplets |
+| `--sizes` | `25 50 100` | Dataset sizes to benchmark |
+| `--commands` | `discover predict intent` | Which commands to benchmark |
+| `--glob` | `*.csv` | File pattern |
+| `--scale` | `0.2` | Coordinate scale factor |
+| `--motion_threshold` | `0.1` | Motion threshold |
+| `--seed` | `42` | Random seed |
+| `--out` | `./benchmark_results` | Output directory |
+| `--csv` | `benchmark.csv` | Output CSV filename |
+
+If a requested size exceeds the number of available files, it is automatically capped with a warning.
+
+### Output
+
+The script prints a live results table to the console:
+
+```
+Workflow       Viz   Trajectories   Total points   Junctions   Runtime (s)   Peak RAM (MB)   Status
+-------------------------------------------------------------------------------------------------------
+discover        no             25          117k           3          2.3            12.4       ok
+discover       yes             25          117k           3          3.1            14.1       ok
+predict         no             25          117k           3          1.8             8.2       ok
+...
+```
+
+Results are also saved as `benchmark.csv` and `benchmark.json` inside the output directory. At the end, pivot-table summaries (runtime and memory by workflow and dataset size) are printed for both compute-only and full runs.
 
 ## AI Usage Disclosure
 

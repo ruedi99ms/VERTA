@@ -294,7 +294,8 @@ def discover_branches(trajectories: Sequence[Trajectory],
                       angle_eps: float = 15.0,
                       min_samples: int = 5,
                       junction_number: int = 0,
-                      all_junctions: Sequence[Circle] = None
+                      all_junctions: Sequence[Circle] = None,
+                      skip_plots: bool = False
                       ) -> Tuple[pd.DataFrame, pd.DataFrame, np.ndarray]:
     """Compute initial movement vectors and cluster them into k branches.
 
@@ -536,34 +537,35 @@ def discover_branches(trajectories: Sequence[Trajectory],
             print(f"[discover_debug] Junction {junction_number}: Error saving decision points: {e}")
             pass
 
-        # Ensure r_outer has a proper default value for plotting
-        plot_r_outer = r_outer if (r_outer is not None and r_outer > junction.r) else (junction.r + 10.0)
+        if not skip_plots:
+            # Ensure r_outer has a proper default value for plotting
+            plot_r_outer = r_outer if (r_outer is not None and r_outer > junction.r) else (junction.r + 10.0)
 
-        # Load decision points data for plotting
-        decision_points_df = None
-        try:
-            decision_points_path = os.path.join(out_dir, "decision_points.csv")
-            if os.path.exists(decision_points_path):
-                decision_points_df = pd.read_csv(decision_points_path)
-        except Exception:
-            pass
+            # Load decision points data for plotting
+            decision_points_df = None
+            try:
+                decision_points_path = os.path.join(out_dir, "decision_points.csv")
+                if os.path.exists(decision_points_path):
+                    decision_points_df = pd.read_csv(decision_points_path)
+            except Exception:
+                pass
 
-        plot_decision_intercepts(
-            trajectories=trajectories,
-            assignments_df=assignments_all,
-            mode_log_df=mode_df,
-            centers=centers,
-            junction=junction,
-            r_outer=plot_r_outer,
-            path_length=path_length,
-            epsilon=epsilon,
-            linger_delta=linger_delta,
-            out_path=os.path.join(out_dir, "Decision_Intercepts.png"),
-            show_paths=False,
-            junction_number=junction_number,
-            all_junctions=all_junctions,
-            decision_points_df=decision_points_df
-        )
+            plot_decision_intercepts(
+                trajectories=trajectories,
+                assignments_df=assignments_all,
+                mode_log_df=mode_df,
+                centers=centers,
+                junction=junction,
+                r_outer=plot_r_outer,
+                path_length=path_length,
+                epsilon=epsilon,
+                linger_delta=linger_delta,
+                out_path=os.path.join(out_dir, "Decision_Intercepts.png"),
+                show_paths=False,
+                junction_number=junction_number,
+                all_junctions=all_junctions,
+                decision_points_df=decision_points_df
+            )
 
     return assignments, summary, centers
 
@@ -709,6 +711,7 @@ def discover_decision_chain(
     min_sep_deg: float = 12.0,
     angle_eps: float = 15.0,
     min_samples: int = 5,
+    skip_plots: bool = False,
 ) -> tuple[pd.DataFrame, list[np.ndarray], pd.DataFrame]:
     """
     Discover branches at multiple junctions (a decision chain).
@@ -758,7 +761,8 @@ def discover_decision_chain(
             angle_eps=float(angle_eps),
             min_samples=int(min_samples),
             junction_number=i,  # Pass the correct junction number
-            all_junctions=junctions
+            all_junctions=junctions,
+            skip_plots=skip_plots,
         )
         # rename branch column to junction index specific
         assign_i = assign_i.rename(columns={"branch": f"branch_j{i}"})

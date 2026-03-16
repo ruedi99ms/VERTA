@@ -133,6 +133,7 @@ el.replaceWith(d);
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -152,6 +153,11 @@ el.replaceWith(d);
     def __init__(self):
         self.logger = VERTALogger()
 
+    def add_common_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+        &#34;&#34;&#34;Add arguments shared by all commands&#34;&#34;&#34;
+        parser.add_argument(&#34;--skip_plots&#34;, action=&#34;store_true&#34;,
+                            help=&#34;Skip generating plots (compute only)&#34;)
+
     @abstractmethod
     def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
         &#34;&#34;&#34;Add command-specific arguments&#34;&#34;&#34;
@@ -161,6 +167,10 @@ el.replaceWith(d);
     def execute(self, args: argparse.Namespace) -&gt; None:
         &#34;&#34;&#34;Execute the command&#34;&#34;&#34;
         pass
+
+    def _should_plot(self, args: argparse.Namespace) -&gt; bool:
+        &#34;&#34;&#34;Return True unless --skip_plots was passed.&#34;&#34;&#34;
+        return not getattr(args, &#34;skip_plots&#34;, False)
 
     def _create_output_dir(self, out_path: str) -&gt; None:
         &#34;&#34;&#34;Create output directory if it doesn&#39;t exist&#34;&#34;&#34;
@@ -204,6 +214,21 @@ def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
     pass</code></pre>
 </details>
 <div class="desc"><p>Add command-specific arguments</p></div>
+</dd>
+<dt id="verta.verta_commands.BaseCommand.add_common_arguments"><code class="name flex">
+<span>def <span class="ident">add_common_arguments</span></span>(<span>self, parser: argparse.ArgumentParser) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_common_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+    &#34;&#34;&#34;Add arguments shared by all commands&#34;&#34;&#34;
+    parser.add_argument(&#34;--skip_plots&#34;, action=&#34;store_true&#34;,
+                        help=&#34;Skip generating plots (compute only)&#34;)</code></pre>
+</details>
+<div class="desc"><p>Add arguments shared by all commands</p></div>
 </dd>
 <dt id="verta.verta_commands.BaseCommand.execute"><code class="name flex">
 <span>def <span class="ident">execute</span></span>(<span>self, args: argparse.Namespace) ‑> None</span>
@@ -335,6 +360,8 @@ class CommandConfig:
 
         junction = Circle(cx=float(args.junction[0]), cz=float(args.junction[1]), r=float(args.radius))
 
+        skip_plots = not self._should_plot(args)
+
         with self.logger.operation(&#34;Discovering branches&#34;):
             assignments, summary, centers = discover_branches(
                 trajectories, junction,
@@ -353,14 +380,16 @@ class CommandConfig:
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
                 junction_number=0,  # CLI discover command is always for junction 0
-                all_junctions=[junction]
+                all_junctions=[junction],
+                skip_plots=skip_plots,
             )
 
         with self.logger.operation(&#34;Processing assignments&#34;):
             self._process_assignments(assignments, centers, args)
 
-        with self.logger.operation(&#34;Generating plots&#34;):
-            self._generate_plots(trajectories, assignments, centers, junction, args)
+        if not skip_plots:
+            with self.logger.operation(&#34;Generating plots&#34;):
+                self._generate_plots(trajectories, assignments, centers, junction, args)
 
         self._save_run_args(args, args.out)
         self.logger.info(f&#34;Discovery completed. Results saved to {args.out}&#34;)
@@ -508,6 +537,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -561,6 +591,8 @@ class CommandConfig:
         &#34;&#34;&#34;Execute enhanced chain analysis&#34;&#34;&#34;
         self.logger.info(&#34;Starting Loading trajectories&#34;)
 
+        skip_plots = not self._should_plot(args)
+
         # Load trajectories
         trajectories = load_folder(
             folder=args.input,
@@ -601,18 +633,20 @@ class CommandConfig:
             angle_eps=args.angle_eps,
             min_samples=args.min_samples,
             seed=args.seed,
-            out_dir=args.out
+            out_dir=args.out,
+            skip_plots=skip_plots,
         )
 
         self.logger.info(&#34;Completed Discovering decision chain&#34;)
 
-        # Generate chain plots
-        self.logger.info(&#34;Starting Generating chain plots&#34;)
-        self._generate_chain_plots(trajectories, chain_df, junctions, rlist, args)
-        self.logger.info(&#34;Completed Generating chain plots&#34;)
+        if not skip_plots:
+            # Generate chain plots
+            self.logger.info(&#34;Starting Generating chain plots&#34;)
+            self._generate_chain_plots(trajectories, chain_df, junctions, rlist, args)
+            self.logger.info(&#34;Completed Generating chain plots&#34;)
 
         # Run enhanced analysis if requested
-        if args.evacuation_analysis:
+        if args.evacuation_analysis and not skip_plots:
             self.logger.info(&#34;Starting Running enhanced flow analysis&#34;)
             self._run_enhanced_analysis(chain_df, junctions, trajectories, args)
             self.logger.info(&#34;Completed Running enhanced flow analysis&#34;)
@@ -734,6 +768,8 @@ class CommandConfig:
     &#34;&#34;&#34;Execute enhanced chain analysis&#34;&#34;&#34;
     self.logger.info(&#34;Starting Loading trajectories&#34;)
 
+    skip_plots = not self._should_plot(args)
+
     # Load trajectories
     trajectories = load_folder(
         folder=args.input,
@@ -774,18 +810,20 @@ class CommandConfig:
         angle_eps=args.angle_eps,
         min_samples=args.min_samples,
         seed=args.seed,
-        out_dir=args.out
+        out_dir=args.out,
+        skip_plots=skip_plots,
     )
 
     self.logger.info(&#34;Completed Discovering decision chain&#34;)
 
-    # Generate chain plots
-    self.logger.info(&#34;Starting Generating chain plots&#34;)
-    self._generate_chain_plots(trajectories, chain_df, junctions, rlist, args)
-    self.logger.info(&#34;Completed Generating chain plots&#34;)
+    if not skip_plots:
+        # Generate chain plots
+        self.logger.info(&#34;Starting Generating chain plots&#34;)
+        self._generate_chain_plots(trajectories, chain_df, junctions, rlist, args)
+        self.logger.info(&#34;Completed Generating chain plots&#34;)
 
     # Run enhanced analysis if requested
-    if args.evacuation_analysis:
+    if args.evacuation_analysis and not skip_plots:
         self.logger.info(&#34;Starting Running enhanced flow analysis&#34;)
         self._run_enhanced_analysis(chain_df, junctions, trajectories, args)
         self.logger.info(&#34;Completed Running enhanced flow analysis&#34;)
@@ -800,6 +838,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 </ul>
 </li>
 </ul>
@@ -919,6 +958,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 </ul>
 </li>
 </ul>
@@ -993,6 +1033,8 @@ class CommandConfig:
             junctions = [Circle(cx=a, cz=b, r=c) for a, b, c in triples]
             rlist = list(args.r_outer_list) if args.r_outer_list is not None and len(args.r_outer_list) &gt; 0 else None
 
+        skip_plots = not self._should_plot(args)
+
         with self.logger.operation(&#34;Discovering branches for gaze analysis&#34;):
             chain_df, centers_list = discover_decision_chain(
                 trajectories=gaze_trajectories,
@@ -1011,6 +1053,7 @@ class CommandConfig:
                 min_sep_deg=float(args.min_sep_deg),
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
+                skip_plots=skip_plots,
             )
 
         with self.logger.operation(&#34;Computing gaze analysis&#34;):
@@ -1066,8 +1109,9 @@ class CommandConfig:
         with open(os.path.join(args.out, &#34;gaze_consistency_report.json&#34;), &#34;w&#34;) as f:
             json.dump(consistency, f, indent=2)
 
-        with self.logger.operation(&#34;Generating gaze plots&#34;):
-            self._generate_gaze_plots(gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args)
+        if not skip_plots:
+            with self.logger.operation(&#34;Generating gaze plots&#34;):
+                self._generate_gaze_plots(gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args)
 
         self._save_run_args(args, args.out)
         self.logger.info(f&#34;Gaze analysis completed. Results saved to {args.out}&#34;)
@@ -1135,6 +1179,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -1278,7 +1323,8 @@ class CommandConfig:
                 actual_branches=valid_assignments,
                 output_dir=junction_output,
                 prediction_distances=args.prediction_distances,
-                previous_choices=None  # Could be extended for multi-junction support
+                previous_choices=None,  # Could be extended for multi-junction support
+                skip_plots=not self._should_plot(args),
             )
 
             if &#39;error&#39; in results:
@@ -1421,7 +1467,8 @@ class CommandConfig:
                 min_sep_deg=args.min_sep_deg,
                 angle_eps=args.angle_eps,
                 min_samples=args.min_samples,
-                seed=args.seed
+                seed=args.seed,
+                skip_plots=not self._should_plot(args),
             )
 
             # Save discovered centers and assignments
@@ -1532,7 +1579,8 @@ class CommandConfig:
             actual_branches=valid_assignments,
             output_dir=junction_output,
             prediction_distances=args.prediction_distances,
-            previous_choices=None  # Could be extended for multi-junction support
+            previous_choices=None,  # Could be extended for multi-junction support
+            skip_plots=not self._should_plot(args),
         )
 
         if &#39;error&#39; in results:
@@ -1607,6 +1655,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1744,6 +1793,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -1769,35 +1819,16 @@ class CommandConfig:
         parser.add_argument(&#34;--motion_threshold&#34;, type=float, default=0.001, help=&#34;Motion detection threshold&#34;)
         parser.add_argument(&#34;--junctions&#34;, nargs=&#34;+&#34;, type=float, required=True, help=&#34;Junction coordinates (x z r ...)&#34;)
         parser.add_argument(&#34;--r_outer_list&#34;, nargs=&#34;*&#34;, type=float, default=None, help=&#34;Outer radii for each junction&#34;)
-        parser.add_argument(&#34;--distance&#34;, type=float, default=100.0, help=&#34;Path length for decision&#34;)
-        parser.add_argument(&#34;--epsilon&#34;, type=float, default=0.015, help=&#34;Minimum step size&#34;)
-        parser.add_argument(&#34;--k&#34;, type=int, default=3, help=&#34;Number of clusters&#34;)
-        parser.add_argument(&#34;--decision_mode&#34;, choices=[&#34;pathlen&#34;, &#34;radial&#34;, &#34;hybrid&#34;], default=&#34;hybrid&#34;, help=&#34;Decision mode&#34;)
-        parser.add_argument(&#34;--linger_delta&#34;, type=float, default=5.0, help=&#34;Linger distance beyond junction&#34;)
-        parser.add_argument(&#34;--cluster_method&#34;, choices=[&#34;kmeans&#34;, &#34;auto&#34;, &#34;dbscan&#34;], default=&#34;kmeans&#34;, help=&#34;Clustering method&#34;)
-        parser.add_argument(&#34;--k_min&#34;, type=int, default=2, help=&#34;Minimum k for auto clustering&#34;)
-        parser.add_argument(&#34;--k_max&#34;, type=int, default=6, help=&#34;Maximum k for auto clustering&#34;)
-        parser.add_argument(&#34;--min_sep_deg&#34;, type=float, default=12.0, help=&#34;Minimum separation in degrees&#34;)
-        parser.add_argument(&#34;--angle_eps&#34;, type=float, default=15.0, help=&#34;Angle epsilon for DBSCAN&#34;)
-        parser.add_argument(&#34;--min_samples&#34;, type=int, default=5, help=&#34;Minimum samples for DBSCAN&#34;)
         parser.add_argument(&#34;--seed&#34;, type=int, default=0, help=&#34;Random seed&#34;)
-
-        # Prediction-specific arguments
-        parser.add_argument(&#34;--min_pattern_samples&#34;, type=int, default=3, help=&#34;Minimum samples for pattern recognition&#34;)
-        parser.add_argument(&#34;--pattern_threshold&#34;, type=float, default=0.3, help=&#34;Minimum probability threshold for patterns&#34;)
-        parser.add_argument(&#34;--confidence_threshold&#34;, type=float, default=0.5, help=&#34;Minimum confidence for predictions&#34;)
         parser.add_argument(&#34;--analyze_sequences&#34;, action=&#34;store_true&#34;, help=&#34;Analyze complete route sequences&#34;)
-        parser.add_argument(&#34;--predict_examples&#34;, type=int, default=10, help=&#34;Number of prediction examples to generate&#34;)
 
     def execute(self, args: argparse.Namespace) -&gt; None:
-        &#34;&#34;&#34;Execute the prediction analysis&#34;&#34;&#34;
+        &#34;&#34;&#34;Execute the prediction analysis using trajectory-based spatial tracking.&#34;&#34;&#34;
         logger = get_logger()
         logger.info(&#34;Starting junction-based choice prediction analysis...&#34;)
 
-        # Create output directory
         os.makedirs(args.out, exist_ok=True)
 
-        # Load trajectories
         logger.info(f&#34;Loading trajectories from {args.input}&#34;)
         trajectories = load_folder(
             folder=args.input,
@@ -1813,76 +1844,30 @@ class CommandConfig:
 
         logger.info(f&#34;Loaded {len(trajectories)} trajectories&#34;)
 
-        # Parse junctions
         junctions = self._parse_junctions(args.junctions)
         logger.info(f&#34;Analyzing {len(junctions)} junctions&#34;)
 
-        # Discover decision chain
-        logger.info(&#34;Discovering decision chains...&#34;)
-        chain_df, branch_centers_list = discover_decision_chain(
-            trajectories=trajectories,
-            junctions=junctions,
-            r_outer_list=args.r_outer_list,
-            path_length=args.distance,
-            epsilon=args.epsilon,
-            k=args.k,
-            decision_mode=args.decision_mode,
-            linger_delta=args.linger_delta,
-            cluster_method=args.cluster_method,
-            k_min=args.k_min,
-            k_max=args.k_max,
-            min_sep_deg=args.min_sep_deg,
-            angle_eps=args.angle_eps,
-            min_samples=args.min_samples,
-            seed=args.seed,
-            out_dir=args.out
-        )
+        r_outer_list = args.r_outer_list if args.r_outer_list else [None] * len(junctions)
 
-        if chain_df.empty:
-            logger.error(&#34;No decision chains discovered!&#34;)
-            return
+        # Predict uses spatial tracking only (no clustering / discover step)
+        import pandas as pd
+        chain_df = pd.DataFrame({&#34;trajectory&#34;: list(range(len(trajectories)))})
 
-        logger.info(f&#34;Discovered decision chains for {len(chain_df)} trajectories&#34;)
-
-        # Normalize chain for downstream prediction (ID dtype, columns)
-        norm_df, _rep = normalize_assignments(
-            chain_df,
-            trajectories=trajectories,
-            junctions=junctions,
-            prefer_decisions=False,
-            include_outliers=False,
-        )
-        # Consistency warnings (optional)
-        try:
-            from verta.verta_consistency import validate_consistency
-            validate_consistency(norm_df, trajectories, junctions)
-        except Exception:
-            pass
-        # Save normalized chain
-        norm_df.to_csv(os.path.join(args.out, &#34;decision_chains.csv&#34;), index=False)
-
-        # Run prediction analysis
         logger.info(&#34;Analyzing junction choice patterns...&#34;)
         analysis_results = analyze_junction_choice_patterns(
             trajectories=trajectories,
-            chain_df=norm_df,
+            chain_df=chain_df,
             junctions=junctions,
             output_dir=args.out,
-            r_outer_list=args.r_outer_list,
-            gui_mode=False  # Terminal mode
+            r_outer_list=r_outer_list,
+            gui_mode=False,
+            skip_plots=not self._should_plot(args),
         )
 
-        # Generate additional analysis if requested
         if args.analyze_sequences:
-            self._analyze_route_sequences(norm_df, junctions, args.out)
+            self._analyze_route_sequences(chain_df, junctions, args.out)
 
-        # Generate prediction examples
-        if args.predict_examples &gt; 0:
-            self._generate_prediction_examples(trajectories, norm_df, junctions, args.out, args.predict_examples)
-
-        # Save summary
         self._save_analysis_summary(analysis_results, args.out)
-
         logger.info(f&#34;Prediction analysis complete! Results saved to {args.out}&#34;)
 
     def _parse_junctions(self, junction_args: List[float]) -&gt; List[Circle]:
@@ -2055,14 +2040,12 @@ class CommandConfig:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def execute(self, args: argparse.Namespace) -&gt; None:
-    &#34;&#34;&#34;Execute the prediction analysis&#34;&#34;&#34;
+    &#34;&#34;&#34;Execute the prediction analysis using trajectory-based spatial tracking.&#34;&#34;&#34;
     logger = get_logger()
     logger.info(&#34;Starting junction-based choice prediction analysis...&#34;)
 
-    # Create output directory
     os.makedirs(args.out, exist_ok=True)
 
-    # Load trajectories
     logger.info(f&#34;Loading trajectories from {args.input}&#34;)
     trajectories = load_folder(
         folder=args.input,
@@ -2078,79 +2061,33 @@ class CommandConfig:
 
     logger.info(f&#34;Loaded {len(trajectories)} trajectories&#34;)
 
-    # Parse junctions
     junctions = self._parse_junctions(args.junctions)
     logger.info(f&#34;Analyzing {len(junctions)} junctions&#34;)
 
-    # Discover decision chain
-    logger.info(&#34;Discovering decision chains...&#34;)
-    chain_df, branch_centers_list = discover_decision_chain(
-        trajectories=trajectories,
-        junctions=junctions,
-        r_outer_list=args.r_outer_list,
-        path_length=args.distance,
-        epsilon=args.epsilon,
-        k=args.k,
-        decision_mode=args.decision_mode,
-        linger_delta=args.linger_delta,
-        cluster_method=args.cluster_method,
-        k_min=args.k_min,
-        k_max=args.k_max,
-        min_sep_deg=args.min_sep_deg,
-        angle_eps=args.angle_eps,
-        min_samples=args.min_samples,
-        seed=args.seed,
-        out_dir=args.out
-    )
+    r_outer_list = args.r_outer_list if args.r_outer_list else [None] * len(junctions)
 
-    if chain_df.empty:
-        logger.error(&#34;No decision chains discovered!&#34;)
-        return
+    # Predict uses spatial tracking only (no clustering / discover step)
+    import pandas as pd
+    chain_df = pd.DataFrame({&#34;trajectory&#34;: list(range(len(trajectories)))})
 
-    logger.info(f&#34;Discovered decision chains for {len(chain_df)} trajectories&#34;)
-
-    # Normalize chain for downstream prediction (ID dtype, columns)
-    norm_df, _rep = normalize_assignments(
-        chain_df,
-        trajectories=trajectories,
-        junctions=junctions,
-        prefer_decisions=False,
-        include_outliers=False,
-    )
-    # Consistency warnings (optional)
-    try:
-        from verta.verta_consistency import validate_consistency
-        validate_consistency(norm_df, trajectories, junctions)
-    except Exception:
-        pass
-    # Save normalized chain
-    norm_df.to_csv(os.path.join(args.out, &#34;decision_chains.csv&#34;), index=False)
-
-    # Run prediction analysis
     logger.info(&#34;Analyzing junction choice patterns...&#34;)
     analysis_results = analyze_junction_choice_patterns(
         trajectories=trajectories,
-        chain_df=norm_df,
+        chain_df=chain_df,
         junctions=junctions,
         output_dir=args.out,
-        r_outer_list=args.r_outer_list,
-        gui_mode=False  # Terminal mode
+        r_outer_list=r_outer_list,
+        gui_mode=False,
+        skip_plots=not self._should_plot(args),
     )
 
-    # Generate additional analysis if requested
     if args.analyze_sequences:
-        self._analyze_route_sequences(norm_df, junctions, args.out)
+        self._analyze_route_sequences(chain_df, junctions, args.out)
 
-    # Generate prediction examples
-    if args.predict_examples &gt; 0:
-        self._generate_prediction_examples(trajectories, norm_df, junctions, args.out, args.predict_examples)
-
-    # Save summary
     self._save_analysis_summary(analysis_results, args.out)
-
     logger.info(f&#34;Prediction analysis complete! Results saved to {args.out}&#34;)</code></pre>
 </details>
-<div class="desc"><p>Execute the prediction analysis</p></div>
+<div class="desc"><p>Execute the prediction analysis using trajectory-based spatial tracking.</p></div>
 </dd>
 </dl>
 <h3>Inherited members</h3>
@@ -2158,6 +2095,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 </ul>
 </li>
 </ul>
@@ -2184,6 +2122,7 @@ class CommandConfig:
 <h4><code><a title="verta.verta_commands.BaseCommand" href="#verta.verta_commands.BaseCommand">BaseCommand</a></code></h4>
 <ul class="">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>

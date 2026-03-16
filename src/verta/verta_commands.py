@@ -53,6 +53,11 @@ class BaseCommand(ABC):
     def __init__(self):
         self.logger = VERTALogger()
 
+    def add_common_arguments(self, parser: argparse.ArgumentParser) -> None:
+        """Add arguments shared by all commands"""
+        parser.add_argument("--skip_plots", action="store_true",
+                            help="Skip generating plots (compute only)")
+
     @abstractmethod
     def add_arguments(self, parser: argparse.ArgumentParser) -> None:
         """Add command-specific arguments"""
@@ -62,6 +67,10 @@ class BaseCommand(ABC):
     def execute(self, args: argparse.Namespace) -> None:
         """Execute the command"""
         pass
+
+    def _should_plot(self, args: argparse.Namespace) -> bool:
+        """Return True unless --skip_plots was passed."""
+        return not getattr(args, "skip_plots", False)
 
     def _create_output_dir(self, out_path: str) -> None:
         """Create output directory if it doesn't exist"""
@@ -126,6 +135,8 @@ class DiscoverCommand(BaseCommand):
 
         junction = Circle(cx=float(args.junction[0]), cz=float(args.junction[1]), r=float(args.radius))
 
+        skip_plots = not self._should_plot(args)
+
         with self.logger.operation("Discovering branches"):
             assignments, summary, centers = discover_branches(
                 trajectories, junction,
@@ -144,14 +155,16 @@ class DiscoverCommand(BaseCommand):
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
                 junction_number=0,  # CLI discover command is always for junction 0
-                all_junctions=[junction]
+                all_junctions=[junction],
+                skip_plots=skip_plots,
             )
 
         with self.logger.operation("Processing assignments"):
             self._process_assignments(assignments, centers, args)
 
-        with self.logger.operation("Generating plots"):
-            self._generate_plots(trajectories, assignments, centers, junction, args)
+        if not skip_plots:
+            with self.logger.operation("Generating plots"):
+                self._generate_plots(trajectories, assignments, centers, junction, args)
 
         self._save_run_args(args, args.out)
         self.logger.info(f"Discovery completed. Results saved to {args.out}")
@@ -535,6 +548,8 @@ class GazeCommand(BaseCommand):
             junctions = [Circle(cx=a, cz=b, r=c) for a, b, c in triples]
             rlist = list(args.r_outer_list) if args.r_outer_list is not None and len(args.r_outer_list) > 0 else None
 
+        skip_plots = not self._should_plot(args)
+
         with self.logger.operation("Discovering branches for gaze analysis"):
             chain_df, centers_list = discover_decision_chain(
                 trajectories=gaze_trajectories,
@@ -553,6 +568,7 @@ class GazeCommand(BaseCommand):
                 min_sep_deg=float(args.min_sep_deg),
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
+                skip_plots=skip_plots,
             )
 
         with self.logger.operation("Computing gaze analysis"):
@@ -608,8 +624,9 @@ class GazeCommand(BaseCommand):
         with open(os.path.join(args.out, "gaze_consistency_report.json"), "w") as f:
             json.dump(consistency, f, indent=2)
 
-        with self.logger.operation("Generating gaze plots"):
-            self._generate_gaze_plots(gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args)
+        if not skip_plots:
+            with self.logger.operation("Generating gaze plots"):
+                self._generate_gaze_plots(gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args)
 
         self._save_run_args(args, args.out)
         self.logger.info(f"Gaze analysis completed. Results saved to {args.out}")
@@ -720,7 +737,8 @@ class PredictCommand(BaseCommand):
             junctions=junctions,
             output_dir=args.out,
             r_outer_list=r_outer_list,
-            gui_mode=False
+            gui_mode=False,
+            skip_plots=not self._should_plot(args),
         )
 
         if args.analyze_sequences:
@@ -1013,7 +1031,8 @@ class IntentRecognitionCommand(BaseCommand):
                 actual_branches=valid_assignments,
                 output_dir=junction_output,
                 prediction_distances=args.prediction_distances,
-                previous_choices=None  # Could be extended for multi-junction support
+                previous_choices=None,  # Could be extended for multi-junction support
+                skip_plots=not self._should_plot(args),
             )
 
             if 'error' in results:
@@ -1156,7 +1175,8 @@ class IntentRecognitionCommand(BaseCommand):
                 min_sep_deg=args.min_sep_deg,
                 angle_eps=args.angle_eps,
                 min_samples=args.min_samples,
-                seed=args.seed
+                seed=args.seed,
+                skip_plots=not self._should_plot(args),
             )
 
             # Save discovered centers and assignments
@@ -1211,6 +1231,8 @@ class EnhancedChainCommand(BaseCommand):
         """Execute enhanced chain analysis"""
         self.logger.info("Starting Loading trajectories")
 
+        skip_plots = not self._should_plot(args)
+
         # Load trajectories
         trajectories = load_folder(
             folder=args.input,
@@ -1251,18 +1273,20 @@ class EnhancedChainCommand(BaseCommand):
             angle_eps=args.angle_eps,
             min_samples=args.min_samples,
             seed=args.seed,
-            out_dir=args.out
+            out_dir=args.out,
+            skip_plots=skip_plots,
         )
 
         self.logger.info("Completed Discovering decision chain")
 
-        # Generate chain plots
-        self.logger.info("Starting Generating chain plots")
-        self._generate_chain_plots(trajectories, chain_df, junctions, rlist, args)
-        self.logger.info("Completed Generating chain plots")
+        if not skip_plots:
+            # Generate chain plots
+            self.logger.info("Starting Generating chain plots")
+            self._generate_chain_plots(trajectories, chain_df, junctions, rlist, args)
+            self.logger.info("Completed Generating chain plots")
 
         # Run enhanced analysis if requested
-        if args.evacuation_analysis:
+        if args.evacuation_analysis and not skip_plots:
             self.logger.info("Starting Running enhanced flow analysis")
             self._run_enhanced_analysis(chain_df, junctions, trajectories, args)
             self.logger.info("Completed Running enhanced flow analysis")

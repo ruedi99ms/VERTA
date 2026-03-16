@@ -37,7 +37,7 @@ el.replaceWith(d);
 </header>
 <section id="section-intro">
 <p>VERTA - Virtual Environment Route and Trajectory Analyzer</p>
-<p>A comprehensive toolkit for analyzing route choices and trajectories in virtual environments.</p>
+<p>A Python tool for route and trajectory analysis in virtual environments.</p>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
@@ -178,7 +178,7 @@ el.replaceWith(d);
 <div class="desc"><p>Assign branches using fixed centers, consistent with discover.</p></div>
 </dd>
 <dt id="verta.discover_branches"><code class="name flex">
-<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>k: int = 3,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode='hybrid',<br>r_outer=None,<br>linger_delta: float = 0.0,<br>out_dir=None,<br>cluster_method: str = 'kmeans',<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>junction_number: int = 0,<br>all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
+<span>def <span class="ident">discover_branches</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junction: <a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>,<br>k: int = 3,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode='hybrid',<br>r_outer=None,<br>linger_delta: float = 0.0,<br>out_dir=None,<br>cluster_method: str = 'kmeans',<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>junction_number: int = 0,<br>all_junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>] = None,<br>skip_plots: bool = False) ‑> Tuple[pandas.core.frame.DataFrame, pandas.core.frame.DataFrame, numpy.ndarray]</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -202,7 +202,8 @@ el.replaceWith(d);
                       angle_eps: float = 15.0,
                       min_samples: int = 5,
                       junction_number: int = 0,
-                      all_junctions: Sequence[Circle] = None
+                      all_junctions: Sequence[Circle] = None,
+                      skip_plots: bool = False
                       ) -&gt; Tuple[pd.DataFrame, pd.DataFrame, np.ndarray]:
     &#34;&#34;&#34;Compute initial movement vectors and cluster them into k branches.
 
@@ -444,34 +445,35 @@ el.replaceWith(d);
             print(f&#34;[discover_debug] Junction {junction_number}: Error saving decision points: {e}&#34;)
             pass
 
-        # Ensure r_outer has a proper default value for plotting
-        plot_r_outer = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
+        if not skip_plots:
+            # Ensure r_outer has a proper default value for plotting
+            plot_r_outer = r_outer if (r_outer is not None and r_outer &gt; junction.r) else (junction.r + 10.0)
 
-        # Load decision points data for plotting
-        decision_points_df = None
-        try:
-            decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
-            if os.path.exists(decision_points_path):
-                decision_points_df = pd.read_csv(decision_points_path)
-        except Exception:
-            pass
+            # Load decision points data for plotting
+            decision_points_df = None
+            try:
+                decision_points_path = os.path.join(out_dir, &#34;decision_points.csv&#34;)
+                if os.path.exists(decision_points_path):
+                    decision_points_df = pd.read_csv(decision_points_path)
+            except Exception:
+                pass
 
-        plot_decision_intercepts(
-            trajectories=trajectories,
-            assignments_df=assignments_all,
-            mode_log_df=mode_df,
-            centers=centers,
-            junction=junction,
-            r_outer=plot_r_outer,
-            path_length=path_length,
-            epsilon=epsilon,
-            linger_delta=linger_delta,
-            out_path=os.path.join(out_dir, &#34;Decision_Intercepts.png&#34;),
-            show_paths=False,
-            junction_number=junction_number,
-            all_junctions=all_junctions,
-            decision_points_df=decision_points_df
-        )
+            plot_decision_intercepts(
+                trajectories=trajectories,
+                assignments_df=assignments_all,
+                mode_log_df=mode_df,
+                centers=centers,
+                junction=junction,
+                r_outer=plot_r_outer,
+                path_length=path_length,
+                epsilon=epsilon,
+                linger_delta=linger_delta,
+                out_path=os.path.join(out_dir, &#34;Decision_Intercepts.png&#34;),
+                show_paths=False,
+                junction_number=junction_number,
+                all_junctions=all_junctions,
+                decision_points_df=decision_points_df
+            )
 
     return assignments, summary, centers</code></pre>
 </details>
@@ -489,7 +491,7 @@ el.replaceWith(d);
 </dl></div>
 </dd>
 <dt id="verta.discover_decision_chain"><code class="name flex">
-<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>*,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode: str = 'hybrid',<br>r_outer_list: Sequence[float] | None = None,<br>linger_delta: float = 0.0,<br>out_dir: str | None = None,<br>cluster_method: str = 'kmeans',<br>k: int = 3,<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
+<span>def <span class="ident">discover_decision_chain</span></span>(<span>trajectories: Sequence[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>junctions: Sequence[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>*,<br>path_length: float = 100.0,<br>epsilon: float = 0.05,<br>seed: int = 0,<br>decision_mode: str = 'hybrid',<br>r_outer_list: Sequence[float] | None = None,<br>linger_delta: float = 0.0,<br>out_dir: str | None = None,<br>cluster_method: str = 'kmeans',<br>k: int = 3,<br>k_min: int = 2,<br>k_max: int = 6,<br>min_sep_deg: float = 12.0,<br>angle_eps: float = 15.0,<br>min_samples: int = 5,<br>skip_plots: bool = False) ‑> tuple[pandas.core.frame.DataFrame, list[numpy.ndarray], pandas.core.frame.DataFrame]</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -514,6 +516,7 @@ el.replaceWith(d);
     min_sep_deg: float = 12.0,
     angle_eps: float = 15.0,
     min_samples: int = 5,
+    skip_plots: bool = False,
 ) -&gt; tuple[pd.DataFrame, list[np.ndarray], pd.DataFrame]:
     &#34;&#34;&#34;
     Discover branches at multiple junctions (a decision chain).
@@ -563,7 +566,8 @@ el.replaceWith(d);
             angle_eps=float(angle_eps),
             min_samples=int(min_samples),
             junction_number=i,  # Pass the correct junction number
-            all_junctions=junctions
+            all_junctions=junctions,
+            skip_plots=skip_plots,
         )
         # rename branch column to junction index specific
         assign_i = assign_i.rename(columns={&#34;branch&#34;: f&#34;branch_j{i}&#34;})
@@ -839,6 +843,7 @@ el.replaceWith(d);
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="verta_commands.html#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -858,6 +863,11 @@ el.replaceWith(d);
     def __init__(self):
         self.logger = VERTALogger()
 
+    def add_common_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+        &#34;&#34;&#34;Add arguments shared by all commands&#34;&#34;&#34;
+        parser.add_argument(&#34;--skip_plots&#34;, action=&#34;store_true&#34;,
+                            help=&#34;Skip generating plots (compute only)&#34;)
+
     @abstractmethod
     def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
         &#34;&#34;&#34;Add command-specific arguments&#34;&#34;&#34;
@@ -867,6 +877,10 @@ el.replaceWith(d);
     def execute(self, args: argparse.Namespace) -&gt; None:
         &#34;&#34;&#34;Execute the command&#34;&#34;&#34;
         pass
+
+    def _should_plot(self, args: argparse.Namespace) -&gt; bool:
+        &#34;&#34;&#34;Return True unless --skip_plots was passed.&#34;&#34;&#34;
+        return not getattr(args, &#34;skip_plots&#34;, False)
 
     def _create_output_dir(self, out_path: str) -&gt; None:
         &#34;&#34;&#34;Create output directory if it doesn&#39;t exist&#34;&#34;&#34;
@@ -910,6 +924,21 @@ def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
     pass</code></pre>
 </details>
 <div class="desc"><p>Add command-specific arguments</p></div>
+</dd>
+<dt id="verta.BaseCommand.add_common_arguments"><code class="name flex">
+<span>def <span class="ident">add_common_arguments</span></span>(<span>self, parser: argparse.ArgumentParser) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_common_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
+    &#34;&#34;&#34;Add arguments shared by all commands&#34;&#34;&#34;
+    parser.add_argument(&#34;--skip_plots&#34;, action=&#34;store_true&#34;,
+                        help=&#34;Skip generating plots (compute only)&#34;)</code></pre>
+</details>
+<div class="desc"><p>Add arguments shared by all commands</p></div>
 </dd>
 <dt id="verta.BaseCommand.execute"><code class="name flex">
 <span>def <span class="ident">execute</span></span>(<span>self, args: argparse.Namespace) ‑> None</span>
@@ -1277,6 +1306,8 @@ class CommandConfig:
 
         junction = Circle(cx=float(args.junction[0]), cz=float(args.junction[1]), r=float(args.radius))
 
+        skip_plots = not self._should_plot(args)
+
         with self.logger.operation(&#34;Discovering branches&#34;):
             assignments, summary, centers = discover_branches(
                 trajectories, junction,
@@ -1295,14 +1326,16 @@ class CommandConfig:
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
                 junction_number=0,  # CLI discover command is always for junction 0
-                all_junctions=[junction]
+                all_junctions=[junction],
+                skip_plots=skip_plots,
             )
 
         with self.logger.operation(&#34;Processing assignments&#34;):
             self._process_assignments(assignments, centers, args)
 
-        with self.logger.operation(&#34;Generating plots&#34;):
-            self._generate_plots(trajectories, assignments, centers, junction, args)
+        if not skip_plots:
+            with self.logger.operation(&#34;Generating plots&#34;):
+                self._generate_plots(trajectories, assignments, centers, junction, args)
 
         self._save_run_args(args, args.out)
         self.logger.info(f&#34;Discovery completed. Results saved to {args.out}&#34;)
@@ -1450,6 +1483,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="verta_commands.html#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -1525,6 +1559,8 @@ class CommandConfig:
             junctions = [Circle(cx=a, cz=b, r=c) for a, b, c in triples]
             rlist = list(args.r_outer_list) if args.r_outer_list is not None and len(args.r_outer_list) &gt; 0 else None
 
+        skip_plots = not self._should_plot(args)
+
         with self.logger.operation(&#34;Discovering branches for gaze analysis&#34;):
             chain_df, centers_list = discover_decision_chain(
                 trajectories=gaze_trajectories,
@@ -1543,6 +1579,7 @@ class CommandConfig:
                 min_sep_deg=float(args.min_sep_deg),
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
+                skip_plots=skip_plots,
             )
 
         with self.logger.operation(&#34;Computing gaze analysis&#34;):
@@ -1598,8 +1635,9 @@ class CommandConfig:
         with open(os.path.join(args.out, &#34;gaze_consistency_report.json&#34;), &#34;w&#34;) as f:
             json.dump(consistency, f, indent=2)
 
-        with self.logger.operation(&#34;Generating gaze plots&#34;):
-            self._generate_gaze_plots(gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args)
+        if not skip_plots:
+            with self.logger.operation(&#34;Generating gaze plots&#34;):
+                self._generate_gaze_plots(gaze_trajectories, junctions, gaze_df, physio_df, chain_df, rlist, args)
 
         self._save_run_args(args, args.out)
         self.logger.info(f&#34;Gaze analysis completed. Results saved to {args.out}&#34;)
@@ -1667,6 +1705,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="verta_commands.html#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -1805,6 +1844,7 @@ class CommandConfig:
 <li><code><b><a title="verta.verta_commands.BaseCommand" href="verta_commands.html#verta.verta_commands.BaseCommand">BaseCommand</a></b></code>:
 <ul class="hlist">
 <li><code><a title="verta.verta_commands.BaseCommand.add_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.verta_commands.BaseCommand.add_common_arguments" href="verta_commands.html#verta.verta_commands.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.verta_commands.BaseCommand.execute" href="verta_commands.html#verta.verta_commands.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>
@@ -2006,6 +2046,7 @@ class Trajectory:
 <h4><code><a title="verta.BaseCommand" href="#verta.BaseCommand">BaseCommand</a></code></h4>
 <ul class="">
 <li><code><a title="verta.BaseCommand.add_arguments" href="#verta.BaseCommand.add_arguments">add_arguments</a></code></li>
+<li><code><a title="verta.BaseCommand.add_common_arguments" href="#verta.BaseCommand.add_common_arguments">add_common_arguments</a></code></li>
 <li><code><a title="verta.BaseCommand.execute" href="#verta.BaseCommand.execute">execute</a></code></li>
 </ul>
 </li>

@@ -66,6 +66,7 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     for cmd_name, cmd_class in COMMANDS.items():
         cmd_instance = cmd_class()
         subparser = subparsers.add_parser(cmd_name, help=f"{cmd_name} command")
+        cmd_instance.add_common_arguments(subparser)
         cmd_instance.add_arguments(subparser)
 
     # Parse arguments
