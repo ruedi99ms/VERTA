@@ -46,6 +46,7 @@ from verta.verta_gaze import (
     analyze_pupil_dilation_trajectory,
     plot_pupil_trajectory_analysis,
     plot_pupil_dilation_heatmap,
+    create_pupil_dilation_heatmap,
     create_per_junction_pupil_heatmap
 )
 from verta.verta_intent_recognition import analyze_intent_recognition, IntentRecognitionAnalyzer
@@ -277,6 +278,10 @@ class VERTAGUI:
             with col_t:
                 t_col = st.text_input("Time Column:", value="Time")
 
+            st.session_state.cli_x_col = x_col
+            st.session_state.cli_z_col = z_col
+            st.session_state.cli_t_col = t_col
+
             # New: Gaze/Physiology column mapping now lives here
             with st.expander("🔧 Gaze/Physiology Column Mapping", expanded=False):
                 col_g1, col_g2 = st.columns(2)
@@ -306,9 +311,10 @@ class VERTAGUI:
 
             with col_scale:
                 scale = st.number_input("Scale Factor:", value=st.session_state.get("scale_factor", 0.2), min_value=0.01, max_value=1.0, step=0.01)
-                st.session_state.scale_factor = scale  # Store scale factor in session state
+                st.session_state.scale_factor = scale
             with col_threshold:
                 motion_threshold = st.number_input("Motion Threshold:", value=0.1, min_value=0.01, max_value=1.0, step=0.01)
+                st.session_state.motion_threshold = motion_threshold
 
         with col2:
             st.markdown("### Quick Actions")
@@ -1289,15 +1295,7 @@ class VERTAGUI:
 
             # Show parameters based on analysis type
             if analysis_type == "predict":
-                # Predict analysis uses only spatial tracking - no parameters needed
-                st.info("ℹ️ Predict analysis uses spatial tracking only. No additional parameters required.")
-
-                # Set default values for compatibility (not used in analysis)
-                cluster_method = "kmeans"
-                seed = 42
-                decision_mode = "hybrid"
-
-                # REMOVED: All cluster method parameters - not needed for spatial tracking only
+                st.info("Predict analysis uses trajectory-based spatial tracking. No clustering parameters required.")
 
             elif analysis_type == "intent":
                 # Intent Recognition - ML-based early prediction
@@ -2225,14 +2223,7 @@ class VERTAGUI:
 
                 # Collect decision mode parameters
                 decision_params = {}
-                if analysis_type == "predict":
-                    if decision_mode == "radial":
-                        decision_params = {"r_outer": radial_r_outer, "epsilon": radial_epsilon}
-                    elif decision_mode == "pathlen":
-                        decision_params = {"path_length": pathlen_path_length, "linger_delta": pathlen_linger_delta}
-                    elif decision_mode == "hybrid":
-                        decision_params = {"r_outer": hybrid_r_outer, "path_length": hybrid_path_length, "linger_delta": hybrid_linger_delta}
-                elif analysis_type == "discover" or analysis_type == "enhanced":
+                if analysis_type == "discover" or analysis_type == "enhanced":
                     if discover_decision_mode == "radial":
                         decision_params = {"r_outer": discover_r_outer, "epsilon": discover_epsilon}
                     elif discover_decision_mode == "pathlen":
@@ -2318,123 +2309,9 @@ class VERTAGUI:
                     if "assignments" in st.session_state.analysis_results:
                         st.write(f"**Trajectories assigned:** {len(st.session_state.analysis_results['assignments'])}")
 
-                        # Show debug information if available
-                        if "assign_debug_info" in st.session_state and st.session_state.assign_debug_info:
-                            st.markdown("### 🔍 Debug Information")
-                            for junction_key, debug_info in st.session_state.assign_debug_info.items():
-                                with st.expander(f"Debug Info for {junction_key}", expanded=False):
-                                    st.write("**Junction Parameters:**")
-                                    st.write(f"- Center: {debug_info['junction_params']['center']}")
-                                    st.write(f"- Radius: {debug_info['junction_params']['radius']}")
-                                    st.write(f"- R_outer: {debug_info['junction_params']['r_outer']}")
-
-                                    st.write("**Assignment Parameters:**")
-                                    st.write(f"- Path length: {debug_info['assignment_params']['path_length']}")
-                                    st.write(f"- Epsilon: {debug_info['assignment_params']['epsilon']}")
-
-                                    st.write("**Data Info:**")
-                                    st.write(f"- Centers shape: {debug_info['data_info']['centers_shape']}")
-                                    st.write(f"- Trajectories: {debug_info['data_info']['trajectories']}")
-
-                                    st.write("**Assignment Distribution:**")
-                                    total_trajectories = sum(debug_info['assignment_distribution'].values())
-                                    for branch, count in debug_info['assignment_distribution'].items():
-                                        percentage = (count / total_trajectories) * 100
-                                        st.write(f"- Branch {branch}: {count} trajectories ({percentage:.1f}%)")
-
-                                    # Add troubleshooting info if most trajectories are -2/-1
-                                    neg2_count = debug_info['assignment_distribution'].get(-2, 0)
-                                    neg1_count = debug_info['assignment_distribution'].get(-1, 0)
-
-                                    if (neg2_count + neg1_count) / total_trajectories > 0.8:  # More than 80% are -2/-1
-                                        st.warning("⚠️ **Troubleshooting:** Most trajectories are getting -2/-1 assignments!")
-                                        st.write("**Possible solutions:**")
-                                        st.write("1. **Increase junction radius** - Current radius might be too small")
-                                        st.write("2. **Adjust junction center** - Center might not match trajectory paths")
-                                        st.write("3. **Check trajectory data** - Ensure trajectories actually pass through junction area")
-                                        st.write("4. **Use manual junction parameters** - Try different center coordinates and radius")
-
-                                    st.write("**First 10 Assignments:**")
-                                    if debug_info['assignments_sample']:
-                                        st.dataframe(pd.DataFrame(debug_info['assignments_sample']), width='stretch')
-
                 elif analysis_type == "metrics":
                     if "metrics" in st.session_state.analysis_results:
                         st.write(f"**Metrics computed:** {len(st.session_state.analysis_results['metrics'])}")
-
-                        # Show debug information for metrics
-                        st.markdown("---")
-                        st.markdown("### 🔍 Debug Information")
-
-                        # Get debug information from the first few trajectories
-                        if st.session_state.trajectories:
-                            st.write("**Debug Status:**")
-                            st.write(f"- Total trajectories: {len(st.session_state.trajectories)}")
-
-                            # Sample first 5 trajectories for debug
-                            time_data_debug = []
-                            for i, traj in enumerate(st.session_state.trajectories[:5]):
-                                time_debug = {
-                                    "trajectory_id": i,
-                                    "time_data_type": str(type(traj.t)),
-                                    "time_data_shape": traj.t.shape if traj.t is not None else None,
-                                    "time_data_sample": traj.t[:3].tolist() if traj.t is not None and len(traj.t) > 0 else None,
-                                    "time_data_dtype": str(traj.t.dtype) if traj.t is not None else None,
-                                    "time_is_none": traj.t is None,
-                                    "time_length": len(traj.t) if traj.t is not None else 0,
-                                    # Add position data diagnostics
-                                    "x_data_type": str(type(traj.x)),
-                                    "x_data_shape": traj.x.shape if traj.x is not None else None,
-                                    "x_data_sample": traj.x[:3].tolist() if traj.x is not None and len(traj.x) > 0 else None,
-                                    "x_data_dtype": str(traj.x.dtype) if traj.x is not None else None,
-                                    "x_is_none": traj.x is None,
-                                    "x_length": len(traj.x) if traj.x is not None else 0,
-                                    "z_data_type": str(type(traj.z)),
-                                    "z_data_shape": traj.z.shape if traj.z is not None else None,
-                                    "z_data_sample": traj.z[:3].tolist() if traj.z is not None and len(traj.z) > 0 else None,
-                                    "z_data_dtype": str(traj.z.dtype) if traj.z is not None else None,
-                                    "z_is_none": traj.z is None,
-                                    "z_length": len(traj.z) if traj.z is not None else 0
-                                }
-                                time_data_debug.append(time_debug)
-
-                            st.write(f"- time_data_debug length: {len(time_data_debug)}")
-
-                            if time_data_debug:
-                                with st.expander("🔍 Trajectory Data Debug Information", expanded=True):
-                                    st.write("**First 5 trajectories data analysis:**")
-                                    for debug_info in time_data_debug:
-                                        st.write(f"**Trajectory {debug_info['trajectory_id']}:**")
-
-                                        # Time data
-                                        st.write("**Time Data:**")
-                                        st.write(f"- Is None: {debug_info['time_is_none']}")
-                                        st.write(f"- Length: {debug_info['time_length']}")
-                                        st.write(f"- Type: {debug_info['time_data_type']}")
-                                        st.write(f"- Shape: {debug_info['time_data_shape']}")
-                                        st.write(f"- Dtype: {debug_info['time_data_dtype']}")
-                                        st.write(f"- Sample: {debug_info['time_data_sample']}")
-
-                                        # Position data
-                                        st.write("**Position Data (X):**")
-                                        st.write(f"- Is None: {debug_info['x_is_none']}")
-                                        st.write(f"- Length: {debug_info['x_length']}")
-                                        st.write(f"- Type: {debug_info['x_data_type']}")
-                                        st.write(f"- Shape: {debug_info['x_data_shape']}")
-                                        st.write(f"- Dtype: {debug_info['x_data_dtype']}")
-                                        st.write(f"- Sample: {debug_info['x_data_sample']}")
-
-                                        st.write("**Position Data (Z):**")
-                                        st.write(f"- Is None: {debug_info['z_is_none']}")
-                                        st.write(f"- Length: {debug_info['z_length']}")
-                                        st.write(f"- Type: {debug_info['z_data_type']}")
-                                        st.write(f"- Shape: {debug_info['z_data_shape']}")
-                                        st.write(f"- Dtype: {debug_info['z_data_dtype']}")
-                                        st.write(f"- Sample: {debug_info['z_data_sample']}")
-
-                                        st.write("---")
-                            else:
-                                st.info("No time data debug information available")
 
                 elif analysis_type == "gaze":
                     if "gaze_results" in st.session_state.analysis_results:
@@ -2514,8 +2391,10 @@ class VERTAGUI:
                             "r_outer": r_outer_list[i] if i < len(r_outer_list) else None,
                             "path_length": path_length,
                             "epsilon": epsilon,
-                            "linger_delta": linger_delta,  # Store linger_delta for gaze analysis
+                            "linger_delta": linger_delta,
                             "decision_mode": discover_decision_mode,
+                            "cluster_method": cluster_method,
+                            "seed": seed,
                             "scale": st.session_state.get("scale_factor", 1.0),
                         }
 
@@ -2526,88 +2405,18 @@ class VERTAGUI:
                         st.session_state.analysis_results = {}
                     st.session_state.analysis_results["branches"] = results
 
-                    # Debug: Check chain_decisions DataFrame
-                    st.write(f"🔍 **Chain Decisions Debug:**")
-                    st.write(f"- decisions_chain_df is not None: {decisions_chain_df is not None}")
-                    if decisions_chain_df is not None:
-                        st.write(f"- decisions_chain_df length: {len(decisions_chain_df)}")
-                        st.write(f"- decisions_chain_df columns: {list(decisions_chain_df.columns)}")
-                        if not decisions_chain_df.empty:
-                            st.write(f"- Junction indices in decisions_chain_df: {sorted(decisions_chain_df['junction_index'].unique())}")
-                        else:
-                            st.write("- decisions_chain_df is empty!")
-                    else:
-                        st.write("- decisions_chain_df is None!")
-
                     # Store branch assignments (chain_df) as chain_decisions for gaze analysis
                     if chain_df is not None and len(chain_df) > 0:
                         st.session_state.analysis_results.setdefault("branches", {})
                         st.session_state.analysis_results["branches"]["chain_decisions"] = chain_df
-                        st.write(f"✅ **Stored branch assignments (chain_df) with {len(chain_df)} rows in session state**")
-                        st.write(f"🔍 **Branch assignment columns:** {list(chain_df.columns)}")
-
-                        # Debug: Check for branch_jX columns specifically
-                        branch_cols = [col for col in chain_df.columns if col.startswith('branch_j')]
-                        st.write(f"🔍 **Branch columns found:** {branch_cols}")
-                        if len(branch_cols) > 0:
-                            st.write(f"🔍 **Sample branch data:** {chain_df[branch_cols].head()}")
-                        else:
-                            st.error("❌ **No branch_jX columns found in chain_df!**")
-                    else:
-                        st.write(f"❌ **Not storing branch assignments - chain_df is None or empty**")
 
                     # Also store decision points separately for reference
                     if decisions_chain_df is not None and len(decisions_chain_df) > 0:
                         st.session_state.analysis_results.setdefault("branches", {})
                         st.session_state.analysis_results["branches"]["decision_points"] = decisions_chain_df
-                        st.write(f"✅ **Stored decision points with {len(decisions_chain_df)} rows in session state**")
-                    else:
-                        st.write(f"❌ **Not storing decision points - DataFrame is None or empty**")
 
-                    # Add debugging information for flow analysis
-                    try:
-                        st.markdown("#### 🔍 Flow Analysis Debug")
-
-                        # Count trajectories that visit multiple junctions
-                        multi_junction_trajectories = 0
-                        junction_visit_counts = {}
-
-                        for i, junction in enumerate(st.session_state.junctions):
-                            junction_key = f"junction_{i}"
-                            if junction_key in results and "assignments" in results[junction_key]:
-                                assignments = results[junction_key]["assignments"]
-                                if not assignments.empty:
-                                    visited_trajectories = set(assignments["trajectory"].unique())
-                                    junction_visit_counts[i] = visited_trajectories
-
-                        # Find trajectories that visit multiple junctions
-                        all_trajectories = set()
-                        for trajectories in junction_visit_counts.values():
-                            all_trajectories.update(trajectories)
-
-                        for traj_id in all_trajectories:
-                            visited_junctions = [i for i, trajs in junction_visit_counts.items() if traj_id in trajs]
-                            if len(visited_junctions) > 1:
-                                multi_junction_trajectories += 1
-
-                        st.info(f"📊 **Flow Analysis Summary:**")
-                        st.write(f"- Total trajectories: {len(st.session_state.trajectories)}")
-                        st.write(f"- Trajectories visiting multiple junctions: {multi_junction_trajectories}")
-                        st.write(f"- Junction visit counts: {[len(trajs) for trajs in junction_visit_counts.values()]}")
-
-                        if multi_junction_trajectories == 0:
-                            st.warning("⚠️ **No trajectories visit multiple junctions!** This explains the zero flow matrix.")
-                            st.write("**Possible causes:**")
-                            st.write("1. Trajectories are too short to reach multiple junctions")
-                            st.write("2. Junction r_outer values are too small")
-                            st.write("3. Junctions are too far apart")
-                            st.write("4. Trajectory data needs different scaling")
-
-                    except Exception as e:
-                        st.warning(f"Debug analysis failed: {str(e)}")
-
-                    #st.success(f"✅ Discover analysis completed successfully for all {len(st.session_state.junctions)} junctions!")
-                    self.generate_cli_command("discover", results, cluster_method, cluster_params, decision_mode, decision_params)
+                    st.success(f"✅ Discover analysis completed successfully for all {len(st.session_state.junctions)} junctions!")
+                    self.generate_cli_command("discover", results, cluster_method, cluster_params, discover_decision_mode, decision_params, seed=seed)
 
                 elif analysis_type == "assign":
                     # Assign trajectories to branches using simplified interface
@@ -2654,7 +2463,6 @@ class VERTAGUI:
                                     stored_path_length = branch_data.get("path_length", path_length)
                                     stored_epsilon = branch_data.get("epsilon", epsilon)
                                     stored_scale = branch_data.get("scale", 1.0)
-                                    st.info(f"📊 Using assignment parameters from discover analysis: path_length={stored_path_length:.1f}, epsilon={stored_epsilon:.3f}, scale={stored_scale:.1f}")
                                 else:
                                     stored_path_length = path_length
                                     stored_epsilon = epsilon
@@ -2673,9 +2481,6 @@ class VERTAGUI:
                                         junction = branch_data["junction"]
                                         r_outer = branch_data["r_outer"]
                                         stored_scale = branch_data.get("scale", 1.0)
-                                        st.info(f"📊 Using junction parameters from discover analysis: center=({junction.cx:.1f}, {junction.cz:.1f}), radius={junction.r:.1f}, r_outer={r_outer:.1f}")
-                                        st.info(f"📊 Scale factor from discover analysis: {stored_scale:.1f}")
-
                                         # Check if current trajectories use different scale factor
                                         if hasattr(st.session_state, 'trajectories') and st.session_state.trajectories:
                                             # Estimate scale factor from trajectory coordinates
@@ -2710,7 +2515,6 @@ class VERTAGUI:
                                     # Use manual parameters
                                     junction = Circle(cx=manual_cx, cz=manual_cz, r=manual_r)
                                     r_outer = manual_r * 2.0
-                                    st.info(f"📊 Using manual junction: center=({manual_cx:.1f}, {manual_cz:.1f}), radius={manual_r:.1f}")
                                 else:
                                     # Estimate junction from trajectory data
                                     st.warning(f"⚠️ No junction defined for {junction_key}. Attempting to estimate from trajectory data...")
@@ -2718,11 +2522,6 @@ class VERTAGUI:
                                     # Estimate junction center from trajectory data
                                     all_x = np.concatenate([tr.x for tr in trajectories])
                                     all_z = np.concatenate([tr.z for tr in trajectories])
-
-                                    # Show trajectory data range for debugging
-                                    st.info(f"📊 Trajectory data range:")
-                                    st.write(f"- X range: {np.min(all_x):.1f} to {np.max(all_x):.1f}")
-                                    st.write(f"- Z range: {np.min(all_z):.1f} to {np.max(all_z):.1f}")
 
                                     # Use median as center (more robust than mean)
                                     estimated_cx = float(np.median(all_x))
@@ -2735,9 +2534,7 @@ class VERTAGUI:
                                     junction = Circle(cx=estimated_cx, cz=estimated_cz, r=max(estimated_r, 20.0))
                                     r_outer = estimated_r * 3.0  # Make r_outer much larger than junction radius
 
-                                    st.info(f"📊 Estimated junction: center=({estimated_cx:.1f}, {estimated_cz:.1f}), radius={estimated_r:.1f}")
                                     st.warning(f"⚠️ Using estimated junction for {junction_key}. Consider defining junctions manually for better results.")
-                                    st.info(f"💡 Tip: If trajectories still get -2/-1, try increasing the junction radius or adjusting the center coordinates.")
 
                             # Create output directory for this junction
                             import os
@@ -2798,7 +2595,6 @@ class VERTAGUI:
                                                         all_trajs.extend(st.session_state.trajectories)
                                                     all_trajs.extend([t for t in trajectories if t not in all_trajs])
                                                     # Rerun discovery for this junction
-                                                    from verta.verta_decisions import discover_branches
                                                     new_assign, _sum, new_centers = discover_branches(
                                                         trajectories=all_trajs,
                                                         junction=junction,
@@ -2836,166 +2632,27 @@ class VERTAGUI:
                                 # Keep assignment results even if auto-rediscover path fails
                                 pass
 
-                            # Enhanced debugging for assignment issues
                             if assignments is not None and len(assignments) > 0:
-                                # Check if assignments is a string (error message) or pandas DataFrame
                                 if isinstance(assignments, str):
-                                    st.error(f"🚨 **Assignment Error:** {assignments}")
-                                    st.error("This indicates the assign_branches function returned an error message instead of assignment results.")
-                                    st.error("Check the assign_branches function implementation or input parameters.")
-                                elif hasattr(assignments, 'iterrows'):  # pandas DataFrame
-                                    # Count assignment types from DataFrame
+                                    st.error(f"Assignment failed for {junction_key}: {assignments}")
+                                elif hasattr(assignments, 'iterrows'):
                                     assignment_counts = assignments['branch'].value_counts().to_dict()
-
                                     total_trajectories = len(assignments)
                                     neg2_count = assignment_counts.get(-2, 0)
                                     neg1_count = assignment_counts.get(-1, 0)
 
-                                    # If most trajectories are -2/-1, provide enhanced debugging
                                     if (neg2_count + neg1_count) / total_trajectories > 0.8:
-                                        st.error(f"🚨 **Assignment Issue Detected for {junction_key}:**")
-                                        st.error(f"   -2 (never entered): {neg2_count} trajectories ({neg2_count/total_trajectories*100:.1f}%)")
-                                        st.error(f"   -1 (no usable vector): {neg1_count} trajectories ({neg1_count/total_trajectories*100:.1f}%)")
-
-                                        # Enhanced debugging analysis
-                                        st.info(f"🔍 **Enhanced Debug Analysis:**")
-
-                                        # Show trajectory data ranges
-                                        all_x = []
-                                        all_z = []
-                                        for traj in trajectories:
-                                            all_x.extend(traj.x)
-                                            all_z.extend(traj.z)
-
-                                        if all_x and all_z:
-                                            st.info(f"📊 **Trajectory Data Ranges:**")
-                                            st.info(f"   X: {min(all_x):.1f} to {max(all_x):.1f} (range: {max(all_x)-min(all_x):.1f})")
-                                            st.info(f"   Z: {min(all_z):.1f} to {max(all_z):.1f} (range: {max(all_z)-min(all_z):.1f})")
-                                            st.info(f"   Total points: {len(all_x)}")
-
-                                            # Show how many trajectories actually pass through the junction area
-                                            trajectories_in_junction = 0
-                                            trajectories_with_usable_vectors = 0
-
-                                            for traj in trajectories:
-                                                # Check if trajectory passes through junction area
-                                                distances = np.sqrt((traj.x - junction.cx)**2 + (traj.z - junction.cz)**2)
-                                                if np.any(distances <= junction.r):
-                                                    trajectories_in_junction += 1
-
-                                                    # Check if trajectory has usable vectors (length > epsilon)
-                                                    if len(traj.x) > 1:
-                                                        dx = np.diff(traj.x)
-                                                        dz = np.diff(traj.z)
-                                                        movement = np.sqrt(dx**2 + dz**2)
-                                                        if np.any(movement > stored_epsilon):
-                                                            trajectories_with_usable_vectors += 1
-
-                                            st.info(f"📊 **Junction Analysis:**")
-                                            st.info(f"   Trajectories passing through junction: {trajectories_in_junction}/{len(trajectories)}")
-                                            st.info(f"   Trajectories with usable vectors: {trajectories_with_usable_vectors}/{len(trajectories)}")
-
-                                            # Analyze movement patterns for -1 assignments
-                                            if neg1_count > neg2_count:  # More -1 than -2 assignments
-                                                st.error(f"🚨 **Critical Issue: Most trajectories are -1 (entered junction but no usable vectors)!**")
-
-                                                # Analyze movement patterns
-                                                st.info(f"🔍 **Movement Analysis:**")
-                                                all_movements = []
-                                                nan_trajectories = 0
-                                                for traj in trajectories:
-                                                    if len(traj.x) > 1:
-                                                        # Check for NaN values
-                                                        if np.any(np.isnan(traj.x)) or np.any(np.isnan(traj.z)):
-                                                            nan_trajectories += 1
-                                                            continue
-
-                                                        dx = np.diff(traj.x)
-                                                        dz = np.diff(traj.z)
-                                                        movement = np.sqrt(dx**2 + dz**2)
-                                                        # Filter out NaN movements
-                                                        valid_movements = movement[~np.isnan(movement)]
-                                                        all_movements.extend(valid_movements)
-
-                                                if nan_trajectories > 0:
-                                                    st.error(f"🚨 **CRITICAL: {nan_trajectories} trajectories contain NaN coordinates!**")
-                                                    st.error("This will cause assignment failures. Check your trajectory data for missing/invalid coordinates.")
-
-                                                if all_movements:
-                                                    percentile_5 = np.percentile(all_movements, 5)
-                                                    percentile_10 = np.percentile(all_movements, 10)
-                                                    percentile_25 = np.percentile(all_movements, 25)
-                                                    mean_movement = np.mean(all_movements)
-
-                                                    st.info(f"📊 **Movement Statistics:**")
-                                                    st.info(f"   Mean movement: {mean_movement:.4f}")
-                                                    st.info(f"   5th percentile: {percentile_5:.4f}")
-                                                    st.info(f"   10th percentile: {percentile_10:.4f}")
-                                                    st.info(f"   25th percentile: {percentile_25:.4f}")
-                                                    st.info(f"   Current epsilon: {stored_epsilon:.3f}")
-
-                                                    # Suggest epsilon adjustment
-                                                    if stored_epsilon > percentile_25:
-                                                        suggested_epsilon = percentile_10
-                                                        st.warning(f"⚠️ **Epsilon too high!** Try: {suggested_epsilon:.4f} (current: {stored_epsilon:.3f})")
-                                                    elif stored_epsilon < percentile_5:
-                                                        suggested_epsilon = percentile_10
-                                                        st.warning(f"⚠️ **Epsilon too low!** Try: {suggested_epsilon:.4f} (current: {stored_epsilon:.3f})")
-                                                    else:
-                                                        suggested_epsilon = percentile_5
-                                                        st.warning(f"⚠️ **Try lower epsilon:** {suggested_epsilon:.4f} (current: {stored_epsilon:.3f})")
-                                                else:
-                                                    st.error(f"🚨 **NO VALID MOVEMENTS FOUND!**")
-                                                    st.error("All trajectories have NaN coordinates or invalid movement data.")
-                                                    st.error("This explains why all trajectories get -1 assignments.")
-                                                    st.error("**SOLUTION**: Check your trajectory data for missing/invalid coordinates.")
-
-                                                    # Show sample trajectory analysis
-                                                    st.info(f"🔍 **Sample Trajectory Analysis (first 3):**")
-                                                    for i, traj in enumerate(trajectories[:3]):
-                                                        if len(traj.x) > 1:
-                                                            # Check for NaN values
-                                                            has_nan = np.any(np.isnan(traj.x)) or np.any(np.isnan(traj.z))
-                                                            if has_nan:
-                                                                st.error(f"   Trajectory {i}: ⚠️ CONTAINS NaN COORDINATES!")
-                                                                continue
-
-                                                            dx = np.diff(traj.x)
-                                                            dz = np.diff(traj.z)
-                                                            movement = np.sqrt(dx**2 + dz**2)
-                                                            max_movement = np.max(movement) if len(movement) > 0 else 0
-                                                            mean_movement = np.mean(movement) if len(movement) > 0 else 0
-
-                                                            # Check if trajectory passes through junction
-                                                            distances = np.sqrt((traj.x - junction.cx)**2 + (traj.z - junction.cz)**2)
-                                                            in_junction = np.any(distances <= junction.r)
-                                                            min_distance = np.min(distances)
-
-                                                            st.info(f"   Trajectory {i}: max_movement={max_movement:.3f}, mean_movement={mean_movement:.3f}, in_junction={in_junction}, min_distance={min_distance:.1f}")
-
-                                            # Suggest junction radius adjustment
-                                            if trajectories_in_junction < len(trajectories) * 0.5:
-                                                st.warning(f"⚠️ **Low junction coverage!** Only {trajectories_in_junction}/{len(trajectories)} trajectories pass through the junction area.")
-
-                                                # Calculate suggested radius to cover more trajectories
-                                                all_distances = []
-                                                for traj in trajectories:
-                                                    distances = np.sqrt((traj.x - junction.cx)**2 + (traj.z - junction.cz)**2)
-                                                    all_distances.extend(distances)
-
-                                                suggested_radius = np.percentile(all_distances, 80)  # Cover 80% of trajectory points
-                                                st.warning(f"⚠️ **Suggested radius:** {suggested_radius:.1f} (current: {junction.r:.1f})")
-                                                st.warning(f"⚠️ **Suggested center:** ({junction.cx:.1f}, {junction.cz:.1f}) - verify this matches your junction location")
-                                else:
-                                    st.warning(f"⚠️ Unexpected assignment format: {type(assignments)} - {assignments}")
-                                    st.warning("Expected pandas DataFrame or string, but got something else.")
+                                        st.warning(f"⚠️ Most trajectories for {junction_key} are unassigned: {neg2_count} never entered, {neg1_count} had no usable vector. Consider adjusting junction radius or epsilon.")
 
                             results[junction_key] = {
                                 "assignments": assignments,
                                 "centers": centers,
                                 "junction": junction,
-                                "path_length": path_length,
-                                "epsilon": epsilon
+                                "path_length": stored_path_length,
+                                "epsilon": stored_epsilon,
+                                "decision_mode": dm,
+                                "linger_delta": ld,
+                                "r_outer": dm_r_outer,
                             }
 
                             successful_assignments += 1
@@ -3060,9 +2717,11 @@ class VERTAGUI:
                             st.write(f"- Branch {branch}: {count} trajectories ({percentage:.1f}%)")
 
                     # Generate CLI command for easy copying
-                    self.generate_cli_command("assign", results, cluster_method, cluster_params, decision_mode, decision_params)
+                    self.generate_cli_command("assign", results, cluster_method, cluster_params, decision_mode, decision_params, seed=seed)
 
                 elif analysis_type == "metrics":
+                    import numpy as np
+
                     # Compute timing metrics
                     metrics = []
                     trajectories_with_time_data = 0
@@ -3182,13 +2841,6 @@ class VERTAGUI:
                                             dynamic_r_outer = max(5.0, min(50.0, total_distance * 0.1))
                                             r_outer = dynamic_r_outer
 
-                                        # Debug: Show dynamic parameters for first few trajectories
-                                        if i < 5:
-                                            if decision_mode == "pathlen":
-                                                st.write(f"🔍 Trajectory {i}: total_distance={total_distance:.2f}, dynamic_distance={dynamic_distance:.2f}")
-                                            elif decision_mode == "radial":
-                                                st.write(f"🔍 Trajectory {i}: total_distance={total_distance:.2f}, dynamic_r_outer={dynamic_r_outer:.2f}")
-
                                     # Try the timing calculation with the dynamic parameters
                                     t_val, mode_used = _timing_for_traj(
                                         tr=traj,
@@ -3241,12 +2893,6 @@ class VERTAGUI:
                                                 min_outward=min_outward,
                                             )
 
-                                        if i < 5 and not np.isnan(t_val):
-                                            if decision_mode == "pathlen":
-                                                st.write(f"🔍 Trajectory {i}: Fallback worked! fallback_distance={fallback_distance:.3f}")
-                                            elif decision_mode == "radial":
-                                                st.write(f"🔍 Trajectory {i}: Fallback worked! fallback_r_outer={fallback_r_outer:.3f}")
-
                                     junction_metrics[f"junction_{j}_time"] = t_val
                                     junction_metrics[f"junction_{j}_mode"] = mode_used
                                     # Add speed analysis metrics
@@ -3281,29 +2927,6 @@ class VERTAGUI:
                                 "error": str(e)
                             }
                             metrics.append(error_metrics)
-
-                    # Show time data debug information (always show for metrics analysis)
-                    st.markdown("---")
-                    st.markdown("### 🔍 Debug Information")
-
-                    # Debug: Show what we have
-                    st.write(f"**Debug Status:**")
-                    st.write(f"- time_data_debug length: {len(time_data_debug)}")
-                    st.write(f"- trajectories_without_time_data: {trajectories_without_time_data}")
-                    st.write(f"- trajectories_with_time_data: {trajectories_with_time_data}")
-
-                    if time_data_debug:
-                        with st.expander("🔍 Time Data Debug Information", expanded=True):
-                            st.write("**First 5 trajectories time data analysis:**")
-                            for debug_info in time_data_debug:
-                                st.write(f"**Trajectory {debug_info['trajectory_id']}:**")
-                                st.write(f"- Type: {debug_info['time_data_type']}")
-                                st.write(f"- Shape: {debug_info['time_data_shape']}")
-                                st.write(f"- Dtype: {debug_info['time_data_dtype']}")
-                                st.write(f"- Sample: {debug_info['time_data_sample']}")
-                                st.write("---")
-                    else:
-                        st.info("No time data debug information available")
 
                     # Show detailed analysis of failing trajectories
                     if trajectories_without_time_data > 0:
@@ -3394,7 +3017,6 @@ class VERTAGUI:
                         df = pd.DataFrame(metrics)
                         csv_path = os.path.join("gui_outputs", "metrics_results.csv")
                         df.to_csv(csv_path, index=False)
-                        st.info(f"📁 Metrics saved to: {csv_path}")
                     except Exception as e:
                         st.warning(f"⚠️ Could not save metrics to file: {e}")
 
@@ -3677,7 +3299,7 @@ class VERTAGUI:
 
                     # Show warning if many trajectories lack time data
                     if trajectories_without_time_data > len(metrics) * 0.5:
-                        st.warning(f"⚠️ {trajectories_without_time_data} trajectories lack valid time data. This may indicate time data format issues. Check the debug information above.")
+                        st.warning(f"⚠️ {trajectories_without_time_data} trajectories lack valid time data. This may indicate time data format issues.")
 
                         # Provide suggestions for fixing time data issues
                         with st.expander("💡 Suggestions for Fixing Time Data Issues", expanded=False):
@@ -3721,7 +3343,7 @@ class VERTAGUI:
                             "trend_window": getattr(st.session_state, 'metrics_trend_window', 5),
                             "min_outward": getattr(st.session_state, 'metrics_min_outward', 0.0),
                         }
-                    self.generate_cli_command("metrics", metrics_results, cluster_method, cluster_params, decision_mode, decision_params)
+                    self.generate_cli_command("metrics", metrics_results, cluster_method, cluster_params, decision_mode, decision_params, seed=seed)
 
                 elif analysis_type == "gaze":
                     # Analyze gaze and physiological data
@@ -3743,14 +3365,9 @@ class VERTAGUI:
                         from verta.verta_data_loader import has_gaze_data as _has_gaze, has_physio_data as _has_physio
                         trajs_with_signals = [t for t in active_trajs if (_has_gaze(t) or _has_physio(t))]
 
-                        # Debug: Show filtering results
-                        st.info(f"🔍 **Trajectory Filtering Debug:**")
-                        st.write(f"- Total trajectories: {len(active_trajs)}")
-                        st.write(f"- Trajectories with gaze/physio data: {len(trajs_with_signals)}")
-
                         if len(trajs_with_signals) < len(active_trajs):
                             skipped_count = len(active_trajs) - len(trajs_with_signals)
-                            st.info(f"ℹ️ Skipped {skipped_count} trajectories without gaze/physiological data")
+                            print(f"Skipped {skipped_count} trajectories without gaze/physiological data")
 
                     except Exception as e:
                         st.warning(f"⚠️ Error filtering trajectories: {e}")
@@ -3804,13 +3421,6 @@ class VERTAGUI:
                     else:
                         # Perform gaze analysis (use the active trajectories we already determined)
 
-                        # Debug: Track session state before analysis
-                        st.session_state.debug_session_state = {
-                            'trajectories_count': len(st.session_state.trajectories) if st.session_state.trajectories else 0,
-                            'gaze_trajectories_count': 0,
-                            'last_modified': 'before_gaze_analysis'
-                        }
-
                         # Create global heatmap ONCE (outside junction loop)
                         global_heatmap_data = None
                         cell_size = st.session_state.get('pupil_heatmap_cell_size', 50.0)
@@ -3821,7 +3431,6 @@ class VERTAGUI:
                         global_out_dir = os.path.join("gui_outputs", "gaze_plots")
                         os.makedirs(global_out_dir, exist_ok=True)
 
-                        st.info("🗺️ Creating global pupil dilation heatmap...")
                         try:
                             global_heatmap_data = create_pupil_dilation_heatmap(
                                 trajectories=active_trajs,
@@ -3829,8 +3438,6 @@ class VERTAGUI:
                                 cell_size=cell_size,
                                 normalization=normalization
                             )
-                            st.success("✅ Global heatmap created")
-
                             # Store global heatmap data for consistent scaling calculation
                             st.session_state['global_heatmap_data'] = global_heatmap_data
 
@@ -3859,31 +3466,15 @@ class VERTAGUI:
                                 fig.savefig(global_plot_path, dpi=150, bbox_inches="tight")
                                 plt.close(fig)
 
-                                st.info(f"📁 Global heatmap plot saved to: {global_plot_path}")
-                                st.write(f"🔍 **Debug:** Global plot saved to: `{global_plot_path}`")
-                                st.write(f"🔍 **Debug:** File exists after save: {os.path.exists(global_plot_path)}")
-
                             except Exception as plot_e:
                                 st.warning(f"⚠️ Could not generate global heatmap plot: {plot_e}")
 
                         except Exception as e:
                             st.warning(f"⚠️ Could not create global heatmap: {e}")
 
-                        # Debug: Check junctions
-                        st.info(f"🔍 **Junction Debug:**")
-                        st.write(f"- Number of junctions: {len(st.session_state.junctions)}")
-                        if st.session_state.junctions:
-                            for i, junction in enumerate(st.session_state.junctions):
-                                r_outer = st.session_state.junction_r_outer.get(i, 50.0)
-                                st.write(f"- Junction {i}: Circle(cx={junction.cx}, cz={junction.cz}, r={junction.r}), r_outer={r_outer}")
-                        else:
+                        if not st.session_state.junctions:
                             st.error("❌ **No junctions defined!** Gaze analysis requires junctions to be defined.")
-                            st.write("**Solution:** Go to the Junction Editor tab and define at least one junction.")
                             return
-
-                        # CRITICAL FIX: Perform comprehensive gaze analysis for ALL junctions at once
-                        # This ensures all junctions have access to the complete assignments DataFrame
-                        st.info("🔍 **Performing comprehensive gaze analysis for all junctions...**")
 
                         # Create output directory for all junctions
                         import os
@@ -3908,8 +3499,6 @@ class VERTAGUI:
                             )
                         except Exception as e:
                             st.error(f"❌ **Comprehensive gaze analysis failed:** {e}")
-                            st.write(f"**Error type:** {type(e).__name__}")
-                            st.write(f"**Error message:** {str(e)}")
 
                             # Fall back to individual junction analysis
                             st.info("🔄 **Falling back to individual junction analysis...**")
@@ -3938,23 +3527,17 @@ class VERTAGUI:
                                     # Store the comprehensive gaze analysis results
                                     gaze_results[junction_key] = gaze_data
 
-                                    st.success(f"✅ Completed fallback gaze analysis for {junction_key}")
-
                                     # Generate gaze plots immediately after analysis
                                     try:
-                                        st.info(f"📊 Generating gaze plots for {junction_key}...")
                                         self._generate_gaze_plots_during_analysis(gaze_data, junction_key, out_dir)
-                                        st.success(f"✅ Generated plots for {junction_key}")
                                     except Exception as e:
                                         st.warning(f"⚠️ Plot generation failed for {junction_key}: {e}")
 
-                                    # Update debug display after each junction
                                     update_gaze_debug_display()
 
                                 except Exception as e:
                                     st.warning(f"⚠️ Fallback gaze analysis failed for {junction_key}: {e}")
 
-                                    # Store error information
                                     gaze_results[junction_key] = {
                                         'error': str(e),
                                         'error_type': type(e).__name__,
@@ -3965,11 +3548,9 @@ class VERTAGUI:
                                         'head_yaw': None
                                     }
 
-                                    # Update debug display even on error
                                     update_gaze_debug_display()
                                     continue
 
-                            # Skip the rest of the multi-junction processing
                             gaze_data_all = None
 
                         # The comprehensive analysis returns data for all junctions
@@ -4003,13 +3584,6 @@ class VERTAGUI:
                                         'r_outer': r_outer_list[i]
                                     }
 
-                                    st.info(f"🔍 **Processing junction {i}: {junction_key}**")
-                                    st.write(f"- Junction: Circle(cx={junction.cx}, cz={junction.cz}, r={junction.r})")
-                                    st.write(f"- R_outer: {r_outer_list[i]}")
-                                    st.write(f"- Head yaw records: {len(junction_head_yaw)}")
-                                    st.write(f"- Physiological records: {len(junction_physio) if junction_physio is not None else 0}")
-                                    st.write(f"- Pupil records: {len(junction_pupil) if junction_pupil is not None else 0}")
-
                                     # Normalize columns so downstream plots find expected names
                                     if isinstance(gaze_data, dict):
                                         gaze_data = self._normalize_gaze_result_frames(gaze_data)
@@ -4017,39 +3591,15 @@ class VERTAGUI:
                                     # Store the comprehensive gaze analysis results
                                     gaze_results[junction_key] = gaze_data
 
-                                    # Debug: Verify data was saved correctly
-                                    st.info(f"🔍 **Data Storage Verification for {junction_key}:**")
-                                    if isinstance(gaze_data, dict):
-                                        for data_type, data in gaze_data.items():
-                                            if data is not None:
-                                                if hasattr(data, 'shape'):
-                                                    st.write(f"- {data_type}: {data.shape} DataFrame")
-                                                elif isinstance(data, list):
-                                                    st.write(f"- {data_type}: {len(data)} records")
-                                                else:
-                                                    st.write(f"- {data_type}: {type(data).__name__}")
-                                            else:
-                                                st.write(f"- {data_type}: None")
-                                    else:
-                                        st.write(f"- Raw data type: {type(gaze_data).__name__}")
-
-                                    st.success(f"✅ Completed gaze analysis for {junction_key}")
-
                                     # Generate gaze plots immediately after analysis
                                     try:
-                                        st.info(f"📊 Generating gaze plots for {junction_key}...")
                                         self._generate_gaze_plots_during_analysis(gaze_data, junction_key, out_dir)
-                                        st.success(f"✅ Generated plots for {junction_key}")
                                     except Exception as e:
                                         st.warning(f"⚠️ Plot generation failed for {junction_key}: {e}")
 
-                                    # Update debug display after each junction
                                     update_gaze_debug_display()
                         else:
                             st.error("❌ **Comprehensive gaze analysis failed to return expected data structure**")
-                            st.write(f"Returned data type: {type(gaze_data_all)}")
-                            if isinstance(gaze_data_all, dict):
-                                st.write(f"Keys: {list(gaze_data_all.keys())}")
 
                             # Fall back to individual junction analysis
                             st.info("🔄 **Falling back to individual junction analysis...**")
@@ -4078,23 +3628,17 @@ class VERTAGUI:
                                     # Store the comprehensive gaze analysis results
                                     gaze_results[junction_key] = gaze_data
 
-                                    st.success(f"✅ Completed fallback gaze analysis for {junction_key}")
-
                                     # Generate gaze plots immediately after analysis
                                     try:
-                                        st.info(f"📊 Generating gaze plots for {junction_key}...")
                                         self._generate_gaze_plots_during_analysis(gaze_data, junction_key, out_dir)
-                                        st.success(f"✅ Generated plots for {junction_key}")
                                     except Exception as e:
                                         st.warning(f"⚠️ Plot generation failed for {junction_key}: {e}")
 
-                                    # Update debug display after each junction
                                     update_gaze_debug_display()
 
                                 except Exception as e:
                                     st.warning(f"⚠️ Fallback gaze analysis failed for {junction_key}: {e}")
 
-                                    # Store error information
                                     gaze_results[junction_key] = {
                                         'error': str(e),
                                         'error_type': type(e).__name__,
@@ -4105,7 +3649,6 @@ class VERTAGUI:
                                         'head_yaw': None
                                     }
 
-                                    # Update debug display even on error
                                     update_gaze_debug_display()
                                     continue
 
@@ -4127,154 +3670,67 @@ class VERTAGUI:
                         st.warning(f"⚠️ Gaze analysis completed for {successful_junctions}/{total_junctions} junctions")
 
                     # Generate CLI command for easy copying
-                    # Build results dict for CLI command generation
+                    # Pull discover params from session state so CLI matches the actual analysis
+                    disc_mode = "hybrid"
+                    disc_path_length = 100.0
+                    disc_epsilon = 0.015
+                    disc_linger = 5.0
+                    disc_cluster_method = cluster_method
+                    disc_cluster_params = cluster_params
+                    disc_seed = seed
+                    if st.session_state.analysis_results and "branches" in st.session_state.analysis_results:
+                        for _jk, _bd in st.session_state.analysis_results["branches"].items():
+                            if isinstance(_bd, dict):
+                                disc_mode = _bd.get("decision_mode", disc_mode)
+                                disc_path_length = _bd.get("path_length", disc_path_length)
+                                disc_epsilon = _bd.get("epsilon", disc_epsilon)
+                                disc_linger = _bd.get("linger_delta", disc_linger)
+                                disc_cluster_method = _bd.get("cluster_method", disc_cluster_method)
+                                disc_seed = _bd.get("seed", disc_seed)
+                                break
+
                     gaze_results_dict = {}
                     for i, junction in enumerate(st.session_state.junctions):
                         junction_key = f"junction_{i}"
                         gaze_results_dict[junction_key] = {
                             "junction": junction,
                             "r_outer": st.session_state.junction_r_outer.get(i, 50.0),
-                            "decision_mode": decision_mode,
-                            "path_length": decision_params.get("path_length", 100.0) if decision_params else 100.0,
-                            "epsilon": decision_params.get("epsilon", 0.05) if decision_params else 0.05,
-                            "linger_delta": decision_params.get("linger_delta", 5.0) if decision_params else 5.0,
+                            "decision_mode": disc_mode,
+                            "path_length": disc_path_length,
+                            "epsilon": disc_epsilon,
+                            "linger_delta": disc_linger,
                         }
-                    self.generate_cli_command("gaze", gaze_results_dict, cluster_method, cluster_params, decision_mode, decision_params)
+                    self.generate_cli_command("gaze", gaze_results_dict, disc_cluster_method, disc_cluster_params, disc_mode, decision_params, seed=disc_seed)
 
                 elif analysis_type == "predict":
-                    # Run prediction analysis using spatial tracking only
-                    # Create output directory for prediction results
-                    import os
+                    import os, pandas as pd
                     output_dir = "gui_outputs"
                     os.makedirs(output_dir, exist_ok=True)
 
-                    # Skip discover_decision_chain - use spatial tracking only
-                    # Create empty chain_df for compatibility
-                    import pandas as pd
-                    chain_df = pd.DataFrame(columns=['trajectory'])
-                    chain_df['trajectory'] = [i for i in range(len(st.session_state.trajectories))]
-
-                    print(f"🔍 DEBUG: Using spatial tracking only - skipping discover_decision_chain")
-                    print(f"🔍 DEBUG: Created empty chain_df with {len(chain_df)} trajectories")
-
-                    # Define r_outer_list for predict analysis
+                    chain_df = pd.DataFrame({"trajectory": list(range(len(st.session_state.trajectories)))})
                     r_outer_list = [st.session_state.junction_r_outer.get(i, 50.0) for i in range(len(st.session_state.junctions))]
 
-                    print(f"🔍 DEBUG: Starting analyze_junction_choice_patterns with spatial tracking only...")
-
-                    # Debug: Check what trajectories visit multiple junctions
-                    print(f"\n🔍 DEBUG: Analyzing trajectory junction visits...")
-                    multi_junction_trajectories = 0
-                    consecutive_junction_trajectories = 0
-
-                    # COMMENTED OUT: This code referenced norm_df which we removed
-                    # for idx, row in norm_df.iterrows():
-                    #     traj_id = row['trajectory']
-                    #     visited_junctions = []
-                    #     for i in range(7):  # 7 junctions
-                    #         col = f'branch_j{i}'
-                    #         if pd.notna(row[col]) and row[col] >= 0:  # Valid branch assignment
-                    #             visited_junctions.append(i)
-                    #
-                    #     if len(visited_junctions) > 1:
-                    #         multi_junction_trajectories += 1
-                    #         # Check if junctions are consecutive (for flow analysis)
-                    #         if len(visited_junctions) >= 2:
-                    #             consecutive_junction_trajectories += 1
-                    #             if consecutive_junction_trajectories <= 5:  # Show first 5 examples
-                    #                 print(f"🔍 DEBUG: Trajectory {traj_id} visits junctions: {visited_junctions}")
-
-                    print(f"🔍 DEBUG: Trajectories visiting multiple junctions: {multi_junction_trajectories}")
-                    print(f"🔍 DEBUG: Trajectories with consecutive visits: {consecutive_junction_trajectories}")
-
-                    # Debug: Check r_outer_list values
-                    print(f"\n🔍 DEBUG: r_outer_list values: {r_outer_list}")
-                    print(f"🔍 DEBUG: r_outer_list length: {len(r_outer_list)}")
-                    print(f"🔍 DEBUG: r_outer_list types: {[type(r) for r in r_outer_list]}")
-
-                    # Debug: Check junction radii
-                    print(f"\n🔍 DEBUG: Junction radii:")
-                    for i, junction in enumerate(st.session_state.junctions):
-                        print(f"  Junction {i}: radius={junction.r}, r_outer={r_outer_list[i] if i < len(r_outer_list) else 'N/A'}")
-
-                    # Debug: Test trajectory sequence tracking with multiple trajectories
-                    print(f"\n🔍 DEBUG: Testing trajectory sequence tracking...")
-                    from verta.verta_plotting import _track_trajectory_junction_sequence
-
-                    # Test trajectories 1-3 instead of trajectory 0 (which has limited range)
-                    test_trajectories = st.session_state.trajectories[1:4]  # Trajectories 1-3
-
-                    for test_idx, test_traj in enumerate(test_trajectories):
-                        traj_id = getattr(test_traj, 'tid', test_idx + 1)
-                        print(f"\n🔍 DEBUG: === Testing Trajectory {traj_id} ===")
-
-                        # Debug: Check trajectory data
-                        print(f"🔍 DEBUG: Trajectory {traj_id} data:")
-                        print(f"  - Length: {len(test_traj.x)} points")
-                        print(f"  - X range: {min(test_traj.x):.2f} to {max(test_traj.x):.2f}")
-                        print(f"  - Z range: {min(test_traj.z):.2f} to {max(test_traj.z):.2f}")
-
-                        # Debug: Check junction data
-                        print(f"🔍 DEBUG: Junction data:")
-                        for i, junction in enumerate(st.session_state.junctions):
-                            print(f"  Junction {i}: center=({junction.cx:.2f}, {junction.cz:.2f}), radius={junction.r}, r_outer={r_outer_list[i]}")
-
-                        # Test spatial tracking
-                        test_sequence = _track_trajectory_junction_sequence(test_traj, st.session_state.junctions, r_outer_list)
-                        print(f"🔍 DEBUG: Trajectory {traj_id} sequence: {test_sequence}")
-
-                        if len(test_sequence) > 0:
-                            print(f"🔍 DEBUG: ✅ Trajectory {traj_id} has valid sequence!")
-                            print(f"🔍 DEBUG: Stopping debug testing - spatial tracking is working!")
-                            break
-                        else:
-                            print(f"🔍 DEBUG: ❌ Trajectory {traj_id} has no sequence")
-
-                    # If no trajectories worked, test trajectory 0 as fallback
-                    if all(len(_track_trajectory_junction_sequence(traj, st.session_state.junctions, r_outer_list)) == 0 for traj in test_trajectories):
-                        print(f"\n🔍 DEBUG: === Testing Trajectory 0 as fallback ===")
-                        test_traj = st.session_state.trajectories[0]
-                        test_sequence = _track_trajectory_junction_sequence(test_traj, st.session_state.junctions, r_outer_list)
-                        print(f"🔍 DEBUG: Trajectory 0 sequence: {test_sequence}")
-
-                    # Debug: Show sample of norm_df data
-                    # print(f"\n🔍 DEBUG: Sample norm_df data (first 10 rows):")
-                    # print(norm_df.head(10))
-
-                    # Then analyze junction choice patterns
-                    print("\n" + "="*60)
-                    print("🔍 PREDICT ANALYSIS - FLOW GRAPH DEBUG OUTPUT")
-                    print("="*60)
-
-                    # Run prediction analysis using spatial tracking only
                     results = analyze_junction_choice_patterns(
                         trajectories=st.session_state.trajectories,
-                        chain_df=chain_df,  # Empty chain_df for compatibility
+                        chain_df=chain_df,
                         junctions=st.session_state.junctions,
                         output_dir=output_dir,
                         r_outer_list=r_outer_list,
-                        gui_mode=False  # Enable console debug output
+                        gui_mode=True
                     )
 
-                    print("="*60)
-                    print("✅ Predict analysis completed")
-                    print("="*60 + "\n")
-
-                    # Store results - preserve existing analysis results
                     if st.session_state.analysis_results is None:
                         st.session_state.analysis_results = {}
                     st.session_state.analysis_results["predictions"] = results
 
-                    # Generate CLI command for easy copying
-                    self.generate_cli_command("predict", results, cluster_method, cluster_params, decision_mode, decision_params)
+                    st.success(f"Predict analysis completed for {len(st.session_state.junctions)} junctions!")
+                    self.generate_cli_command("predict", results, None, None, None, None, seed=seed)
 
                 elif analysis_type == "intent":
                     # Run intent recognition analysis
                     import pandas as pd
                     import numpy as np
                     import os
-
-                    st.info("🧠 Running Intent Recognition Analysis...")
 
                     # Get parameters
                     intent_params = st.session_state.get('intent_params', {
@@ -4287,129 +3743,89 @@ class VERTAGUI:
                     # Check if we have time data
                     has_time = all(tr.t is not None and len(tr.t) > 0 for tr in st.session_state.trajectories[:5])
                     if not has_time:
-                        st.warning("⚠️ Time data not detected. Intent recognition requires temporal information for velocity/acceleration features.")
-                        st.info("💡 Tip: Ensure your CSV files have a time column specified in column mapping.")
+                        st.warning("Time data not detected. Intent recognition requires temporal information for velocity/acceleration features.")
 
                     # Check for sklearn
                     try:
                         import sklearn
                     except ImportError:
-                        st.error("❌ scikit-learn not installed!")
-                        st.markdown("""
-                        Intent recognition requires scikit-learn. Install with:
-                        ```bash
-                        pip install scikit-learn
-                        ```
-                        """)
+                        st.error("scikit-learn not installed! Install with: `pip install scikit-learn`")
                         return
 
                     # Create output directory
                     output_dir = "gui_outputs/intent_recognition"
                     os.makedirs(output_dir, exist_ok=True)
 
-                    # For each junction, run intent recognition
                     intent_results = {}
+                    n_junctions = len(st.session_state.junctions)
 
-                    progress_bar = st.progress(0)
-                    status_text = st.empty()
+                    with st.status(f"Running intent recognition on {n_junctions} junctions...", expanded=False) as status:
+                        for junction_idx, junction in enumerate(st.session_state.junctions):
+                            status.update(label=f"Analyzing junction {junction_idx + 1}/{n_junctions}...")
 
-                    for junction_idx, junction in enumerate(st.session_state.junctions):
-                        status_text.text(f"Analyzing junction {junction_idx + 1}/{len(st.session_state.junctions)}...")
+                            try:
+                                junction_output = os.path.join(output_dir, f"junction_{junction_idx}")
+                                os.makedirs(junction_output, exist_ok=True)
 
-                        try:
-                            # Create junction output directory
-                            junction_output = os.path.join(output_dir, f"junction_{junction_idx}")
-                            os.makedirs(junction_output, exist_ok=True)
+                                # Try to load existing branch assignments from previous Discover analysis
+                                assignments_df = None
+                                centers = None
 
-                            # Try to load existing branch assignments from previous Discover analysis
-                            assignments_df = None
-                            centers = None
+                                if st.session_state.analysis_results and 'branches' in st.session_state.analysis_results:
+                                    branch_results = st.session_state.analysis_results['branches']
+                                    junction_key = f"junction_{junction_idx}"
 
-                            # Check if we have results from a previous analysis
-                            if st.session_state.analysis_results and 'branches' in st.session_state.analysis_results:
-                                branch_results = st.session_state.analysis_results['branches']
-                                junction_key = f"junction_{junction_idx}"
+                                    if junction_key in branch_results:
+                                        assignments_df = branch_results[junction_key].get('assignments')
+                                        centers = branch_results[junction_key].get('centers')
 
-                                if junction_key in branch_results:
-                                    assignments_df = branch_results[junction_key].get('assignments')
-                                    centers = branch_results[junction_key].get('centers')
+                                # If no existing assignments, run discovery
+                                if assignments_df is None:
+                                    r_outer = st.session_state.junction_r_outer.get(junction_idx, 50.0)
 
-                                    if assignments_df is not None:
-                                        st.info(f"📋 Using existing branch assignments from previous Discover analysis for Junction {junction_idx}")
+                                    assignments_df, summary_df, centers = discover_branches(
+                                        trajectories=st.session_state.trajectories,
+                                        junction=junction,
+                                        k=3,
+                                        decision_mode="hybrid",
+                                        r_outer=r_outer,
+                                        path_length=100.0,
+                                        epsilon=0.05,
+                                        cluster_method="auto",
+                                        out_dir=junction_output
+                                    )
 
-                            # If no existing assignments, run discovery
-                            if assignments_df is None:
-                                st.warning(f"⚠️ No existing branch assignments found for Junction {junction_idx}")
-                                st.info(f"🔍 Running branch discovery with default parameters...")
-                                st.info("💡 **Tip:** Run 'Discover Branches' analysis first to control clustering parameters!")
+                                valid_assignments = assignments_df[assignments_df['branch'] >= 0]
 
-                                r_outer = st.session_state.junction_r_outer.get(junction_idx, 50.0)
+                                if len(valid_assignments) < 10:
+                                    intent_results[f"junction_{junction_idx}"] = {
+                                        'error': 'insufficient_data',
+                                        'n_valid_trajectories': len(valid_assignments)
+                                    }
+                                    continue
 
-                                # Run branch discovery with default parameters
-                                assignments_df, summary_df, centers = discover_branches(
+                                results = analyze_intent_recognition(
                                     trajectories=st.session_state.trajectories,
                                     junction=junction,
-                                    k=3,
-                                    decision_mode="hybrid",
-                                    r_outer=r_outer,
-                                    path_length=100.0,
-                                    epsilon=0.05,
-                                    cluster_method="auto",
-                                    out_dir=junction_output
+                                    actual_branches=assignments_df,
+                                    output_dir=junction_output,
+                                    prediction_distances=intent_params['prediction_distances'],
+                                    previous_choices=None
                                 )
 
-                            # Filter valid branches (>= 0)
-                            valid_assignments = assignments_df[assignments_df['branch'] >= 0]
+                                intent_results[f"junction_{junction_idx}"] = results
 
-                            if len(valid_assignments) < 10:
-                                st.warning(f"⚠️ Junction {junction_idx}: Insufficient valid trajectories ({len(valid_assignments)}). Skipping intent analysis.")
+                            except Exception as e:
                                 intent_results[f"junction_{junction_idx}"] = {
-                                    'error': 'insufficient_data',
-                                    'n_valid_trajectories': len(valid_assignments)
+                                    'error': str(e),
+                                    'error_type': type(e).__name__
                                 }
-                                continue
 
-                            # Count unique branches
-                            n_branches = len(assignments_df[assignments_df['branch'] >= 0]['branch'].unique())
-                            st.success(f"✅ Using {n_branches} branches with {len(valid_assignments)} valid trajectories")
-
-                            # Run intent recognition
-                            st.info(f"🤖 Training intent recognition models...")
-
-                            results = analyze_intent_recognition(
-                                trajectories=st.session_state.trajectories,
-                                junction=junction,
-                                actual_branches=assignments_df,
-                                output_dir=junction_output,
-                                prediction_distances=intent_params['prediction_distances'],
-                                previous_choices=None  # TODO: Could add multi-junction support
-                            )
-
-                            if 'error' in results:
-                                st.error(f"❌ Junction {junction_idx}: {results['error']}")
-                                intent_results[f"junction_{junction_idx}"] = results
-                            else:
-                                st.success(f"✅ Junction {junction_idx}: Intent recognition complete!")
-
-                                # Display quick summary
-                                models_trained = results['training_results'].get('models_trained', {})
-                                if models_trained:
-                                    avg_acc = np.mean([m['cv_mean_accuracy'] for m in models_trained.values()])
-                                    st.metric(f"Junction {junction_idx} Avg Accuracy", f"{avg_acc:.1%}")
-
-                                intent_results[f"junction_{junction_idx}"] = results
-
-                        except Exception as e:
-                            st.error(f"❌ Junction {junction_idx} failed: {str(e)}")
-                            intent_results[f"junction_{junction_idx}"] = {
-                                'error': str(e),
-                                'error_type': type(e).__name__
-                            }
-
-                        progress_bar.progress((junction_idx + 1) / len(st.session_state.junctions))
-
-                    status_text.text("✅ Intent recognition analysis complete!")
-                    progress_bar.empty()
+                        n_success = sum(1 for v in intent_results.values() if 'error' not in v)
+                        if n_success > 0:
+                            status.update(label=f"Intent recognition complete ({n_success}/{n_junctions} junctions)", state="complete")
+                        else:
+                            status.update(label="Intent recognition failed for all junctions", state="error")
 
                     # Store results
                     if st.session_state.analysis_results is None:
@@ -4423,7 +3839,7 @@ class VERTAGUI:
                                           if 'error' not in v]
 
                     if successful_junctions:
-                        st.success(f"✅ Successfully analyzed {len(successful_junctions)}/{len(st.session_state.junctions)} junctions")
+                        st.success(f"Successfully analyzed {len(successful_junctions)}/{len(st.session_state.junctions)} junctions")
 
                         # Create summary table
                         summary_data = []
@@ -4455,28 +3871,57 @@ class VERTAGUI:
                         else:
                             st.warning("🔴 **Moderate Predictability**: Behavior is variable. Consider per-user models or additional features.")
                     else:
-                        st.error("❌ Intent recognition failed for all junctions")
+                        st.error("Intent recognition failed for all junctions")
 
-                    st.info(f"📁 Detailed results saved to: {output_dir}")
+                    # Show skipped/failed junctions
+                    failed_junctions = {k: v for k, v in intent_results.items() if 'error' in v}
+                    if failed_junctions:
+                        with st.expander(f"Skipped/failed junctions ({len(failed_junctions)})"):
+                            for jk, jv in failed_junctions.items():
+                                label = jk.replace('junction_', 'J')
+                                err = jv.get('error', 'unknown')
+                                if err == 'insufficient_data':
+                                    n_valid = jv.get('n_valid_trajectories', 0)
+                                    st.write(f"**{label}**: insufficient data ({n_valid} valid trajectories, need ≥ 10)")
+                                else:
+                                    st.write(f"**{label}**: {err}")
 
                     # Generate CLI command for easy copying
-                    # Build results dict for CLI command generation
+                    # Pull discover params from session state so CLI matches the actual analysis
+                    disc_mode = "hybrid"
+                    disc_path_length = 100.0
+                    disc_epsilon = 0.015
+                    disc_linger = 5.0
+                    disc_cluster_method = cluster_method
+                    disc_cluster_params = cluster_params
+                    disc_seed = seed
+                    if st.session_state.analysis_results and "branches" in st.session_state.analysis_results:
+                        for _jk, _bd in st.session_state.analysis_results["branches"].items():
+                            if isinstance(_bd, dict):
+                                disc_mode = _bd.get("decision_mode", disc_mode)
+                                disc_path_length = _bd.get("path_length", disc_path_length)
+                                disc_epsilon = _bd.get("epsilon", disc_epsilon)
+                                disc_linger = _bd.get("linger_delta", disc_linger)
+                                disc_cluster_method = _bd.get("cluster_method", disc_cluster_method)
+                                disc_seed = _bd.get("seed", disc_seed)
+                                break
+
                     intent_results_dict = {}
                     for i, junction in enumerate(st.session_state.junctions):
                         junction_key = f"junction_{i}"
                         intent_results_dict[junction_key] = {
                             "junction": junction,
                             "r_outer": st.session_state.junction_r_outer.get(i, 50.0),
-                            "decision_mode": decision_mode,
-                            "path_length": decision_params.get("path_length", 100.0) if decision_params else 100.0,
-                            "epsilon": decision_params.get("epsilon", 0.05) if decision_params else 0.05,
-                            "linger_delta": decision_params.get("linger_delta", 5.0) if decision_params else 5.0,
+                            "decision_mode": disc_mode,
+                            "path_length": disc_path_length,
+                            "epsilon": disc_epsilon,
+                            "linger_delta": disc_linger,
                             "prediction_distances": intent_params.get('prediction_distances', [100.0, 75.0, 50.0, 25.0]),
                             "model_type": intent_params.get('model_type', 'random_forest'),
                             "cv_folds": intent_params.get('cv_folds', 5),
                             "test_split": intent_params.get('test_split', 0.2),
                         }
-                    self.generate_cli_command("intent", intent_results_dict, cluster_method, cluster_params, decision_mode, decision_params)
+                    self.generate_cli_command("intent", intent_results_dict, disc_cluster_method, disc_cluster_params, disc_mode, decision_params, seed=disc_seed)
 
                 elif analysis_type == "enhanced":
                     # Run enhanced analysis for evacuation planning and risk assessment
@@ -4532,8 +3977,8 @@ class VERTAGUI:
                         st.session_state.analysis_results = {}
                     st.session_state.analysis_results["enhanced"] = enhanced_results
 
-                #st.success(f"✅ {analysis_type.capitalize()} analysis completed!")
-                #st.rerun()
+                    st.success(f"✅ Enhanced analysis completed successfully!")
+                    self.generate_cli_command("enhanced", enhanced_results, cluster_method, cluster_params, discover_decision_mode, decision_params, seed=seed)
 
         except Exception as e:
             st.error(f"❌ Analysis failed: {str(e)}")
@@ -4553,116 +3998,117 @@ class VERTAGUI:
             "efficiency_metrics": {}
         }
 
-        # 1. Evacuation Analysis - Identify bottlenecks and optimal routes
-        st.info("🚨 Running evacuation analysis...")
-        evacuation_results = self._analyze_evacuation_patterns(
-            trajectories, chain_df, junctions, r_outer_list, centers_list
-        )
-        results["evacuation_analysis"] = evacuation_results
+        with st.status("Running enhanced analysis...", expanded=False) as status:
+            # 1. Evacuation Analysis
+            status.update(label="Running evacuation analysis...")
+            evacuation_results = self._analyze_evacuation_patterns(
+                trajectories, chain_df, junctions, r_outer_list, centers_list
+            )
+            results["evacuation_analysis"] = evacuation_results
 
-        # 2. Generate Recommendations
-        st.info("💡 Generating recommendations...")
-        recommendations = self._generate_recommendations(evacuation_results, chain_df, junctions)
-        results["recommendations"] = recommendations
+            # 2. Generate Recommendations
+            status.update(label="Generating recommendations...")
+            recommendations = self._generate_recommendations(evacuation_results, chain_df, junctions)
+            results["recommendations"] = recommendations
 
-        # 3. Risk Assessment
-        st.info("⚠️ Assessing risks...")
-        risk_results = self._assess_risks(trajectories, chain_df, junctions, r_outer_list)
-        results["risk_assessment"] = risk_results
+            # 3. Risk Assessment
+            status.update(label="Assessing risks...")
+            risk_results = self._assess_risks(trajectories, chain_df, junctions, r_outer_list)
+            results["risk_assessment"] = risk_results
 
-        # 4. Efficiency Metrics
-        st.info("📊 Computing efficiency metrics...")
-        efficiency_results = self._compute_efficiency_metrics(trajectories, chain_df, junctions, r_outer_list)
-        results["efficiency_metrics"] = efficiency_results
+            # 4. Efficiency Metrics
+            status.update(label="Computing efficiency metrics...")
+            efficiency_results = self._compute_efficiency_metrics(trajectories, chain_df, junctions, r_outer_list)
+            results["efficiency_metrics"] = efficiency_results
 
-        # Save enhanced analysis results to CSV files
-        try:
-            enhanced_data_dir = os.path.join("gui_outputs", "enhanced_analysis")
-            os.makedirs(enhanced_data_dir, exist_ok=True)
+            # Save enhanced analysis results to CSV files
+            status.update(label="Saving results...")
+            saved_files = []
+            try:
+                enhanced_data_dir = os.path.join("gui_outputs", "enhanced_analysis")
+                os.makedirs(enhanced_data_dir, exist_ok=True)
 
-            # Save evacuation analysis results
-            if evacuation_results["bottlenecks"]:
-                bottlenecks_df = pd.DataFrame(evacuation_results["bottlenecks"])
-                bottlenecks_file = os.path.join(enhanced_data_dir, "evacuation_bottlenecks.csv")
-                bottlenecks_df.to_csv(bottlenecks_file, index=False)
-                st.info(f"📁 Evacuation bottlenecks saved to: {bottlenecks_file}")
+                if evacuation_results["bottlenecks"]:
+                    bottlenecks_df = pd.DataFrame(evacuation_results["bottlenecks"])
+                    bottlenecks_file = os.path.join(enhanced_data_dir, "evacuation_bottlenecks.csv")
+                    bottlenecks_df.to_csv(bottlenecks_file, index=False)
+                    saved_files.append(bottlenecks_file)
 
-            if evacuation_results["optimal_routes"]:
-                optimal_routes_df = pd.DataFrame(evacuation_results["optimal_routes"])
-                optimal_routes_file = os.path.join(enhanced_data_dir, "optimal_routes.csv")
-                optimal_routes_df.to_csv(optimal_routes_file, index=False)
-                st.info(f"📁 Optimal routes saved to: {optimal_routes_file}")
+                if evacuation_results["optimal_routes"]:
+                    optimal_routes_df = pd.DataFrame(evacuation_results["optimal_routes"])
+                    optimal_routes_file = os.path.join(enhanced_data_dir, "optimal_routes.csv")
+                    optimal_routes_df.to_csv(optimal_routes_file, index=False)
+                    saved_files.append(optimal_routes_file)
 
-            # Save flow analysis results
-            if evacuation_results["flow_analysis"]:
-                flow_data = []
-                for junction_key, flow_info in evacuation_results["flow_analysis"].items():
-                    flow_data.append({
-                        "junction": junction_key,
-                        "total_trajectories": flow_info["total_trajectories"],
-                        "entropy": flow_info["entropy"],
-                        "branch_distribution": str(flow_info["branch_distribution"])
-                    })
-                flow_df = pd.DataFrame(flow_data)
-                flow_file = os.path.join(enhanced_data_dir, "flow_analysis.csv")
-                flow_df.to_csv(flow_file, index=False)
-                st.info(f"📁 Flow analysis saved to: {flow_file}")
-
-            # Save recommendations
-            if recommendations:
-                recommendations_df = pd.DataFrame(recommendations)
-                recommendations_file = os.path.join(enhanced_data_dir, "recommendations.csv")
-                recommendations_df.to_csv(recommendations_file, index=False)
-                st.info(f"📁 Recommendations saved to: {recommendations_file}")
-
-            # Save risk assessment results
-            if risk_results["high_risk_junctions"]:
-                risk_df = pd.DataFrame(risk_results["high_risk_junctions"])
-                risk_file = os.path.join(enhanced_data_dir, "risk_assessment.csv")
-                risk_df.to_csv(risk_file, index=False)
-                st.info(f"📁 Risk assessment saved to: {risk_file}")
-
-            # Save efficiency metrics
-            if efficiency_results:
-                efficiency_data = []
-                for metric_name, metric_value in efficiency_results.items():
-                    if isinstance(metric_value, dict):
-                        for key, value in metric_value.items():
-                            efficiency_data.append({
-                                "metric_category": metric_name,
-                                "metric_name": key,
-                                "value": value
-                            })
-                    else:
-                        efficiency_data.append({
-                            "metric_category": "overall",
-                            "metric_name": metric_name,
-                            "value": metric_value
+                if evacuation_results["flow_analysis"]:
+                    flow_data = []
+                    for junction_key, flow_info in evacuation_results["flow_analysis"].items():
+                        flow_data.append({
+                            "junction": junction_key,
+                            "total_trajectories": flow_info["total_trajectories"],
+                            "entropy": flow_info["entropy"],
+                            "branch_distribution": str(flow_info["branch_distribution"])
                         })
+                    flow_df = pd.DataFrame(flow_data)
+                    flow_file = os.path.join(enhanced_data_dir, "flow_analysis.csv")
+                    flow_df.to_csv(flow_file, index=False)
+                    saved_files.append(flow_file)
 
-                if efficiency_data:
-                    efficiency_df = pd.DataFrame(efficiency_data)
-                    efficiency_file = os.path.join(enhanced_data_dir, "efficiency_metrics.csv")
-                    efficiency_df.to_csv(efficiency_file, index=False)
-                    st.info(f"📁 Efficiency metrics saved to: {efficiency_file}")
+                if recommendations:
+                    recommendations_df = pd.DataFrame(recommendations)
+                    recommendations_file = os.path.join(enhanced_data_dir, "recommendations.csv")
+                    recommendations_df.to_csv(recommendations_file, index=False)
+                    saved_files.append(recommendations_file)
 
-            # Save overall enhanced analysis summary
-            summary_data = {
-                "overall_risk_score": risk_results.get("overall_risk_score", 0),
-                "total_bottlenecks": len(evacuation_results["bottlenecks"]),
-                "total_optimal_routes": len(evacuation_results["optimal_routes"]),
-                "total_recommendations": len(recommendations),
-                "high_risk_junctions_count": len(risk_results.get("high_risk_junctions", [])),
-                "analysis_timestamp": pd.Timestamp.now().isoformat()
-            }
+                if risk_results["high_risk_junctions"]:
+                    risk_df = pd.DataFrame(risk_results["high_risk_junctions"])
+                    risk_file = os.path.join(enhanced_data_dir, "risk_assessment.csv")
+                    risk_df.to_csv(risk_file, index=False)
+                    saved_files.append(risk_file)
 
-            summary_df = pd.DataFrame([summary_data])
-            summary_file = os.path.join(enhanced_data_dir, "enhanced_analysis_summary.csv")
-            summary_df.to_csv(summary_file, index=False)
-            st.info(f"📁 Enhanced analysis summary saved to: {summary_file}")
+                if efficiency_results:
+                    efficiency_data = []
+                    for metric_name, metric_value in efficiency_results.items():
+                        if isinstance(metric_value, dict):
+                            for key, value in metric_value.items():
+                                efficiency_data.append({
+                                    "metric_category": metric_name,
+                                    "metric_name": key,
+                                    "value": value
+                                })
+                        else:
+                            efficiency_data.append({
+                                "metric_category": "overall",
+                                "metric_name": metric_name,
+                                "value": metric_value
+                            })
 
-        except Exception as e:
-            st.warning(f"⚠️ Could not save enhanced analysis files: {e}")
+                    if efficiency_data:
+                        efficiency_df = pd.DataFrame(efficiency_data)
+                        efficiency_file = os.path.join(enhanced_data_dir, "efficiency_metrics.csv")
+                        efficiency_df.to_csv(efficiency_file, index=False)
+                        saved_files.append(efficiency_file)
+
+                summary_data = {
+                    "overall_risk_score": risk_results.get("overall_risk_score", 0),
+                    "total_bottlenecks": len(evacuation_results["bottlenecks"]),
+                    "total_optimal_routes": len(evacuation_results["optimal_routes"]),
+                    "total_recommendations": len(recommendations),
+                    "high_risk_junctions_count": len(risk_results.get("high_risk_junctions", [])),
+                    "analysis_timestamp": pd.Timestamp.now().isoformat()
+                }
+
+                summary_df = pd.DataFrame([summary_data])
+                summary_file = os.path.join(enhanced_data_dir, "enhanced_analysis_summary.csv")
+                summary_df.to_csv(summary_file, index=False)
+                saved_files.append(summary_file)
+
+                st.write(f"Saved {len(saved_files)} files to `{enhanced_data_dir}/`")
+
+            except Exception as e:
+                st.warning(f"Could not save enhanced analysis files: {e}")
+
+            status.update(label="Enhanced analysis complete", state="complete")
 
         return results
 
@@ -5858,9 +5304,6 @@ class VERTAGUI:
         sample_has_physio = has_physio_data(sample_traj)
         sample_has_vr = has_vr_headset_data(sample_traj)
 
-        st.write(f"- Debug _check_for_gaze_data: has_gaze={has_gaze}, has_physio={has_physio}, has_vr_headset={has_vr}")
-        st.write(f"- Sample trajectory (first): has_gaze={sample_has_gaze}, has_physio={sample_has_physio}, has_vr_headset={sample_has_vr}")
-
         return has_gaze or has_physio or has_vr
 
 
@@ -5952,14 +5395,6 @@ class VERTAGUI:
             from verta.verta_data_loader import has_gaze_data as _has_gaze, has_physio_data as _has_physio
             filtered_trajectories = [t for t in trajectories if (_has_gaze(t) or _has_physio(t))]
 
-            st.info(f"🔍 **Trajectory Filtering in Analysis:**")
-            st.write(f"- Total trajectories: {len(trajectories)}")
-            st.write(f"- Trajectories with gaze/physio data: {len(filtered_trajectories)}")
-
-            if len(filtered_trajectories) < len(trajectories):
-                skipped_count = len(trajectories) - len(filtered_trajectories)
-                st.info(f"ℹ️ Skipped {skipped_count} trajectories without gaze/physiological data")
-
             if not filtered_trajectories:
                 st.warning("⚠️ No trajectories with gaze/physiological data found")
                 return None
@@ -5973,34 +5408,7 @@ class VERTAGUI:
         # Check if we have standard gaze data first
         has_gaze_data = self._check_for_gaze_data(trajectories)
 
-        # Debug: Show which code path is being used
-        st.info(f"🔍 **Gaze Analysis Code Path Debug:**")
-        st.write(f"- Has gaze data: {has_gaze_data}")
-        st.write(f"- Column mappings provided: {bool(column_mappings)}")
-        if column_mappings:
-            st.write(f"- Column mappings: {list(column_mappings.keys())}")
-
-        # Debug: Check what data is actually available in trajectories
-        if trajectories:
-            sample_traj = trajectories[0]
-            st.write(f"**Sample trajectory data availability:**")
-            st.write(f"- head_forward_x: {hasattr(sample_traj, 'head_forward_x') and sample_traj.head_forward_x is not None}")
-            st.write(f"- head_forward_z: {hasattr(sample_traj, 'head_forward_z') and sample_traj.head_forward_z is not None}")
-            st.write(f"- gaze_x: {hasattr(sample_traj, 'gaze_x') and sample_traj.gaze_x is not None}")
-            st.write(f"- gaze_y: {hasattr(sample_traj, 'gaze_y') and sample_traj.gaze_y is not None}")
-            st.write(f"- pupil_l: {hasattr(sample_traj, 'pupil_l') and sample_traj.pupil_l is not None}")
-            st.write(f"- pupil_r: {hasattr(sample_traj, 'pupil_r') and sample_traj.pupil_r is not None}")
-            st.write(f"- heart_rate: {hasattr(sample_traj, 'heart_rate') and sample_traj.heart_rate is not None}")
-
-            if hasattr(sample_traj, 'pupil_l') and sample_traj.pupil_l is not None:
-                st.write(f"- pupil_l length: {len(sample_traj.pupil_l)}")
-                st.write(f"- pupil_l sample: {sample_traj.pupil_l[:5] if len(sample_traj.pupil_l) > 5 else sample_traj.pupil_l}")
-            if hasattr(sample_traj, 'heart_rate') and sample_traj.heart_rate is not None:
-                st.write(f"- heart_rate length: {len(sample_traj.heart_rate)}")
-                st.write(f"- heart_rate sample: {sample_traj.heart_rate[:5] if len(sample_traj.heart_rate) > 5 else sample_traj.heart_rate}")
-
         if has_gaze_data:
-            st.write("**→ Using comprehensive gaze analysis (with enhanced debugging)**")
             # Apply scaling to trajectories AND junction if needed
             if scale_factor != 1.0:
                 st.info(f"🔧 Applying scale factor {scale_factor} to trajectory coordinates and junction...")
@@ -6050,7 +5458,7 @@ class VERTAGUI:
             )
 
         elif column_mappings:
-            st.write("**→ Using custom gaze analysis (with column mappings)**")
+            
             # Use custom gaze analysis with column mappings
             gaze_data = self._perform_custom_gaze_analysis(
                 trajectories, junction, r_outer, decision_mode, path_length, epsilon, out_dir, column_mappings, scale_factor=1.0
@@ -6065,7 +5473,7 @@ class VERTAGUI:
             )
 
             if has_any_physio:
-                st.write("**→ Using physiological-only analysis (incomplete gaze data)**")
+                
                 # Try to perform analysis with whatever physiological data we have
                 return self._perform_comprehensive_gaze_analysis(
                     trajectories=trajectories,
@@ -6082,67 +5490,12 @@ class VERTAGUI:
                 st.error("❌ No gaze data, physiological data, or column mappings available")
             return None
 
-        # Debug: Check trajectory types
-        st.info(f"🔍 **Trajectory Type Debug:**")
-        if trajectories:
-            sample_traj = trajectories[0]
-            st.write(f"- Sample trajectory type: {type(sample_traj).__name__}")
-            st.write(f"- Sample trajectory ID: {sample_traj.tid}")
-            st.write(f"- Has gaze_x: {hasattr(sample_traj, 'gaze_x') and sample_traj.gaze_x is not None}")
-            st.write(f"- Has heart_rate: {hasattr(sample_traj, 'heart_rate') and sample_traj.heart_rate is not None}")
-            st.write(f"- Has pupil_l: {hasattr(sample_traj, 'pupil_l') and sample_traj.pupil_l is not None}")
-
-        # CRITICAL FIX: Use the same trajectory objects that were used for discover analysis
+        # Use the same trajectory objects that were used for discover analysis
         # to ensure trajectory IDs match between assignments and gaze analysis
         if "branches" in st.session_state.analysis_results and st.session_state.analysis_results["branches"]:
-            st.info("🔧 **Using trajectory objects from discover analysis to ensure ID consistency**")
-            # Use the original trajectories that were used for discover analysis
             discover_trajectories = st.session_state.trajectories
-            st.write(f"- Discover trajectories: {len(discover_trajectories)}")
-            st.write(f"- Gaze trajectories: {len(trajectories)}")
 
-            # DEBUG: Check coordinate ranges
-            if discover_trajectories and trajectories:
-                sample_discover = discover_trajectories[0]
-                sample_gaze = trajectories[0]
-                st.error("🔍 **COORDINATE SYSTEM DEBUG:**")
-                st.write(f"- Discover trajectory {sample_discover.tid}: X range {np.min(sample_discover.x):.1f} to {np.max(sample_discover.x):.1f}")
-
-                # Check if gaze trajectory has valid coordinates
-                if np.all(np.isnan(sample_gaze.x)):
-                    st.error(f"❌ **CRITICAL ISSUE:** Gaze trajectory {sample_gaze.tid} has ALL NaN coordinates!")
-                    st.write("**This explains why arrows are not visible - trajectory coordinates are invalid!**")
-                    st.write("**Root cause:** Gaze trajectories were loaded BEFORE NaN handling was added")
-
-                    # Show sample data for debugging
-                    st.write(f"**Sample gaze trajectory data:**")
-                    st.write(f"- X values: {sample_gaze.x[:5]} (first 5)")
-                    st.write(f"- Z values: {sample_gaze.z[:5]} (first 5)")
-                    st.write(f"- X type: {type(sample_gaze.x)}")
-                    st.write(f"- Z type: {type(sample_gaze.z)}")
-
-                    # Provide solution
-                    st.error("🔧 **SOLUTION:** Reload gaze data to apply NaN handling")
-                    st.write("**Steps to fix:**")
-                    st.write("1. Go to 'Data Loader' tab")
-                    st.write("2. Re-upload or reload your gaze trajectory files")
-                    st.write("3. The new NaN handling will clean the coordinate data")
-                    st.write("4. Run gaze analysis again")
-                else:
-                    st.write(f"- Gaze trajectory {sample_gaze.tid}: X range {np.min(sample_gaze.x):.1f} to {np.max(sample_gaze.x):.1f}")
-
-                    # Check if coordinates are in the same scale
-                    discover_scale = np.max(sample_discover.x) / np.max(sample_gaze.x) if np.max(sample_gaze.x) > 0 else 1
-                    st.write(f"- Coordinate scale ratio (discover/gaze): {discover_scale:.2f}")
-                    if abs(discover_scale - 1.0) > 0.1:
-                        st.error(f"❌ **COORDINATE MISMATCH DETECTED!** Scale ratio: {discover_scale:.2f}")
-                        st.write("**This explains why arrows are not visible - they're in different coordinate systems!**")
-
-                st.write(f"- Junction coordinates: ({junction.cx}, {junction.cz})")
-
-            # Check if we can convert discover trajectories to Trajectory objects
             if True:
-                st.write("🔄 Using unified Trajectory objects (IDs already consistent)...")
                 # Create a mapping from trajectory ID to trajectories currently loaded
                 gaze_traj_map = {gt.tid: gt for gt in trajectories}
                 # Create a mapping for discover trajectories to allow coordinate repair when needed
@@ -6316,40 +5669,26 @@ class VERTAGUI:
         import numpy as np
         from verta.verta_gaze import compute_head_yaw_at_decisions, analyze_physiological_at_junctions, analyze_pupil_dilation_trajectory
 
-        st.info("🔍 **Performing comprehensive gaze analysis for all junctions...**")
-
         # First check if we have existing branch assignments from previous discover analysis
         existing_assignments = None
         use_existing_assignments = False
 
         if "branches" in st.session_state.analysis_results:
-            st.info("🔍 Found existing branch assignments from previous discover analysis!")
 
             # Try to get chain_decisions (contains all junctions' assignments)
             if "chain_decisions" in st.session_state.analysis_results["branches"]:
                 existing_assignments = st.session_state.analysis_results["branches"]["chain_decisions"]
-                st.write(f"🔍 **Chain decisions shape:** {existing_assignments.shape}")
-                st.write(f"🔍 **Chain decisions columns:** {list(existing_assignments.columns)}")
 
-                # Debug: Check what type of data we're getting
                 if 'junction_index' in existing_assignments.columns:
                     st.error("❌ **ERROR: Found junction_index column in chain_decisions - this is decision points data, not branch assignments!**")
-                    st.write("🔍 **This means the wrong data was stored as chain_decisions**")
-                else:
-                    st.success("✅ **No junction_index column found - this looks like proper branch assignments**")
 
                 # Check if we have assignments for all junctions
                 branch_cols = [col for col in existing_assignments.columns if col.startswith('branch_j')]
-                st.write(f"🔍 **Found branch columns:** {branch_cols}")
 
-                # If no branch_j columns found, check if we have junction_index column
                 if len(branch_cols) == 0 and 'junction_index' in existing_assignments.columns:
-                    st.info("🔍 **Found junction_index column - this appears to be decision points data, not branch assignments**")
-                    st.write("**Solution:** Run '🔍 Discover Branches' analysis first to create proper branch assignments")
                     existing_assignments = None
                 elif len(branch_cols) >= len(junctions):
                     use_existing_assignments = True
-                    st.success(f"✅ **Found assignments for all {len(junctions)} junctions!**")
                 else:
                     st.warning(f"⚠️ **Only found assignments for {len(branch_cols)} junctions, but have {len(junctions)} junctions**")
                     existing_assignments = None
@@ -6360,17 +5699,10 @@ class VERTAGUI:
             # For multi-junction analysis, we'll pass decision points separately to each gaze function
             # This avoids the complex merging issues with junction-specific data
             decisions_chain_df = st.session_state.analysis_results.get("branches", {}).get("decision_points")
-            if decisions_chain_df is not None and len(decisions_chain_df) > 0:
-                st.info("🔗 **Found decision points - will use precomputed intercept coordinates**")
-                st.write(f"🔍 **Decision points available:** {len(decisions_chain_df)} records")
-            else:
+            if decisions_chain_df is None or len(decisions_chain_df) == 0:
                 st.warning("⚠️ **No decision points found in session state - will calculate from scratch**")
-
-            st.success(f"✅ Using existing assignments - found {len(chain_df)} assignments")
-            st.info(f"🔍 **GAZE ANALYSIS PATH:** Using existing assignments from previous discover analysis")
         else:
-            st.error("❌ **No existing assignments found!**")
-            st.write("**Solution:** Run '🔍 Discover Branches' analysis first to create proper assignments")
+            st.error("❌ **No existing assignments found!** Run 'Discover Branches' analysis first.")
             return {
                 'head_yaw': pd.DataFrame(),
                 'physiological': pd.DataFrame(),
@@ -6413,19 +5745,14 @@ class VERTAGUI:
         # Merge decision points with assignments for each junction to avoid multi-junction merging issues
         chain_df_with_decisions = chain_df.copy()
         if decisions_chain_df is not None and len(decisions_chain_df) > 0:
-            st.info("🔗 **Merging decision points with assignments per junction...**")
             try:
                 from verta.verta_consistency import normalize_assignments
 
                 # For each junction, merge its decision points
                 # Ensure junction_index is numeric for comparison (do this once outside the loop)
                 decisions_df_numeric = decisions_chain_df.copy()
-                st.write(f"🔍 **Debug: Original junction_index values:** {decisions_df_numeric['junction_index'].unique()[:10]}")
-                st.write(f"🔍 **Debug: Original junction_index types:** {[type(x) for x in decisions_df_numeric['junction_index'].unique()[:5]]}")
 
                 decisions_df_numeric["junction_index"] = pd.to_numeric(decisions_df_numeric["junction_index"], errors='coerce')
-                st.write(f"🔍 **Debug: After conversion junction_index values:** {decisions_df_numeric['junction_index'].unique()[:10]}")
-                st.write(f"🔍 **Debug: NaN count after conversion:** {decisions_df_numeric['junction_index'].isna().sum()}")
 
                 for junction_idx in range(len(junctions)):
                     # Filter decision points for this junction
@@ -6434,13 +5761,6 @@ class VERTAGUI:
                     if len(junction_decisions) > 0:
                         # Remove junction_index column to avoid filtering conflicts in normalize_assignments
                         junction_decisions_clean = junction_decisions.drop(columns=['junction_index']).copy()
-
-                        # Debug: Check trajectory ID types
-                        st.write(f"🔍 **Debug Junction {junction_idx}:**")
-                        st.write(f"- Chain_df trajectory types: {[type(x) for x in chain_df['trajectory'].unique()[:5]]}")
-                        st.write(f"- Junction_decisions trajectory types: {[type(x) for x in junction_decisions_clean['trajectory'].unique()[:5]]}")
-                        st.write(f"- Chain_df trajectory values: {chain_df['trajectory'].unique()[:5]}")
-                        st.write(f"- Junction_decisions trajectory values: {junction_decisions_clean['trajectory'].unique()[:5]}")
 
                         # Normalize assignments for this junction
                         chain_df_normalized, norm_report = normalize_assignments(
@@ -6465,22 +5785,12 @@ class VERTAGUI:
                 # Check if any decision points were merged
                 decision_cols_merged = [col for col in chain_df_with_decisions.columns if col.startswith('decision_idx_')]
                 if decision_cols_merged:
-                    st.success(f"✅ **Successfully merged decision points for {len(decision_cols_merged)} junctions**")
-
-                    # Debug: Show coverage of decision points
-                    for col in decision_cols_merged:
-                        junction_num = col.split('_')[-1]
-                        non_null_count = chain_df_with_decisions[col].notna().sum()
-                        total_count = len(chain_df_with_decisions)
-                        st.write(f"🔍 **Junction {junction_num}:** {non_null_count}/{total_count} trajectories have precomputed decision points")
-
                     chain_df = chain_df_with_decisions
                 else:
                     st.warning("⚠️ **No decision points merged - will calculate from scratch**")
 
             except Exception as e:
                 st.warning(f"⚠️ **Could not merge decision points:** {e}")
-                st.write("**Will calculate decision points from scratch**")
 
         # Use the actual gaze analysis functions with proper assignments
         # Get decision mode and parameters from discover analysis if available
@@ -6499,12 +5809,10 @@ class VERTAGUI:
                     discover_epsilon = branch_data.get("epsilon", epsilon)
                     discover_linger_delta = branch_data.get("linger_delta", linger_delta)
                     discover_r_outer = branch_data.get("r_outer", discover_r_outer)
-                    st.info(f"🔧 **Using discover analysis parameters:** decision_mode={discover_decision_mode}, path_length={discover_path_length}, epsilon={discover_epsilon}, linger_delta={discover_linger_delta}, r_outer={discover_r_outer}")
                     break
 
         try:
-            st.info("🔬 Analyzing head yaw data for all junctions...")
-            with st.spinner("Processing head yaw data..."):
+            with st.spinner("Analyzing gaze data..."):
                 head_yaw_df = compute_head_yaw_at_decisions(
                     trajectories=processed_trajectories,
                     junctions=junctions,
@@ -6517,8 +5825,7 @@ class VERTAGUI:
                     base_index=0  # Start from 0 for all junctions
                 )
 
-            st.info("🔬 Analyzing physiological data for all junctions...")
-            with st.spinner("Processing physiological data..."):
+            with st.spinner("Analyzing physiological data..."):
                 physio_df = analyze_physiological_at_junctions(
                     trajectories=processed_trajectories,
                     junctions=junctions,
@@ -6532,8 +5839,7 @@ class VERTAGUI:
                     base_index=0,
                 )
 
-            st.info("🔬 Analyzing pupil dilation trajectories for all junctions...")
-            with st.spinner("Processing pupil dilation data..."):
+            with st.spinner("Analyzing pupil dilation data..."):
                 pupil_df = analyze_pupil_dilation_trajectory(
                     trajectories=processed_trajectories,
                     junctions=junctions,
@@ -6548,8 +5854,7 @@ class VERTAGUI:
                 )
 
             # Generate pupil dilation heatmaps for all junctions
-            st.info("🗺️ Generating pupil dilation heatmaps for all junctions...")
-            with st.spinner("Creating spatial heatmaps..."):
+            with st.spinner("Generating pupil dilation heatmaps..."):
                 from verta.verta_gaze import create_per_junction_pupil_heatmap
 
                 # Get heatmap parameters from session state
@@ -6566,21 +5871,6 @@ class VERTAGUI:
                     base_index=0  # Start from 0 for all junctions
                 )
 
-                st.write(f"🔍 **Generated heatmaps for {len(all_heatmaps)} junctions**")
-
-            # Debug: Show results summary
-            st.info(f"🔍 **Gaze Analysis Results Summary:**")
-            st.write(f"- Head yaw records: {len(head_yaw_df)}")
-            st.write(f"- Physiological records: {len(physio_df)}")
-            st.write(f"- Pupil dilation records: {len(pupil_df)}")
-            st.write(f"- Heatmaps generated: {len(all_heatmaps)}")
-
-            if len(head_yaw_df) > 0:
-                st.write(f"- Junctions with head yaw data: {sorted(head_yaw_df['junction'].unique())}")
-            if len(physio_df) > 0:
-                st.write(f"- Junctions with physiological data: {sorted(physio_df['junction'].unique())}")
-            if len(pupil_df) > 0:
-                st.write(f"- Junctions with pupil data: {sorted(pupil_df['junction'].unique())}")
 
             return {
                 'head_yaw': head_yaw_df,
@@ -6593,8 +5883,6 @@ class VERTAGUI:
 
         except Exception as e:
             st.error(f"❌ **Gaze analysis failed:** {e}")
-            st.write(f"**Error type:** {type(e).__name__}")
-            st.write(f"**Error message:** {str(e)}")
 
             # Show suggestions based on error type
             if "No assignments found" in str(e):
@@ -6618,9 +5906,6 @@ class VERTAGUI:
         import numpy as np
         from verta.verta_decisions import discover_decision_chain
 
-        # Debug: Check r_outer parameter at function start
-        st.write(f"🔍 **DEBUG: r_outer parameter received:** {r_outer} (type: {type(r_outer)})")
-
         # Get decision mode and parameters from discover analysis if available
         discover_decision_mode = decision_mode  # Default fallback
         discover_path_length = path_length
@@ -6635,7 +5920,6 @@ class VERTAGUI:
                     discover_path_length = branch_data.get("path_length", path_length)
                     discover_epsilon = branch_data.get("epsilon", epsilon)
                     discover_linger_delta = branch_data.get("linger_delta", linger_delta)
-                    st.info(f"🔧 **Using discover analysis parameters:** decision_mode={discover_decision_mode}, path_length={discover_path_length}, epsilon={discover_epsilon}")
                     break
 
         # Always define r_outer_list upfront to avoid unbound local errors later
@@ -6646,12 +5930,6 @@ class VERTAGUI:
         use_existing_assignments = False
 
         if "branches" in st.session_state.analysis_results:
-            st.info("🔍 Found existing branch assignments from previous discover analysis!")
-
-            # Debug: Show available keys
-            available_keys = list(st.session_state.analysis_results["branches"].keys())
-            st.write(f"🔍 **Available branch keys:** {available_keys}")
-            st.write(f"🔍 **Looking for junction:** ({junction.cx}, {junction.cz}, r={junction.r})")
 
             # First try to find junction-specific assignments (from recent discover analysis)
             junction_found = False
@@ -6659,14 +5937,8 @@ class VERTAGUI:
                 if junction_key.startswith("junction_") and isinstance(junction_data, dict):
                     junction_obj = junction_data.get("junction")
                     if junction_obj and junction_obj.cx == junction.cx and junction_obj.cz == junction.cz and junction_obj.r == junction.r:
-                        st.success(f"✅ **Found junction-specific assignments for {junction_key}!**")
                         assignments_df = junction_data.get("assignments")
                         if assignments_df is not None and not assignments_df.empty:
-                            st.write(f"🔍 **Assignments shape:** {assignments_df.shape}")
-                            st.write(f"🔍 **Assignments columns:** {list(assignments_df.columns)}")
-                            st.write(f"🔍 **Sample assignments:**")
-                            st.write(assignments_df.head())
-
                             existing_assignments = assignments_df
                             use_existing_assignments = True
                             junction_found = True
@@ -6676,10 +5948,7 @@ class VERTAGUI:
 
             # If no junction-specific assignments found, try chain_decisions as fallback
             if not junction_found and "chain_decisions" in st.session_state.analysis_results["branches"]:
-                st.info("🔍 **No junction-specific assignments found, trying chain_decisions as fallback**")
                 existing_assignments = st.session_state.analysis_results["branches"]["chain_decisions"]
-                st.write(f"🔍 **Chain decisions shape:** {existing_assignments.shape}")
-                st.write(f"🔍 **Chain decisions columns:** {list(existing_assignments.columns)}")
 
                 # Check if this junction has assignments in the chain decisions
                 try:
@@ -6689,18 +5958,11 @@ class VERTAGUI:
                     # Look for junction-specific branch column
                     branch_col = f"branch_j{junction_index}"
                     if branch_col in existing_assignments.columns:
-                        st.success(f"✅ **Found assignments for Junction {junction_index} in chain_decisions!**")
-                        st.write(f"🔍 **Branch column:** {branch_col}")
-
                         # Filter to only trajectories with assignments for this junction
                         assigned_mask = existing_assignments[branch_col].notna() & (existing_assignments[branch_col] >= 0)
                         junction_assignments = existing_assignments[assigned_mask].copy()
 
-                        st.write(f"🔍 **Junction {junction_index} assignments:** {len(junction_assignments)} trajectories")
                         if len(junction_assignments) > 0:
-                            st.write(f"🔍 **Sample assignments:**")
-                            st.write(junction_assignments[['trajectory', branch_col]].head())
-
                             # Set the found assignments
                             existing_assignments = junction_assignments
                             use_existing_assignments = True
@@ -6709,9 +5971,7 @@ class VERTAGUI:
                             existing_assignments = None
                     else:
                         st.warning(f"⚠️ **Branch column {branch_col} not found in chain_decisions**")
-                        st.write(f"Available branch columns: {[col for col in existing_assignments.columns if col.startswith('branch_j')]}")
                         existing_assignments = None
-                        found_key = None
 
                 except StopIteration:
                     st.warning("⚠️ **Could not find junction index in session state junctions**")
@@ -6725,28 +5985,10 @@ class VERTAGUI:
                 except Exception:
                     st.success("✅ **Using existing assignments**")
 
-                # Debug: Show sample of assignments data
-                st.write(f"🔍 **Sample assignments data:**")
-                if hasattr(existing_assignments, 'head'):
-                    st.write(existing_assignments.head())
-                st.write(f"🔍 **Assignments columns:** {list(existing_assignments.columns)}")
-
-                # Check if assignments have the expected structure
-                if 'branch' in existing_assignments.columns:
-                    assigned_count = existing_assignments['branch'].notna().sum()
-                    st.write(f"🔍 **Total assigned trajectories:** {assigned_count}")
-                elif any(col.startswith('branch_j') for col in existing_assignments.columns):
-                    branch_cols = [col for col in existing_assignments.columns if col.startswith('branch_j')]
-                    st.write(f"🔍 **Found branch columns:** {branch_cols}")
-                else:
-                    st.warning("⚠️ **Unexpected assignments structure**")
-
             # If no existing assignments found, we'll need to run discover analysis
             if existing_assignments is None:
-                st.info("🔍 **No existing assignments found - will run discover analysis**")
                 use_existing_assignments = False
         else:
-            st.info("🔍 **No existing branch assignments found - will run discover analysis**")
             use_existing_assignments = False
 
         # Use existing assignments if available and selected, otherwise run discover analysis
@@ -6765,31 +6007,6 @@ class VERTAGUI:
             use_existing_assignments = use_existing_assignments and user_wants_existing
             run_custom_discover = user_wants_custom
 
-        # Debug: Show what parameters are being used
-        st.info(f"🔍 **Parameter Source Debug:**")
-        st.write(f"- Using existing assignments: {use_existing_assignments}")
-        st.write(f"- Running custom discover: {run_custom_discover}")
-        if run_custom_discover and 'custom_discover_params' in st.session_state:
-            st.write(f"- Custom parameters available: {list(st.session_state.custom_discover_params.keys())}")
-            st.write(f"- Custom decision mode: {st.session_state.custom_discover_params.get('decision_mode', 'not set')}")
-
-            # Show actual parameter values being used
-            st.write("🔧 **Custom Parameters Being Used:**")
-            custom_params = st.session_state.custom_discover_params
-            for param_name, param_value in custom_params.items():
-                st.write(f"- {param_name}: {param_value}")
-
-            # Check if parameters might be too restrictive
-            st.write("🔍 **Parameter Restrictiveness Check:**")
-            if custom_params.get('eps', 0.5) < 1.0:
-                st.warning(f"⚠️ DBSCAN eps={custom_params.get('eps', 0.5)} might be too restrictive (try 1.0-2.0)")
-            if custom_params.get('min_samples', 5) > 3:
-                st.warning(f"⚠️ DBSCAN min_samples={custom_params.get('min_samples', 5)} might be too high (try 2-3)")
-            if custom_params.get('path_length', 100.0) > 50.0:
-                st.warning(f"⚠️ Path length={custom_params.get('path_length', 100.0)} might be too high (try 20-50)")
-        else:
-            st.write("- Using default parameters")
-
         if existing_assignments is not None and use_existing_assignments:
             # CRITICAL FIX: Ensure we're using the correct junction-specific assignments
             # If we're using chain_decisions, we need to extract the specific junction's assignments
@@ -6797,8 +6014,6 @@ class VERTAGUI:
                 # This is the chain_decisions DataFrame - extract junction-specific assignments
                 junction_index = next(i for i, j in enumerate(st.session_state.junctions)
                                     if j.cx == junction.cx and j.cz == junction.cz and j.r == junction.r)
-
-                st.info(f"🔧 **Extracting Junction {junction_index} assignments from chain_decisions...**")
 
                 # Create a junction-specific assignments DataFrame
                 junction_assignments = existing_assignments[["trajectory"]].copy()
@@ -6820,35 +6035,15 @@ class VERTAGUI:
                     assigned_mask = junction_assignments["branch"].notna() & (junction_assignments["branch"] >= 0)
                     junction_assignments = junction_assignments[assigned_mask]
 
-                    st.success(f"✅ **Extracted Junction {junction_index} assignments:** {len(junction_assignments)} trajectories")
-                    st.write(f"🔍 **Branch column used:** {branch_col}")
-                    st.write(f"🔍 **Sample assignments:**")
-                    st.write(junction_assignments.head())
-
                     chain_df = junction_assignments
                 else:
                     st.error(f"❌ **Branch column {branch_col} not found in chain_decisions!**")
-                    st.write(f"Available branch columns: {[col for col in existing_assignments.columns if col.startswith('branch_j')]}")
-                    chain_df = pd.DataFrame()  # Empty DataFrame
+                    chain_df = pd.DataFrame()
             else:
                 # This is already a junction-specific assignments DataFrame
                 chain_df = existing_assignments
-                st.success(f"✅ Using existing assignments - found {len(chain_df)} assignments")
-
-            st.info(f"🔍 **GAZE ANALYSIS PATH:** Using existing assignments from previous discover analysis")
         else:
-            # Show discover analysis parameters
             st.info("🔍 Running discover analysis to get branch assignments...")
-            st.info(f"🔍 **GAZE ANALYSIS PATH:** Running discover analysis (not using existing assignments)")
-
-            # Add parameter adjustment suggestions
-            st.warning("⚠️ **Low assignment rate detected!** Try these adjustments:")
-            st.write("**Suggested parameter changes:**")
-            st.write("- **Path length**: Try reducing from 100.0 to 20.0-50.0")
-            st.write("- **Decision mode**: Try 'hybrid' instead of 'pathlen'")
-            st.write("- **Junction position/radius**: Verify they match your trajectory data")
-            st.write("")
-            st.write("**Or run '🔍 Discover Branches' analysis first to create proper assignments!**")
 
             try:
                 # Use custom parameters if provided
@@ -6900,8 +6095,6 @@ class VERTAGUI:
                         if angle_eps is None:
                             angle_eps = 15.0
 
-                        # Debug: Show DBSCAN parameters
-                        st.write(f"**DBSCAN Parameters:** epsilon={epsilon}, min_samples={min_samples}, angle_eps={angle_eps}")
                     elif cluster_method == "kmeans":
                         k = custom_params.get('k', 3)
                         k_min = custom_params.get('k_min', 2)
@@ -6937,7 +6130,6 @@ class VERTAGUI:
                         if angle_eps is None:
                             angle_eps = 15.0
 
-                    st.info(f"🔧 Using custom parameters: cluster_method={cluster_method}, decision_mode={decision_mode}, seed={seed}")
                 else:
                     # Use default parameters
                     cluster_method = "kmeans"
@@ -6959,115 +6151,6 @@ class VERTAGUI:
 
                 # r_outer_list already initialized above; update if user changed r_outer
                 r_outer_list = [r_outer] if r_outer is not None else [None]
-
-                # Debug: Show parameters being used
-                st.info(f"🔍 **Discover Analysis Parameters:**")
-                st.write(f"- Junction: Circle(cx={junction.cx}, cz={junction.cz}, r={junction.r})")
-                st.write(f"- Decision mode: {decision_mode}")
-                st.write(f"🔍 **DEBUG: r_outer before debug message:** {r_outer} (type: {type(r_outer)})")
-                st.write(f"- R outer: {r_outer} (from junctions tab, r_outer_list: {r_outer_list})")
-                st.write(f"- Path length: {path_length}")
-                st.write(f"- Cluster method: {cluster_method}, k: {k}")
-                st.write(f"- Trajectories: {len(trajectories)}")
-
-                # Additional debugging for radial mode issues
-                if decision_mode == "radial":
-                    st.error(f"🚨 **RADIAL MODE DETECTED - LIKELY CAUSE OF NO ASSIGNMENTS!**")
-                    st.write(f"- Junction radius: {junction.r}")
-                    st.write(f"- R outer: {r_outer}")
-                    st.write(f"- Ratio (r_outer/junction.r): {r_outer/junction.r:.2f}")
-                    if r_outer <= junction.r:
-                        st.error(f"❌ **CRITICAL:** r_outer ({r_outer}) <= junction radius ({junction.r})!")
-                        st.write("In radial mode, r_outer must be significantly larger than junction radius.")
-                    elif r_outer/junction.r < 2.0:
-                        st.warning(f"⚠️ **WARNING:** r_outer/junction.r ratio ({r_outer/junction.r:.2f}) is too low!")
-                        st.write("For radial mode, r_outer should be at least 2x the junction radius for reliable detection.")
-
-                    st.error(f"🔧 **RECOMMENDED FIXES:**")
-                    st.write("1. **Change decision mode to 'hybrid'** in the gaze analysis custom parameters")
-                    st.write("2. **Or increase r_outer values** in the Junctions tab to at least 2x the junction radius")
-                    st.write("3. **Or use default parameters** instead of custom parameters")
-
-                    # Show current parameter status
-                    st.write(f"**Current decision mode:** {decision_mode}")
-                    st.write("**To fix:** Change the decision mode to 'hybrid' in the analysis parameters")
-
-                # Debug: Check if trajectories pass through junction
-                trajectories_through_junction = 0
-                for traj in trajectories[:5]:  # Check first 5 trajectories
-                    # Handle NaN values in trajectory coordinates
-                    valid_mask = ~(np.isnan(traj.x) | np.isnan(traj.z))
-                    if np.any(valid_mask):
-                        valid_x = traj.x[valid_mask]
-                        valid_z = traj.z[valid_mask]
-                        distances = np.sqrt((valid_x - junction.cx)**2 + (valid_z - junction.cz)**2)
-                        min_distance = np.min(distances)
-                        if min_distance <= junction.r:
-                            trajectories_through_junction += 1
-
-                st.write(f"- Sample trajectories through junction: {trajectories_through_junction}/5")
-                if trajectories_through_junction == 0:
-                    st.warning("⚠️ **Warning: No sample trajectories pass through the junction!**")
-                    st.write("This might explain why no assignments are found.")
-                    st.write("Check if junction coordinates match your trajectory data.")
-
-                    # Additional debugging: Show coordinate ranges
-                    st.error("🔍 **Coordinate Range Analysis:**")
-                    all_x = np.concatenate([traj.x for traj in trajectories[:10]])  # Check first 10 trajectories
-                    all_z = np.concatenate([traj.z for traj in trajectories[:10]])
-
-                    # Handle NaN values in trajectory coordinates
-                    valid_x = all_x[~np.isnan(all_x)]
-                    valid_z = all_z[~np.isnan(all_z)]
-
-                    if len(valid_x) > 0 and len(valid_z) > 0:
-                        st.write(f"- Trajectory X range: {np.min(valid_x):.1f} to {np.max(valid_x):.1f}")
-                        st.write(f"- Trajectory Z range: {np.min(valid_z):.1f} to {np.max(valid_z):.1f}")
-                        st.write(f"- Junction position: ({junction.cx}, {junction.cz})")
-                        st.write(f"- Junction radius: {junction.r}")
-
-                        # Check if junction is within trajectory bounds
-                        x_in_bounds = np.min(valid_x) <= junction.cx <= np.max(valid_x)
-                        z_in_bounds = np.min(valid_z) <= junction.cz <= np.max(valid_z)
-                        st.write(f"- Junction X in trajectory bounds: {x_in_bounds}")
-                        st.write(f"- Junction Z in trajectory bounds: {z_in_bounds}")
-
-                        if not (x_in_bounds and z_in_bounds):
-                            st.error("❌ **CRITICAL:** Junction is outside trajectory coordinate bounds!")
-                            st.write("**Solution:** Adjust junction coordinates in the Junctions tab to match your trajectory data.")
-                    else:
-                        st.error("❌ **CRITICAL:** All trajectory coordinates are NaN!")
-                        st.write("**This indicates a data loading or scaling issue.**")
-                        st.write("**Solutions:**")
-                        st.write("1. Check if trajectory data was loaded correctly")
-                        st.write("2. Check if scaling factor is appropriate")
-                        st.write("3. Check if coordinate columns are mapped correctly")
-                        st.write("4. Try reloading the data with different parameters")
-
-                        # Show sample trajectory data for debugging
-                        if len(trajectories) > 0:
-                            sample_traj = trajectories[0]
-                            st.write(f"**Sample trajectory data:**")
-                            st.write(f"- X values: {sample_traj.x[:5]} (first 5)")
-                            st.write(f"- Z values: {sample_traj.z[:5]} (first 5)")
-                            st.write(f"- X type: {type(sample_traj.x)}")
-                            st.write(f"- Z type: {type(sample_traj.z)}")
-
-                # Debug: Show all parameters being passed to discover_decision_chain
-                st.write(f"🔍 **DEBUG: Parameters being passed to discover_decision_chain:**")
-                st.write(f"- path_length: {path_length} (type: {type(path_length)})")
-                st.write(f"- epsilon: {epsilon} (type: {type(epsilon)})")
-                st.write(f"- seed: {seed} (type: {type(seed)})")
-                st.write(f"- decision_mode: {decision_mode} (type: {type(decision_mode)})")
-                st.write(f"- r_outer_list: {r_outer_list} (type: {type(r_outer_list)})")
-                st.write(f"- linger_delta: {linger_delta} (type: {type(linger_delta)})")
-                st.write(f"- cluster_method: {cluster_method} (type: {type(cluster_method)})")
-                st.write(f"- k: {k} (type: {type(k)})")
-                st.write(f"- k_min: {k_min} (type: {type(k_min)})")
-                st.write(f"- k_max: {k_max} (type: {type(k_max)})")
-                st.write(f"- min_sep_deg: {min_sep_deg} (type: {type(min_sep_deg)})")
-                st.write(f"- angle_eps: {angle_eps} (type: {type(angle_eps)})")
-                st.write(f"- min_samples: {min_samples} (type: {type(min_samples)})")
 
                 try:
                     chain_df, centers_list, decisions_chain_df = discover_decision_chain(
@@ -7096,86 +6179,12 @@ class VERTAGUI:
                     except Exception:
                         pass
                 except Exception as e:
-                    st.error(f"❌ **Discover analysis failed - this will prevent gaze analysis!**")
-                    st.write(f"**Error type:** {type(e).__name__}")
-                    st.write(f"**Error message:** {str(e)}")
-
-                    # Show the most common issues and solutions
-                    st.error("🔧 **Common Solutions:**")
-                    if "int()" in str(e) and "NoneType" in str(e):
-                        st.write("**Issue:** NoneType to int() conversion error")
-                        st.write("**Solution:** Use 'Use existing branch assignments' or run '🔍 Discover Branches' first")
-                    elif "DBSCAN" in str(e) or "eps" in str(e):
-                        st.write("**Issue:** DBSCAN clustering failed")
-                        st.write("**Solution:** Try 'Use existing branch assignments' or adjust DBSCAN parameters")
-                    elif "trajectory" in str(e).lower():
-                        st.write("**Issue:** Trajectory data problem")
-                        st.write("**Solution:** Check if trajectories pass through the junction")
-                    else:
-                        st.write("**Solution:** Use 'Use existing branch assignments' or run '🔍 Discover Branches' first")
-
-                    st.write("")
-                    st.write("**💡 Recommended approach:**")
-                    st.write("1. **Use existing assignments** (if available)")
-                    st.write("2. **Or run '🔍 Discover Branches' analysis first**")
-                    st.write("3. **Then return here for gaze analysis**")
+                    st.error(f"❌ **Discover analysis failed:** {e}")
 
                     # Fall back to empty assignments
                     import pandas as pd
                     chain_df = pd.DataFrame()
                     centers_list = []
-                st.success(f"✅ Discover analysis completed - found {len(chain_df)} assignments")
-                st.write(f"**Assignment Summary:**")
-                st.write(f"- Total trajectories processed: {len(trajectories)}")
-                st.write(f"- Trajectories with assignments: {len(chain_df)}")
-                st.write(f"- Assignment rate: {len(chain_df)/len(trajectories)*100:.1f}%")
-
-                # Show sample of assignments
-                if len(chain_df) > 0:
-                    st.write(f"**Sample Assignments:**")
-                    st.dataframe(chain_df.head(10), width='stretch')
-                else:
-                    st.warning("⚠️ No trajectories were assigned to this junction!")
-                    st.write("**Possible causes:**")
-                    st.write("- Junction position/radius may not match trajectory data")
-                    st.write("- Decision parameters may be too restrictive")
-                    st.write("- Trajectories may not actually pass through this junction")
-
-                    # Add specific parameter suggestions
-                    st.info("🔧 **Parameter Adjustment Suggestions:**")
-                    st.write("**Current parameters:**")
-                    st.write(f"- Path length: {path_length} (try reducing to 20-50)")
-                    st.write(f"- Decision mode: {decision_mode}")
-                    st.write(f"- DBSCAN eps: {epsilon} (try increasing to 1.0-2.0)")
-                    st.write(f"- DBSCAN min_samples: {min_samples} (try reducing to 2-3)")
-                    st.write(f"- R_outer: {r_outer} (try increasing)")
-
-                    st.write("**Suggested changes:**")
-                    st.write("1. **Reduce path_length** from 100.0 to 20.0-50.0")
-                    st.write("2. **Increase DBSCAN eps** from 0.5 to 1.0-2.0")
-                    st.write("3. **Reduce min_samples** from 5 to 2-3")
-                    st.write("4. **Check junction position** - ensure it matches your trajectory data")
-
-                    # Debug: Show trajectory data around junction
-                    st.write("🔍 **Trajectory Data Around Junction:**")
-                    junction_x, junction_z = junction.cx, junction.cz
-                    junction_r = junction.r
-
-                    # Find trajectories that pass near the junction
-                    nearby_trajectories = []
-                    for i, traj in enumerate(trajectories[:10]):  # Check first 10 trajectories
-                        distances = np.sqrt((traj.x - junction_x)**2 + (traj.z - junction_z)**2)
-                        min_distance = np.min(distances)
-                        if min_distance < junction_r * 3:  # Within 3x junction radius
-                            nearby_trajectories.append((i, min_distance))
-
-                    if nearby_trajectories:
-                        st.write(f"- Found {len(nearby_trajectories)} trajectories within 3x junction radius")
-                        for traj_idx, min_dist in nearby_trajectories[:5]:
-                            st.write(f"  - Trajectory {traj_idx}: min distance = {min_dist:.1f}")
-                    else:
-                        st.write("- No trajectories found within 3x junction radius")
-                        st.write("- This suggests the junction position may not match your data")
             except Exception as e:
                 st.warning(f"⚠️ Discover analysis failed: {e}")
                 st.info("🔄 Falling back to empty assignments...")
@@ -7232,11 +6241,6 @@ class VERTAGUI:
             st.session_state['gaze_debug_info'][junction_key]['status'] = 'no_assignments'
 
             st.warning("⚠️ No trajectory assignments found - cannot perform gaze analysis")
-            st.info("💡 **Suggestions:**")
-            st.write("1. **Adjust parameters**: Try different decision mode or parameters")
-            st.write("2. **Check junction position**: Verify junction coordinates match your data")
-            st.write("3. **Run discover analysis first**: Use '🔍 Discover Branches' to create assignments")
-            st.write("4. **Check trajectory data**: Ensure trajectories actually pass through junctions")
 
             # Return empty results
             return {
@@ -7253,78 +6257,8 @@ class VERTAGUI:
             # Update debug status
             st.session_state['gaze_debug_info'][junction_key]['status'] = 'analyzing'
 
-            # Debug: Check what trajectories are being passed to gaze analysis
-            st.info(f"🔍 **Gaze Analysis Input Debug:**")
-            st.write(f"- Trajectories passed: {len(processed_trajectories)}")
-            if processed_trajectories:
-                sample_traj = processed_trajectories[0]
-                st.write(f"- Sample trajectory type: {type(sample_traj).__name__}")
-                st.write(f"- Sample trajectory ID: {sample_traj.tid}")
-                st.write(f"- Has gaze_x: {hasattr(sample_traj, 'gaze_x') and sample_traj.gaze_x is not None}")
-                st.write(f"- Has heart_rate: {hasattr(sample_traj, 'heart_rate') and sample_traj.heart_rate is not None}")
-                st.write(f"- Has pupil_l: {hasattr(sample_traj, 'pupil_l') and sample_traj.pupil_l is not None}")
-
-            # Debug: Check assignments DataFrame structure
-            st.info(f"🔍 **Assignments DataFrame Debug:**")
-            st.write(f"- Assignments shape: {chain_df.shape}")
-            st.write(f"- Assignments columns: {list(chain_df.columns)}")
-            if len(chain_df) > 0:
-                st.write(f"- Sample assignment row:")
-                st.write(chain_df.head(1))
-                # Safe sorting of trajectory IDs (handle mixed types)
-                try:
-                    unique_ids = chain_df['trajectory'].unique()
-                    # Convert to strings for safe sorting
-                    unique_ids_str = [str(id) for id in unique_ids]
-                    sorted_ids = sorted(unique_ids_str)[:10]
-                    st.write(f"- Unique trajectory IDs in assignments: {sorted_ids}...")
-                except Exception as e:
-                    st.write(f"- Unique trajectory IDs in assignments: {list(unique_ids)[:10]}... (sorting failed: {e})")
-                st.write(f"- Sample trajectory IDs from Trajectory objects: {[tr.tid for tr in processed_trajectories[:5]]}")
-
-                # Check for ID mismatch (handle mixed types)
-                assignment_ids = set(str(id) for id in chain_df['trajectory'].unique())
-                trajectory_ids = set(str(tr.tid) for tr in processed_trajectories)
-                common_ids = assignment_ids.intersection(trajectory_ids)
-                st.write(f"- Common IDs between assignments and trajectories: {len(common_ids)}")
-                if len(common_ids) < 10:
-                    st.write(f"- Common IDs: {sorted(common_ids)}")
-                else:
-                    st.write(f"- Common IDs (first 10): {sorted(list(common_ids))[:10]}")
-
-            # Debug: Check session state at the beginning of gaze analysis
-            st.write(f"🔍 **Gaze Analysis Session State Check:**")
-            st.write(f"- analysis_results exists: {st.session_state.analysis_results is not None}")
-            if st.session_state.analysis_results is not None:
-                st.write(f"- branches exists: {'branches' in st.session_state.analysis_results}")
-                if 'branches' in st.session_state.analysis_results:
-                    branches = st.session_state.analysis_results['branches']
-                    st.write(f"- chain_decisions exists: {'chain_decisions' in branches}")
-                    if 'chain_decisions' in branches:
-                        decisions_chain_df = branches['chain_decisions']
-                        st.write(f"- chain_decisions length: {len(decisions_chain_df)}")
-                        st.write(f"- Junction indices in chain_decisions: {sorted(decisions_chain_df['junction_index'].unique())}")
-                    else:
-                        st.write("- chain_decisions not found in branches!")
-                else:
-                    st.write("- branches not found in analysis_results!")
-            else:
-                st.write("- analysis_results is None!")
-
             # Analyze physiological data
-            st.info("🔬 Analyzing physiological data...")
             with st.spinner("Processing physiological data..."):
-                # Debug: Test trajectory matching before calling the function
-                st.write("🔍 **Pre-analysis Debug:**")
-                test_traj = processed_trajectories[0]
-                test_assignments = chain_df[chain_df["trajectory"] == test_traj.tid]
-                st.write(f"- Test trajectory ID: {test_traj.tid}")
-                st.write(f"- Test trajectory assignments: {len(test_assignments)} rows")
-                if len(test_assignments) > 0:
-                    st.write(f"- Test assignment: {test_assignments.iloc[0].to_dict()}")
-                else:
-                    st.write("- ❌ No assignments found for test trajectory!")
-
                 # Fix: Convert single 'branch' column to junction-specific format expected by gaze functions
                 current_junction_idx = next(i for i, j in enumerate(st.session_state.junctions)
                                            if j.cx == junction.cx and j.cz == junction.cz and j.r == junction.r)
@@ -7332,10 +6266,8 @@ class VERTAGUI:
 
                 if 'branch' in chain_df.columns:
                     if current_branch_col not in chain_df.columns:
-                        st.info(f"🔧 Converting single 'branch' column to '{current_branch_col}' format for gaze analysis...")
                         chain_df_fixed = chain_df.copy()
                         chain_df_fixed[current_branch_col] = chain_df_fixed['branch']
-                        st.write(f"- Converted {len(chain_df_fixed)} assignments to gaze analysis format for Junction {current_junction_idx}")
                     else:
                         chain_df_fixed = chain_df
                 else:
@@ -7350,101 +6282,21 @@ class VERTAGUI:
                     filtered_count = len(chain_df_fixed)
                     unassigned_count = original_count - filtered_count
 
-                    st.write(f"🔍 **Assignment Filtering:**")
-                    st.write(f"- Original assignments: {original_count}")
-                    st.write(f"- Unassigned trajectories (branch=-1 or NaN): {unassigned_count}")
-                    st.write(f"- Assigned trajectories: {filtered_count}")
-
-                    if unassigned_count > 0:
-                        st.info(f"✅ Filtered out {unassigned_count} unassigned trajectories - only processing {filtered_count} assigned trajectories")
-                    else:
-                        st.info(f"✅ All {original_count} trajectories are assigned to branches")
-
-                    # Debug: Show sample of filtered assignments
                     if filtered_count > 0:
-                        st.write(f"🔍 **Sample filtered assignments for Junction {current_junction_idx}:**")
-                        sample_assignments = chain_df_fixed[['trajectory', current_branch_col]].head()
-                        st.write(sample_assignments)
+                        # Apply trajectory ID mapping to ensure sequential IDs for gaze analysis
+                        assignment_ids = chain_df_fixed['trajectory'].unique()
+                        traj_id_to_index = {tid: i for i, tid in enumerate(sorted(assignment_ids))}
 
-                        # Show branch distribution
-                        branch_counts = chain_df_fixed[current_branch_col].value_counts().sort_index()
-                        st.write(f"🔍 **Branch distribution:**")
-                        for branch, count in branch_counts.items():
-                            st.write(f"  - Branch {branch}: {count} trajectories")
+                        chain_df_fixed['trajectory_index'] = chain_df_fixed['trajectory'].map(traj_id_to_index)
 
-                        # Debug: Show trajectory ID matching
-                        st.write(f"🔍 **Trajectory ID Matching Debug:**")
-                        st.write(f"- Assignments trajectory IDs (first 10): {list(chain_df_fixed['trajectory'].astype(str))[:10]}")
-                        st.write(f"- Processed trajectories IDs (first 10): {[str(getattr(t, 'tid', getattr(t, 'id', 'NA'))) for t in processed_trajectories[:10]]}")
+                        chain_df_fixed = chain_df_fixed.dropna(subset=['trajectory_index'])
+                        mapped_count = len(chain_df_fixed)
 
-                        # Check if trajectory ID 0 exists in assignments
-                        traj_0_in_assignments = '0' in chain_df_fixed['trajectory'].astype(str).values
-                        st.write(f"- Trajectory ID 0 in assignments: {traj_0_in_assignments}")
-
-                        # ALWAYS apply trajectory ID mapping to ensure sequential IDs for gaze analysis
-                        st.info("🔧 **APPLYING TRAJECTORY ID MAPPING**: Ensuring sequential trajectory IDs for gaze analysis...")
-
-                        if True:  # Always apply mapping
-                            st.write(f"🔍 **Trajectory ID Analysis for Junction {current_junction_idx}:**")
-                            st.write("The gaze analysis functions expect sequential trajectory IDs [0, 1, 2, ...] for proper decision point matching.")
-
-                            # Show the actual range of trajectory IDs in assignments
-                            traj_ids = chain_df_fixed['trajectory'].astype(str).values
-                            st.write(f"- Assignment trajectory IDs (first 5): {traj_ids[:5]}")
-                            st.write(f"- Processed trajectory IDs (first 5): {[str(getattr(t, 'tid', getattr(t, 'id', i))) for i, t in enumerate(processed_trajectories[:5])]}")
-
-                            # Check if trajectory IDs match between assignments and processed trajectories
-                            assignment_ids = set(traj_ids)
-                            processed_ids = set(str(getattr(t, 'tid', getattr(t, 'id', i))) for i, t in enumerate(processed_trajectories))
-                            common_ids = assignment_ids.intersection(processed_ids)
-                            st.write(f"- Common trajectory IDs: {len(common_ids)} out of {len(assignment_ids)} assignments")
-
-                            st.error("❌ **SOLUTION NEEDED**: The trajectory ID mapping between discover and gaze analysis is broken!")
-                            st.write("The discover function assigns trajectories with string IDs (filenames) but gaze analysis expects sequential integer IDs [0, 1, 2, ...]")
-
-                            # IMPLEMENT FIX: Create trajectory ID mapping
-                            st.info("🔧 **IMPLEMENTING FIX**: Creating trajectory ID mapping...")
-
-                            # Create a mapping from assignment trajectory IDs to processed trajectory indices
-                            # Map assignment IDs to sequential indices based on the order they appear in processed_trajectories
-                            assignment_ids = chain_df_fixed['trajectory'].unique()
-                            traj_id_to_index = {tid: i for i, tid in enumerate(sorted(assignment_ids))}
-
-                            st.write(f"🔧 **Trajectory ID Mapping Debug:**")
-                            st.write(f"- Assignment trajectory IDs (first 5): {list(chain_df_fixed['trajectory'].unique()[:5])}")
-                            st.write(f"- Processed trajectory IDs (first 5): {list(traj_id_to_index.keys())[:5]}")
-                            st.write(f"- Mapping dictionary (first 5): {dict(list(traj_id_to_index.items())[:5])}")
-
-                            # Map assignment trajectory IDs to processed trajectory indices
-                            chain_df_fixed['trajectory_index'] = chain_df_fixed['trajectory'].map(traj_id_to_index)
-
-                            # Remove rows where trajectory ID couldn't be mapped
-                            original_mapped_count = len(chain_df_fixed)
-                            chain_df_fixed = chain_df_fixed.dropna(subset=['trajectory_index'])
-                            mapped_count = len(chain_df_fixed)
-                            unmapped_count = original_mapped_count - mapped_count
-
-                            st.write(f"🔧 **Trajectory ID Mapping Results:**")
-                            st.write(f"- Original assignments: {original_mapped_count}")
-                            st.write(f"- Successfully mapped: {mapped_count}")
-                            st.write(f"- Unmapped (removed): {unmapped_count}")
-
-                            if mapped_count > 0:
-                                st.success(f"✅ **FIX APPLIED**: Mapped {mapped_count} trajectory assignments to processed trajectory indices!")
-                                st.write(f"- Sample mapping: {chain_df_fixed[['trajectory', 'trajectory_index', current_branch_col]].head()}")
-
-                                # Update trajectory IDs to be sequential starting from 0
-                                chain_df_fixed['trajectory'] = chain_df_fixed['trajectory_index'].astype(int)
-                                chain_df_fixed = chain_df_fixed.drop('trajectory_index', axis=1)
-
-                                st.write(f"🔧 **Updated assignments with sequential IDs:**")
-                                st.write(f"- Sample: {chain_df_fixed[['trajectory', current_branch_col]].head()}")
-                            else:
-                                st.error("❌ **FIX FAILED**: No trajectory assignments could be mapped!")
-                                st.write("This suggests a fundamental mismatch between discover and gaze analysis trajectory handling.")
+                        if mapped_count > 0:
+                            chain_df_fixed['trajectory'] = chain_df_fixed['trajectory_index'].astype(int)
+                            chain_df_fixed = chain_df_fixed.drop('trajectory_index', axis=1)
                 else:
                     st.error(f"❌ Expected column '{current_branch_col}' not found in assignments!")
-                    st.write(f"Available columns: {list(chain_df_fixed.columns)}")
 
                 # Ensure expected branch column exists for physiological analysis
                 chain_df_call = chain_df_fixed.copy()
@@ -7453,12 +6305,6 @@ class VERTAGUI:
                 if current_branch_col not in chain_df_call.columns:
                     st.error(f"❌ **Missing branch column**: {current_branch_col} not found for Junction {current_junction_idx}")
                 else:
-                    st.write(f"🔧 **Using junction-specific column**: {current_branch_col} for Junction {current_junction_idx}")
-
-                    # CRITICAL FIX: Use verta_consistency.normalize_assignments for proper trajectory ID mapping
-                    # This will automatically handle branch column naming and trajectory ID mapping
-                    st.info(f"🔧 **Using verta_consistency.normalize_assignments for proper trajectory ID mapping...**")
-
                     try:
                         from verta.verta_consistency import normalize_assignments
 
@@ -7474,33 +6320,13 @@ class VERTAGUI:
                             strict=False  # Don't fail on low coverage
                         )
 
-                        st.write(f"🔧 **Normalization report:**")
-                        st.write(f"- Input rows: {report['input_rows']}")
-                        st.write(f"- Kept after ID mapping: {report['kept_after_tid_map']}")
-                        st.write(f"- Dropped unmapped IDs: {report['dropped_unmapped_ids']}")
-                        st.write(f"- Has decisions: {report['has_decisions']}")
-
                         if report['kept_after_tid_map'] > 0:
-                            st.success(f"✅ **Assignment normalization successful!** {report['kept_after_tid_map']} assignments ready for gaze analysis")
-
-                            # Show available branch columns after normalization
-                            branch_cols = [col for col in normalized_df.columns if col.startswith('branch')]
-                            st.write(f"🔧 **Available branch columns after normalization:** {branch_cols}")
-
-                            # Show sample data with available branch columns
-                            display_cols = ['trajectory'] + branch_cols
-                            st.write(f"🔧 **Sample normalized assignments:**")
-                            st.write(normalized_df[display_cols].head())
-
-                            # Use the normalized DataFrame for gaze analysis
                             chain_df_call = normalized_df
                         else:
                             st.error(f"❌ **Assignment normalization failed!** No assignments could be mapped")
-                            st.write("This suggests a fundamental mismatch between trajectory IDs and assignment IDs")
 
                     except Exception as e:
                         st.error(f"❌ **Error during assignment normalization:** {e}")
-                        st.write("Falling back to manual trajectory ID mapping...")
 
                         # Fallback to manual mapping if normalization fails
                         traj_id_mapping = {}
@@ -7516,19 +6342,6 @@ class VERTAGUI:
                 # If we have a single-junction assignment (single 'branch' column),
                 # we need to make sure the decision points are calculated for THIS junction,
                 # not some other junction's decision points.
-                st.write(f"🔍 **Junction-Specific Assignment Debug:**")
-                st.write(f"- Current junction index: {current_junction_idx}")
-                st.write(f"- Current branch column: {current_branch_col}")
-                st.write(f"- Available columns: {list(chain_df_call.columns)}")
-
-                # Show branch column values dynamically
-                branch_cols = [col for col in chain_df_call.columns if col.startswith('branch')]
-                for branch_col in branch_cols:
-                    st.write(f"- {branch_col} values: {chain_df_call[branch_col].value_counts().to_dict()}")
-
-                if not branch_cols:
-                    st.write("- ❌ No branch columns found!")
-
                 # Create copies of trajectories and remap their IDs to match the assignments DataFrame
                 # This ensures the analysis functions can find the correct assignments
                 import copy as _copy
@@ -7560,7 +6373,7 @@ class VERTAGUI:
                         _p = _os.path.join("gui_outputs", "branch_decisions_chain.csv")
                         if _os.path.exists(_p):
                             decisions_chain_df = _pd.read_csv(_p)
-                            st.write("🔗 Loaded decisions from gui_outputs/branch_decisions_chain.csv (fallback)")
+                            pass  # loaded fallback decisions
                     except Exception:
                         pass
                 norm_df, norm_report = normalize_assignments(
@@ -7572,9 +6385,7 @@ class VERTAGUI:
                     prefer_decisions=True,
                     include_outliers=False,
                 )
-                chain_df_call = norm_df  # override with normalized assignments
-                st.write("🧭 Assignments normalization report:")
-                st.write(norm_report)
+                chain_df_call = norm_df
 
                 physio_data = analyze_physiological_at_junctions(
                     trajectories=trajectories_for_analysis,
@@ -7588,34 +6399,6 @@ class VERTAGUI:
                     physio_window=3.0
                 )
 
-                # DEBUG: Check what was passed to physiological analysis
-                st.write(f"🔍 **DEBUG: Physiological Analysis Input Check:**")
-                st.write(f"- Trajectories passed: {len(trajectories_for_analysis)}")
-                st.write(f"- First trajectory ID: {trajectories_for_analysis[0].tid} (type: {type(trajectories_for_analysis[0].tid)})")
-                st.write(f"- Assignments DataFrame shape: {chain_df_fixed.shape}")
-                st.write(f"- Assignments trajectory column dtype: {chain_df_fixed['trajectory'].dtype}")
-                st.write(f"- Assignments trajectory sample: {chain_df_fixed['trajectory'].head().tolist()}")
-                st.write(f"- Junction: {junction}")
-                st.write(f"- Junction index: {current_junction_idx}")
-
-            st.success("✅ Physiological analysis completed")
-            st.write(f"🔍 **Physiological Results:** {len(physio_data) if physio_data is not None else 0} rows")
-
-            # Debug: Show physiological results details
-            if physio_data is not None and len(physio_data) > 0:
-                st.write(f"🔍 **Physiological Results Debug:**")
-                st.write(f"- Rows: {len(physio_data)}")
-                st.write(f"- Columns: {list(physio_data.columns)}")
-                if 'heart_rate_change' in physio_data.columns:
-                    hr_change_count = physio_data['heart_rate_change'].notna().sum()
-                    st.write(f"- Heart rate change values: {hr_change_count}")
-                else:
-                    st.write(f"- ❌ 'heart_rate_change' column missing!")
-            else:
-                st.write(f"🔍 **Physiological Results Debug:** No data returned")
-
-            # Analyze pupil dilation trajectories
-            st.info("👁️ Analyzing pupil dilation trajectories...")
             with st.spinner("Processing pupil dilation data..."):
                 # Ensure expected branch column exists for pupil analysis
                 chain_df_call = chain_df_fixed.copy()
@@ -7623,21 +6406,6 @@ class VERTAGUI:
                 # Ensure the junction-specific branch column exists
                 if current_branch_col not in chain_df_call.columns:
                     st.error(f"❌ **Missing branch column**: {current_branch_col} not found for Junction {current_junction_idx}")
-                else:
-                    st.write(f"🔧 **Using junction-specific column**: {current_branch_col} for Junction {current_junction_idx}")
-
-                # CRITICAL FIX: Ensure we're using the correct junction-specific assignments
-                # If we have a single-junction assignment (single 'branch' column),
-                # we need to make sure the decision points are calculated for THIS junction,
-                # not some other junction's decision points.
-                st.write(f"🔍 **Pupil Analysis - Junction-Specific Assignment Debug:**")
-                st.write(f"- Current junction index: {current_junction_idx}")
-                st.write(f"- Current branch column: {current_branch_col}")
-                st.write(f"- Available columns: {list(chain_df_call.columns)}")
-                if current_branch_col in chain_df_call.columns:
-                    st.write(f"- {current_branch_col} values: {chain_df_call[current_branch_col].value_counts().to_dict()}")
-                else:
-                    st.write(f"- ❌ {current_branch_col} column not found!")
 
                 # Create copies of trajectories and remap their IDs to match the assignments DataFrame
                 # This ensures the analysis functions can find the correct assignments
@@ -7670,7 +6438,7 @@ class VERTAGUI:
                         _p = _os.path.join("gui_outputs", "branch_decisions_chain.csv")
                         if _os.path.exists(_p):
                             decisions_chain_df = _pd.read_csv(_p)
-                            st.write("🔗 Loaded decisions from gui_outputs/branch_decisions_chain.csv (fallback)")
+                            pass  # loaded fallback decisions
                     except Exception:
                         pass
                 norm_df, norm_report = normalize_assignments(
@@ -7682,16 +6450,7 @@ class VERTAGUI:
                     prefer_decisions=True,
                     include_outliers=False,
                 )
-                chain_df_call = norm_df  # override with normalized assignments
-                st.write("🧭 Assignments normalization report:")
-                st.write(norm_report)
-                # Debug: Check if normalize_assignments already merged decision points
-                precomputed_count = chain_df_call['decision_idx'].notna().sum() if 'decision_idx' in chain_df_call.columns else 0
-                st.write(f"🔍 Decision points after normalize_assignments (pupil): {precomputed_count} trajectories have precomputed decision points")
-                if precomputed_count > 0:
-                    st.write(f"🔍 Sample decision points: {chain_df_call[['trajectory', 'decision_idx', 'intercept_x', 'intercept_z']].head(3).to_dict('records')}")
-                else:
-                    st.write("⚠️ No decision points found - this may cause analysis to fail")
+                chain_df_call = norm_df
 
                 pupil_data = analyze_pupil_dilation_trajectory(
                     trajectories=trajectories_for_analysis,
@@ -7705,24 +6464,6 @@ class VERTAGUI:
                     physio_window=3.0
                 )
 
-            st.success("✅ Pupil dilation analysis completed")
-            st.write(f"🔍 **Pupil Results:** {len(pupil_data) if pupil_data is not None else 0} rows")
-
-            # Debug: Show pupil results details
-            if pupil_data is not None and len(pupil_data) > 0:
-                st.write(f"🔍 **Pupil Results Debug:**")
-                st.write(f"- Rows: {len(pupil_data)}")
-                st.write(f"- Columns: {list(pupil_data.columns)}")
-                if 'pupil_change' in pupil_data.columns:
-                    pupil_change_count = pupil_data['pupil_change'].notna().sum()
-                    st.write(f"- Pupil change values: {pupil_change_count}")
-                else:
-                    st.write(f"- ❌ 'pupil_change' column missing!")
-            else:
-                st.write(f"🔍 **Pupil Results Debug:** No data returned")
-
-            # Analyze head yaw at decisions
-            st.info("🧭 Analyzing head yaw at decisions...")
             with st.spinner("Processing head yaw data..."):
                 # Ensure expected branch column exists for head yaw analysis
                 chain_df_call = chain_df_fixed.copy()
@@ -7730,21 +6471,6 @@ class VERTAGUI:
                 # Ensure the junction-specific branch column exists
                 if current_branch_col not in chain_df_call.columns:
                     st.error(f"❌ **Missing branch column**: {current_branch_col} not found for Junction {current_junction_idx}")
-                else:
-                    st.write(f"🔧 **Using junction-specific column**: {current_branch_col} for Junction {current_junction_idx}")
-
-                # CRITICAL FIX: Ensure we're using the correct junction-specific assignments
-                # If we have a single-junction assignment (single 'branch' column),
-                # we need to make sure the decision points are calculated for THIS junction,
-                # not some other junction's decision points.
-                st.write(f"🔍 **Head Yaw Analysis - Junction-Specific Assignment Debug:**")
-                st.write(f"- Current junction index: {current_junction_idx}")
-                st.write(f"- Current branch column: {current_branch_col}")
-                st.write(f"- Available columns: {list(chain_df_call.columns)}")
-                if current_branch_col in chain_df_call.columns:
-                    st.write(f"- {current_branch_col} values: {chain_df_call[current_branch_col].value_counts().to_dict()}")
-                else:
-                    st.write(f"- ❌ {current_branch_col} column not found!")
 
                 # Create copies of trajectories and remap their IDs to match the assignments DataFrame
                 # This ensures the analysis functions can find the correct assignments
@@ -7777,7 +6503,7 @@ class VERTAGUI:
                         _p = _os.path.join("gui_outputs", "branch_decisions_chain.csv")
                         if _os.path.exists(_p):
                             decisions_chain_df = _pd.read_csv(_p)
-                            st.write("🔗 Loaded decisions from gui_outputs/branch_decisions_chain.csv (fallback)")
+                            pass  # loaded fallback decisions
                     except Exception:
                         pass
                 norm_df, norm_report = normalize_assignments(
@@ -7789,16 +6515,7 @@ class VERTAGUI:
                     prefer_decisions=True,
                     include_outliers=False,
                 )
-                chain_df_call = norm_df  # override with normalized assignments
-                st.write("🧭 Assignments normalization report:")
-                st.write(norm_report)
-                # Debug: Check if normalize_assignments already merged decision points
-                precomputed_count = chain_df_call['decision_idx'].notna().sum() if 'decision_idx' in chain_df_call.columns else 0
-                st.write(f"🔍 Decision points after normalize_assignments: {precomputed_count} trajectories have precomputed decision points")
-                if precomputed_count > 0:
-                    st.write(f"🔍 Sample decision points: {chain_df_call[['trajectory', 'decision_idx', 'intercept_x', 'intercept_z']].head(3).to_dict('records')}")
-                else:
-                    st.write("⚠️ No decision points found - this may cause analysis to fail")
+                chain_df_call = norm_df
 
                 # Get the decision mode used by the discover analysis
                 discover_decision_mode = "pathlen"  # Default to pathlen since that's what you're using
@@ -7808,20 +6525,6 @@ class VERTAGUI:
                     if discover_junction_key in st.session_state.analysis_results.get("branches", {}):
                         junction_data = st.session_state.analysis_results["branches"][discover_junction_key]
                         discover_decision_mode = junction_data.get("decision_mode", "pathlen")
-
-                st.write(f"🔧 **Using discover decision mode**: {discover_decision_mode} (same as discover analysis)")
-
-                # Debug: Check what DataFrame is being passed to gaze analysis
-                st.write(f"🔍 **DataFrame being passed to gaze analysis:**")
-                st.write(f"- Shape: {chain_df_call.shape}")
-                st.write(f"- Columns: {list(chain_df_call.columns)}")
-                st.write(f"- Has decision_idx: {'decision_idx' in chain_df_call.columns}")
-                st.write(f"- Has intercept_x: {'intercept_x' in chain_df_call.columns}")
-                st.write(f"- Has intercept_z: {'intercept_z' in chain_df_call.columns}")
-                if 'decision_idx' in chain_df_call.columns:
-                    precomputed_count = chain_df_call['decision_idx'].notna().sum()
-                    st.write(f"- Precomputed decision points: {precomputed_count} out of {len(chain_df_call)}")
-                    st.write(f"- Sample precomputed data: {chain_df_call[['trajectory', 'decision_idx', 'intercept_x', 'intercept_z']].head(3).to_dict('records')}")
 
                 head_yaw_data = compute_head_yaw_at_decisions(
                     trajectories=trajectories_for_analysis,
@@ -7835,29 +6538,6 @@ class VERTAGUI:
                     base_index=current_junction_idx if current_junction_idx is not None else 0,
                 )
 
-            st.success("✅ Head yaw analysis completed")
-            st.write(f"🔍 **Head Yaw Results:** {len(head_yaw_data) if head_yaw_data is not None else 0} rows")
-
-            # Debug: Show head yaw results details
-            if head_yaw_data is not None and len(head_yaw_data) > 0:
-                st.write(f"🔍 **Head Yaw Results Debug:**")
-                st.write(f"- Rows: {len(head_yaw_data)}")
-                st.write(f"- Columns: {list(head_yaw_data.columns)}")
-                if 'head_yaw' in head_yaw_data.columns:
-                    head_yaw_count = head_yaw_data['head_yaw'].notna().sum()
-                    st.write(f"- Head yaw values: {head_yaw_count}")
-                else:
-                    st.write(f"- ❌ 'head_yaw' column missing!")
-                if 'yaw_difference' in head_yaw_data.columns:
-                    yaw_diff_count = head_yaw_data['yaw_difference'].notna().sum()
-                    st.write(f"- Yaw difference values: {yaw_diff_count}")
-                else:
-                    st.write(f"- ❌ 'yaw_difference' column missing!")
-            else:
-                st.write(f"🔍 **Head Yaw Results Debug:** No data returned")
-
-            # Create per-junction pupil dilation heatmap
-            st.info("🗺️ Creating junction-specific pupil dilation heatmap...")
             with st.spinner("Generating junction heatmap..."):
                 from verta.verta_gaze import create_per_junction_pupil_heatmap
                 
@@ -7924,7 +6604,6 @@ class VERTAGUI:
 
                         physio_file = os.path.join(gaze_data_dir, f"{junction_prefix}_physiological_analysis.csv")
                         physio_data_clean.to_csv(physio_file, index=False)
-                        st.info(f"📁 Physiological data saved to: {physio_file}")
 
                     # Save pupil dilation data
                     if pupil_data is not None and len(pupil_data) > 0:
@@ -7939,7 +6618,6 @@ class VERTAGUI:
 
                         pupil_file = os.path.join(gaze_data_dir, f"{junction_prefix}_pupil_trajectory_analysis.csv")
                         pupil_data_clean.to_csv(pupil_file, index=False)
-                        st.info(f"📁 Pupil trajectory data saved to: {pupil_file}")
 
                     # Save head yaw data
                     if head_yaw_data is not None and len(head_yaw_data) > 0:
@@ -7954,7 +6632,6 @@ class VERTAGUI:
 
                         gaze_file = os.path.join(gaze_data_dir, f"{junction_prefix}_gaze_analysis.csv")
                         head_yaw_data_clean.to_csv(gaze_file, index=False)
-                        st.info(f"📁 Gaze analysis data saved to: {gaze_file}")
 
                     # Save pupil heatmap data as JSON
                     if junction_heatmaps:
@@ -7979,7 +6656,6 @@ class VERTAGUI:
                         heatmap_data = convert_numpy_to_list(junction_heatmaps)
                         with open(heatmap_file, 'w') as f:
                             json.dump(heatmap_data, f, indent=2)
-                        st.info(f"📁 Pupil heatmap data saved to: {heatmap_file}")
 
             except Exception as e:
                 st.warning(f"⚠️ Could not save gaze data files: {e}")
@@ -8020,19 +6696,7 @@ class VERTAGUI:
             st.session_state['gaze_debug_info'][junction_key]['status'] = 'error'
             st.session_state['gaze_debug_info'][junction_key]['error'] = str(e)
 
-            # More detailed error information
-            import traceback
             st.error(f"❌ Comprehensive gaze analysis failed: {e}")
-            st.error(f"**Error details:** {str(e)}")
-            st.error(f"**Error type:** {type(e).__name__}")
-
-            # Show traceback for debugging
-            st.code(traceback.format_exc())
-
-            if processed_trajectories:
-                sample_traj = processed_trajectories[0]
-                st.write(f"- Sample trajectory type: {type(sample_traj)}")
-                st.write(f"- Sample trajectory attributes: {[attr for attr in dir(sample_traj) if not attr.startswith('_')]}")
 
             st.info("🔄 Falling back to movement pattern analysis...")
             return self._analyze_movement_patterns_optimized(
@@ -8412,17 +7076,6 @@ class VERTAGUI:
                     if len(gaze_data) > 20:
                         st.info(f"Showing first 20 of {len(gaze_data)} gaze records")
 
-                    # Debug: Show what type of trajectory objects we have
-                    st.markdown("**🔍 Debug Information:**")
-                    sample_traj = st.session_state.trajectories[0] if st.session_state.trajectories else None
-                    if sample_traj:
-                        st.write(f"- Trajectory type: {type(sample_traj).__name__}")
-                        st.write(f"- Available attributes: {[attr for attr in dir(sample_traj) if not attr.startswith('_')]}")
-                        if hasattr(sample_traj, 'headset_gaze_x'):
-                            st.write(f"- Has gaze data: ✅")
-                        else:
-                            st.write(f"- Has gaze data: ❌")
-
                     # Create gaze-specific visualizations
                     self._create_gaze_visualizations(gaze_data, junction_key)
 
@@ -8660,10 +7313,6 @@ class VERTAGUI:
                                     junction_key = f"junction_{junction_idx}"
                                     pre_generated_plot_path = os.path.join("gui_outputs", f"junction_{junction_idx}", "gaze_plots", f"{junction_key}_pupil_heatmap.png")
 
-                                    # Debug: Show the path being checked
-                                    st.write(f"🔍 **Debug:** Looking for junction heatmap at: `{pre_generated_plot_path}`")
-                                    st.write(f"🔍 **Debug:** File exists: {os.path.exists(pre_generated_plot_path)}")
-
                                     if os.path.exists(pre_generated_plot_path):
                                         # Load and display pre-generated plot
                                         st.image(pre_generated_plot_path, caption=f"Junction {junction_idx} Pupil Dilation (Pre-generated)")
@@ -8671,7 +7320,6 @@ class VERTAGUI:
                                     else:
                                         # Generate plot on-demand (fallback)
                                         st.caption("🔄 Generating plot on-demand...")
-                                        st.write(f"⚠️ **Debug:** Pre-generated plot not found at `{pre_generated_plot_path}`")
 
                                         # Get filtered trajectories for this junction (only those passing through)
                                         filtered_trajs_for_plot = self._get_filtered_trajectories_for_junction(
@@ -8737,10 +7385,6 @@ class VERTAGUI:
                         # Check if pre-generated global plot exists first
                         pre_generated_global_path = os.path.join("gui_outputs", "gaze_plots", "global_pupil_heatmap.png")
 
-                        # Debug: Show the path being checked
-                        st.write(f"🔍 **Debug:** Looking for global heatmap at: `{pre_generated_global_path}`")
-                        st.write(f"🔍 **Debug:** File exists: {os.path.exists(pre_generated_global_path)}")
-
                         if os.path.exists(pre_generated_global_path):
                             # Load and display pre-generated plot
                             st.image(pre_generated_global_path, caption="Global Pupil Dilation Heatmap (Pre-generated)")
@@ -8748,7 +7392,6 @@ class VERTAGUI:
                         else:
                             # Generate plot on-demand (fallback)
                             st.caption("🔄 Generating global heatmap on-demand...")
-                            st.write(f"⚠️ **Debug:** Pre-generated plot not found at `{pre_generated_global_path}`")
 
                             # Plot global heatmap (only once, without minimap)
                             from verta.verta_gaze import plot_pupil_dilation_heatmap
@@ -8971,27 +7614,6 @@ class VERTAGUI:
             # Use fresh head_yaw data from gaze analysis (not old cached data)
             gaze_df = gaze_data.get('head_yaw')
             if gaze_df is not None and not gaze_df.empty:
-                # Debug: Show branch information in the fresh data
-                unique_branches = sorted(gaze_df['branch'].unique()) if 'branch' in gaze_df.columns else []
-                print(f"🔍 **Fresh head_yaw data branches**: {unique_branches}")
-                print(f"🔍 **Fresh head_yaw data shape**: {gaze_df.shape}")
-                print(f"🔍 **Fresh head_yaw data columns**: {list(gaze_df.columns)}")
-
-                # Additional debugging for J3+ junctions
-                junction_num = junction_key.split('_')[1] if '_' in junction_key else '0'
-                if int(junction_num) >= 3:
-                    print(f"🔍 **JUNCTION {junction_num} DEBUG**:")
-                    print(f"- Junction: {junction}")
-                    print(f"- R_outer: {r_outer}")
-                    print(f"- Trajectories passed to plotting: {len(trajectories)}")
-                    print(f"- Head_yaw data rows: {len(gaze_df)}")
-                    print(f"- Branch distribution: {gaze_df['branch'].value_counts().to_dict() if 'branch' in gaze_df.columns else 'No branch column'}")
-
-                # Show sample of the fresh data
-                if len(gaze_df) > 0:
-                    print(f"🔍 **Sample fresh head_yaw data**:")
-                    print(gaze_df.head())
-
                 plot_gaze_directions_at_junctions(
                     trajectories=trajectories,
                     junctions=[junction],
@@ -9000,8 +7622,8 @@ class VERTAGUI:
                     r_outer_list=[r_outer] if r_outer else [None],
                     junction_labels=[f"Junction {junction_key.split('_')[1]}"],
                 )
-        except Exception as e:
-            print(f"Could not generate gaze directions plot: {e}")
+        except Exception:
+            pass
 
         # Generate physiological analysis plot
         try:
@@ -9011,26 +7633,12 @@ class VERTAGUI:
             physio_df = gaze_data.get('physiological')
 
             if physio_df is not None and not physio_df.empty:
-                # Debug: Show branch information in the fresh physiological data
-                unique_branches = sorted(physio_df['branch'].unique()) if 'branch' in physio_df.columns else []
-                print(f"**Fresh physiological data branches**: {unique_branches}")
-                print(f"**Fresh physiological data shape**: {physio_df.shape}")
-
-                # Additional debugging for J3+ junctions
-                junction_num = junction_key.split('_')[1] if '_' in junction_key else '0'
-                if int(junction_num) >= 3:
-                    print(f"🔍 **JUNCTION {junction_num} PHYSIO DEBUG**:")
-                    print(f"- Physiological data rows: {len(physio_df)}")
-                    print(f"- Branch distribution: {physio_df['branch'].value_counts().to_dict() if 'branch' in physio_df.columns else 'No branch column'}")
-                    print(f"- Sample physio data:")
-                    print(physio_df.head())
-
                 plot_physiological_by_branch(
                     physio_df=physio_df,
                     out_path=plot_path,
                 )
-        except Exception as e:
-            print(f"Could not generate physiological analysis plot: {e}")
+        except Exception:
+            pass
 
         # Generate pupil trajectory analysis plot
         try:
@@ -9055,80 +7663,47 @@ class VERTAGUI:
 
             # Get heatmap data from gaze_data
             junction_heatmaps = gaze_data.get('pupil_heatmap_junction')
-            st.write(f"🔍 **Debug:** Junction heatmaps available: {junction_heatmaps is not None}")
-            if junction_heatmaps:
-                st.write(f"🔍 **Debug:** Junction heatmaps length: {len(junction_heatmaps)}")
-                st.write(f"🔍 **Debug:** Junction heatmaps keys: {list(junction_heatmaps.keys())}")
-            else:
-                st.write(f"🔍 **Debug:** No junction heatmaps found in gaze_data")
 
             if junction_heatmaps and len(junction_heatmaps) > 0:
-                # Get the heatmap data for this junction
                 junction_idx = None
-                st.write(f"🔍 **Debug:** Looking for junction: ({junction.cx}, {junction.cz}, r={junction.r})")
                 for idx, junc in enumerate(st.session_state.junctions):
-                    st.write(f"🔍 **Debug:** Checking junction {idx}: ({junc.cx}, {junc.cz}, r={junc.r})")
                     if (junc.cx == junction.cx and junc.cz == junction.cz and junc.r == junction.r):
                         junction_idx = idx
-                        st.write(f"🔍 **Debug:** Found matching junction at index {junction_idx}")
                         break
-
-                st.write(f"🔍 **Debug:** Junction index found: {junction_idx}")
 
                 if junction_idx is not None and junction_idx in junction_heatmaps:
                     heatmap_data = junction_heatmaps[junction_idx]
-                    st.write(f"🔍 **Debug:** Found heatmap data for junction {junction_idx}")
 
-                    # Create heatmap plot
                     plot_path = os.path.join(gaze_plots_dir, f"{junction_key}_pupil_heatmap.png")
-                    st.write(f"🔍 **Debug:** Plot path: {plot_path}")
 
-                    # Filter trajectories for this junction (same logic as visualizations tab)
                     filtered_trajs_for_plot = []
                     for traj in trajectories:
-                        # Check if trajectory passes through this junction
                         rx = traj.x - junction.cx
                         rz = traj.z - junction.cz
                         r = np.hypot(rx, rz)
                         if np.any(r <= junction.r):
                             filtered_trajs_for_plot.append(traj)
 
-                    st.write(f"🔍 **Debug:** Filtered trajectories for plot: {len(filtered_trajs_for_plot)}")
-
-                    # Create the heatmap plot
-                    st.write(f"🔍 **Debug:** Creating heatmap plot...")
                     try:
                         fig = plot_pupil_dilation_heatmap(
                             heatmap_data=heatmap_data,
                             junctions=[junction],
                             trajectories=filtered_trajs_for_plot,
-                            all_trajectories=trajectories,  # Pass all trajectories for minimap
+                            all_trajectories=trajectories,
                             title=f"Junction {junction_idx} Pupil Dilation",
                             show_sample_counts=False,
                             show_minimap=True,
-                            vmin=None,  # Let the function determine scaling
+                            vmin=None,
                             vmax=None
                         )
 
-                        st.write(f"🔍 **Debug:** Heatmap plot created successfully")
-
-                        # Save the plot
-                        st.write(f"🔍 **Debug:** Saving plot to {plot_path}...")
                         fig.savefig(plot_path, dpi=150, bbox_inches="tight")
                         plt.close(fig)
 
                         print(f"Junction heatmap plot saved to: {plot_path}")
-                        st.write(f"🔍 **Debug:** Junction plot saved to: `{plot_path}`")
-                        st.write(f"🔍 **Debug:** File exists after save: {os.path.exists(plot_path)}")
                     except Exception as plot_error:
-                        st.write(f"❌ **Debug:** Error creating heatmap plot: {plot_error}")
-                        st.write(f"❌ **Debug:** Error type: {type(plot_error)}")
-                        import traceback
-                        st.write(f"❌ **Debug:** Traceback: {traceback.format_exc()}")
                         print(f"Error creating junction heatmap plot: {plot_error}")
-                        print(f"Traceback: {traceback.format_exc()}")
                 else:
-                    st.write(f"🔍 **Debug:** No heatmap data found for junction {junction_idx}")
                     print(f"No heatmap data found for junction {junction_idx}")
             else:
                 print(f"No junction heatmaps available for {junction_key}")
@@ -9405,308 +7980,317 @@ class VERTAGUI:
         # Display the plot
         st.image(plot_path, caption=f"Movement Pattern Analysis - {junction_key}", width='stretch')
 
-    def generate_cli_command(self, analysis_type: str, results: dict, cluster_method: str = "dbscan", cluster_params: dict = None, decision_mode: str = "hybrid", decision_params: dict = None):
-        """Generate CLI command for easy copying"""
+    def generate_cli_command(self, analysis_type: str, results: dict, cluster_method: str = "dbscan", cluster_params: dict = None, decision_mode: str = "hybrid", decision_params: dict = None, seed: int = 0):
+        """Generate CLI command matching the analysis that was just run."""
+        scale = st.session_state.get("scale_factor", 1.0)
+        motion_threshold = st.session_state.get("motion_threshold", 0.001)
+        x_col = st.session_state.get("cli_x_col", "Headset.Head.Position.X")
+        z_col = st.session_state.get("cli_z_col", "Headset.Head.Position.Z")
+        t_col = st.session_state.get("cli_t_col", "Time")
+
         st.markdown("### 📋 Command Line Output")
         st.markdown("Copy and paste this command to run the same analysis in the terminal:")
 
+        def _common_args():
+            """Build common optional CLI args that differ from CLI defaults."""
+            args = ""
+            vr_x = "Headset.Head.Position.X"
+            vr_z = "Headset.Head.Position.Z"
+            vr_t = "Time"
+            if x_col != vr_x or z_col != vr_z or t_col != vr_t:
+                args += f" \\\n  --columns x={x_col},z={z_col},t={t_col}"
+            if abs(scale - 1.0) > 1e-6:
+                args += f" \\\n  --scale {scale}"
+            if abs(motion_threshold - 0.001) > 1e-6:
+                args += f" \\\n  --motion_threshold {motion_threshold}"
+            if seed != 0:
+                args += f" \\\n  --seed {seed}"
+            return args
+
+        def _cluster_args(method, params):
+            """Build cluster-method-specific CLI args."""
+            if not params:
+                return ""
+            if method == "dbscan":
+                return f" \\\n  --min_samples {params.get('min_samples', 5)} \\\n  --angle_eps {params.get('angle_eps', 15.0)}"
+            elif method == "kmeans":
+                return f" \\\n  --k {params.get('k', 3)}"
+            elif method == "auto":
+                return (f" \\\n  --k_min {params.get('k_min', 2)}"
+                        f" \\\n  --k_max {params.get('k_max', 6)}"
+                        f" \\\n  --min_sep_deg {params.get('min_sep_deg', 12.0)}"
+                        f" \\\n  --angle_eps {params.get('angle_eps', 15.0)}")
+            return ""
+
+        def _mode_args(mode, dp):
+            """Build decision-mode-specific CLI args from decision_params dict."""
+            if not dp:
+                return ""
+            if mode == "radial":
+                return (f" \\\n  --r_outer {dp.get('r_outer', 50.0)}"
+                        f" \\\n  --epsilon {dp.get('epsilon', 0.05)}")
+            elif mode == "pathlen":
+                return (f" \\\n  --distance {dp.get('path_length', 100.0):.1f}"
+                        f" \\\n  --epsilon {dp.get('epsilon', 0.015)}"
+                        f" \\\n  --linger_delta {dp.get('linger_delta', 5.0):.1f}")
+            elif mode == "hybrid":
+                return (f" \\\n  --r_outer {dp.get('r_outer', 50.0)}"
+                        f" \\\n  --distance {dp.get('path_length', 100.0):.1f}"
+                        f" \\\n  --linger_delta {dp.get('linger_delta', 5.0):.1f}")
+            return ""
+
         if analysis_type == "discover":
-            # Generate discover commands for each junction
             for junction_key, branch_data in results.items():
-                # Skip non-junction keys like "chain_decisions"
                 if junction_key == "chain_decisions" or not junction_key.startswith("junction_"):
                     continue
 
                 junction_num = junction_key.split('_')[1]
                 junction = st.session_state.junctions[int(junction_num)]
-                r_outer = st.session_state.junction_r_outer.get(int(junction_num), 50.0)
+
+                stored_mode = branch_data.get("decision_mode", decision_mode) if isinstance(branch_data, dict) else decision_mode
+
+                dp = {}
+                if isinstance(branch_data, dict):
+                    if stored_mode == "radial":
+                        dp = {
+                            "r_outer": branch_data.get("r_outer", decision_params.get("r_outer", 50.0) if decision_params else 50.0),
+                            "epsilon": branch_data.get("epsilon", decision_params.get("epsilon", 0.015) if decision_params else 0.015),
+                        }
+                    elif stored_mode == "pathlen":
+                        dp = {
+                            "path_length": branch_data.get("path_length", decision_params.get("path_length", 100.0) if decision_params else 100.0),
+                            "epsilon": branch_data.get("epsilon", decision_params.get("epsilon", 0.015) if decision_params else 0.015),
+                            "linger_delta": branch_data.get("linger_delta", decision_params.get("linger_delta", 5.0) if decision_params else 5.0),
+                        }
+                    elif stored_mode == "hybrid":
+                        dp = {
+                            "r_outer": branch_data.get("r_outer", decision_params.get("r_outer", 50.0) if decision_params else 50.0),
+                            "path_length": branch_data.get("path_length", decision_params.get("path_length", 100.0) if decision_params else 100.0),
+                            "linger_delta": branch_data.get("linger_delta", decision_params.get("linger_delta", 5.0) if decision_params else 5.0),
+                        }
+                elif decision_params:
+                    dp = decision_params
 
                 st.markdown(f"#### {junction_key.replace('_', ' ').title()}")
 
-                # Generate the CLI command with current cluster method and parameters
-                cli_command = f"""verta discover \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale 0.2 \\
-  --junction {junction.cx:.1f} {junction.cz:.1f} \\
-  --radius {junction.r:.1f} \\
-  --r_outer {r_outer:.1f} \\
-  --distance 100.0 \\
-  --epsilon 0.05 \\
-  --k 3 \\
-  --decision_mode {decision_mode} \\
-  --cluster_method {cluster_method}"""
-
-                # Add cluster method specific parameters
-                if cluster_method == "dbscan" and cluster_params:
-                    cli_command += f" \\\n  --min_samples {cluster_params.get('min_samples', 5)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
-                elif cluster_method == "kmeans" and cluster_params:
-                    cli_command += f" \\\n  --k_min {cluster_params.get('k_min', 2)} \\\n  --k_max {cluster_params.get('k_max', 6)}"
-                elif cluster_method == "auto" and cluster_params:
-                    cli_command += f" \\\n  --k_min {cluster_params.get('k_min', 2)} \\\n  --k_max {cluster_params.get('k_max', 6)} \\\n  --min_sep_deg {cluster_params.get('min_sep_deg', 12.0)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
-
-                # Add decision mode specific parameters
-                if decision_mode == "radial" and decision_params:
-                    cli_command += f" \\\n  --r_outer {decision_params.get('r_outer', 50.0)} \\\n  --epsilon {decision_params.get('epsilon', 0.05)}"
-                elif decision_mode == "pathlen" and decision_params:
-                    cli_command += f" \\\n  --distance {decision_params.get('path_length', 100.0)} \\\n  --linger_delta {decision_params.get('linger_delta', 0.0)}"
-                elif decision_mode == "hybrid" and decision_params:
-                    cli_command += f" \\\n  --r_outer {decision_params.get('r_outer', 50.0)} \\\n  --distance {decision_params.get('path_length', 100.0)}"
-
-                cli_command += f" \\\n  --out ./outputs/{junction_key}"
+                cli_command = (f"verta discover \\\n"
+                    f"  --input ./data \\\n"
+                    f"  --out ./outputs/{junction_key} \\\n"
+                    f"  --junction {junction.cx:.1f} {junction.cz:.1f} \\\n"
+                    f"  --radius {junction.r:.1f} \\\n"
+                    f"  --decision_mode {stored_mode} \\\n"
+                    f"  --cluster_method {cluster_method}")
+                cli_command += _common_args()
+                cli_command += _mode_args(stored_mode, dp)
+                cli_command += _cluster_args(cluster_method, cluster_params)
 
                 st.code(cli_command, language="bash")
 
-                # Show branch statistics
-                if "summary" in branch_data and branch_data["summary"] is not None:
-                    st.markdown("**Branch Statistics:**")
-                    summary_df = branch_data["summary"]
-                    for _, row in summary_df.iterrows():
-                        st.write(f"- Branch {int(row['branch'])}: {int(row['count'])} trajectories ({row['percent']:.1f}%)")
-
         elif analysis_type == "assign":
-            # Generate assign commands for each junction
             for junction_key, assignment_data in results.items():
                 junction_num = junction_key.split('_')[1]
 
-                # Get junction info from assignment data or session state
                 if "junction" in assignment_data:
                     junction = assignment_data["junction"]
-                    # Try to get r_outer from assignment data, then session state, then default
-                    r_outer = assignment_data.get("r_outer",
-                                                st.session_state.junction_r_outer.get(int(junction_num), 50.0))
                 else:
                     junction = st.session_state.junctions[int(junction_num)]
-                    r_outer = st.session_state.junction_r_outer.get(int(junction_num), 50.0)
+
+                assign_mode = assignment_data.get("decision_mode", decision_mode)
+                path_length = assignment_data.get("path_length", 100.0)
+                epsilon = assignment_data.get("epsilon", 0.015)
+                linger_delta = assignment_data.get("linger_delta", 5.0)
+                r_outer = assignment_data.get("r_outer", st.session_state.junction_r_outer.get(int(junction_num), 50.0))
 
                 st.markdown(f"#### {junction_key.replace('_', ' ').title()}")
 
-                # Get parameters from assignment data
-                path_length = assignment_data.get("path_length", 100.0)
-                epsilon = assignment_data.get("epsilon", 0.05)
-                assign_scale = assignment_data.get("assign_scale", 0.2)  # Get assign-specific scale factor
+                cli_command = (f"verta assign \\\n"
+                    f"  --input ./data \\\n"
+                    f"  --out ./outputs/{junction_key}_assign \\\n"
+                    f"  --junction {junction.cx:.1f} {junction.cz:.1f} \\\n"
+                    f"  --radius {junction.r:.1f} \\\n"
+                    f"  --decision_mode {assign_mode} \\\n"
+                    f"  --centers ./outputs/{junction_key}/branch_centers.npy \\\n"
+                    f"  --distance {path_length:.1f} \\\n"
+                    f"  --epsilon {epsilon:.3f} \\\n"
+                    f"  --linger_delta {linger_delta:.1f}")
+                cli_command += _common_args()
 
-                # Generate the CLI command (requires centers file from discover)
-                cli_command = f"""verta assign \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale {assign_scale:.1f} \\
-  --junction {junction.cx:.1f} {junction.cz:.1f} \\
-  --radius {junction.r:.1f} \\
-  --r_outer {r_outer:.1f} \\
-  --distance {path_length:.1f} \\
-  --epsilon {epsilon:.3f} \\
-  --decision_mode pathlen \\
-  --centers ./outputs/{junction_key}/branch_centers.npy \\
-  --out ./outputs/{junction_key}_assign"""
+                if assign_mode in ["radial", "hybrid"]:
+                    cli_command += f" \\\n  --r_outer {r_outer:.1f}"
 
                 st.code(cli_command, language="bash")
 
-                # Show assignment statistics
-                if "assignments" in assignment_data:
-                    assignments_df = assignment_data["assignments"]
-                    st.markdown("**Assignment Statistics:**")
-                    branch_counts = assignments_df['branch'].value_counts().sort_index()
-                    total = len(assignments_df)
-                    for branch, count in branch_counts.items():
-                        percentage = (count / total * 100) if total > 0 else 0
-                        st.write(f"- Branch {int(branch)}: {int(count)} trajectories ({percentage:.1f}%)")
-
         elif analysis_type == "predict":
-            # Generate predict command for all junctions
             junctions_str = " ".join([f"{j.cx:.1f} {j.cz:.1f} {j.r:.1f}" for j in st.session_state.junctions])
-            r_outer_str = " ".join([str(st.session_state.junction_r_outer.get(i, 50.0)) for i in range(len(st.session_state.junctions))])
+            r_outer_list = [st.session_state.junction_r_outer.get(i, 50.0) for i in range(len(st.session_state.junctions))]
+            r_outer_str = " ".join([f"{r:.1f}" for r in r_outer_list])
 
-            cli_command = f"""verta predict \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale 0.2 \\
-  --junctions {junctions_str} \\
-  --r_outer_list {r_outer_str} \\
-  --distance 100.0 \\
-  --decision_mode {decision_mode} \\
-  --cluster_method {cluster_method}"""
-
-            # Add cluster method specific parameters
-            if cluster_method == "dbscan" and cluster_params:
-                cli_command += f" \\\n  --min_samples {cluster_params.get('min_samples', 5)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
-            elif cluster_method == "kmeans" and cluster_params:
-                cli_command += f" \\\n  --k_min {cluster_params.get('k_min', 2)} \\\n  --k_max {cluster_params.get('k_max', 6)}"
-            elif cluster_method == "auto" and cluster_params:
-                cli_command += f" \\\n  --k_min {cluster_params.get('k_min', 2)} \\\n  --k_max {cluster_params.get('k_max', 6)} \\\n  --min_sep_deg {cluster_params.get('min_sep_deg', 12.0)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
-
-            # Add decision mode specific parameters
-            if decision_mode == "radial" and decision_params:
-                cli_command += f" \\\n  --r_outer_list {decision_params.get('r_outer', 50.0)} \\\n  --epsilon {decision_params.get('epsilon', 0.05)}"
-            elif decision_mode == "pathlen" and decision_params:
-                cli_command += f" \\\n  --distance {decision_params.get('path_length', 100.0)} \\\n  --linger_delta {decision_params.get('linger_delta', 0.0)}"
-            elif decision_mode == "hybrid" and decision_params:
-                cli_command += f" \\\n  --r_outer_list {decision_params.get('r_outer', 50.0)} \\\n  --distance {decision_params.get('path_length', 100.0)}"
-
-            cli_command += f" \\\n  --out ./outputs/prediction"
+            cli_command = (f"verta predict \\\n"
+                f"  --input ./data \\\n"
+                f"  --out ./outputs/prediction \\\n"
+                f"  --junctions {junctions_str} \\\n"
+                f"  --r_outer_list {r_outer_str}")
+            cli_command += _common_args()
 
             st.code(cli_command, language="bash")
 
         elif analysis_type == "metrics":
-            # Generate metrics commands for each junction
             for junction_key, metrics_data in results.items():
                 if not junction_key.startswith("junction_"):
                     continue
 
-                junction_num = junction_key.split('_')[1]
                 junction = metrics_data.get("junction")
                 if junction is None:
                     continue
 
-                r_outer = metrics_data.get("r_outer_value", metrics_data.get("r_outer", 50.0))
-                decision_mode = metrics_data.get("decision_mode", "pathlen")
+                met_mode = metrics_data.get("decision_mode", "pathlen")
                 distance = metrics_data.get("distance", 100.0)
+                epsilon = metrics_data.get("epsilon", 0.015)
+                linger_delta = metrics_data.get("linger_delta", 5.0)
+                r_outer = metrics_data.get("r_outer_value", metrics_data.get("r_outer", 50.0))
                 trend_window = metrics_data.get("trend_window", 5)
                 min_outward = metrics_data.get("min_outward", 0.0)
 
                 st.markdown(f"#### {junction_key.replace('_', ' ').title()}")
 
-                # Generate the CLI command
-                cli_command = f"""verta metrics \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale 0.2 \\
-  --junction {junction.cx:.1f} {junction.cz:.1f} \\
-  --radius {junction.r:.1f} \\
-  --decision_mode {decision_mode} \\
-  --distance {distance:.1f}"""
+                cli_command = (f"verta metrics \\\n"
+                    f"  --input ./data \\\n"
+                    f"  --out ./outputs/{junction_key}_metrics \\\n"
+                    f"  --junction {junction.cx:.1f} {junction.cz:.1f} \\\n"
+                    f"  --radius {junction.r:.1f} \\\n"
+                    f"  --decision_mode {met_mode} \\\n"
+                    f"  --distance {distance:.1f} \\\n"
+                    f"  --epsilon {epsilon:.3f} \\\n"
+                    f"  --linger_delta {linger_delta:.1f}")
+                cli_command += _common_args()
 
-                if decision_mode in ["radial", "hybrid"]:
+                if met_mode in ["radial", "hybrid"]:
                     cli_command += f" \\\n  --r_outer {r_outer:.1f}"
-
-                if decision_mode == "radial":
+                if met_mode == "radial":
                     cli_command += f" \\\n  --trend_window {trend_window} \\\n  --min_outward {min_outward:.1f}"
-
-                cli_command += f" \\\n  --out ./outputs/{junction_key}_metrics"
 
                 st.code(cli_command, language="bash")
 
         elif analysis_type == "gaze":
-            # Generate gaze command for all junctions
             if len(st.session_state.junctions) == 1:
-                # Single junction
                 junction = st.session_state.junctions[0]
                 r_outer = st.session_state.junction_r_outer.get(0, 50.0)
                 gaze_data = list(results.values())[0] if results else {}
-                decision_mode = gaze_data.get("decision_mode", "hybrid")
+                gaze_mode = gaze_data.get("decision_mode", "hybrid")
                 path_length = gaze_data.get("path_length", 100.0)
-                epsilon = gaze_data.get("epsilon", 0.05)
+                epsilon = gaze_data.get("epsilon", 0.015)
                 linger_delta = gaze_data.get("linger_delta", 5.0)
 
-                cli_command = f"""verta gaze \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale 0.2 \\
-  --junction {junction.cx:.1f} {junction.cz:.1f} \\
-  --radius {junction.r:.1f} \\
-  --r_outer {r_outer:.1f} \\
-  --distance {path_length:.1f} \\
-  --epsilon {epsilon:.3f} \\
-  --decision_mode {decision_mode} \\
-  --linger_delta {linger_delta:.1f} \\
-  --cluster_method {cluster_method}"""
+                cli_command = (f"verta gaze \\\n"
+                    f"  --input ./data \\\n"
+                    f"  --out ./outputs/gaze_analysis \\\n"
+                    f"  --junction {junction.cx:.1f} {junction.cz:.1f} \\\n"
+                    f"  --radius {junction.r:.1f} \\\n"
+                    f"  --decision_mode {gaze_mode} \\\n"
+                    f"  --distance {path_length:.1f} \\\n"
+                    f"  --epsilon {epsilon:.3f} \\\n"
+                    f"  --linger_delta {linger_delta:.1f} \\\n"
+                    f"  --cluster_method {cluster_method}")
+                cli_command += _common_args()
+
+                if gaze_mode in ["radial", "hybrid"]:
+                    cli_command += f" \\\n  --r_outer {r_outer:.1f}"
             else:
-                # Multiple junctions
                 junctions_str = " ".join([f"{j.cx:.1f} {j.cz:.1f} {j.r:.1f}" for j in st.session_state.junctions])
                 r_outer_list = [st.session_state.junction_r_outer.get(i, 50.0) for i in range(len(st.session_state.junctions))]
                 r_outer_str = " ".join([str(r) for r in r_outer_list])
                 gaze_data = list(results.values())[0] if results else {}
-                decision_mode = gaze_data.get("decision_mode", "hybrid")
+                gaze_mode = gaze_data.get("decision_mode", "hybrid")
                 path_length = gaze_data.get("path_length", 100.0)
-                epsilon = gaze_data.get("epsilon", 0.05)
+                epsilon = gaze_data.get("epsilon", 0.015)
                 linger_delta = gaze_data.get("linger_delta", 5.0)
 
-                cli_command = f"""verta gaze \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale 0.2 \\
-  --junctions {junctions_str} \\
-  --r_outer_list {r_outer_str} \\
-  --distance {path_length:.1f} \\
-  --epsilon {epsilon:.3f} \\
-  --decision_mode {decision_mode} \\
-  --linger_delta {linger_delta:.1f} \\
-  --cluster_method {cluster_method}"""
+                cli_command = (f"verta gaze \\\n"
+                    f"  --input ./data \\\n"
+                    f"  --out ./outputs/gaze_analysis \\\n"
+                    f"  --junctions {junctions_str} \\\n"
+                    f"  --decision_mode {gaze_mode} \\\n"
+                    f"  --distance {path_length:.1f} \\\n"
+                    f"  --epsilon {epsilon:.3f} \\\n"
+                    f"  --linger_delta {linger_delta:.1f} \\\n"
+                    f"  --r_outer_list {r_outer_str} \\\n"
+                    f"  --cluster_method {cluster_method}")
+                cli_command += _common_args()
 
-            # Add cluster method specific parameters
-            if cluster_method == "dbscan" and cluster_params:
-                cli_command += f" \\\n  --min_samples {cluster_params.get('min_samples', 5)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
-            elif cluster_method == "kmeans" and cluster_params:
-                cli_command += f" \\\n  --k {cluster_params.get('k', 3)}"
-            elif cluster_method == "auto" and cluster_params:
-                cli_command += f" \\\n  --k_min {cluster_params.get('k_min', 2)} \\\n  --k_max {cluster_params.get('k_max', 6)} \\\n  --min_sep_deg {cluster_params.get('min_sep_deg', 12.0)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
-
-            cli_command += f" \\\n  --out ./outputs/gaze_analysis"
+            cli_command += _cluster_args(cluster_method, cluster_params)
 
             st.code(cli_command, language="bash")
 
         elif analysis_type == "intent":
-            # Generate intent command for all junctions
             if len(st.session_state.junctions) == 1:
-                # Single junction
                 junction = st.session_state.junctions[0]
                 intent_data = list(results.values())[0] if results else {}
-                decision_mode = intent_data.get("decision_mode", "hybrid")
+                intent_mode = intent_data.get("decision_mode", "hybrid")
                 path_length = intent_data.get("path_length", 100.0)
-                epsilon = intent_data.get("epsilon", 0.05)
+                epsilon = intent_data.get("epsilon", 0.015)
                 linger_delta = intent_data.get("linger_delta", 5.0)
                 prediction_distances = intent_data.get("prediction_distances", [100.0, 75.0, 50.0, 25.0])
                 model_type = intent_data.get("model_type", "random_forest")
                 cv_folds = intent_data.get("cv_folds", 5)
                 test_split = intent_data.get("test_split", 0.2)
 
-                cli_command = f"""verta intent \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale 0.2 \\
-  --junction {junction.cx:.1f} {junction.cz:.1f} {junction.r:.1f} \\
-  --distance {path_length:.1f} \\
-  --epsilon {epsilon:.3f} \\
-  --decision_mode {decision_mode} \\
-  --linger_delta {linger_delta:.1f} \\
-  --cluster_method {cluster_method}"""
+                cli_command = (f"verta intent \\\n"
+                    f"  --input ./data \\\n"
+                    f"  --out ./outputs/intent_recognition \\\n"
+                    f"  --junction {junction.cx:.1f} {junction.cz:.1f} {junction.r:.1f} \\\n"
+                    f"  --decision_mode {intent_mode} \\\n"
+                    f"  --distance {path_length:.1f} \\\n"
+                    f"  --epsilon {epsilon:.3f} \\\n"
+                    f"  --linger_delta {linger_delta:.1f} \\\n"
+                    f"  --cluster_method {cluster_method}")
+                cli_command += _common_args()
             else:
-                # Multiple junctions
                 junctions_str = " ".join([f"{j.cx:.1f} {j.cz:.1f} {j.r:.1f}" for j in st.session_state.junctions])
                 intent_data = list(results.values())[0] if results else {}
-                decision_mode = intent_data.get("decision_mode", "hybrid")
+                intent_mode = intent_data.get("decision_mode", "hybrid")
                 path_length = intent_data.get("path_length", 100.0)
-                epsilon = intent_data.get("epsilon", 0.05)
+                epsilon = intent_data.get("epsilon", 0.015)
                 linger_delta = intent_data.get("linger_delta", 5.0)
                 prediction_distances = intent_data.get("prediction_distances", [100.0, 75.0, 50.0, 25.0])
                 model_type = intent_data.get("model_type", "random_forest")
                 cv_folds = intent_data.get("cv_folds", 5)
                 test_split = intent_data.get("test_split", 0.2)
 
-                cli_command = f"""verta intent \\
-  --input ./data \\
-  --columns x=Headset.Head.Position.X,z=Headset.Head.Position.Z,t=Time \\
-  --scale 0.2 \\
-  --junctions {junctions_str} \\
-  --distance {path_length:.1f} \\
-  --epsilon {epsilon:.3f} \\
-  --decision_mode {decision_mode} \\
-  --linger_delta {linger_delta:.1f} \\
-  --cluster_method {cluster_method}"""
+                cli_command = (f"verta intent \\\n"
+                    f"  --input ./data \\\n"
+                    f"  --out ./outputs/intent_recognition \\\n"
+                    f"  --junctions {junctions_str} \\\n"
+                    f"  --decision_mode {intent_mode} \\\n"
+                    f"  --distance {path_length:.1f} \\\n"
+                    f"  --epsilon {epsilon:.3f} \\\n"
+                    f"  --linger_delta {linger_delta:.1f} \\\n"
+                    f"  --cluster_method {cluster_method}")
+                cli_command += _common_args()
 
-            # Add cluster method specific parameters
-            if cluster_method == "dbscan" and cluster_params:
-                cli_command += f" \\\n  --min_samples {cluster_params.get('min_samples', 5)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
-            elif cluster_method == "kmeans" and cluster_params:
-                cli_command += f" \\\n  --k {cluster_params.get('k', 3)}"
-            elif cluster_method == "auto" and cluster_params:
-                cli_command += f" \\\n  --k_min {cluster_params.get('k_min', 2)} \\\n  --k_max {cluster_params.get('k_max', 6)} \\\n  --min_sep_deg {cluster_params.get('min_sep_deg', 12.0)} \\\n  --angle_eps {cluster_params.get('angle_eps', 15.0)}"
+            cli_command += _cluster_args(cluster_method, cluster_params)
 
-            # Add intent-specific parameters
             prediction_distances_str = " ".join([str(d) for d in prediction_distances])
-            cli_command += f" \\\n  --prediction_distances {prediction_distances_str} \\\n  --model_type {model_type} \\\n  --cv_folds {cv_folds} \\\n  --test_split {test_split}"
+            cli_command += (f" \\\n  --prediction_distances {prediction_distances_str}"
+                           f" \\\n  --model_type {model_type}"
+                           f" \\\n  --cv_folds {cv_folds}"
+                           f" \\\n  --test_split {test_split}")
 
-            cli_command += f" \\\n  --out ./outputs/intent_recognition"
+            st.code(cli_command, language="bash")
+
+        elif analysis_type == "enhanced":
+            junctions_str = " ".join([f"{j.cx:.1f} {j.cz:.1f} {j.r:.1f}" for j in st.session_state.junctions])
+            r_outer_str = " ".join([str(st.session_state.junction_r_outer.get(i, 50.0)) for i in range(len(st.session_state.junctions))])
+
+            cli_command = (f"verta chain-enhanced \\\n"
+                f"  --input ./data \\\n"
+                f"  --out ./outputs/enhanced \\\n"
+                f"  --junctions {junctions_str} \\\n"
+                f"  --r_outer_list {r_outer_str} \\\n"
+                f"  --decision_mode {decision_mode} \\\n"
+                f"  --cluster_method {cluster_method}")
+            cli_command += _common_args()
+            cli_command += _mode_args(decision_mode, decision_params)
+            cli_command += _cluster_args(cluster_method, cluster_params)
 
             st.code(cli_command, language="bash")
 

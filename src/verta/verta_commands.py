@@ -679,35 +679,16 @@ class PredictCommand(BaseCommand):
         parser.add_argument("--motion_threshold", type=float, default=0.001, help="Motion detection threshold")
         parser.add_argument("--junctions", nargs="+", type=float, required=True, help="Junction coordinates (x z r ...)")
         parser.add_argument("--r_outer_list", nargs="*", type=float, default=None, help="Outer radii for each junction")
-        parser.add_argument("--distance", type=float, default=100.0, help="Path length for decision")
-        parser.add_argument("--epsilon", type=float, default=0.015, help="Minimum step size")
-        parser.add_argument("--k", type=int, default=3, help="Number of clusters")
-        parser.add_argument("--decision_mode", choices=["pathlen", "radial", "hybrid"], default="hybrid", help="Decision mode")
-        parser.add_argument("--linger_delta", type=float, default=5.0, help="Linger distance beyond junction")
-        parser.add_argument("--cluster_method", choices=["kmeans", "auto", "dbscan"], default="kmeans", help="Clustering method")
-        parser.add_argument("--k_min", type=int, default=2, help="Minimum k for auto clustering")
-        parser.add_argument("--k_max", type=int, default=6, help="Maximum k for auto clustering")
-        parser.add_argument("--min_sep_deg", type=float, default=12.0, help="Minimum separation in degrees")
-        parser.add_argument("--angle_eps", type=float, default=15.0, help="Angle epsilon for DBSCAN")
-        parser.add_argument("--min_samples", type=int, default=5, help="Minimum samples for DBSCAN")
         parser.add_argument("--seed", type=int, default=0, help="Random seed")
-
-        # Prediction-specific arguments
-        parser.add_argument("--min_pattern_samples", type=int, default=3, help="Minimum samples for pattern recognition")
-        parser.add_argument("--pattern_threshold", type=float, default=0.3, help="Minimum probability threshold for patterns")
-        parser.add_argument("--confidence_threshold", type=float, default=0.5, help="Minimum confidence for predictions")
         parser.add_argument("--analyze_sequences", action="store_true", help="Analyze complete route sequences")
-        parser.add_argument("--predict_examples", type=int, default=10, help="Number of prediction examples to generate")
 
     def execute(self, args: argparse.Namespace) -> None:
-        """Execute the prediction analysis"""
+        """Execute the prediction analysis using trajectory-based spatial tracking."""
         logger = get_logger()
         logger.info("Starting junction-based choice prediction analysis...")
 
-        # Create output directory
         os.makedirs(args.out, exist_ok=True)
 
-        # Load trajectories
         logger.info(f"Loading trajectories from {args.input}")
         trajectories = load_folder(
             folder=args.input,
@@ -723,76 +704,29 @@ class PredictCommand(BaseCommand):
 
         logger.info(f"Loaded {len(trajectories)} trajectories")
 
-        # Parse junctions
         junctions = self._parse_junctions(args.junctions)
         logger.info(f"Analyzing {len(junctions)} junctions")
 
-        # Discover decision chain
-        logger.info("Discovering decision chains...")
-        chain_df, branch_centers_list = discover_decision_chain(
-            trajectories=trajectories,
-            junctions=junctions,
-            r_outer_list=args.r_outer_list,
-            path_length=args.distance,
-            epsilon=args.epsilon,
-            k=args.k,
-            decision_mode=args.decision_mode,
-            linger_delta=args.linger_delta,
-            cluster_method=args.cluster_method,
-            k_min=args.k_min,
-            k_max=args.k_max,
-            min_sep_deg=args.min_sep_deg,
-            angle_eps=args.angle_eps,
-            min_samples=args.min_samples,
-            seed=args.seed,
-            out_dir=args.out
-        )
+        r_outer_list = args.r_outer_list if args.r_outer_list else [None] * len(junctions)
 
-        if chain_df.empty:
-            logger.error("No decision chains discovered!")
-            return
+        # Predict uses spatial tracking only (no clustering / discover step)
+        import pandas as pd
+        chain_df = pd.DataFrame({"trajectory": list(range(len(trajectories)))})
 
-        logger.info(f"Discovered decision chains for {len(chain_df)} trajectories")
-
-        # Normalize chain for downstream prediction (ID dtype, columns)
-        norm_df, _rep = normalize_assignments(
-            chain_df,
-            trajectories=trajectories,
-            junctions=junctions,
-            prefer_decisions=False,
-            include_outliers=False,
-        )
-        # Consistency warnings (optional)
-        try:
-            from verta.verta_consistency import validate_consistency
-            validate_consistency(norm_df, trajectories, junctions)
-        except Exception:
-            pass
-        # Save normalized chain
-        norm_df.to_csv(os.path.join(args.out, "decision_chains.csv"), index=False)
-
-        # Run prediction analysis
         logger.info("Analyzing junction choice patterns...")
         analysis_results = analyze_junction_choice_patterns(
             trajectories=trajectories,
-            chain_df=norm_df,
+            chain_df=chain_df,
             junctions=junctions,
             output_dir=args.out,
-            r_outer_list=args.r_outer_list,
-            gui_mode=False  # Terminal mode
+            r_outer_list=r_outer_list,
+            gui_mode=False
         )
 
-        # Generate additional analysis if requested
         if args.analyze_sequences:
-            self._analyze_route_sequences(norm_df, junctions, args.out)
+            self._analyze_route_sequences(chain_df, junctions, args.out)
 
-        # Generate prediction examples
-        if args.predict_examples > 0:
-            self._generate_prediction_examples(trajectories, norm_df, junctions, args.out, args.predict_examples)
-
-        # Save summary
         self._save_analysis_summary(analysis_results, args.out)
-
         logger.info(f"Prediction analysis complete! Results saved to {args.out}")
 
     def _parse_junctions(self, junction_args: List[float]) -> List[Circle]:

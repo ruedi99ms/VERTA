@@ -4,6 +4,7 @@ VERTA Plotting Module
 This module provides plotting functions for trajectory analysis and visualization.
 """
 
+import logging
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -11,6 +12,8 @@ from typing import List, Optional, Dict, Any
 import os
 from dataclasses import dataclass
 from typing import Tuple
+
+logger = logging.getLogger(__name__)
 
 try:
     from .verta_data_loader import Trajectory
@@ -292,11 +295,7 @@ def plot_decision_intercepts(
                 merged_df = assignments_df_copy.merge(decision_points_df_copy, on='trajectory', how='inner')
             except Exception as e:
                 # If merge still fails, try alternative approach
-                print(f"Warning: Merge failed with error: {e}")
-                print(f"Assignments trajectory type: {assignments_df_copy['trajectory'].dtype}")
-                print(f"Decision points trajectory type: {decision_points_df_copy['trajectory'].dtype}")
-                print(f"Sample assignments trajectory values: {assignments_df_copy['trajectory'].head().tolist()}")
-                print(f"Sample decision points trajectory values: {decision_points_df_copy['trajectory'].head().tolist()}")
+                logger.warning(f"Merge failed: {e}")
                 # Fall back to theoretical positions
                 merged_df = None
             
@@ -316,7 +315,7 @@ def plot_decision_intercepts(
                                  label=f'branch {i} (actual) - {len(branch_assignments)} trajectories')
             else:
                 # Fall back to theoretical positions if merge failed or no data
-                print("Falling back to theoretical positions due to merge issues")
+                logger.debug("Falling back to theoretical positions due to merge issues")
                 for i, center in enumerate(centers):
                     color = colors[i % len(colors)]
                     branch_assignments = assignments_df[assignments_df['branch'] == i]
@@ -698,9 +697,6 @@ def plot_per_junction_flow_graph(
     min_arrow_size = 15
     max_arrow_size = 100
     
-    print(f"DEBUG: Per-junction flow matrix:\n{flow_matrix}")
-    print(f"DEBUG: Max flow: {max_flow}")
-    
     # Create node positions for arrow drawing
     node_positions = []
     node_names = []
@@ -859,35 +855,19 @@ def _track_trajectory_junction_sequence(
     sequence = []
     current_junction = None
     
-    # Debug: Log trajectory info (only once per trajectory)
-    traj_id = getattr(trajectory, 'tid', 'unknown')
-    print(f"🔍 DEBUG: Tracking trajectory {traj_id}, length: {len(trajectory.x)} points")
-    print(f"🔍 DEBUG: Trajectory range: X={min(trajectory.x):.1f}-{max(trajectory.x):.1f}, Z={min(trajectory.z):.1f}-{max(trajectory.z):.1f}")
-    
-    junction_detections = 0
-    points_processed = 0
-    
     for point_idx in range(len(trajectory.x)):
         x, z = trajectory.x[point_idx], trajectory.z[point_idx]
-        points_processed += 1
         
-        # Check if we're at a new junction
         for junction_idx, (junction, r_outer) in enumerate(zip(junctions, r_outer_list)):
             distance = np.sqrt((x - junction.cx)**2 + (z - junction.cz)**2)
             
             if distance <= r_outer:
-                junction_detections += 1
                 if current_junction != junction_idx:
                     sequence.append(junction_idx)
                     current_junction = junction_idx
-                    print(f"🔍 DEBUG: Added junction {junction_idx} to sequence at point {point_idx}")
                 break
         else:
-            # Not at any junction
             current_junction = None
-    
-    print(f"DEBUG: Trajectory {traj_id} final sequence: {sequence}")
-    print(f"DEBUG: Total junction detections: {junction_detections}, Points processed: {points_processed}")
     
     return sequence
 
@@ -906,21 +886,17 @@ def _calculate_per_junction_flows(
     
     # Use cached sequences if provided, otherwise do spatial tracking
     if cached_sequences is not None:
-        print(f"🔍 DEBUG: Using cached sequences for {len(cached_sequences)} trajectories")
         for tr_idx, tr in enumerate(trajectories):
             junction_sequence = cached_sequences.get(tr_idx, [])
             
-            # Extract transitions from sequence (only count real transitions between different junctions)
             if len(junction_sequence) >= 2:
                 for i in range(len(junction_sequence) - 1):
                     from_junc = junction_sequence[i]
                     to_junc = junction_sequence[i + 1]
-                    # Only count transitions between different junctions
                     if from_junc != to_junc:
                         flow_counts[from_junc, to_junc] += 1
                         junction_exits[from_junc] += 1
     else:
-        print(f"DEBUG: No cached sequences provided, doing spatial tracking for {len(trajectories)} trajectories")
         # Use spatial tracking to determine junction visit sequences
         for tr_idx, tr in enumerate(trajectories):
             # Track junction sequence for this trajectory using spatial tracking
@@ -959,20 +935,16 @@ def _calculate_overall_flow_matrix(
     
     # Use cached sequences if provided, otherwise do spatial tracking
     if cached_sequences is not None:
-        print(f"🔍 DEBUG: Using cached sequences for overall flow calculation")
         for tr_idx, tr in enumerate(trajectories):
             junction_sequence = cached_sequences.get(tr_idx, [])
             
-            # Extract transitions from sequence (only count real transitions between different junctions)
             if len(junction_sequence) >= 2:
                 for i in range(len(junction_sequence) - 1):
                     from_junc = junction_sequence[i]
                     to_junc = junction_sequence[i + 1]
-                    # Only count transitions between different junctions
                     if from_junc != to_junc:
                         flow_counts[from_junc, to_junc] += 1
     else:
-        print(f"🔍 DEBUG: No cached sequences provided, doing spatial tracking for overall flow calculation")
         # Use spatial tracking to determine junction visit sequences
         for tr_idx, tr in enumerate(trajectories):
             # Track junction sequence for this trajectory using spatial tracking
@@ -991,9 +963,6 @@ def _calculate_overall_flow_matrix(
     flow_matrix = np.zeros((n_junctions, n_junctions))
     if total_trajectories > 0:
         flow_matrix = flow_counts / total_trajectories
-    
-    print(f"🔍 DEBUG: Overall flow matrix - total trajectories: {total_trajectories}")
-    print(f"🔍 DEBUG: Overall flow matrix:\n{flow_matrix}")
     
     return flow_matrix
 
@@ -1085,16 +1054,6 @@ def _calculate_flow_matrix_with_zones(
                     unique_transitions.add(transition)
                     flow_counts[from_node, to_node] += 1
     
-    print(f"DEBUG: {trajectories_with_sequences}/{total_trajectories} trajectories have node sequences")
-    if start_zones:
-        start_zone_idx = len(junctions)
-        start_flows = np.sum(flow_counts[start_zone_idx, :])
-        print(f"DEBUG: Total flows from start zone: {start_flows}")
-    if end_zones:
-        end_zone_idx = len(junctions) + len(start_zones)
-        end_flows = np.sum(flow_counts[:, end_zone_idx])
-        print(f"DEBUG: Total flows to end zone: {end_flows}")
-    
     # Convert counts to percentages
     total_flows = np.sum(flow_counts)
     if total_flows > 0:
@@ -1137,13 +1096,6 @@ def _calculate_per_junction_flows_with_zones(
     for tr_idx, tr in enumerate(trajectories):
         cached_sequences[tr_idx] = _track_trajectory_node_sequence(tr, junctions, r_outer_list, start_zones, end_zones)
     
-    # Only print debug stats in terminal mode (not GUI)
-    if not gui_mode:
-        print(f"\n=== TRAJECTORY FLOW DEBUG STATISTICS ===")
-        print(f"Total trajectories: {total_trajectories}")
-        print(f"Junctions: {n_junctions}, Start zones: {n_start_zones}, End zones: {n_end_zones}")
-        print(f"Total nodes: {total_nodes}")
-    
     for tr_idx, tr in enumerate(trajectories):
         # Use cached sequence
         node_sequence = cached_sequences.get(tr_idx, [])
@@ -1165,74 +1117,11 @@ def _calculate_per_junction_flows_with_zones(
                     node_exits[from_node] += 1  # Count exits from source node
                     node_entries[to_node] += 1   # Count entries to destination node
     
-    # Only print debug stats in terminal mode (not GUI)
-    if not gui_mode:
-        print(f"\nTrajectories with sequences: {trajectories_with_sequences}/{total_trajectories} ({trajectories_with_sequences/total_trajectories*100:.1f}%)")
-        
-        # Print statistics for each node
-        print(f"\n=== NODE STATISTICS ===")
-        for i in range(total_nodes):
-            if i < n_junctions:
-                node_name = f"J{i}"
-                node_type = "Junction"
-            elif i < n_junctions + n_start_zones:
-                zone_idx = i - n_junctions
-                node_name = f"S{zone_idx + 1}"
-                node_type = "Start Zone"
-            else:
-                zone_idx = i - n_junctions - n_start_zones
-                node_name = f"E{zone_idx + 1}"
-                node_type = "End Zone"
-            
-            entries = int(node_entries[i])
-            exits = int(node_exits[i])
-            print(f"{node_name} ({node_type}): {entries} entries, {exits} exits")
-            
-            # Show outgoing flows
-            outgoing_flows = []
-            for j in range(total_nodes):
-                if flow_counts[i, j] > 0:
-                    if j < n_junctions:
-                        dest_name = f"J{j}"
-                    elif j < n_junctions + n_start_zones:
-                        dest_name = f"S{j - n_junctions + 1}"
-                    else:
-                        dest_name = f"E{j - n_junctions - n_start_zones + 1}"
-                    outgoing_flows.append(f"{dest_name}({int(flow_counts[i, j])})")
-            
-            if outgoing_flows:
-                print(f"  → Outgoing flows: {', '.join(outgoing_flows)}")
-    
     # Convert counts to percentages per node
     flow_matrix = np.zeros((total_nodes, total_nodes))
     for i in range(total_nodes):
         if node_exits[i] > 0:
             flow_matrix[i, :] = flow_counts[i, :] / node_exits[i]
-    
-    # Only print flow percentages in terminal mode (not GUI)
-    if not gui_mode:
-        print(f"\n=== FLOW PERCENTAGES ===")
-        for i in range(total_nodes):
-            if node_exits[i] > 0:
-                if i < n_junctions:
-                    node_name = f"J{i}"
-                elif i < n_junctions + n_start_zones:
-                    node_name = f"S{i - n_junctions + 1}"
-                else:
-                    node_name = f"E{i - n_junctions - n_start_zones + 1}"
-                
-                print(f"\n{node_name} outgoing percentages:")
-                for j in range(total_nodes):
-                    if flow_matrix[i, j] > 0.01:  # Only show flows > 1%
-                        if j < n_junctions:
-                            dest_name = f"J{j}"
-                        elif j < n_junctions + n_start_zones:
-                            dest_name = f"S{j - n_junctions + 1}"
-                        else:
-                            dest_name = f"E{j - n_junctions - n_start_zones + 1}"
-                        print(f"  → {dest_name}: {flow_matrix[i, j]*100:.1f}%")
-        
-        print(f"\n=== END DEBUG STATISTICS ===\n")
     
     return flow_matrix
 
@@ -1470,11 +1359,6 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
     if n_junctions == 0:
         return
     
-    # Debug: Print chain_df info
-    print(f"DEBUG: chain_df shape: {chain_df.shape}")
-    print(f"DEBUG: chain_df columns: {list(chain_df.columns)}")
-    print(f"DEBUG: centers_list length: {len(centers_list) if centers_list else 'None'}")
-    
     # Calculate grid layout
     cols = min(3, n_junctions)  # Max 3 columns
     rows = (n_junctions + cols - 1) // cols
@@ -1498,10 +1382,8 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
         
         # Get branch assignments for this junction
         branch_col = f"branch_j{i}"
-        print(f"DEBUG: Looking for column '{branch_col}' in chain_df")
         
         if branch_col in chain_df.columns:
-            print(f"DEBUG: Found column '{branch_col}', unique values: {chain_df[branch_col].unique()}")
             
             # Create trajectory to branch mapping
             traj_branches = {}
@@ -1510,8 +1392,6 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
                 branch = row.get(branch_col)
                 if pd.notna(branch) and branch >= 0:  # Only valid branches
                     traj_branches[traj_id] = int(branch)
-            
-            print(f"DEBUG: Junction {i} - traj_branches: {len(traj_branches)} trajectories assigned")
             
             # Plot trajectories colored by branch
             branch_colors = {}
@@ -1528,22 +1408,15 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
                         ax.plot(traj.x[mask], traj.z[mask], color=branch_colors[branch], 
                                alpha=0.6, linewidth=1)
             
-            print(f"DEBUG: Junction {i} - branch_colors: {branch_colors}")
-            
             # Plot decision intercepts using the same logic as plot_decision_intercepts
             if centers_list and i < len(centers_list) and centers_list[i] is not None:
                 centers = centers_list[i]
                 r_outer = r_outer_list[i] if r_outer_list and i < len(r_outer_list) else junction.r * 2
                 
-                print(f"DEBUG: Junction {i} - centers shape: {centers.shape if hasattr(centers, 'shape') else 'No shape'}")
-                print(f"DEBUG: Junction {i} - r_outer: {r_outer}")
-                
                 # Create assignments DataFrame for this junction
                 junction_assignments = chain_df[['trajectory', branch_col]].copy()
                 junction_assignments = junction_assignments.rename(columns={branch_col: 'branch'})
                 junction_assignments = junction_assignments[junction_assignments['branch'] >= 0]
-                
-                print(f"DEBUG: Junction {i} - junction_assignments shape: {junction_assignments.shape}")
                 
                 if len(junction_assignments) > 0:
                     # Plot decision intercepts for each branch
@@ -1553,8 +1426,6 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
                             
                             # Get trajectories for this branch
                             branch_trajectories = junction_assignments[junction_assignments['branch'] == branch_idx]
-                            
-                            print(f"DEBUG: Junction {i}, Branch {branch_idx} - {len(branch_trajectories)} trajectories")
                             
                             # For each trajectory in this branch, find where it intersects the outer radius
                             for _, row in branch_trajectories.iterrows():
@@ -1581,7 +1452,7 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
                                             ax.plot(intersect_x, intersect_z, 'o', color=color, 
                                                    markersize=4, markeredgecolor='black', markeredgewidth=0.5)
             else:
-                print(f"DEBUG: Junction {i} - No centers_list or centers is None")
+                pass
             
             # Create legend for branches
             if branch_colors:
@@ -1591,7 +1462,6 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
                                                     label=f'Branch {branch}'))
                 ax.legend(handles=legend_elements, loc='upper right', fontsize=8)
         else:
-            print(f"DEBUG: Column '{branch_col}' not found in chain_df")
             # Fallback: plot all trajectories in blue if no branch data
             for traj in trajectories:
                 mask = ((traj.x >= x_min) & (traj.x <= x_max) & 
