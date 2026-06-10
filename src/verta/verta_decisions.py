@@ -295,7 +295,9 @@ def discover_branches(trajectories: Sequence[Trajectory],
                       min_samples: int = 5,
                       junction_number: int = 0,
                       all_junctions: Sequence[Circle] = None,
-                      skip_plots: bool = False
+                      skip_plots: bool = False,
+                      scale: float = 1.0,
+                      coordinate_unit: Optional[str] = None,
                       ) -> Tuple[pd.DataFrame, pd.DataFrame, np.ndarray]:
     """Compute initial movement vectors and cluster them into k branches.
 
@@ -564,7 +566,9 @@ def discover_branches(trajectories: Sequence[Trajectory],
                 show_paths=False,
                 junction_number=junction_number,
                 all_junctions=all_junctions,
-                decision_points_df=decision_points_df
+                decision_points_df=decision_points_df,
+                scale=scale,
+                coordinate_unit=coordinate_unit,
             )
 
     return assignments, summary, centers
@@ -712,6 +716,8 @@ def discover_decision_chain(
     angle_eps: float = 15.0,
     min_samples: int = 5,
     skip_plots: bool = False,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
 ) -> tuple[pd.DataFrame, list[np.ndarray], pd.DataFrame]:
     """
     Discover branches at multiple junctions (a decision chain).
@@ -763,6 +769,8 @@ def discover_decision_chain(
             junction_number=i,  # Pass the correct junction number
             all_junctions=junctions,
             skip_plots=skip_plots,
+            scale=scale,
+            coordinate_unit=coordinate_unit,
         )
         # rename branch column to junction index specific
         assign_i = assign_i.rename(columns={"branch": f"branch_j{i}"})
@@ -815,4 +823,75 @@ def discover_decision_chain(
         decisions_chain_df = pd.concat(per_j_decisions, ignore_index=True) if per_j_decisions else pd.DataFrame(columns=["trajectory","junction_index","decision_idx","intercept_x","intercept_z","mode_used"])
         print(f"[discover_debug] Chain_decisions is empty, created empty DataFrame")
 
+    if out_dir is not None and not skip_plots:
+        _write_chain_publication_plots(
+            trajectories=trajectories,
+            junctions=junctions,
+            chain_df=chain_df,
+            centers_list=all_centers,
+            r_outer_list=r_outer_list,
+            out_dir=out_dir,
+            scale=scale,
+            coordinate_unit=coordinate_unit,
+            seed=seed,
+        )
+
     return chain_df, all_centers, decisions_chain_df
+
+
+def _write_chain_publication_plots(
+    *,
+    trajectories: Sequence[Trajectory],
+    junctions: Sequence[Circle],
+    chain_df: pd.DataFrame,
+    centers_list: list,
+    r_outer_list: Sequence[Optional[float]],
+    out_dir: str,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
+    seed: int = 0,
+) -> None:
+    """Write sample-map and per-junction summary figures (GUI and CLI)."""
+    from verta.verta_plotting import (
+        plot_branch_counts,
+        plot_branch_directions,
+        plot_sample_trajectories_map,
+    )
+
+    sample_path = os.path.join(out_dir, "Sample_Trajectories_Map.png")
+    try:
+        plot_sample_trajectories_map(
+            list(trajectories),
+            junctions=list(junctions),
+            r_outer_list=list(r_outer_list),
+            scale=scale,
+            coordinate_unit=coordinate_unit,
+            out_path=sample_path,
+            seed=seed,
+        )
+        logger.info(f"Sample trajectories map saved to {sample_path}")
+    except Exception as e:
+        logger.error(f"Sample trajectories map failed: {e}")
+
+    for i, junction in enumerate(junctions):
+        col = f"branch_j{i}"
+        if col not in chain_df.columns:
+            continue
+        junction_dir = os.path.join(out_dir, f"junction_{i}")
+        os.makedirs(junction_dir, exist_ok=True)
+        df_i = chain_df[["trajectory", col]].copy().rename(columns={col: "branch"})
+        centers = centers_list[i] if i < len(centers_list) else None
+        r_outer = r_outer_list[i] if i < len(r_outer_list) else None
+        try:
+            if centers is not None and len(centers) > 0:
+                plot_branch_directions(
+                    centers,
+                    (junction.cx, junction.cz),
+                    out_path=os.path.join(junction_dir, "Branch_Directions.png"),
+                    scale=scale,
+                    coordinate_unit=coordinate_unit,
+                    junction_number=i,
+                )
+            plot_branch_counts(df_i, out_path=os.path.join(junction_dir, "Branch_Counts.png"))
+        except Exception as e:
+            logger.error(f"Publication plots for junction {i} failed: {e}")

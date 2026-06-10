@@ -45,10 +45,13 @@ def main() -> int:
     print("Launching VERTA GUI...")
     print("If the browser doesn't open automatically, visit: http://localhost:8501\n")
 
-    # Inherit env and run
+    # Prefer local src/ package over an older pip install
     env = os.environ.copy()
+    src_path = str(repo_root / "src")
+    env["PYTHONPATH"] = src_path + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
+
     try:
-        result = subprocess.run(cmd, cwd=str(cwd))
+        result = subprocess.run(cmd, cwd=str(cwd), env=env)
         return result.returncode
     except KeyboardInterrupt:
         return 0

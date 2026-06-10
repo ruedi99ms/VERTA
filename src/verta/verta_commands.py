@@ -26,7 +26,8 @@ from verta.verta_metrics import _timing_for_traj, time_between_regions, speed_th
 from verta.verta_plotting import (
     plot_decision_intercepts,
     plot_chain_overview, plot_chain_small_multiples,
-    plot_flow_graph_map, plot_per_junction_flow_graph
+    plot_flow_graph_map, plot_per_junction_flow_graph,
+    plot_sample_trajectories_map,
 )
 from verta.verta_logging import VERTALogger, get_logger
 from verta.verta_data_loader import Trajectory
@@ -55,6 +56,11 @@ class BaseCommand(ABC):
 
     def add_common_arguments(self, parser: argparse.ArgumentParser) -> None:
         """Add arguments shared by all commands"""
+        parser.add_argument(
+            "--coordinate_unit", default=None,
+            help="Unit for map axis labels in plots (e.g. 'm' for metres). "
+                 "If omitted, plots use descriptive scene-unit labels.",
+        )
         parser.add_argument("--skip_plots", action="store_true",
                             help="Skip generating plots (compute only)")
 
@@ -157,6 +163,8 @@ class DiscoverCommand(BaseCommand):
                 junction_number=0,  # CLI discover command is always for junction 0
                 all_junctions=[junction],
                 skip_plots=skip_plots,
+                scale=float(args.scale),
+                coordinate_unit=getattr(args, "coordinate_unit", None),
             )
 
         with self.logger.operation("Processing assignments"):
@@ -230,21 +238,41 @@ class DiscoverCommand(BaseCommand):
     def _generate_plots(self, trajectories, assignments, centers, junction, args):
         """Generate visualization plots"""
         main_assignments = pd.read_csv(os.path.join(args.out, "branch_assignments.csv"))
+        coord_unit = getattr(args, "coordinate_unit", None)
+        scale = float(getattr(args, "scale", 1.0))
 
-        # Branch directions plot (optional - function may not exist)
+        try:
+            plot_sample_trajectories_map(
+                trajectories=trajectories,
+                junctions=[junction],
+                r_outer_list=[float(args.r_outer)] if args.r_outer is not None else None,
+                scale=scale,
+                coordinate_unit=coord_unit,
+                out_path=os.path.join(args.out, "Sample_Trajectories_Map.png"),
+                seed=int(getattr(args, "seed", 0)),
+            )
+            self.logger.info("Sample trajectories map generated")
+        except Exception as e:
+            self.logger.error(f"Sample trajectories map failed: {e}")
+
         try:
             from .verta_plotting import plot_branch_directions
-            plot_branch_directions(centers, (junction.cx, junction.cz),
-                                 os.path.join(args.out, "Branch_Directions.png"))
-        except (ImportError, AttributeError):
-            self.logger.warning("plot_branch_directions not available, skipping")
+            plot_branch_directions(
+                centers, (junction.cx, junction.cz),
+                os.path.join(args.out, "Branch_Directions.png"),
+                scale=scale, coordinate_unit=coord_unit,
+                junction_number=0,
+            )
+            self.logger.info("Branch directions plot generated")
+        except Exception as e:
+            self.logger.warning(f"plot_branch_directions failed: {e}")
 
-        # Branch counts plot (optional - function may not exist)
         try:
             from .verta_plotting import plot_branch_counts
             plot_branch_counts(main_assignments, os.path.join(args.out, "Branch_Counts.png"))
-        except (ImportError, AttributeError):
-            self.logger.warning("plot_branch_counts not available, skipping")
+            self.logger.info("Branch counts plot generated")
+        except Exception as e:
+            self.logger.warning(f"plot_branch_counts failed: {e}")
 
         # Decision intercepts plot
         if args.plot_intercepts:
@@ -280,7 +308,9 @@ class DiscoverCommand(BaseCommand):
                     out_path=os.path.join(args.out, "Decision_Intercepts.png"),
                     show_paths=False,
                     legend_noenter_as_line=args.legend_noenter_as_line,
-                    decision_points_df=decision_points_df
+                    decision_points_df=decision_points_df,
+                    scale=scale,
+                    coordinate_unit=coord_unit,
                 )
                 self.logger.info("Decision intercepts plot generated")
             except Exception as e:
@@ -295,11 +325,13 @@ class DiscoverCommand(BaseCommand):
                 junction=junction,
                 centers=centers,
                 r_outer=float(args.r_outer) if args.r_outer is not None else None,
-                out_path=os.path.join(args.out, "Decision_Map.png")
+                out_path=os.path.join(args.out, "Decision_Map.png"),
+                scale=scale,
+                coordinate_unit=coord_unit,
             )
             self.logger.info("Decision map plot generated")
-        except (ImportError, AttributeError, NameError) as e:
-            self.logger.warning(f"plot_discover_map not available, skipping: {e}")
+        except Exception as e:
+            self.logger.warning(f"plot_discover_map failed: {e}")
 
 
 class AssignCommand(BaseCommand):
@@ -569,6 +601,8 @@ class GazeCommand(BaseCommand):
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
                 skip_plots=skip_plots,
+                scale=float(args.scale),
+                coordinate_unit=getattr(args, "coordinate_unit", None),
             )
 
         with self.logger.operation("Computing gaze analysis"):
@@ -1275,6 +1309,8 @@ class EnhancedChainCommand(BaseCommand):
             seed=args.seed,
             out_dir=args.out,
             skip_plots=skip_plots,
+            scale=float(args.scale),
+            coordinate_unit=getattr(args, "coordinate_unit", None),
         )
 
         self.logger.info("Completed Discovering decision chain")
@@ -1307,6 +1343,23 @@ class EnhancedChainCommand(BaseCommand):
 
     def _generate_chain_plots(self, trajectories, chain_df, junctions, rlist, args):
         """Generate chain visualization plots"""
+        coord_unit = getattr(args, "coordinate_unit", None)
+        scale = float(getattr(args, "scale", 1.0))
+
+        try:
+            plot_sample_trajectories_map(
+                trajectories=trajectories,
+                junctions=junctions,
+                r_outer_list=rlist,
+                scale=scale,
+                coordinate_unit=coord_unit,
+                out_path=os.path.join(args.out, "Sample_Trajectories_Map.png"),
+                seed=int(getattr(args, "seed", 0)),
+            )
+            self.logger.info("Sample trajectories map generated")
+        except Exception as e:
+            self.logger.error(f"Sample trajectories map failed: {e}")
+
         try:
             plot_chain_overview(
                 trajectories=trajectories,
@@ -1322,6 +1375,8 @@ class EnhancedChainCommand(BaseCommand):
                 show_centers=False,
                 centers_list=None,
                 annotate_counts=False,
+                scale=scale,
+                coordinate_unit=coord_unit,
             )
             self.logger.info("Chain overview plot generated")
         except Exception as e:
@@ -1340,6 +1395,8 @@ class EnhancedChainCommand(BaseCommand):
                 linger_delta=float(args.linger_delta),
                 decision_mode=str(args.decision_mode),
                 out_path=os.path.join(args.out, "Chain_SmallMultiples.png"),
+                scale=scale,
+                coordinate_unit=coord_unit,
             )
             self.logger.info("Chain small multiples plot generated")
         except Exception as e:
@@ -1426,8 +1483,15 @@ class GUICommand(BaseCommand):
         self.logger.info(f"Launching VERTA GUI on http://{args.host}:{args.port}")
         self.logger.info("Press Ctrl+C to stop the server")
 
+        env = os.environ.copy()
+        src_dir = gui_path.parent.parent
+        if src_dir.name == "src" and (src_dir / "verta" / "__init__.py").exists():
+            env["PYTHONPATH"] = str(src_dir) + (
+                os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""
+            )
+
         try:
-            subprocess.run(cmd)
+            subprocess.run(cmd, env=env)
         except KeyboardInterrupt:
             self.logger.info("GUI stopped by user")
         except Exception as e:

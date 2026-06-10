@@ -8,10 +8,9 @@ import logging
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Sequence, Tuple
 import os
 from dataclasses import dataclass
-from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -71,6 +70,383 @@ class PlotConfig:
 
 # Default plot configuration instance
 DEFAULT_PLOT_CONFIG = PlotConfig()
+
+
+def coordinate_labels(
+    scale: float = 1.0,
+    unit: Optional[str] = None,
+) -> Dict[str, str]:
+    """Axis labels and caption text for map-style trajectory plots.
+
+    Coordinates in VERTA are the horizontal plane of the virtual environment
+    (Unity/VR X and Z; vertical Y is not used). The optional ``scale`` factor is
+    applied when CSV files are loaded (see ``--scale`` / ``load_folder``).
+    """
+    if unit:
+        x_label = f"X position ({unit})"
+        z_label = f"Z position ({unit})"
+        unit_note = f"Positions are in {unit} after loading (scale={scale:g} applied to CSV values)."
+    elif scale != 1.0:
+        x_label = "X position (scaled)"
+        z_label = "Z position (scaled)"
+        unit_note = (
+            f"CSV coordinates were multiplied by scale={scale:g} at load time. "
+            "Pass coordinate_unit='m' (or your unit) to plot functions for explicit axis labels."
+        )
+    else:
+        x_label = "X position (scene units)"
+        z_label = "Z position (scene units)"
+        unit_note = (
+            "Horizontal plane of the virtual environment (X and Z axes; height Y is omitted)."
+        )
+
+    caption = (
+        f"{unit_note} Each line is one participant trajectory "
+        "(typically VR headset position sampled over time)."
+    )
+    return {"x": x_label, "z": z_label, "caption": caption}
+
+
+def _place_legend_and_stats(
+    target_ax,
+    fig,
+    handles: Sequence,
+    leg_labels: Sequence[str],
+    stats_text: Optional[str],
+    *,
+    legend_fontsize: int,
+    stats_fontsize: int = 10,
+    gap: float = 0.025,
+    anchor_x: float = 1.01,
+    anchor_y: float = 1.0,
+) -> None:
+    """Stack legend and statistics below one another without overlap."""
+    legend = None
+    if handles:
+        legend = target_ax.legend(
+            handles, leg_labels,
+            loc="upper left",
+            bbox_to_anchor=(anchor_x, anchor_y),
+            bbox_transform=target_ax.transAxes,
+            fontsize=legend_fontsize,
+            frameon=True,
+            borderaxespad=0,
+            borderpad=0.4,
+        )
+    if not stats_text:
+        return
+    _stats_bbox = dict(
+        boxstyle="round,pad=0.4", facecolor="white",
+        edgecolor="0.7", alpha=0.95,
+    )
+    if legend is None:
+        target_ax.text(
+            anchor_x, anchor_y, stats_text, transform=target_ax.transAxes,
+            fontsize=stats_fontsize, va="top", ha="left", bbox=_stats_bbox,
+            clip_on=False,
+        )
+        return
+
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    leg_box = legend.get_window_extent(renderer).transformed(target_ax.transAxes.inverted())
+
+    probe = target_ax.text(
+        anchor_x, 0.0, stats_text, transform=target_ax.transAxes,
+        fontsize=stats_fontsize, va="top", ha="left", bbox=_stats_bbox,
+    )
+    fig.canvas.draw()
+    probe_box = probe.get_window_extent(renderer).transformed(target_ax.transAxes.inverted())
+    frame_top_offset = probe_box.y1
+    probe.remove()
+
+    stats_y = leg_box.y0 - gap - frame_top_offset
+    target_ax.text(
+        anchor_x, stats_y, stats_text, transform=target_ax.transAxes,
+        fontsize=stats_fontsize, va="top", ha="left", bbox=_stats_bbox,
+        clip_on=False,
+    )
+
+
+def _add_plot_footnote(
+    fig,
+    caption: str,
+    *,
+    fontsize: int = 9,
+    bottom: float = 0.18,
+    y: float = 0.028,
+) -> None:
+    """Add a footnote below the axes with room between it and the x-axis label."""
+    fig.subplots_adjust(bottom=bottom)
+    fig.text(
+        0.5, y, caption, ha="center", va="bottom", fontsize=fontsize,
+        transform=fig.transFigure,
+    )
+
+
+def _add_map_caption(fig, caption: str) -> None:
+    """Add a short footnote below map-style plots."""
+    _add_plot_footnote(fig, caption, fontsize=8, bottom=0.18, y=0.028)
+
+
+def _map_footnote(n_total: int, scale: float = 1.0, unit: Optional[str] = None) -> str:
+    """One-line footnote for trajectory overview maps."""
+    if unit:
+        return (
+            f"VR headset paths in {unit} on the horizontal plane (X and Z axes; height Y omitted). "
+            f"N = {n_total} trajectories."
+        )
+    if scale != 1.0:
+        return (
+            f"VR headset paths on the horizontal plane (X and Z; scale {scale:g} at load). "
+            f"N = {n_total} trajectories."
+        )
+    return (
+        f"VR headset paths on the horizontal plane (X and Z axes; height Y omitted). "
+        f"N = {n_total} trajectories."
+    )
+
+
+def _plot_trajectory_layer(ax, trajectories, *, color, linewidth, alpha, zorder, rasterized=False):
+    """Draw many trajectories with uniform styling (readable with large N)."""
+    for traj in trajectories:
+        ax.plot(
+            traj.x, traj.z,
+            color=color, linewidth=linewidth, alpha=alpha,
+            zorder=zorder, rasterized=rasterized,
+        )
+
+
+def _draw_junction_markers(ax, junctions: Sequence[Circle], *, label: bool = True) -> None:
+    """Draw junction circles and optional J0…Jn labels."""
+    theta = np.linspace(0, 2 * np.pi, 100)
+    for i, junc in enumerate(junctions):
+        ax.plot(
+            junc.cx + junc.r * np.cos(theta),
+            junc.cz + junc.r * np.sin(theta),
+            "k-", linewidth=1.5, zorder=5,
+        )
+        ax.scatter(junc.cx, junc.cz, c="black", s=22, zorder=6)
+        if label:
+            ax.annotate(
+                f"J{i}", (junc.cx, junc.cz), xytext=(5, 5), textcoords="offset points",
+                fontsize=9, fontweight="bold", color="darkred", zorder=7,
+            )
+
+
+def _select_sample_indices(n_trajectories: int, n_samples: int, seed: int = 0) -> List[int]:
+    """Pick spread-out trajectory indices for illustrative maps."""
+    if n_trajectories <= 0:
+        return []
+    n_samples = min(n_samples, n_trajectories)
+    if n_samples == n_trajectories:
+        return list(range(n_trajectories))
+    rng = np.random.default_rng(seed)
+    if n_samples <= 1:
+        return [int(rng.integers(0, n_trajectories))]
+    # Evenly spaced order statistics for variety in path length / coverage
+    order = np.argsort(rng.permutation(n_trajectories))
+    pick = np.linspace(0, n_trajectories - 1, n_samples, dtype=int)
+    return sorted(int(order[i]) for i in pick)
+
+
+def plot_sample_trajectories_map(
+    trajectories: List[Trajectory],
+    *,
+    n_samples: int = 4,
+    sample_indices: Optional[List[int]] = None,
+    junctions: Optional[List[Circle]] = None,
+    r_outer_list: Optional[List[float]] = None,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
+    out_path: str = "Sample_Trajectories_Map.png",
+    show_all_faint: bool = True,
+    seed: int = 0,
+    title: str = "Raw trajectories and junctions",
+) -> None:
+    """Overview map: all paths in grey with junction markers.
+
+    Publication-style figure showing what the raw movement data look like on the
+    virtual-environment floor plan. Parameters ``n_samples`` / ``sample_indices``
+    are kept for API compatibility but no longer change the plot.
+    """
+    if not trajectories:
+        logger.warning("plot_sample_trajectories_map: no trajectories to plot")
+        return
+
+    labels = coordinate_labels(scale=scale, unit=coordinate_unit)
+    n_total = len(trajectories)
+    traj_color = "#A8A8A8"
+
+    fig, ax = plt.subplots(figsize=(12, 10), dpi=DEFAULT_PLOT_CONFIG.dpi)
+
+    _plot_trajectory_layer(
+        ax, trajectories,
+        color=traj_color, linewidth=0.45, alpha=0.55, zorder=1, rasterized=True,
+    )
+
+    if junctions:
+        _draw_junction_markers(ax, junctions)
+
+    ax.legend(
+        handles=[plt.Line2D([0], [0], color=traj_color, linewidth=1.5,
+                            label=f"Trajectories (N={n_total})")],
+        loc="upper right",
+        fontsize=DEFAULT_PLOT_CONFIG.legend_fontsize,
+    )
+
+    ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_title(title, fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
+    ax.set_aspect("equal")
+    ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
+
+    _add_map_caption(fig, _map_footnote(n_total, scale=scale, unit=coordinate_unit))
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+
+def plot_branch_directions(
+    centers: np.ndarray,
+    junction_center: Tuple[float, float],
+    out_path: str = "Branch_Directions.png",
+    *,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
+    junction_number: int = 0,
+) -> None:
+    """Unit-vector compass using the same X/Z orientation as the trajectory maps."""
+    if centers is None or len(centers) == 0:
+        logger.warning("plot_branch_directions: no branch centers to plot")
+        return
+
+    fig, ax = plt.subplots(figsize=(7, 7), dpi=DEFAULT_PLOT_CONFIG.dpi)
+
+    for i, center in enumerate(centers):
+        dx, dz = float(center[0]), float(center[1])
+        norm = np.hypot(dx, dz)
+        if norm <= 0:
+            continue
+        ux, uz = dx / norm, dz / norm
+        color = DEFAULT_PLOT_CONFIG.get_branch_color(i)
+        angle_deg = np.degrees(np.arctan2(uz, ux))
+        ax.annotate(
+            "",
+            xy=(ux, uz), xytext=(0, 0),
+            arrowprops=dict(arrowstyle="->", color=color, lw=2.5),
+        )
+        ax.text(
+            ux * 1.18, uz * 1.18,
+            f"B{i}\n{angle_deg:.0f}°",
+            ha="center", va="center", fontsize=10, color=color, fontweight="bold",
+        )
+
+    ax.axhline(0, color="0.75", linewidth=0.8, zorder=0)
+    ax.axvline(0, color="0.75", linewidth=0.8, zorder=0)
+    ax.plot(0, 0, "ko", markersize=5, zorder=5)
+    lim = 1.25
+    ax.set_xlim(-lim, lim)
+    ax.set_ylim(-lim, lim)
+    ax.set_aspect("equal")
+    ax.set_xlabel("+X")
+    ax.set_ylabel("+Z")
+    ax.set_title(
+        "Discovered branch directions\n(same axes as trajectory maps: X right, Z up)",
+        fontsize=DEFAULT_PLOT_CONFIG.title_fontsize,
+    )
+    ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
+
+    jc_x, jc_z = junction_center
+    _add_plot_footnote(
+        fig,
+        f"Unit vectors clustered from post-junction movement at junction {junction_number} "
+        f"({jc_x:.1f}, {jc_z:.1f}). "
+        "0° = +X; angles increase counter-clockwise toward +Z (horizontal plane).",
+    )
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+
+def plot_branch_counts(
+    assignments_df: pd.DataFrame,
+    out_path: str = "Branch_Counts.png",
+) -> None:
+    """Bar chart of how many trajectories were assigned to each branch."""
+    if assignments_df is None or len(assignments_df) == 0:
+        logger.warning("plot_branch_counts: empty assignments")
+        return
+
+    valid = assignments_df[assignments_df["branch"] >= 0]
+    counts = valid["branch"].value_counts().sort_index()
+    if len(counts) == 0:
+        logger.warning("plot_branch_counts: no valid branch assignments")
+        return
+
+    total = int(counts.sum())
+    percents = counts / total * 100.0
+
+    fig, ax = plt.subplots(figsize=(max(6, len(counts) * 0.8), 5))
+    x = np.arange(len(counts))
+    bars = ax.bar(x, counts.values, color=[DEFAULT_PLOT_CONFIG.get_branch_color(int(b)) for b in counts.index])
+    ax.set_xticks(x)
+    ax.set_xticklabels([f"Branch {int(b)}" for b in counts.index])
+    ax.set_ylabel("Number of trajectories (count)")
+    ax.set_xlabel("Discovered branch")
+    ax.set_title("Route-choice frequencies at junction")
+    ymax = float(counts.max())
+    ax.set_ylim(0, ymax * 1.18)
+    for bar, cnt, pct in zip(bars, counts.values, percents.values):
+        ax.text(
+            bar.get_x() + bar.get_width() / 2, bar.get_height(),
+            f"{int(cnt)}\n({pct:.1f}%)",
+            ha="center", va="bottom", fontsize=9,
+        )
+    ax.grid(True, axis="y", alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
+    _add_plot_footnote(
+        fig,
+        f"Each bar counts trajectories whose post-junction direction was assigned to that branch (N={total}).",
+    )
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+
+def plot_discover_map(
+    trajectories: List[Trajectory],
+    assignments_df: pd.DataFrame,
+    junction: Circle,
+    centers: np.ndarray,
+    r_outer: Optional[float] = None,
+    out_path: str = "Decision_Map.png",
+    *,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
+) -> None:
+    """Overview map for a single junction: grey paths and junction marker only."""
+    labels = coordinate_labels(scale=scale, unit=coordinate_unit)
+    n_total = len(trajectories)
+    traj_color = "#A8A8A8"
+
+    fig, ax = plt.subplots(figsize=(12, 10), dpi=DEFAULT_PLOT_CONFIG.dpi)
+
+    _plot_trajectory_layer(
+        ax, trajectories,
+        color=traj_color, linewidth=0.45, alpha=0.55, zorder=1, rasterized=True,
+    )
+    _draw_junction_markers(ax, [junction], label=False)
+
+    ax.legend(
+        handles=[plt.Line2D([0], [0], color=traj_color, linewidth=1.5,
+                            label=f"Trajectories (N={n_total})")],
+        loc="upper right",
+    )
+    ax.set_xlabel(labels["x"])
+    ax.set_ylabel(labels["z"])
+    ax.set_title("Trajectories and junction (horizontal plane)", fontsize=14)
+    ax.set_aspect("equal")
+    ax.grid(True, alpha=0.3)
+    _add_map_caption(fig, _map_footnote(n_total, scale=scale, unit=coordinate_unit))
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
 
 
 def _draw_tilted_rectangle(ax, zone, color, label, zorder=2):
@@ -142,9 +518,15 @@ def plot_decision_intercepts(
     legend_noenter_as_line: bool = False,
     junction_number: int = 0,
     all_junctions: List[Circle] = None,
-    decision_points_df: pd.DataFrame = None
+    decision_points_df: pd.DataFrame = None,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
 ) -> None:
     """Plot decision intercepts for a junction with branch analysis.
+
+    This figure links raw trajectories to branch discovery: each dot is the
+    location where a trajectory crossed the analysis radius after passing through
+    the junction; colors group trajectories into discovered route branches.
     
     Args:
         trajectories: List of Trajectory objects
@@ -162,24 +544,32 @@ def plot_decision_intercepts(
         junction_number: Junction number for title
         all_junctions: List of all junctions for mini-map
         decision_points_df: DataFrame with actual decision point coordinates
+        scale: Coordinate scale applied when trajectories were loaded
+        coordinate_unit: Optional unit string for axis labels (e.g. ``'m'``)
     """
-    # Create a more comprehensive layout with heading and mini-map
-    fig = plt.figure(figsize=(16, 12))
-    
-    # Create a grid layout: heading at top, main plot in center, mini-map at bottom
-    gs = fig.add_gridspec(3, 1, height_ratios=[0.5, 3, 1], hspace=0.3)
-    
-    # Add heading
+    labels = coordinate_labels(scale=scale, unit=coordinate_unit)
+    fig = plt.figure(figsize=(14, 12))
+
+    gs = fig.add_gridspec(3, 1, height_ratios=[0.5, 3, 1], hspace=0.38)
+
     ax_title = fig.add_subplot(gs[0])
-    ax_title.text(0.5, 0.5, f'Junction {junction_number} - Decision Intercepts Analysis', 
-                  ha='center', va='center', fontsize=16, fontweight='bold')
+    ax_title.text(
+        0.5, 0.65,
+        f'Junction {junction_number} — from raw paths to branch assignments',
+        ha='center', va='center', fontsize=16, fontweight='bold',
+    )
+    ax_title.text(
+        0.5, 0.2,
+        "Dots: decision points where paths cross the analysis radius (orange). "
+        "Triangles: mean direction per branch. Black circle: junction.",
+        ha='center', va='center', fontsize=10, style='italic',
+    )
     ax_title.set_xlim(0, 1)
     ax_title.set_ylim(0, 1)
     ax_title.axis('off')
     
-    # Main plot
     ax = fig.add_subplot(gs[1])
-    
+
     # Plot trajectories if requested
     if show_paths:
         for tr in trajectories:
@@ -200,41 +590,47 @@ def plot_decision_intercepts(
     ax.scatter([junction.cx], [junction.cz], c='black', s=50, marker='o', 
               label='Junction Center')
     
+    stats_text = None
+
     # Plot branch analysis with triangular markers and connections
     if len(centers) > 0 and assignments_df is not None:
         # Define colors and markers for different branches
         colors = ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'gray']
         markers = ['^', '>', '<', 'v', 's', 'D', 'o', 'h']
-        
+
+        plot_df = assignments_df.copy()
+        plot_df["branch"] = pd.to_numeric(plot_df["branch"], errors="coerce")
+        plot_df = plot_df[plot_df["branch"] >= 0].copy()
+        plot_df["branch"] = plot_df["branch"].astype(int)
+        if "trajectory" in plot_df.columns:
+            plot_df["trajectory"] = plot_df["trajectory"].astype(str)
+
         # Calculate branch statistics
-        branch_counts = assignments_df['branch'].value_counts().sort_index()
-        total_trajectories = len(assignments_df)
-        
+        branch_counts = plot_df["branch"].value_counts().sort_index()
+        total_trajectories = len(plot_df)
+        branch_legend_added = set()
+
         # Plot branch markers and directions
         for i, center in enumerate(centers):
             color = colors[i % len(colors)]
             marker = markers[i % len(markers)]
             
             # Get assignments for this branch
-            branch_assignments = assignments_df[assignments_df['branch'] == i]
+            branch_assignments = plot_df[plot_df["branch"] == i]
             branch_count = len(branch_assignments)
             
             if branch_count > 0:
                 # Calculate branch direction from actual decision points if available
                 if decision_points_df is not None and len(decision_points_df) > 0:
-                    # Merge decision points with assignments to get actual coordinates
-                    assignments_df_copy = assignments_df.copy()
                     decision_points_df_copy = decision_points_df.copy()
-                    
-                    # Convert trajectory columns to string to ensure compatibility
-                    if 'trajectory' in assignments_df_copy.columns:
-                        assignments_df_copy['trajectory'] = assignments_df_copy['trajectory'].astype(str)
-                    if 'trajectory' in decision_points_df_copy.columns:
-                        decision_points_df_copy['trajectory'] = decision_points_df_copy['trajectory'].astype(str)
-                    
+                    if "trajectory" in decision_points_df_copy.columns:
+                        decision_points_df_copy["trajectory"] = (
+                            decision_points_df_copy["trajectory"].astype(str)
+                        )
+
                     try:
-                        merged_df = assignments_df_copy.merge(decision_points_df_copy, on='trajectory', how='inner')
-                        branch_points = merged_df[merged_df['branch'] == i]
+                        merged_df = plot_df.merge(decision_points_df_copy, on="trajectory", how="inner")
+                        branch_points = merged_df[merged_df["branch"] == i]
                         
                         if len(branch_points) > 0:
                             # Calculate average direction from junction center to actual decision points
@@ -269,10 +665,14 @@ def plot_decision_intercepts(
                 branch_x = junction.cx + r_outer * branch_direction[0]
                 branch_z = junction.cz + r_outer * branch_direction[1]
                 
-                # Plot triangular markers for this branch
-                ax.scatter([branch_x], [branch_z], c=color, s=100, marker=marker, 
-                          label=f'branch {i} (radial) - {branch_count} trajectories', 
-                          edgecolors='black', linewidth=1)
+                # Plot triangular markers for this branch (one legend entry per branch)
+                tri_label = f"Branch {i}" if i not in branch_legend_added else None
+                ax.scatter(
+                    [branch_x], [branch_z], c=color, s=100, marker=marker,
+                    label=tri_label, edgecolors="black", linewidth=1, zorder=5,
+                )
+                if tri_label:
+                    branch_legend_added.add(i)
                 
                 # Draw dashed line from branch to junction center
                 ax.plot([branch_x, junction.cx], [branch_z, junction.cz], 
@@ -280,94 +680,72 @@ def plot_decision_intercepts(
         
         # Plot all individual intercept points using ACTUAL decision point coordinates
         if decision_points_df is not None and len(decision_points_df) > 0:
-            # Ensure trajectory columns have consistent data types for merging
-            assignments_df_copy = assignments_df.copy()
             decision_points_df_copy = decision_points_df.copy()
-            
-            # Convert trajectory columns to string to ensure compatibility
-            if 'trajectory' in assignments_df_copy.columns:
-                assignments_df_copy['trajectory'] = assignments_df_copy['trajectory'].astype(str)
-            if 'trajectory' in decision_points_df_copy.columns:
-                decision_points_df_copy['trajectory'] = decision_points_df_copy['trajectory'].astype(str)
-            
-            # Merge decision points with assignments to get branch information
+            if "trajectory" in decision_points_df_copy.columns:
+                decision_points_df_copy["trajectory"] = (
+                    decision_points_df_copy["trajectory"].astype(str)
+                )
+
             try:
-                merged_df = assignments_df_copy.merge(decision_points_df_copy, on='trajectory', how='inner')
+                merged_df = plot_df.merge(decision_points_df_copy, on="trajectory", how="inner")
             except Exception as e:
-                # If merge still fails, try alternative approach
                 logger.warning(f"Merge failed: {e}")
-                # Fall back to theoretical positions
                 merged_df = None
-            
+
             if merged_df is not None and len(merged_df) > 0:
                 for i, center in enumerate(centers):
                     color = colors[i % len(colors)]
-                    branch_assignments = merged_df[merged_df['branch'] == i]
-                    
+                    branch_assignments = merged_df[merged_df["branch"] == i]
+
                     if len(branch_assignments) > 0:
-                        # Plot actual decision intercept points
-                        intercept_x = branch_assignments['intercept_x'].values
-                        intercept_z = branch_assignments['intercept_z'].values
-                        
-                        ax.scatter(intercept_x, intercept_z, 
-                                 c=color, s=40, alpha=0.8, marker='o', 
-                                 edgecolors='white', linewidth=1.5,
-                                 label=f'branch {i} (actual) - {len(branch_assignments)} trajectories')
+                        ax.scatter(
+                            branch_assignments["intercept_x"].values,
+                            branch_assignments["intercept_z"].values,
+                            c=color, s=40, alpha=0.8, marker="o",
+                            edgecolors="white", linewidth=1.5, zorder=4,
+                        )
             else:
-                # Fall back to theoretical positions if merge failed or no data
                 logger.debug("Falling back to theoretical positions due to merge issues")
                 for i, center in enumerate(centers):
                     color = colors[i % len(colors)]
-                    branch_assignments = assignments_df[assignments_df['branch'] == i]
-                    
-                    if len(branch_assignments) > 0:
-                        # Calculate base intercept point position using unit vector directions
+                    if len(plot_df[plot_df["branch"] == i]) > 0:
                         base_x = junction.cx + r_outer * center[0]
                         base_z = junction.cz + r_outer * center[1]
-                        
-                        # Plot theoretical positions (larger, more visible)
-                        ax.scatter([base_x], [base_z], 
-                                 c=color, s=80, alpha=0.9, marker='s', 
-                                 edgecolors='black', linewidth=2,
-                                 label=f'branch {i} (theoretical) - {len(branch_assignments)} trajectories')
+                        ax.scatter(
+                            [base_x], [base_z],
+                            c=color, s=80, alpha=0.9, marker="s",
+                            edgecolors="black", linewidth=2, zorder=4,
+                        )
         else:
-            # Fallback: Plot theoretical positions if no decision points data available
             for i, center in enumerate(centers):
                 color = colors[i % len(colors)]
-                branch_assignments = assignments_df[assignments_df['branch'] == i]
-                
-                if len(branch_assignments) > 0:
-                    # Calculate base intercept point position using unit vector directions
+                if len(plot_df[plot_df["branch"] == i]) > 0:
                     base_x = junction.cx + r_outer * center[0]
                     base_z = junction.cz + r_outer * center[1]
-                    
-                    # Plot theoretical positions (larger, more visible)
-                    ax.scatter([base_x], [base_z], 
-                             c=color, s=80, alpha=0.9, marker='s', 
-                             edgecolors='black', linewidth=2,
-                             label=f'branch {i} (theoretical) - {len(branch_assignments)} trajectories')
+                    ax.scatter(
+                        [base_x], [base_z],
+                        c=color, s=80, alpha=0.9, marker="s",
+                        edgecolors="black", linewidth=2, zorder=4,
+                    )
         
-        # Add branch statistics text box
-        stats_text = "Branch Statistics:\n"
+        stats_text = "Branch statistics\n" + "─" * 18 + "\n"
         for i in range(len(centers)):
             count = branch_counts.get(i, 0)
             percentage = (count / total_trajectories * 100) if total_trajectories > 0 else 0
             stats_text += f"Branch {i}: {count} ({percentage:.1f}%)\n"
-        
-        # Position text box in upper left corner
-        ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
-                verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
-    
+        stats_text += f"\nTotal: {total_trajectories}"
+
     ax.set_aspect('equal')
-    ax.set_xlabel('X')
-    ax.set_ylabel('Z')
-    ax.set_title('Decision intercepts by branch')
+    ax.set_xlabel(labels["x"], labelpad=8)
+    ax.set_ylabel(labels["z"])
+    ax.set_title(
+        f'Decision intercepts by branch (analysis radius = {r_outer:.1f} {coordinate_unit or "units"})'
+        if coordinate_unit else
+        f'Decision intercepts by branch (analysis radius = {r_outer:.1f} scene units)'
+    )
     
-    # Move legend outside the plot area to the right
-    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     ax.grid(True, alpha=0.3)
-    
-    # Add mini-map showing overall view
+
     if all_junctions is not None and len(all_junctions) > 1:
         ax_mini = fig.add_subplot(gs[2])
         
@@ -400,9 +778,9 @@ def plot_decision_intercepts(
         ax_mini.add_patch(rect)
         
         ax_mini.set_aspect('equal')
-        ax_mini.set_xlabel('X (Overall View)')
-        ax_mini.set_ylabel('Z (Overall View)')
-        ax_mini.set_title('Mini-map: All Junctions and Trajectories')
+        ax_mini.set_xlabel(labels["x"])
+        ax_mini.set_ylabel(labels["z"])
+        ax_mini.set_title('Overview: full experiment area', pad=12)
         ax_mini.grid(True, alpha=0.3)
         
         # Set reasonable limits for mini-map
@@ -415,8 +793,23 @@ def plot_decision_intercepts(
             ax_mini.set_xlim(x_min - margin, x_max + margin)
             ax_mini.set_ylim(z_min - margin, z_max + margin)
     
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=150, bbox_inches='tight')
+    caption = (
+        labels["caption"]
+        + " Decision points derive from each trajectory's path after junction entry."
+    )
+    fig.subplots_adjust(right=0.80, bottom=0.09)
+    fig.text(
+        0.5, 0.012, caption, ha="center", va="bottom", fontsize=8,
+        transform=fig.transFigure,
+    )
+
+    handles, leg_labels = ax.get_legend_handles_labels()
+    _place_legend_and_stats(
+        ax, fig, handles, leg_labels, stats_text,
+        legend_fontsize=DEFAULT_PLOT_CONFIG.legend_fontsize,
+    )
+
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
     plt.close()
 
 
@@ -584,11 +977,11 @@ def plot_flow_graph_map(
                                         alpha=0.9),
                                zorder=6)
     
-    # Set equal aspect and labels
+    flow_labels = coordinate_labels()
     ax.set_aspect("equal")
-    ax.set_xlabel("X")
-    ax.set_ylabel("Z")
-    ax.set_title("Flow Graph Map", fontsize=14, fontweight='bold')
+    ax.set_xlabel(flow_labels["x"])
+    ax.set_ylabel(flow_labels["z"])
+    ax.set_title("Flow graph on environment map", fontsize=14, fontweight='bold')
     
     # Add legend
     legend_elements = [
@@ -1267,7 +1660,8 @@ def plot_chain_overview(trajectories: List[Trajectory], chain_df: pd.DataFrame, 
                        epsilon: float = 0.015, linger_delta: float = 5.0, decision_mode: str = "hybrid",
                        out_path: str = "Chain_Overview.png", show_paths: bool = True, 
                        show_centers: bool = False, centers_list: Optional[List[np.ndarray]] = None,
-                       annotate_counts: bool = False):
+                       annotate_counts: bool = False,
+                       scale: float = 1.0, coordinate_unit: Optional[str] = None):
     """
     Plot an overview of the decision chain analysis showing all junctions and trajectories.
     
@@ -1286,6 +1680,7 @@ def plot_chain_overview(trajectories: List[Trajectory], chain_df: pd.DataFrame, 
         centers_list: Optional list of branch centers for each junction
         annotate_counts: Whether to annotate branch counts
     """
+    labels = coordinate_labels(scale=scale, unit=coordinate_unit)
     fig, ax = plt.subplots(figsize=DEFAULT_PLOT_CONFIG.figsize, dpi=DEFAULT_PLOT_CONFIG.dpi)
     
     # Plot trajectories
@@ -1322,11 +1717,12 @@ def plot_chain_overview(trajectories: List[Trajectory], chain_df: pd.DataFrame, 
                         ax.text(center[0], center[1], f'B{j}', ha='center', va='center', 
                                fontsize=8, fontweight='bold')
     
-    ax.set_xlabel('X Position', fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
-    ax.set_ylabel('Z Position', fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
-    ax.set_title('Decision Chain Overview', fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
+    ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_title('Decision chain overview (all trajectories)', fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
     ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
     ax.set_aspect('equal')
+    _add_map_caption(fig, labels["caption"])
     
     DEFAULT_PLOT_CONFIG.apply_to_figure(fig)
     plt.savefig(out_path, dpi=DEFAULT_PLOT_CONFIG.dpi, bbox_inches='tight')
@@ -1337,7 +1733,8 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
                               r_outer_list: Optional[List[float]] = None, window_radius: float = 80.0,
                               path_length: float = 100.0, epsilon: float = 0.015, linger_delta: float = 5.0,
                               decision_mode: str = "hybrid", out_path: str = "Chain_SmallMultiples.png",
-                              centers_list: Optional[List[np.ndarray]] = None, decisions_df: Optional[pd.DataFrame] = None):
+                              centers_list: Optional[List[np.ndarray]] = None, decisions_df: Optional[pd.DataFrame] = None,
+                              scale: float = 1.0, coordinate_unit: Optional[str] = None):
     """
     Plot small multiples showing trajectory patterns around each junction with branch coloring and intercepts.
     
@@ -1358,6 +1755,8 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
     n_junctions = len(junctions)
     if n_junctions == 0:
         return
+
+    labels = coordinate_labels(scale=scale, unit=coordinate_unit)
     
     # Calculate grid layout
     cols = min(3, n_junctions)  # Max 3 columns
@@ -1491,9 +1890,12 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
         # Set axis properties
         ax.set_xlim(x_min, x_max)
         ax.set_ylim(z_min, z_max)
-        ax.set_xlabel('X Position', fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
-        ax.set_ylabel('Z Position', fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
-        ax.set_title(f'J{i} ({intercept_count} intercepts)', fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
+        ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+        ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+        ax.set_title(
+            f'Junction {i}: paths colored by branch ({intercept_count} assignments)',
+            fontsize=DEFAULT_PLOT_CONFIG.title_fontsize,
+        )
         ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
         ax.set_aspect('equal')
     
@@ -1501,7 +1903,11 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
     for i in range(n_junctions, len(axes)):
         axes[i].set_visible(False)
     
-    plt.suptitle('Decision Chain Small Multiples', fontsize=DEFAULT_PLOT_CONFIG.title_fontsize + 2)
+    plt.suptitle(
+        'Per-junction view: raw trajectory segments colored by discovered branch',
+        fontsize=DEFAULT_PLOT_CONFIG.title_fontsize + 2,
+    )
+    _add_map_caption(fig, labels["caption"])
     DEFAULT_PLOT_CONFIG.apply_to_figure(fig)
     plt.savefig(out_path, dpi=DEFAULT_PLOT_CONFIG.dpi, bbox_inches='tight')
     plt.close()

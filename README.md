@@ -413,10 +413,15 @@ Each command generates specific output files:
 - `branch_assignments_all.csv` - All assignments including outliers
 - `branch_centers.npy` / `branch_centers.json` - Branch center coordinates
 - `branch_summary.csv` - Branch count statistics with entropy
-- `Branch_Directions.png` - Visual plot of branch directions
-- `Branch_Counts.png` - Bar chart of branch frequencies
-- `Decision_Intercepts.png` - Trajectory decision points visualization
-- `Decision_Map.png` - Overview map of decisions
+- `Sample_Trajectories_Map.png` - Example raw paths on the environment map (for publications)
+- `Branch_Directions.png` - Compass plot of discovered branch directions (degrees from +X)
+- `Branch_Counts.png` - Bar chart of branch frequencies (count and %)
+- `Decision_Intercepts.png` - How each trajectory crosses the analysis radius, coloured by branch
+- `Decision_Map.png` - Overview map with paths coloured by assigned branch
+
+**Map axis labels:** pass `--coordinate_unit m` (or your unit) so figures show explicit units on the X/Z axes. Coordinates are the horizontal plane of the VR scene (X and Z; height Y is omitted). The `--scale` factor is applied when CSVs are loaded.
+
+**Reproducible paper pipeline:** see [`examples/from_raw_trajectories_to_analysis.py`](examples/from_raw_trajectories_to_analysis.py) for a scripted walkthrough from raw CSVs to all map figures.
 
 ### Assign Command
 - `branch_assignments.csv` - New trajectory assignments
@@ -455,8 +460,9 @@ Each command generates specific output files:
 - `junction_*/test_predictions.json` - Sample predictions with confidence scores
 
 ### Chain-Enhanced Command
+- `Sample_Trajectories_Map.png` - Example raw paths with all junctions marked
 - `Chain_Overview.png` - Multi-junction trajectory overview
-- `Chain_SmallMultiples.png` - Detailed junction-by-junction view
+- `Chain_SmallMultiples.png` - Detailed junction-by-junction view (paths coloured by branch)
 - `Flow_Graph_Map.png` - Flow diagram between junctions
 - `Per_Junction_Flow_Graph.png` - Individual junction flow analysis
 - `branch_decisions_chain.csv` - Complete decision chain data

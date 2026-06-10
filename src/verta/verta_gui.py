@@ -133,6 +133,8 @@ class VERTAGUI:
             st.session_state.current_step = "data_upload"
         if 'scale_factor' not in st.session_state:
             st.session_state.scale_factor = 0.2  # Default scale factor
+        if 'coordinate_unit' not in st.session_state:
+            st.session_state.coordinate_unit = 'm'  # Axis label unit for map plots
         if 'data_loaded' not in st.session_state:
             st.session_state.data_loaded = False
         # Flash message shown after reruns (tuple: (level, text))
@@ -312,6 +314,12 @@ class VERTAGUI:
             with col_scale:
                 scale = st.number_input("Scale Factor:", value=st.session_state.get("scale_factor", 0.2), min_value=0.01, max_value=1.0, step=0.01)
                 st.session_state.scale_factor = scale
+                coord_unit = st.text_input(
+                    "Coordinate unit (map axes):",
+                    value=st.session_state.get("coordinate_unit", "m"),
+                    help="Shown on map plot axes, e.g. 'm' for metres. Leave empty for generic scene-unit labels.",
+                )
+                st.session_state.coordinate_unit = coord_unit.strip() or None
             with col_threshold:
                 motion_threshold = st.number_input("Motion Threshold:", value=0.1, min_value=0.01, max_value=1.0, step=0.01)
                 st.session_state.motion_threshold = motion_threshold
@@ -2344,6 +2352,8 @@ class VERTAGUI:
                     epsilon = decision_params.get("epsilon", 0.05) if decision_params else 0.05
                     linger_delta = decision_params.get("linger_delta", 5.0) if decision_params else 5.0
                     r_outer_list = [st.session_state.junction_r_outer.get(i, 50.0) for i in range(len(st.session_state.junctions))]
+                    scale = float(st.session_state.get("scale_factor", 1.0))
+                    coord_unit = st.session_state.get("coordinate_unit")
 
                     # Run consolidated discovery
                     chain_df, centers_list, decisions_chain_df = discover_decision_chain(
@@ -2363,6 +2373,8 @@ class VERTAGUI:
                         min_sep_deg=min_sep_deg,
                         angle_eps=angle_eps,
                         min_samples=min_samples,
+                        scale=scale,
+                        coordinate_unit=coord_unit,
                     )
 
                     # Build per-junction results view from chain_df/centers_list
@@ -4814,29 +4826,36 @@ class VERTAGUI:
         """Render discover analysis visualizations"""
         st.markdown("### Discover Analysis Results")
 
+        sample_map = os.path.join("gui_outputs", "Sample_Trajectories_Map.png")
+        if os.path.exists(sample_map):
+            st.markdown("#### Sample raw trajectories")
+            st.caption(
+                "All participant paths in grey with junction locations (J0, J1, …). "
+                "Use this figure to show raw movement data in publications."
+            )
+            st.image(sample_map, caption="Sample Trajectories Map", width='stretch')
+        else:
+            st.info(
+                "Run **Discover Branches** analysis to generate the sample trajectory map. "
+                "It is saved as `gui_outputs/Sample_Trajectories_Map.png`."
+            )
+
         # Display decision intercepts for each junction
         for junction_key, branches_data in st.session_state.analysis_results["branches"].items():
-            if junction_key == "chain_decisions":  # Skip the chain decisions data
+            if junction_key in ("chain_decisions", "decision_points"):
+                continue
+            if not isinstance(branches_data, dict):
                 continue
 
             st.markdown(f"#### {junction_key.replace('_', ' ').title()}")
 
-            # Show decision intercepts plot
             junction_num = junction_key.split('_')[1]
             junction_dir = os.path.join("gui_outputs", f"junction_{junction_num}")
 
-            # Display available plots
-            intercepts_path = os.path.join(junction_dir, "Decision_Intercepts.png")
-            if os.path.exists(intercepts_path):
-                st.image(intercepts_path, caption=f"Decision Intercepts - {junction_key}", width='stretch')
-            else:
-                st.warning(f"Decision intercepts plot not found for {junction_key}")
-
-            # Check for other available plots that might be generated
             other_plots = [
-                ("Decision_Map.png", "Decision Map"),
-                ("Branch_Counts.png", "Branch Counts"),
-                ("Branch_Directions.png", "Branch Directions")
+                ("Decision_Intercepts.png", "Decision Intercepts — raw paths linked to branch assignments"),
+                ("Branch_Counts.png", "Branch Counts — route-choice frequencies"),
+                ("Branch_Directions.png", "Branch Directions — compass of discovered directions"),
             ]
 
             for plot_file, plot_name in other_plots:
