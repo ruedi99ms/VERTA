@@ -288,20 +288,162 @@ def plot_sample_trajectories_map(
     if junctions:
         _draw_junction_markers(ax, junctions)
 
-    ax.legend(
-        handles=[plt.Line2D([0], [0], color=traj_color, linewidth=1.5,
-                            label=f"Trajectories (N={n_total})")],
-        loc="upper right",
-        fontsize=DEFAULT_PLOT_CONFIG.legend_fontsize,
-    )
-
     ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_title(title, fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
     ax.set_aspect("equal")
     ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
 
+    fig.subplots_adjust(right=0.82)
+    ax.legend(
+        handles=[plt.Line2D([0], [0], color=traj_color, linewidth=1.5,
+                            label=f"Trajectories (N={n_total})")],
+        loc="upper left",
+        bbox_to_anchor=(1.01, 1.0),
+        bbox_transform=ax.transAxes,
+        fontsize=DEFAULT_PLOT_CONFIG.legend_fontsize,
+        frameon=True,
+        borderaxespad=0,
+    )
+
     _add_map_caption(fig, _map_footnote(n_total, scale=scale, unit=coordinate_unit))
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+
+def _branch_colour_map(assignments_df: pd.DataFrame) -> Dict[str, int]:
+    """Map trajectory id (str) to branch label from an assignments table."""
+    branch_by_tid: Dict[str, int] = {}
+    if assignments_df is None or len(assignments_df) == 0:
+        return branch_by_tid
+    for _, row in assignments_df.iterrows():
+        tid = str(row["trajectory"])
+        branch = pd.to_numeric(row["branch"], errors="coerce")
+        if pd.notna(branch):
+            branch_by_tid[tid] = int(branch)
+    return branch_by_tid
+
+
+def plot_branch_trajectories_map(
+    trajectories: List[Trajectory],
+    assignments_df: pd.DataFrame,
+    *,
+    junctions: Optional[List[Circle]] = None,
+    junction_number: int = 0,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
+    out_path: str = "Branch_Trajectories_Map.png",
+    title: Optional[str] = None,
+    show_unassigned: bool = True,
+) -> None:
+    """Full-area map with each trajectory coloured by branch at one junction.
+
+    Like :func:`plot_sample_trajectories_map`, but path colour reflects the
+    discovered route choice at ``junction_number`` so readers can see where
+    participants who took each branch travelled in the environment.
+    """
+    if not trajectories:
+        logger.warning("plot_branch_trajectories_map: no trajectories to plot")
+        return
+
+    labels = coordinate_labels(scale=scale, unit=coordinate_unit)
+    branch_by_tid = _branch_colour_map(assignments_df)
+    n_total = len(trajectories)
+
+    fig, ax = plt.subplots(figsize=(12, 10), dpi=DEFAULT_PLOT_CONFIG.dpi)
+
+    unassigned_color = "#BDBDBD"
+    no_entry_color = "#E8E8E8"
+    branch_counts: Dict[int, int] = {}
+    n_no_decision = 0
+    n_no_entry = 0
+    n_missing = 0
+
+    for traj in trajectories:
+        tid = str(traj.tid)
+        branch = branch_by_tid.get(tid)
+        if branch is None:
+            if not show_unassigned:
+                continue
+            color, alpha, lw = unassigned_color, 0.3, 0.35
+            n_missing += 1
+        elif branch >= 0:
+            color = DEFAULT_PLOT_CONFIG.get_branch_color(branch)
+            alpha, lw = 0.7, 0.55
+            branch_counts[branch] = branch_counts.get(branch, 0) + 1
+        elif branch == -1:
+            if not show_unassigned:
+                continue
+            color, alpha, lw = unassigned_color, 0.4, 0.4
+            n_no_decision += 1
+        elif branch == -2:
+            if not show_unassigned:
+                continue
+            color, alpha, lw = no_entry_color, 0.3, 0.35
+            n_no_entry += 1
+        else:
+            continue
+
+        ax.plot(
+            traj.x, traj.z,
+            color=color, linewidth=lw, alpha=alpha,
+            zorder=1, rasterized=True,
+        )
+
+    if junctions:
+        _draw_junction_markers(ax, junctions)
+
+    legend_elements = []
+    for branch in sorted(branch_counts):
+        n = branch_counts[branch]
+        legend_elements.append(
+            plt.Line2D(
+                [0], [0],
+                color=DEFAULT_PLOT_CONFIG.get_branch_color(branch),
+                linewidth=1.5,
+                label=f"Branch {branch} (N={n})",
+            )
+        )
+    if n_no_decision > 0:
+        legend_elements.append(
+            plt.Line2D([0], [0], color=unassigned_color, linewidth=1.5,
+                       label=f"No decision (N={n_no_decision})")
+        )
+    if n_no_entry > 0:
+        legend_elements.append(
+            plt.Line2D([0], [0], color=no_entry_color, linewidth=1.5,
+                       label=f"No entry (N={n_no_entry})")
+        )
+    if n_missing > 0:
+        legend_elements.append(
+            plt.Line2D([0], [0], color=unassigned_color, linewidth=1.5,
+                       label=f"Unassigned (N={n_missing})")
+        )
+
+    plot_title = title or f"Trajectories coloured by branch at junction {junction_number}"
+    ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_title(plot_title, fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
+    ax.set_aspect("equal")
+    ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
+
+    fig.subplots_adjust(right=0.82)
+    if legend_elements:
+        ax.legend(
+            handles=legend_elements,
+            loc="upper left",
+            bbox_to_anchor=(1.01, 1.0),
+            bbox_transform=ax.transAxes,
+            fontsize=DEFAULT_PLOT_CONFIG.legend_fontsize,
+            frameon=True,
+            borderaxespad=0,
+        )
+
+    caption = (
+        f"Path colour = discovered branch at junction {junction_number}. "
+        f"{_map_footnote(n_total, scale=scale, unit=coordinate_unit)}"
+    )
+    _add_map_caption(fig, caption)
     plt.savefig(out_path, dpi=150, bbox_inches="tight")
     plt.close()
 
@@ -336,7 +478,7 @@ def plot_branch_directions(
             arrowprops=dict(arrowstyle="->", color=color, lw=2.5),
         )
         ax.text(
-            ux * 1.18, uz * 1.18,
+            ux * 1.15, uz * 1.15,
             f"B{i}\n{angle_deg:.0f}°",
             ha="center", va="center", fontsize=10, color=color, fontweight="bold",
         )
@@ -344,7 +486,7 @@ def plot_branch_directions(
     ax.axhline(0, color="0.75", linewidth=0.8, zorder=0)
     ax.axvline(0, color="0.75", linewidth=0.8, zorder=0)
     ax.plot(0, 0, "ko", markersize=5, zorder=5)
-    lim = 1.25
+    lim = 1.5
     ax.set_xlim(-lim, lim)
     ax.set_ylim(-lim, lim)
     ax.set_aspect("equal")

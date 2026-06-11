@@ -15,6 +15,7 @@ from verta.verta_plotting import (
     coordinate_labels,
     plot_branch_counts,
     plot_branch_directions,
+    plot_branch_trajectories_map,
     plot_sample_trajectories_map,
 )
 
@@ -64,6 +65,30 @@ def test_plot_branch_counts(sample_trajectories):
         out = os.path.join(tmp, "counts.png")
         plot_branch_counts(df, out_path=out)
         assert os.path.isfile(out)
+
+
+def test_plot_branch_trajectories_map(sample_trajectories):
+    import pandas as pd
+
+    junctions = [
+        Circle(cx=150, cz=220, r=15),
+        Circle(cx=250, cz=280, r=15),
+    ]
+    df = pd.DataFrame({
+        "trajectory": [str(t.tid) for t in sample_trajectories],
+        "branch": [0, 0, 1, 1, 2],
+    })
+    with tempfile.TemporaryDirectory() as tmp:
+        out = os.path.join(tmp, "branch_map.png")
+        plot_branch_trajectories_map(
+            sample_trajectories,
+            df,
+            junctions=junctions,
+            junction_number=0,
+            out_path=out,
+        )
+        assert os.path.isfile(out)
+        assert os.path.getsize(out) > 1000
 
 
 def test_plot_branch_directions():
