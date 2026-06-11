@@ -1414,7 +1414,12 @@ class VERTAGUI:
                         "Cluster Method:",
                         ["dbscan", "kmeans", "auto"],
                         index=0,  # Default to DBSCAN
-                        help="Clustering method for discover analysis"
+                        help=(
+                            "How initial movement directions are grouped into branches. "
+                            "DBSCAN: density-based, unknown K, outliers marked separately. "
+                            "k-means: fixed number of branches (K). "
+                            "auto: tries K between K min and K max and picks the best silhouette score."
+                        ),
                     )
 
                 with col_seed:
@@ -1424,7 +1429,10 @@ class VERTAGUI:
                         min_value=0,
                         max_value=10000,
                         step=1,
-                        help="Random seed for reproducibility"
+                        help=(
+                            "Fixed seed for k-means and auto-K selection so repeated runs "
+                            "with the same data and settings yield identical branch labels."
+                        ),
                     )
 
                 # Decision mode parameters (needed for discover analysis)
@@ -1436,12 +1444,21 @@ class VERTAGUI:
                         "Decision Mode:",
                         ["radial", "pathlen", "hybrid"],
                         index=2,  # Default to hybrid
-                        help="Decision mode for discover analysis"
+                        help=(
+                            "Where each trajectory's route choice is measured. "
+                            "radial: when the path crosses the analysis radius (r_outer, per junction). "
+                            "pathlen: after travelling a set distance past junction entry. "
+                            "hybrid: radial first; if no crossing is found, falls back to pathlen."
+                        ),
                     )
 
                 with col_decision_param:
                     if discover_decision_mode == "radial":
-                        st.info("ℹ️ Using junction-specific r_outer values from the Junctions tab")
+                        st.info(
+                            "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
+                            "**Junctions** tab. It defines the orange decision circle in intercept "
+                            "plots and the distance at which radial mode detects a route choice."
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1450,7 +1467,13 @@ class VERTAGUI:
                             min_value=0.01,
                             max_value=1.0,
                             step=0.01,
-                            help="Epsilon parameter"
+                            help=(
+                                "Minimum step length (scene units, after scale) when estimating "
+                                "movement direction at the analysis radius. Shorter steps are "
+                                "treated as tracking noise and ignored; if none qualify, the "
+                                "largest step in the window is used instead. Lower = more "
+                                "sensitive; higher = smoother directions. Typical: 0.05."
+                            ),
                         )
                     elif discover_decision_mode == "pathlen":
                         discover_path_length = st.number_input(
@@ -1459,7 +1482,11 @@ class VERTAGUI:
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help="Path length for pathlen mode"
+                            help=(
+                                "Distance travelled along the path after junction entry "
+                                "(scene units, after scale) before the initial direction is "
+                                "measured. Used in pathlen mode. Typical: 100."
+                            ),
                         )
                         discover_linger_delta = st.number_input(
                             "Linger Delta:",
@@ -1467,10 +1494,19 @@ class VERTAGUI:
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help="Linger distance beyond junction"
+                            help=(
+                                "Extra outward distance (scene units, after scale) beyond the "
+                                "junction radius before direction is measured in pathlen mode. "
+                                "Filters paths that turn around immediately at the junction. "
+                                "0 = no extra requirement."
+                            ),
                         )
                     elif discover_decision_mode == "hybrid":
-                        st.info("ℹ️ Using junction-specific r_outer values from the Junctions tab")
+                        st.info(
+                            "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
+                            "**Junctions** tab. It defines the orange decision circle in intercept "
+                            "plots and the distance at which radial mode detects a route choice."
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
@@ -1479,7 +1515,11 @@ class VERTAGUI:
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help="Path length for hybrid mode"
+                            help=(
+                                "Fallback path-length threshold (scene units, after scale) in "
+                                "hybrid mode when no radial crossing is detected — same meaning "
+                                "as Path Length in pathlen mode. Typical: 100."
+                            ),
                         )
                         discover_hybrid_linger_delta = st.number_input(
                             "Hybrid Linger Delta:",
@@ -1487,7 +1527,10 @@ class VERTAGUI:
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help="Linger distance beyond junction for hybrid mode"
+                            help=(
+                                "Same as Linger Delta, applied when hybrid mode falls back to "
+                                "pathlen after radial detection fails."
+                            ),
                         )
 
                 # Dynamic parameters based on cluster method (for discover analysis)
@@ -1501,7 +1544,11 @@ class VERTAGUI:
                             min_value=0.1,
                             max_value=10.0,
                             step=0.1,
-                            help="Maximum distance between samples in the same neighborhood"
+                            help=(
+                                "DBSCAN density parameter on direction vectors. In practice, "
+                                "angular grouping is controlled mainly by Angle Epsilon below; "
+                                "increase Min Samples to require more trajectories per branch."
+                            ),
                         )
                     with col_min_samples:
                         dbscan_min_samples = st.number_input(
@@ -1510,17 +1557,25 @@ class VERTAGUI:
                             min_value=1,
                             max_value=50,
                             step=1,
-                            help="Minimum number of samples in a neighborhood"
+                            help=(
+                                "Minimum trajectories with similar initial directions needed to "
+                                "form a branch cluster. Lower = more small branches; higher = "
+                                "stricter, fewer clusters. Typical: 5."
+                            ),
                         )
 
                     # Add angle_eps parameter for DBSCAN
                     dbscan_angle_eps = st.number_input(
                         "DBSCAN Angle Epsilon (degrees):",
-                        value=11.0,
+                        value=12.0,
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help="Angle epsilon for DBSCAN clustering (angular separation between clusters)"
+                        help=(
+                            "Maximum angular difference (degrees) between two movement directions "
+                            "to count as the same DBSCAN neighborhood. Smaller = more, tighter "
+                            "branches; larger = fewer, broader groups. Typical: 12–15°."
+                        ),
                     )
                 elif cluster_method == "kmeans":
                     col_k, col_k_range = st.columns(2)
@@ -1531,7 +1586,10 @@ class VERTAGUI:
                             min_value=2,
                             max_value=20,
                             step=1,
-                            help="Number of clusters to form"
+                            help=(
+                                "Fixed number of route branches (clusters) to find at each junction. "
+                                "Should match the number of physical exits or main paths. Typical: 3."
+                            ),
                         )
                     with col_k_range:
                         kmeans_k_min = st.number_input(
@@ -1540,7 +1598,10 @@ class VERTAGUI:
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help="Minimum number of clusters for auto selection"
+                            help=(
+                                "Lower bound on K when testing branch counts (auto mode) or "
+                                "defining the search range. Must be at least 2."
+                            ),
                         )
                         kmeans_k_max = st.number_input(
                             "K-Means K Max:",
@@ -1548,7 +1609,11 @@ class VERTAGUI:
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help="Maximum number of clusters for auto selection"
+                            help=(
+                                "Upper bound on K when auto mode searches for the best branch "
+                                "count via silhouette score. Should exceed the expected number "
+                                "of exits."
+                            ),
                         )
                 elif cluster_method == "auto":
                     col_k_range, col_separation = st.columns(2)
@@ -1559,7 +1624,10 @@ class VERTAGUI:
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help="Minimum number of clusters for auto selection"
+                            help=(
+                                "Lower bound on K when testing branch counts (auto mode) or "
+                                "defining the search range. Must be at least 2."
+                            ),
                         )
                         auto_k_max = st.number_input(
                             "Auto K Max:",
@@ -1567,7 +1635,11 @@ class VERTAGUI:
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help="Maximum number of clusters for auto selection"
+                            help=(
+                                "Upper bound on K when auto mode searches for the best branch "
+                                "count via silhouette score. Should exceed the expected number "
+                                "of exits."
+                            ),
                         )
                     with col_separation:
                         auto_min_sep_deg = st.number_input(
@@ -1576,7 +1648,11 @@ class VERTAGUI:
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help="Minimum separation in degrees between clusters"
+                            help=(
+                                "After clustering, merges branch directions closer than this "
+                                "angle (degrees). Prevents duplicate branches for the same "
+                                "physical exit. Typical: 12°."
+                            ),
                         )
                         auto_angle_eps = st.number_input(
                             "Auto Angle Epsilon (degrees):",
@@ -1584,13 +1660,21 @@ class VERTAGUI:
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help="Angle epsilon for auto clustering"
+                            help=(
+                                "Angular neighborhood (degrees) for grouping similar movement "
+                                "directions when DBSCAN is used; stored for pipeline consistency "
+                                "in auto mode. Typical: 11–15°."
+                            ),
                         )
 
             elif analysis_type == "enhanced":
                 # Enhanced analysis parameters (same as discover since it uses discover_decision_chain)
                 st.markdown("#### Enhanced Analysis Parameters")
-                st.info("🚨 Enhanced analysis uses the same clustering and decision parameters as discover analysis, then performs evacuation planning, risk assessment, and efficiency analysis.")
+                st.info(
+                    "🚨 **Enhanced analysis** runs the same branch discovery as above (clustering + "
+                    "decision mode), then adds evacuation planning, risk assessment, and "
+                    "efficiency metrics on top of the discovered routes."
+                )
 
                 # Clustering parameters (same as discover)
                 st.markdown("##### Clustering Parameters")
@@ -1601,7 +1685,12 @@ class VERTAGUI:
                         "Cluster Method:",
                         ["dbscan", "kmeans", "auto"],
                         index=0,  # Default to DBSCAN
-                        help="Clustering method for enhanced analysis"
+                        help=(
+                            "How initial movement directions are grouped into branches. "
+                            "DBSCAN: density-based, unknown K, outliers marked separately. "
+                            "k-means: fixed number of branches (K). "
+                            "auto: tries K between K min and K max and picks the best silhouette score."
+                        ),
                     )
 
                 with col_seed:
@@ -1611,7 +1700,10 @@ class VERTAGUI:
                         min_value=0,
                         max_value=10000,
                         step=1,
-                        help="Random seed for reproducibility"
+                        help=(
+                            "Fixed seed for k-means and auto-K selection so repeated runs "
+                            "with the same data and settings yield identical branch labels."
+                        ),
                     )
 
                 # Decision mode parameters (same as discover)
@@ -1623,12 +1715,21 @@ class VERTAGUI:
                         "Decision Mode:",
                         ["radial", "pathlen", "hybrid"],
                         index=2,  # Default to hybrid
-                        help="Decision mode for enhanced analysis"
+                        help=(
+                            "Where each trajectory's route choice is measured. "
+                            "radial: when the path crosses the analysis radius (r_outer, per junction). "
+                            "pathlen: after travelling a set distance past junction entry. "
+                            "hybrid: radial first; if no crossing is found, falls back to pathlen."
+                        ),
                     )
 
                 with col_decision_param:
                     if discover_decision_mode == "radial":
-                        st.info("ℹ️ Using junction-specific r_outer values from the Junctions tab")
+                        st.info(
+                            "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
+                            "**Junctions** tab. It defines the orange decision circle in intercept "
+                            "plots and the distance at which radial mode detects a route choice."
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1637,7 +1738,13 @@ class VERTAGUI:
                             min_value=0.01,
                             max_value=1.0,
                             step=0.01,
-                            help="Epsilon parameter"
+                            help=(
+                                "Minimum step length (scene units, after scale) when estimating "
+                                "movement direction at the analysis radius. Shorter steps are "
+                                "treated as tracking noise and ignored; if none qualify, the "
+                                "largest step in the window is used instead. Lower = more "
+                                "sensitive; higher = smoother directions. Typical: 0.05."
+                            ),
                         )
                     elif discover_decision_mode == "pathlen":
                         discover_path_length = st.number_input(
@@ -1646,7 +1753,11 @@ class VERTAGUI:
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help="Path length for pathlen mode"
+                            help=(
+                                "Distance travelled along the path after junction entry "
+                                "(scene units, after scale) before the initial direction is "
+                                "measured. Used in pathlen mode. Typical: 100."
+                            ),
                         )
                         discover_linger_delta = st.number_input(
                             "Linger Delta:",
@@ -1654,10 +1765,19 @@ class VERTAGUI:
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help="Linger distance beyond junction"
+                            help=(
+                                "Extra outward distance (scene units, after scale) beyond the "
+                                "junction radius before direction is measured in pathlen mode. "
+                                "Filters paths that turn around immediately at the junction. "
+                                "0 = no extra requirement."
+                            ),
                         )
                     elif discover_decision_mode == "hybrid":
-                        st.info("ℹ️ Using junction-specific r_outer values from the Junctions tab")
+                        st.info(
+                            "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
+                            "**Junctions** tab. It defines the orange decision circle in intercept "
+                            "plots and the distance at which radial mode detects a route choice."
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
@@ -1666,7 +1786,11 @@ class VERTAGUI:
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help="Path length for hybrid mode"
+                            help=(
+                                "Fallback path-length threshold (scene units, after scale) in "
+                                "hybrid mode when no radial crossing is detected — same meaning "
+                                "as Path Length in pathlen mode. Typical: 100."
+                            ),
                         )
                         discover_hybrid_linger_delta = st.number_input(
                             "Hybrid Linger Delta:",
@@ -1674,7 +1798,10 @@ class VERTAGUI:
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help="Linger distance beyond junction for hybrid mode"
+                            help=(
+                                "Same as Linger Delta, applied when hybrid mode falls back to "
+                                "pathlen after radial detection fails."
+                            ),
                         )
 
                 # Dynamic parameters based on cluster method (same as discover)
@@ -1688,7 +1815,11 @@ class VERTAGUI:
                             min_value=0.1,
                             max_value=10.0,
                             step=0.1,
-                            help="Maximum distance between samples in the same neighborhood"
+                            help=(
+                                "DBSCAN density parameter on direction vectors. In practice, "
+                                "angular grouping is controlled mainly by Angle Epsilon below; "
+                                "increase Min Samples to require more trajectories per branch."
+                            ),
                         )
                     with col_min_samples:
                         dbscan_min_samples = st.number_input(
@@ -1697,7 +1828,11 @@ class VERTAGUI:
                             min_value=1,
                             max_value=50,
                             step=1,
-                            help="Minimum number of samples in a neighborhood"
+                            help=(
+                                "Minimum trajectories with similar initial directions needed to "
+                                "form a branch cluster. Lower = more small branches; higher = "
+                                "stricter, fewer clusters. Typical: 5."
+                            ),
                         )
 
                     # Add angle_eps parameter for DBSCAN
@@ -1707,7 +1842,11 @@ class VERTAGUI:
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help="Angle epsilon for DBSCAN clustering (angular separation between clusters)"
+                        help=(
+                            "Maximum angular difference (degrees) between two movement directions "
+                            "to count as the same DBSCAN neighborhood. Smaller = more, tighter "
+                            "branches; larger = fewer, broader groups. Typical: 12–15°."
+                        ),
                     )
                 elif cluster_method == "kmeans":
                     col_k, col_k_range = st.columns(2)
@@ -1718,7 +1857,10 @@ class VERTAGUI:
                             min_value=2,
                             max_value=20,
                             step=1,
-                            help="Number of clusters to form"
+                            help=(
+                                "Fixed number of route branches (clusters) to find at each junction. "
+                                "Should match the number of physical exits or main paths. Typical: 3."
+                            ),
                         )
                     with col_k_range:
                         kmeans_k_min = st.number_input(
@@ -1727,7 +1869,10 @@ class VERTAGUI:
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help="Minimum number of clusters for auto selection"
+                            help=(
+                                "Lower bound on K when testing branch counts (auto mode) or "
+                                "defining the search range. Must be at least 2."
+                            ),
                         )
                         kmeans_k_max = st.number_input(
                             "K-Means K Max:",
@@ -1735,7 +1880,11 @@ class VERTAGUI:
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help="Maximum number of clusters for auto selection"
+                            help=(
+                                "Upper bound on K when auto mode searches for the best branch "
+                                "count via silhouette score. Should exceed the expected number "
+                                "of exits."
+                            ),
                         )
                 elif cluster_method == "auto":
                     col_k_range, col_separation = st.columns(2)
@@ -1746,7 +1895,10 @@ class VERTAGUI:
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help="Minimum number of clusters for auto selection"
+                            help=(
+                                "Lower bound on K when testing branch counts (auto mode) or "
+                                "defining the search range. Must be at least 2."
+                            ),
                         )
                         auto_k_max = st.number_input(
                             "Auto K Max:",
@@ -1754,7 +1906,11 @@ class VERTAGUI:
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help="Maximum number of clusters for auto selection"
+                            help=(
+                                "Upper bound on K when auto mode searches for the best branch "
+                                "count via silhouette score. Should exceed the expected number "
+                                "of exits."
+                            ),
                         )
                     with col_separation:
                         auto_min_sep_deg = st.number_input(
@@ -1763,7 +1919,11 @@ class VERTAGUI:
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help="Minimum separation in degrees between clusters"
+                            help=(
+                                "After clustering, merges branch directions closer than this "
+                                "angle (degrees). Prevents duplicate branches for the same "
+                                "physical exit. Typical: 12°."
+                            ),
                         )
                         auto_angle_eps = st.number_input(
                             "Auto Angle Epsilon (degrees):",
@@ -1771,7 +1931,11 @@ class VERTAGUI:
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help="Angle epsilon for auto clustering"
+                            help=(
+                                "Angular neighborhood (degrees) for grouping similar movement "
+                                "directions when DBSCAN is used; stored for pipeline consistency "
+                                "in auto mode. Typical: 11–15°."
+                            ),
                         )
 
             elif analysis_type == "metrics":
@@ -2127,7 +2291,12 @@ class VERTAGUI:
                             max_value=200.0,
                             step=1.0,
                             key="assign_linger_delta",
-                            help="Linger distance beyond junction"
+                            help=(
+                                "Extra outward distance (scene units, after scale) beyond the "
+                                "junction radius before direction is measured in pathlen mode. "
+                                "Filters paths that turn around immediately at the junction. "
+                                "0 = no extra requirement."
+                            ),
                         )
                         assign_epsilon = st.number_input(
                             "Epsilon:",
@@ -2150,7 +2319,11 @@ class VERTAGUI:
                             max_value=500.0,
                             step=10.0,
                             key="assign_path_length",
-                            help="Path length for hybrid mode"
+                            help=(
+                                "Fallback path-length threshold (scene units, after scale) in "
+                                "hybrid mode when no radial crossing is detected — same meaning "
+                                "as Path Length in pathlen mode. Typical: 100."
+                            ),
                         )
                         assign_linger_delta = st.number_input(
                             "Hybrid Linger Delta:",
