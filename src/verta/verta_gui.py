@@ -160,7 +160,7 @@ class VERTAGUI:
         if logo_path and os.path.exists(logo_path):
             col1, col2, col3 = st.columns([1, 2, 1])
             with col2:
-                st.image(logo_path, use_container_width=True)
+                st.image(logo_path, width="stretch")
         
         st.markdown('<h1 class="main-header">🗺️ VERTA</h1>', unsafe_allow_html=True)
         st.markdown("""
@@ -1196,7 +1196,7 @@ class VERTAGUI:
             showlegend=True
         ))
 
-        st.plotly_chart(fig, config={'displayModeBar': True}, width='stretch')
+        st.plotly_chart(fig, config={'displayModeBar': True})
 
     def load_sample_junctions(self):
         """Load sample junctions"""
@@ -8497,7 +8497,7 @@ class VERTAGUI:
                         yaxis_range=[0, 1],
                         height=300
                     )
-                    st.plotly_chart(fig, width='stretch', key=f"intent_confidence_{junction_num}_{traj_id}")
+                    st.plotly_chart(fig, key=f"intent_confidence_{junction_num}_{traj_id}")
 
         # Feature importance table
         if 'feature_importance' in junction_results['training_results']:
@@ -8651,7 +8651,7 @@ class VERTAGUI:
                 fig = px.bar(df, x="Junction", y="Trajectory Count", color="Branch",
                            title="Trajectory Distribution by Junction and Branch",
                            hover_data=["Percentage"])
-                st.plotly_chart(fig, width='stretch')
+                st.plotly_chart(fig)
 
     def _render_recommendations(self, recommendations):
         """Render recommendations"""
@@ -8782,7 +8782,7 @@ class VERTAGUI:
                            title="Unified Risk Assessment by Junction",
                            color_discrete_map={"HIGH": "red", "MEDIUM": "orange", "LOW": "green"},
                            hover_data=["Trajectory Count", "Concentration", "Route Count"])
-                st.plotly_chart(fig, width='stretch')
+                st.plotly_chart(fig)
 
     def _render_efficiency_metrics(self, efficiency_data):
         """Render efficiency metrics visualizations"""
@@ -8830,14 +8830,14 @@ class VERTAGUI:
                             title="Route Efficiency by Junction",
                             color="Route Efficiency",
                             color_continuous_scale="RdYlGn")
-                st.plotly_chart(fig1, width='stretch')
+                st.plotly_chart(fig1)
 
                 # Capacity utilization chart
                 fig2 = px.bar(df, x="Junction", y="Capacity Utilization",
                             title="Capacity Utilization by Junction",
                             color="Capacity Utilization",
                             color_continuous_scale="RdYlGn")
-                st.plotly_chart(fig2, width='stretch')
+                st.plotly_chart(fig2)
 
         # Efficiency summary
         st.markdown("##### 📈 Efficiency Summary")
