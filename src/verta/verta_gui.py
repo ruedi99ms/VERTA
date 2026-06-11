@@ -129,6 +129,8 @@ class VERTAGUI:
             st.session_state.gaze_column_mappings = {}
         if 'analysis_results' not in st.session_state:
             st.session_state.analysis_results = None
+        if 'pending_export' not in st.session_state:
+            st.session_state.pending_export = None
         if 'current_step' not in st.session_state:
             st.session_state.current_step = "data_upload"
         if 'scale_factor' not in st.session_state:
@@ -9041,37 +9043,112 @@ class VERTAGUI:
             help="Select the format for exporting results"
         )
 
-        if st.button("📥 Export Results"):
-            self.export_results(export_format)
+        if st.button("📥 Export Results", key="export_results_button"):
+            if self.export_results(export_format):
+                st.success("✅ Export ready!")
 
-    def export_results(self, format: str):
-        """Export analysis results"""
+        pending = st.session_state.get("pending_export")
+        if pending and pending.get("format") == export_format:
+            st.download_button(
+                label=pending["label"],
+                data=pending["data"],
+                file_name=pending["file_name"],
+                mime=pending["mime"],
+                key=f"download_{export_format.lower().replace(' ', '_')}_persist",
+            )
+            if pending.get("caption"):
+                st.caption(pending["caption"])
+
+    def _collect_csv_exports(self, results: Dict) -> Dict[str, str]:
+        """Build {filename: csv_text} from tabular parts of analysis results."""
+        exports: Dict[str, str] = {}
+        if not results:
+            return exports
+
+        if "metrics" in results and results["metrics"]:
+            exports["metrics_results.csv"] = pd.DataFrame(results["metrics"]).to_csv(index=False)
+
+        branches = results.get("branches")
+        if isinstance(branches, dict):
+            chain_df = branches.get("chain_decisions")
+            if isinstance(chain_df, pd.DataFrame) and not chain_df.empty:
+                exports["branch_assignments_chain.csv"] = chain_df.to_csv(index=False)
+            decisions_df = branches.get("decision_points")
+            if isinstance(decisions_df, pd.DataFrame) and not decisions_df.empty:
+                exports["decision_points_chain.csv"] = decisions_df.to_csv(index=False)
+            for junction_key, branch_data in branches.items():
+                if junction_key in ("chain_decisions", "decision_points"):
+                    continue
+                if not isinstance(branch_data, dict):
+                    continue
+                assignments = branch_data.get("assignments")
+                if isinstance(assignments, pd.DataFrame) and not assignments.empty:
+                    exports[f"{junction_key}_assignments.csv"] = assignments.to_csv(index=False)
+                summary = branch_data.get("summary")
+                if isinstance(summary, pd.DataFrame) and not summary.empty:
+                    exports[f"{junction_key}_summary.csv"] = summary.to_csv(index=False)
+
+        assignments = results.get("assignments")
+        if isinstance(assignments, dict):
+            for junction_key, assign_data in assignments.items():
+                if not isinstance(assign_data, dict):
+                    continue
+                df = assign_data.get("assignments")
+                if isinstance(df, pd.DataFrame) and not df.empty:
+                    exports[f"{junction_key}_assignments.csv"] = df.to_csv(index=False)
+
+        return exports
+
+    def export_results(self, format: str) -> bool:
+        """Prepare analysis results for download. Returns True when export data is ready."""
         try:
             if format == "JSON":
-                # Export as JSON
                 json_str = json.dumps(st.session_state.analysis_results, indent=2, default=str)
-                st.download_button(
-                    label="Download JSON",
-                    data=json_str,
-                    file_name="analysis_results.json",
-                    mime="application/json"
-                )
+                st.session_state.pending_export = {
+                    "format": "JSON",
+                    "label": "Download JSON",
+                    "file_name": "analysis_results.json",
+                    "mime": "application/json",
+                    "data": json_str,
+                }
+                return True
 
             elif format == "CSV":
-                # Export as CSV (if applicable)
-                if "metrics" in st.session_state.analysis_results:
-                    # Export metrics as CSV
-                    import pandas as pd
-                    df = pd.DataFrame(st.session_state.analysis_results["metrics"])
-                    csv_data = df.to_csv(index=False)
-                    st.download_button(
-                        label="Download Metrics CSV",
-                        data=csv_data,
-                        file_name="metrics_results.csv",
-                        mime="text/csv"
+                csv_exports = self._collect_csv_exports(st.session_state.analysis_results)
+                if not csv_exports:
+                    st.session_state.pending_export = None
+                    st.warning(
+                        "No tabular results to export. Run **Discover**, **Assign**, or "
+                        "**Metrics** analysis first."
                     )
+                    return False
+
+                if len(csv_exports) == 1:
+                    file_name, csv_data = next(iter(csv_exports.items()))
+                    st.session_state.pending_export = {
+                        "format": "CSV",
+                        "label": f"Download {file_name}",
+                        "file_name": file_name,
+                        "mime": "text/csv",
+                        "data": csv_data,
+                    }
                 else:
-                    st.info("CSV export available for metrics data")
+                    with tempfile.TemporaryDirectory() as temp_dir:
+                        zip_path = os.path.join(temp_dir, "analysis_results_csv.zip")
+                        with zipfile.ZipFile(zip_path, "w") as zipf:
+                            for name, content in csv_exports.items():
+                                zipf.writestr(name, content)
+                        with open(zip_path, "rb") as f:
+                            zip_data = f.read()
+                    st.session_state.pending_export = {
+                        "format": "CSV",
+                        "label": "Download CSV Package",
+                        "file_name": "analysis_results_csv.zip",
+                        "mime": "application/zip",
+                        "data": zip_data,
+                        "caption": "Includes: " + ", ".join(sorted(csv_exports)),
+                    }
+                return True
 
             elif format == "ZIP Archive":
                 # Create comprehensive ZIP archive with all files from gui_outputs
@@ -9101,12 +9178,13 @@ class VERTAGUI:
                     with open(zip_path, 'rb') as f:
                         zip_data = f.read()
 
-                    st.download_button(
-                        label="Download Complete Analysis Package",
-                        data=zip_data,
-                        file_name="complete_analysis_results.zip",
-                        mime="application/zip"
-                    )
+                    st.session_state.pending_export = {
+                        "format": "ZIP Archive",
+                        "label": "Download Complete Analysis Package",
+                        "file_name": "complete_analysis_results.zip",
+                        "mime": "application/zip",
+                        "data": zip_data,
+                    }
 
                     # Show what's included in the ZIP
                     st.info("📦 **Complete Analysis Package includes:**")
@@ -9128,11 +9206,16 @@ class VERTAGUI:
                     st.write("• Intent recognition models")
                     st.write("• Feature importance analysis")
                     st.write("• ML prediction results")
+                    return True
 
-            st.success("✅ Export ready!")
+            st.session_state.pending_export = None
+            st.warning(f"Unknown export format: {format}")
+            return False
 
         except Exception as e:
+            st.session_state.pending_export = None
             st.error(f"❌ Export failed: {str(e)}")
+            return False
 
     def run_quick_analysis(self):
         """Run a quick analysis with default parameters"""
@@ -9149,6 +9232,7 @@ class VERTAGUI:
         st.session_state.junctions = []
         st.session_state.junction_r_outer = {}
         st.session_state.analysis_results = None
+        st.session_state.pending_export = None
         st.session_state.current_step = "data_upload"
         st.success("✅ All data cleared!")
         st.rerun()
