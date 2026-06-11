@@ -21,7 +21,8 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 import json
 import os
-from typing import List, Dict, Optional, Tuple
+from dataclasses import asdict, is_dataclass
+from typing import List, Dict, Optional, Tuple, Any
 import tempfile
 import zipfile
 from pathlib import Path
@@ -33,7 +34,7 @@ from pathlib import Path
 
 from verta.verta_data_loader import load_folder, load_folder_with_gaze, Trajectory, ColumnMapping
 from verta.verta_decisions import discover_decision_chain, discover_branches, assign_branches
-from verta.verta_geometry import Circle, entered_junction_idx
+from verta.verta_geometry import Circle, Rect, entered_junction_idx
 from verta.verta_prediction import analyze_junction_choice_patterns, JunctionChoiceAnalyzer
 from verta.verta_plotting import plot_flow_graph_map, plot_per_junction_flow_graph, plot_chain_overview
 from verta.verta_metrics import _timing_for_traj, time_between_regions, compute_basic_trajectory_metrics, speed_through_junction, junction_transit_speed
@@ -9059,6 +9060,66 @@ class VERTAGUI:
             if pending.get("caption"):
                 st.caption(pending["caption"])
 
+    def _to_json_serializable(self, obj: Any) -> Any:
+        """Convert analysis artefacts to JSON-friendly structures (full data, not repr strings)."""
+        if obj is None:
+            return None
+        if isinstance(obj, (str, bool)):
+            return obj
+        if isinstance(obj, int) and not isinstance(obj, bool):
+            return obj
+        if isinstance(obj, float):
+            if np.isnan(obj) or np.isinf(obj):
+                return None
+            return obj
+        if isinstance(obj, (np.integer,)):
+            return int(obj)
+        if isinstance(obj, (np.floating,)):
+            val = float(obj)
+            if np.isnan(val) or np.isinf(val):
+                return None
+            return val
+        if isinstance(obj, pd.DataFrame):
+            if obj.empty:
+                return []
+            return json.loads(obj.to_json(orient="records"))
+        if isinstance(obj, pd.Series):
+            return json.loads(obj.to_json())
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, Circle):
+            return {"type": "circle", "cx": obj.cx, "cz": obj.cz, "r": obj.r}
+        if isinstance(obj, Rect):
+            return {
+                "type": "rect",
+                "xmin": obj.xmin,
+                "xmax": obj.xmax,
+                "zmin": obj.zmin,
+                "zmax": obj.zmax,
+            }
+        if isinstance(obj, Path):
+            return str(obj)
+        if is_dataclass(obj) and not isinstance(obj, type):
+            return {k: self._to_json_serializable(v) for k, v in asdict(obj).items()}
+        if isinstance(obj, dict):
+            return {str(k): self._to_json_serializable(v) for k, v in obj.items()}
+        if isinstance(obj, (list, tuple)):
+            return [self._to_json_serializable(v) for v in obj]
+        return str(obj)
+
+    def _build_json_export_payload(self, results: Dict) -> Dict:
+        """Structured export payload with session metadata and fully serialized results."""
+        payload = {
+            "export_metadata": {
+                "scale_factor": st.session_state.get("scale_factor"),
+                "coordinate_unit": st.session_state.get("coordinate_unit"),
+                "junction_count": len(st.session_state.get("junctions") or []),
+                "trajectory_count": len(st.session_state.get("trajectories") or []),
+            },
+            "results": self._to_json_serializable(results),
+        }
+        return payload
+
     def _collect_csv_exports(self, results: Dict) -> Dict[str, str]:
         """Build {filename: csv_text} from tabular parts of analysis results."""
         exports: Dict[str, str] = {}
@@ -9103,7 +9164,8 @@ class VERTAGUI:
         """Prepare analysis results for download. Returns True when export data is ready."""
         try:
             if format == "JSON":
-                json_str = json.dumps(st.session_state.analysis_results, indent=2, default=str)
+                payload = self._build_json_export_payload(st.session_state.analysis_results)
+                json_str = json.dumps(payload, indent=2)
                 st.session_state.pending_export = {
                     "format": "JSON",
                     "label": "Download JSON",
@@ -9156,7 +9218,11 @@ class VERTAGUI:
                     # Save analysis results JSON
                     results_file = os.path.join(temp_dir, "analysis_results.json")
                     with open(results_file, 'w') as f:
-                        json.dump(st.session_state.analysis_results, f, indent=2, default=str)
+                        json.dump(
+                            self._build_json_export_payload(st.session_state.analysis_results),
+                            f,
+                            indent=2,
+                        )
 
                     # Create ZIP
                     zip_path = os.path.join(temp_dir, "analysis_results.zip")
