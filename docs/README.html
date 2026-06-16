@@ -249,6 +249,31 @@ trajectories to existing branches (if new data was recorded), compute
 timing metrics, visualize results, and predict future route choices
 based on behavioral patterns. <code>VERTA</code> includes both
 command-line interface (CLI) and interactive web GUI.</p>
+<h2
+id="domain-specific-adaptations-for-vrxr-trajectories">Domain-Specific
+Adaptations for VR/XR Trajectories</h2>
+<p>Although VERTA builds on established methods such as geometric
+filtering, vector-based branch assignment, clustering, and
+machine-learning classifiers, these methods are adapted to the specific
+characteristics of VR/XR trajectory data.</p>
+<ul>
+<li><strong>Hybrid decision-point detection:</strong> VERTA combines
+path-length-based and radial-exit-based criteria to make decision
+extraction more robust to noisy movement patterns such as short stops,
+variable walking speeds, and lingering behavior near junctions.</li>
+<li><strong>Parameterized branch detection:</strong> Clustering choices
+and thresholds are configurable so users can adapt analysis to different
+junction geometries, branch separations, trajectory dispersion, and
+sample sizes.</li>
+<li><strong>Junction-indexed multimodal alignment:</strong> Optional
+gaze, head-orientation, and physiological signals are aligned to the
+same decision events as movement trajectories, enabling combined
+motion-attention analyses with consistent event windows and baseline
+definitions.</li>
+</ul>
+<p>These adaptations turn general-purpose algorithms into a
+reproducible, domain-specific workflow for route-choice analysis in
+virtual environments.</p>
 <h2 id="installation">Installation</h2>
 <p><strong>Requirements:</strong> Python ≥3.8</p>
 <div class="sourceCode" id="cb1"><pre

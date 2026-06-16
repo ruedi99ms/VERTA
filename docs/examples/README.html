@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="intent-recognition-guide---verta">Intent Recognition Guide -
+VERTA</h1>
+<p>This folder contains comprehensive documentation and example scripts
+for VERTA’s Intent Recognition feature.</p>
+<p><strong>Contents:</strong> - <strong><code>README.md</code></strong>
+(this file) - Complete guide to Intent Recognition -
+<strong><code>example_load_intent_models.py</code></strong> - Load and
+use trained models for real-time prediction -
+<strong><code>visualize_intent_concepts.py</code></strong> - Visualize
+intent recognition concepts and results</p>
+<h2 id="overview">🧠 Overview</h2>
+<p>Intent Recognition uses machine learning to predict user route
+choices <strong>before</strong> they reach decision points. This enables
+proactive systems, predictive content loading, and adaptive
+environments.</p>
+<h2 id="key-concepts">🎯 Key Concepts</h2>
+<h3 id="what-is-intent-recognition">What is Intent Recognition?</h3>
+<p>Instead of just analyzing which branch users <strong>chose</strong>
+at a junction (which we know after the fact), Intent Recognition
+predicts <strong>which branch they will choose</strong> based on their
+behavior <strong>before</strong> reaching the decision point.</p>
+<h3 id="how-it-works">How It Works</h3>
+<ol type="1">
+<li><strong>Extract features</strong> from trajectories at multiple
+distances before junction (100, 75, 50, 25 units)</li>
+<li><strong>Train ML models</strong> (Random Forest or Gradient
+Boosting) to predict branch choice</li>
+<li><strong>Evaluate accuracy</strong> using cross-validation at each
+prediction distance</li>
+<li><strong>Analyze features</strong> to understand which behavioral
+cues matter most</li>
+</ol>
+<h3 id="why-it-matters">Why It Matters</h3>
+<ul>
+<li><strong>Proactive wayfinding</strong>: Show navigation hints before
+users reach junction</li>
+<li><strong>Predictive preloading</strong>: Load next area based on
+predicted route<br />
+</li>
+<li><strong>Dynamic optimization</strong>: Adjust environment before
+user arrives</li>
+<li><strong>Early intervention</strong>: A/B test interventions at
+different prediction distances</li>
+</ul>
+<h2 id="features-extracted">📊 Features Extracted</h2>
+<h3 id="spatial-features">Spatial Features</h3>
+<ul>
+<li><strong>Distance to junction</strong>: How far from decision
+point</li>
+<li><strong>Approach angle</strong>: Angle of approach vector</li>
+<li><strong>Lateral offset</strong>: Perpendicular distance from
+straight path</li>
+</ul>
+<h3 id="kinematic-features">Kinematic Features</h3>
+<ul>
+<li><strong>Current speed</strong>: Velocity magnitude</li>
+<li><strong>Speed change rate</strong>: Acceleration/deceleration
+pattern</li>
+<li><strong>Curvature</strong>: Path curvature (measures steering)</li>
+<li><strong>Sinuosity</strong>: How much trajectory deviates from
+straight line</li>
+<li><strong>Time to junction</strong>: Estimated time remaining</li>
+</ul>
+<h3 id="gaze-features-if-available">Gaze Features (if available)</h3>
+<ul>
+<li><strong>Gaze angle</strong>: Head/gaze orientation</li>
+<li><strong>Gaze alignment</strong>: How well gaze matches movement
+direction</li>
+<li><strong>Head rotation rate</strong>: How quickly head is
+turning</li>
+</ul>
+<h3 id="physiological-features-if-available">Physiological Features (if
+available)</h3>
+<ul>
+<li><strong>Heart rate</strong>: Physiological arousal level</li>
+<li><strong>Pupil dilation</strong>: Cognitive load indicator</li>
+</ul>
+<h3 id="contextual-features">Contextual Features</h3>
+<ul>
+<li><strong>Previous choices</strong>: Branch selections at earlier
+junctions</li>
+<li><strong>Trajectory ID</strong>: User-specific patterns</li>
+</ul>
+<h2 id="models">🤖 Models</h2>
+<h3 id="random-forest-recommended">Random Forest (Recommended)</h3>
+<ul>
+<li><strong>Pros</strong>: Fast, robust to overfitting, handles missing
+data well</li>
+<li><strong>Best for</strong>: Initial exploration, smaller
+datasets</li>
+<li><strong>Training time</strong>: ~1-5 seconds per model</li>
+</ul>
+<h3 id="gradient-boosting">Gradient Boosting</h3>
+<ul>
+<li><strong>Pros</strong>: Higher accuracy potential, learns complex
+patterns</li>
+<li><strong>Best for</strong>: Maximum accuracy, larger datasets
+(&gt;100 samples per branch)</li>
+<li><strong>Training time</strong>: ~5-15 seconds per model</li>
+</ul>
+<h2 id="understanding-results">📈 Understanding Results</h2>
+<h3 id="accuracy-levels">Accuracy Levels</h3>
+<ul>
+<li><strong>🟢 Excellent (85-100%)</strong>: Highly predictable behavior
+<ul>
+<li>Use for: Proactive systems, critical navigation decisions</li>
+<li>Examples: Clear paths, learned patterns, obvious destinations</li>
+</ul></li>
+<li><strong>🟡 Good (70-85%)</strong>: Moderately predictable
+<ul>
+<li>Use for: Assisted navigation, likely predictions</li>
+<li>Examples: Multi-option paths with preferences</li>
+</ul></li>
+<li><strong>🔴 Moderate (50-70%)</strong>: Variable behavior
+<ul>
+<li>Use for: Exploratory systems, probabilistic predictions</li>
+<li>Consider: Per-user models, additional features</li>
+</ul></li>
+</ul>
+<h3 id="accuracy-vs.-distance">Accuracy vs. Distance</h3>
+<ul>
+<li><strong>Farther away from destination (100 units)</strong>: Lower
+accuracy - less information available</li>
+<li><strong>Closer (25 units)</strong>: Higher accuracy - more
+behavioral cues available</li>
+<li><strong>Analysis</strong>: Shows how early you can reliably predict
+choices</li>
+</ul>
+<h3 id="feature-importance">Feature Importance</h3>
+<p>Shows which behavioral cues the model relies on:</p>
+<ul>
+<li><strong>High importance</strong> = Strong predictor of choice</li>
+<li><strong>Low importance</strong> = Not informative for this
+junction</li>
+<li><strong>Spatial dominant</strong> = Location-based decisions</li>
+<li><strong>Kinematic dominant</strong> = Movement pattern-based
+decisions</li>
+<li><strong>Gaze dominant</strong> = Looking ahead matters</li>
+</ul>
+<h2 id="usage-in-gui">🚀 Usage in GUI</h2>
+<h3 id="basic-workflow">Basic Workflow</h3>
+<ol type="1">
+<li><strong>Data Upload</strong>: Load trajectory data</li>
+<li><strong>Junction Editor</strong>: Define decision points</li>
+<li><strong>Analysis → Discover Branches</strong>: Set clustering
+parameters (affects ground truth)</li>
+<li><strong>Analysis → Intent Recognition</strong>:
+<ul>
+<li>Select prediction distances (100, 75, 50, 25 units)</li>
+<li>Choose model type (Random Forest or Gradient Boosting)</li>
+<li>Set cross-validation folds (default: 5)</li>
+<li>Adjust test split (default: 20%)</li>
+</ul></li>
+<li><strong>Run Analysis</strong>: Train models and evaluate</li>
+<li><strong>Visualize</strong>: View results in Visualization tab</li>
+<li><strong>Export</strong>: Download models and predictions</li>
+</ol>
+<h3 id="configuration-tips">Configuration Tips</h3>
+<p><strong>Prediction Distances:</strong> - Select multiple distances to
+see accuracy progression - For real-time systems: Focus on distances
+matching your prediction needs - For research: Use all distances to
+understand behavior evolution</p>
+<p><strong>Model Selection:</strong> - Start with <strong>Random
+Forest</strong> for speed - Try <strong>Gradient Boosting</strong> if
+you need higher accuracy - Compare both to see if extra accuracy is
+worth training time</p>
+<p><strong>Cross-Validation:</strong> - <strong>5 folds</strong>
+(default): Balanced between speed and reliability - <strong>10
+folds</strong>: More reliable estimates, slower - Use higher folds for
+smaller datasets (&lt;50 samples)</p>
+<p><strong>Test Split:</strong> - <strong>20%</strong> (default): Good
+balance for model evaluation - <strong>30-40%</strong>: Use when you
+have lots of data (&gt;200 samples) - <strong>10%</strong>: Use when
+data is limited (&lt;50 samples)</p>
+<h2 id="interpreting-results">📊 Interpreting Results</h2>
+<h3 id="accuracy-table">Accuracy Table</h3>
+<pre><code>Junction  Distance      Accuracy  Std Dev  Samples
+0         100 units      45.3%     ±8.9%    139
+0         75 units       40.3%     ±6.3%    139
+0         50 units       49.0%     ±4.8%    139
+0         25 units       51.7%     ±5.4%    139</code></pre>
+<p><strong>Reading the table:</strong> - <strong>Junction</strong>:
+Which junction was analyzed - <strong>Distance</strong>: Units before
+junction where prediction was made - <strong>Accuracy</strong>:
+Cross-validated prediction accuracy - <strong>Std Dev</strong>:
+Variation across CV folds (uncertainty) - <strong>Samples</strong>:
+Number of trajectories used</p>
+<p><strong>Example interpretation:</strong> - Junction 0: Poor
+predictability (40-52%) - Consider: Per-user models, contextual features
+- Likely: Exploratory behavior, multiple attractive options</p>
+<h3 id="feature-importance-1">Feature Importance</h3>
+<p>Visualization showing which features matter:</p>
+<pre><code>Top Features for Junction 0 (100 units):
+1. distance_to_junction:    0.234
+2. approach_angle:          0.189
+3. current_speed:          0.156
+4. curvature:              0.098
+...</code></pre>
+<p><strong>Spatial features dominant</strong> → Users decide based on
+position <strong>Kinematic features dominant</strong> → Users decide
+based on movement patterns <strong>Gaze features dominant</strong> →
+Visual attention drives decisions</p>
+<h3 id="sample-predictions">Sample Predictions</h3>
+<p>Shows how well model predicted actual choices:</p>
+<pre><code>Distance       Predicted  Confidence  Correct
+100 units      Branch 2   65.3%       ✓
+75 units       Branch 2   72.1%       ✓
+50 units       Branch 2   88.4%       ✓
+25 units       Branch 2   95.2%       ✓</code></pre>
+<p>All correct + increasing confidence = Strong predictor!</p>
+<h2 id="output-files">🔧 Output Files</h2>
+<h3 id="per-junction-directory-structure">Per-Junction Directory
+Structure</h3>
+<pre><code>gui_outputs/intent_recognition/
+  junction_0/
+    intent_training_results.json    # Model metrics
+    intent_feature_importance.png   # Feature importance plots
+    intent_accuracy_analysis.png     # Accuracy vs. distance
+    test_predictions.json           # Sample predictions
+    models/                         # Trained model files
+      model_100.pkl                 # Trained Random Forest/Gradient Boosting
+      scaler_100.pkl                # Feature scaler
+      model_75.pkl
+      scaler_75.pkl
+      model_50.pkl
+      scaler_50.pkl
+      model_25.pkl
+      scaler_25.pkl</code></pre>
+<h3 id="training-results-json">Training Results JSON</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;models_trained&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;100.0&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;model_type&quot;</span><span class="fu">:</span> <span class="st">&quot;random_forest&quot;</span><span class="fu">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;cv_mean_accuracy&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="er">.</span><span class="dv">723</span><span class="fu">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;cv_std_accuracy&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="er">.045</span><span class="fu">,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;n_samples&quot;</span><span class="fu">:</span> <span class="dv">139</span><span class="fu">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;n_features&quot;</span><span class="fu">:</span> <span class="dv">12</span><span class="fu">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;feature_importance&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;distance_to_junction&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="er">.</span><span class="dv">234</span><span class="fu">,</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;approach_angle&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="er">.</span><span class="dv">189</span><span class="fu">,</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="er">...</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="er">...</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;overall_accuracy&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="er">.</span><span class="dv">723</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h2 id="best-practices">🎯 Best Practices</h2>
+<h3 id="before-running">Before Running</h3>
+<ol type="1">
+<li><strong>Run Discover Branches first</strong>: This sets ground truth
+labels</li>
+<li><strong>Ensure sufficient data</strong>:
+<ul>
+<li>Minimum 30-50 trajectories per junction</li>
+<li>At least 10-15 trajectories per branch</li>
+</ul></li>
+<li><strong>Check data quality</strong>:
+<ul>
+<li>Trajectories should pass through junction</li>
+<li>Time data available (for kinematic features)</li>
+</ul></li>
+</ol>
+<h3 id="model-selection">Model Selection</h3>
+<p><strong>Choose Random Forest if:</strong> - First time analyzing data
+- Want fast results - Have &lt;100 samples per junction - Need stable,
+reproducible results</p>
+<p><strong>Choose Gradient Boosting if:</strong> - Already tried Random
+Forest - Need maximum accuracy - Have &gt;100 samples per junction -
+Willing to wait for longer training</p>
+<h3 id="improving-accuracy">Improving Accuracy</h3>
+<p><strong>If accuracy is low (&lt;70%):</strong></p>
+<ol type="1">
+<li><strong>Check branch distribution</strong>: Is there actually a
+choice?</li>
+<li><strong>Per-user models</strong>: Train separate models per
+user</li>
+<li><strong>Add features</strong>: Contextual, environmental,
+task-specific</li>
+<li><strong>Increase prediction distance</strong>: More data
+available</li>
+<li><strong>Combine with other junctions</strong>: Multi-junction
+patterns</li>
+</ol>
+<p><strong>If accuracy varies with distance:</strong></p>
+<ul>
+<li><strong>Decreasing accuracy</strong>: Closer to junction, more
+variability</li>
+<li><strong>Increasing accuracy</strong>: Users commit to choice
+earlier</li>
+<li><strong>Plateau</strong>: Optimal prediction distance reached</li>
+</ul>
+<h2 id="use-cases">💡 Use Cases</h2>
+<h3 id="proactive-wayfinding">1. Proactive Wayfinding</h3>
+<p><strong>Scenario</strong>: Help users navigate VR environment<br />
+<strong>When to predict</strong>: 50-75 units before junction<br />
+<strong>Action</strong>: Display subtle navigation hint<br />
+<strong>Required accuracy</strong>: &gt;80%</p>
+<h3 id="predictive-content-loading">2. Predictive Content Loading</h3>
+<p><strong>Scenario</strong>: VR world with large assets<br />
+<strong>When to predict</strong>: 75-100 units before junction<br />
+<strong>Action</strong>: Preload predicted next area<br />
+<strong>Required accuracy</strong>: &gt;70% (false preloads
+acceptable)</p>
+<h3 id="dynamic-difficulty">3. Dynamic Difficulty</h3>
+<p><strong>Scenario</strong>: Adaptive game difficulty<br />
+<strong>When to predict</strong>: 25-50 units before junction<br />
+<strong>Action</strong>: Adjust environment based on predicted
+choice<br />
+<strong>Required accuracy</strong>: &gt;85%</p>
+<h3 id="ab-testing">4. A/B Testing</h3>
+<p><strong>Scenario</strong>: Test navigation interventions<br />
+<strong>When to predict</strong>: Multiple distances<br />
+<strong>Action</strong>: Show intervention based on predicted path<br />
+<strong>Required accuracy</strong>: Any level (learning experiment)</p>
+<h2 id="troubleshooting">🔍 Troubleshooting</h2>
+<h3 id="low-accuracy-50">Low Accuracy (&lt;50%)</h3>
+<p><strong>Possible causes:</strong> - Insufficient data (&lt;30
+samples) - No real choice (only one viable branch) - Random behavior at
+this junction - Feature extraction failing</p>
+<p><strong>Solutions:</strong> - Collect more trajectories - Verify
+junction is a true decision point - Try different model settings - Check
+feature extraction</p>
+<h3 id="missing-feature-importance">Missing Feature Importance</h3>
+<p><strong>Possible causes:</strong> - All trajectories go to same
+branch (trivial decision) - Features not available (e.g., no gaze data)
+- NaN/inf values in features</p>
+<p><strong>Solutions:</strong> - Check if this is actually a decision
+point - Verify data availability - Feature importance not needed for
+trivial cases</p>
+<h3 id="slow-training">Slow Training</h3>
+<p><strong>Possible causes:</strong> - Large dataset (&gt;500
+trajectories) - Gradient Boosting model - Many prediction distances -
+Many features extracted</p>
+<p><strong>Solutions:</strong> - Use Random Forest for faster training -
+Reduce prediction distances - Reduce number of trajectories (sample) -
+Train fewer models</p>
+<h2 id="advanced-topics">📚 Advanced Topics</h2>
+<h3 id="multi-junction-context">Multi-Junction Context</h3>
+<p>Use choices at previous junctions to improve prediction:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>previous_choices <span class="op">=</span> {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;junction_0&#39;</span>: <span class="st">&#39;branch_1&#39;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;junction_1&#39;</span>: <span class="st">&#39;branch_0&#39;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    ...</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Models can learn sequential patterns.</p>
+<h3 id="transfer-learning">Transfer Learning</h3>
+<p>Train models on one dataset, apply to another:</p>
+<ol type="1">
+<li>Train models on “training” dataset</li>
+<li>Extract models and feature extractors</li>
+<li>Apply to “test” dataset</li>
+<li>Evaluate performance</li>
+</ol>
+<h3 id="real-time-prediction">Real-Time Prediction</h3>
+<p>For live systems:</p>
+<ol type="1">
+<li>Extract features from current trajectory</li>
+<li>Load pre-trained models</li>
+<li>Predict at current distance</li>
+<li>Update as user approaches junction</li>
+<li>Refine prediction at closer distances</li>
+</ol>
+<h2 id="references">🎓 References</h2>
+<ul>
+<li>Random Forest: Breiman, L. (2001). “Random Forests”</li>
+<li>Gradient Boosting: Friedman, J. H. (2001). “Greedy Function
+Approximation”</li>
+<li>Feature Engineering: Correlation, covariance analysis</li>
+<li>Cross-Validation: Model evaluation best practices</li>
+</ul>
+<h2 id="loading-and-using-saved-models">💾 Loading and Using Saved
+Models</h2>
+<h3 id="after-training-export-from-gui">After Training (Export from
+GUI)</h3>
+<p>After running Intent Recognition in the GUI, models are automatically
+saved to:</p>
+<pre><code>gui_outputs/intent_recognition/junction_0/models/
+├── model_100.pkl    # Trained model for 100 units
+├── scaler_100.pkl   # Feature scaler
+├── model_75.pkl
+├── scaler_75.pkl
+├── model_50.pkl
+├── scaler_50.pkl
+├── model_25.pkl
+└── scaler_25.pkl</code></pre>
+<h3 id="loading-models-in-python">Loading Models in Python</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load a specific model and scaler</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>distance <span class="op">=</span> <span class="fl">75.0</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="ss">f&quot;gui_outputs/intent_recognition/junction_0/models/model_</span><span class="sc">{</span>distance<span class="sc">}</span><span class="ss">.pkl&quot;</span>, <span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> pickle.load(f)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> <span class="bu">open</span>(<span class="ss">f&quot;gui_outputs/intent_recognition/junction_0/models/scaler_</span><span class="sc">{</span>distance<span class="sc">}</span><span class="ss">.pkl&quot;</span>, <span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    scaler <span class="op">=</span> pickle.load(f)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract features from current trajectory (see verta_intent_recognition.py)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> extract_features(trajectory, junction, distance)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale features</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>features_scaled <span class="op">=</span> scaler.transform([features])</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>predicted_branch <span class="op">=</span> model.predict(features_scaled)[<span class="dv">0</span>]</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>confidence <span class="op">=</span> model.predict_proba(features_scaled)[<span class="dv">0</span>].<span class="bu">max</span>()</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>probabilities <span class="op">=</span> model.predict_proba(features_scaled)[<span class="dv">0</span>]</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Predicted branch: </span><span class="sc">{</span>predicted_branch<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Confidence: </span><span class="sc">{</span>confidence<span class="sc">:.1%}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<h3 id="example-scripts">Example Scripts</h3>
+<p>See <code>example_load_intent_models.py</code> for: - ✅ Loading
+multiple models at once - ✅ Real-time prediction in VR systems - ✅ A/B
+testing different intervention strategies - ✅ Cross-study
+benchmarking</p>
+<h3 id="integration-into-vr-system">Integration into VR System</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In your VR application loop</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> NavigationSystem:</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.model_loader <span class="op">=</span> IntentModelLoader(<span class="st">&quot;path/to/models&quot;</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> update(<span class="va">self</span>, user):</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Called every frame&quot;&quot;&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        junction <span class="op">=</span> detect_upcoming_junction(user)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        distance <span class="op">=</span> calculate_distance(user, junction)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Predict intent</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        prediction, confidence, _ <span class="op">=</span> <span class="va">self</span>.model_loader.predict(</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            extract_features(user.trajectory, junction),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>            distance</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Take action if confident</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> confidence <span class="op">&gt;</span> <span class="fl">0.8</span> <span class="kw">and</span> distance <span class="op">&lt;</span> <span class="dv">75</span>:</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>            show_navigation_hint(prediction)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>            preload_content(prediction)</span></code></pre></div>
+<h2 id="summary">📝 Summary</h2>
+<p>Intent Recognition enables <strong>predictive</strong> rather than
+<strong>reactive</strong> systems by learning from historical user
+behavior to predict future route choices. Use it when you need to
+prepare the system before the user makes their decision!</p>
+<p><strong>Key benefits:</strong> - ✅ <strong>Models are saved</strong>
+- Load and reuse in future studies - ✅ <strong>Production
+ready</strong> - Use trained models in live VR systems - ✅
+<strong>Transfer learning</strong> - Apply models from one study to
+another - ✅ <strong>A/B testing</strong> - Compare different
+intervention strategies - ✅ <strong>Research applications</strong> -
+Understand when and why users decide</p>
+<hr />
+<p>For more information, see <a
+href="../gui/README.md"><code>gui/README.md</code></a> and the main <a
+href="../README.md">README.md</a>.</p>
+</body>
+</html>

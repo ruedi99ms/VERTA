@@ -4,6 +4,16 @@
 
 `VERTA` is a comprehensive toolkit to analyze route choices from x–z movement trajectories: discover branch directions (common route choices that occur at an intersection), assign movement trajectories to existing branches (if new data was recorded), compute timing metrics, visualize results, and predict future route choices based on behavioral patterns. `VERTA` includes both command-line interface (CLI) and interactive web GUI.
 
+## Domain-Specific Adaptations for VR/XR Trajectories
+
+Although VERTA builds on established methods such as geometric filtering, vector-based branch assignment, clustering, and machine-learning classifiers, these methods are adapted to the specific characteristics of VR/XR trajectory data.
+
+- **Hybrid decision-point detection:** VERTA combines path-length-based and radial-exit-based criteria to make decision extraction more robust to noisy movement patterns such as short stops, variable walking speeds, and lingering behavior near junctions.
+- **Parameterized branch detection:** Clustering choices and thresholds are configurable so users can adapt analysis to different junction geometries, branch separations, trajectory dispersion, and sample sizes.
+- **Junction-indexed multimodal alignment:** Optional gaze, head-orientation, and physiological signals are aligned to the same decision events as movement trajectories, enabling combined motion-attention analyses with consistent event windows and baseline definitions.
+
+These adaptations turn general-purpose algorithms into a reproducible, domain-specific workflow for route-choice analysis in virtual environments.
+
 ## Installation
 
 **Requirements:** Python ≥3.8

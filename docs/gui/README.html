@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="verta-web-gui">VERTA Web GUI</h1>
+<p>A modern, interactive web interface for VERTA (Virtual Environment
+Route and Trajectory Analyzer), built with Streamlit.</p>
+<h2 id="quick-start">🚀 Quick Start</h2>
+<h3 id="install-gui-dependencies">1. Install GUI Dependencies</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install verta<span class="pp">[</span><span class="ss">gui</span><span class="pp">]</span></span></code></pre></div>
+<h3 id="launch-the-gui">2. Launch the GUI</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 1: Using the verta command (recommended)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">verta</span> gui</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 2: Using the launcher script</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> gui/launch.py</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Option 3: Direct Streamlit command to GUI module</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">streamlit</span> run src/verta/verta_gui.py</span></code></pre></div>
+<p><strong>Customize the server:</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">verta</span> gui <span class="at">--port</span> 8502              <span class="co"># Use a different port (default: 8501)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">verta</span> gui <span class="at">--host</span> 0.0.0.0           <span class="co"># Allow external connections (default: localhost)</span></span></code></pre></div>
+<h3 id="open-in-browser">3. Open in Browser</h3>
+<p>The GUI will automatically open at
+<code>http://localhost:8501</code></p>
+<p><strong>Output Location:</strong> All analysis results are saved to a
+<code>gui_outputs/</code> directory in your current working directory
+(where you run <code>verta gui</code>). The structure includes: -
+<code>gui_outputs/junction_{N}/</code> - Results for each junction
+(discover, assign operations) - <code>gui_outputs/metrics/</code> -
+Movement metrics results - <code>gui_outputs/gaze_analysis/</code> -
+Gaze and physiological analysis results -
+<code>gui_outputs/gaze_plots/</code> - Global gaze visualizations -
+<code>gui_outputs/intent_recognition/</code> - Intent recognition model
+outputs</p>
+<h2 id="features">🎯 Features</h2>
+<h3 id="data-upload">📁 Data Upload</h3>
+<ul>
+<li><strong>File Upload</strong>: Drag &amp; drop CSV files or specify
+folder paths</li>
+<li><strong>Column Mapping</strong>: Configure X, Z, and Time column
+names</li>
+<li><strong>Parameter Tuning</strong>: Adjust scale factor and motion
+threshold</li>
+<li><strong>Sample Data</strong>: Load demo data for testing</li>
+</ul>
+<h3 id="junction-editor">🎯 Junction Editor</h3>
+<ul>
+<li><strong>Interactive Plot</strong>: Visual junction management with
+Plotly</li>
+<li><strong>Add/Remove</strong>: Click to add junctions, delete with one
+click</li>
+<li><strong>Real-time Preview</strong>: See trajectories and junctions
+together</li>
+<li><strong>Sample Junctions</strong>: Load predefined junction
+configurations</li>
+</ul>
+<h3 id="zone-definition">📍 Zone Definition</h3>
+<ul>
+<li><strong>Start Zones</strong>: Define circular or rectangular start
+areas</li>
+<li><strong>End Zones</strong>: Configure destination zones</li>
+<li><strong>Visual Feedback</strong>: See zones overlaid on trajectory
+data</li>
+<li><strong>Multiple Zones</strong>: Support for multiple start/end
+zones</li>
+</ul>
+<h3 id="analysis">📊 Analysis</h3>
+<p>VERTA GUI provides 7 comprehensive analysis types:</p>
+<ol type="1">
+<li><strong>Discover Branches</strong> - Automatic junction branch
+detection with clustering algorithms (kmeans, DBSCAN, auto)</li>
+<li><strong>Assign Trajectories</strong> - Assign new trajectories to
+previously discovered branch centers</li>
+<li><strong>Movement Metrics</strong> - Calculate trajectory movement
+patterns, timing, and speed metrics</li>
+<li><strong>Gaze &amp; Physiology</strong> - Analyze eye tracking data,
+head yaw, pupil dilation, and physiological metrics</li>
+<li><strong>Predict Choices</strong> - Behavioral pattern recognition
+and junction choice prediction with confidence scoring</li>
+<li><strong>Intent Recognition</strong> - ML-based early route
+prediction (predict choices BEFORE reaching decision points)</li>
+<li><strong>Enhanced Analysis</strong> - Multi-junction evacuation
+planning, risk assessment, and efficiency metrics</li>
+</ol>
+<p><strong>Additional Features:</strong> - <strong>Parameter
+Control</strong>: Adjust all analysis settings in real-time -
+<strong>Real-time Status</strong>: Live progress and completion
+indicators - <strong>Multi-junction Support</strong>: Analyze complex
+route networks - <strong>Batch Processing</strong>: Process multiple
+datasets efficiently</p>
+<h3 id="visualization">📈 Visualization</h3>
+<ul>
+<li><strong>Flow Graphs</strong>: Interactive flow diagrams</li>
+<li><strong>Conditional Probabilities</strong>: Heatmaps and probability
+matrices</li>
+<li><strong>Pattern Analysis</strong>: Behavioral pattern
+identification</li>
+<li><strong>Intent Recognition</strong>: Feature importance, accuracy
+analysis, sample predictions</li>
+<li><strong>Start/End Analysis</strong>: Completion rate and trajectory
+classification</li>
+</ul>
+<h3 id="export-results">💾 Export Results</h3>
+<ul>
+<li><strong>Multiple Formats</strong>: JSON, CSV, ZIP archives</li>
+<li><strong>Selective Export</strong>: Choose which data to export</li>
+<li><strong>Download Ready</strong>: Direct download from browser</li>
+<li><strong>Clipboard Support</strong>: Copy results for sharing</li>
+</ul>
+<h2 id="interface-overview">🎨 Interface Overview</h2>
+<h3 id="navigation-sidebar">Navigation Sidebar</h3>
+<ul>
+<li><strong>Step-by-step workflow</strong>: Data → Junctions → Zones →
+Analysis → Visualization → Export</li>
+<li><strong>Status indicators</strong>: Visual feedback on completion
+status</li>
+<li><strong>Quick access</strong>: Jump between any step</li>
+</ul>
+<h3 id="main-workspace">Main Workspace</h3>
+<ul>
+<li><strong>Responsive layout</strong>: Adapts to different screen
+sizes</li>
+<li><strong>Interactive plots</strong>: Zoom, pan, hover for
+details</li>
+<li><strong>Real-time updates</strong>: Changes reflect immediately</li>
+<li><strong>Error handling</strong>: Clear error messages and recovery
+options</li>
+</ul>
+<h2 id="technical-details">🔧 Technical Details</h2>
+<h3 id="architecture">Architecture</h3>
+<ul>
+<li><strong>Streamlit</strong>: Modern web framework for Python</li>
+<li><strong>Plotly</strong>: Interactive plotting and visualization</li>
+<li><strong>Modular Design</strong>: Clean separation of concerns</li>
+<li><strong>Session State</strong>: Persistent data across
+interactions</li>
+</ul>
+<h3 id="integration">Integration</h3>
+<ul>
+<li><strong>Package Compatible</strong>: Full Python package
+functionality preserved</li>
+<li><strong>Standalone Mode</strong>: Can be used independently</li>
+<li><strong>Extensible</strong>: Easy to add new features and
+visualizations</li>
+</ul>
+<h3 id="performance">Performance</h3>
+<ul>
+<li><strong>Efficient Rendering</strong>: Optimized for large
+datasets</li>
+<li><strong>Progressive Loading</strong>: Load data incrementally</li>
+<li><strong>Caching</strong>: Smart caching of analysis results</li>
+</ul>
+<h2 id="usage-examples">📱 Usage Examples</h2>
+<h3 id="basic-workflow">Basic Workflow</h3>
+<ol type="1">
+<li><strong>Upload Data</strong>: Load your (VR) trajectory CSV
+files</li>
+<li><strong>Define Junctions</strong>: Add decision points
+interactively</li>
+<li><strong>Set Zones</strong>: Configure start and end areas</li>
+<li><strong>Run Analysis</strong>: Execute junction-based choice
+prediction</li>
+<li><strong>Visualize</strong>: Explore results with interactive
+plots</li>
+<li><strong>Export</strong>: Download results in your preferred
+format</li>
+</ol>
+<h3 id="advanced-usage">Advanced Usage</h3>
+<ul>
+<li><strong>Custom Parameters</strong>: Fine-tune analysis settings</li>
+<li><strong>Multiple Datasets</strong>: Compare different XR spatial
+studies</li>
+<li><strong>Batch Processing</strong>: Analyze multiple trajectory
+sets</li>
+<li><strong>Custom Visualizations</strong>: Create specialized
+plots</li>
+</ul>
+<h2 id="development">🛠️ Development</h2>
+<h3 id="adding-new-features">Adding New Features</h3>
+<ol type="1">
+<li><strong>Extend VERTAGUI class</strong>: Add new methods</li>
+<li><strong>Create new render methods</strong>: Follow naming convention
+<code>render_*</code></li>
+<li><strong>Update navigation</strong>: Add new steps to sidebar</li>
+<li><strong>Test thoroughly</strong>: Ensure compatibility with package
+mode</li>
+</ol>
+<h3 id="customization">Customization</h3>
+<ul>
+<li><strong>Styling</strong>: Modify CSS in the
+<code>render_header()</code> method</li>
+<li><strong>Layout</strong>: Adjust column layouts and spacing</li>
+<li><strong>Colors</strong>: Update Plotly color schemes</li>
+<li><strong>Icons</strong>: Change emoji icons throughout</li>
+</ul>
+<h2 id="troubleshooting">🔍 Troubleshooting</h2>
+<h3 id="common-issues">Common Issues</h3>
+<p><strong>GUI won’t start:</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check dependencies</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install verta<span class="pp">[</span><span class="ss">gui</span><span class="pp">]</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify Python path</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import streamlit; print(&#39;Streamlit OK&#39;)&quot;</span></span></code></pre></div>
+<p><strong>Import errors:</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure you&#39;re in the right directory</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /path/to/verta</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check project structure</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> src/verta/verta_gui.py</span></code></pre></div>
+<p><strong>Performance issues:</strong> - Reduce number of trajectories
+for testing - Use sample data for initial setup - Close other browser
+tabs</p>
+<h3 id="getting-help">Getting Help</h3>
+<ul>
+<li>Check the console output for error messages</li>
+<li>Verify all dependencies are installed</li>
+<li>Ensure data files are in the correct format</li>
+<li>Try the sample data first</li>
+</ul>
+<h2 id="benefits">🎉 Benefits</h2>
+<h3 id="for-users">For Users</h3>
+<ul>
+<li><strong>No coding required</strong>: Visual interface for all
+operations</li>
+<li><strong>Interactive exploration</strong>: Real-time parameter
+adjustment</li>
+<li><strong>Professional results</strong>: Publication-ready
+visualizations</li>
+<li><strong>Easy sharing</strong>: Export and share results easily</li>
+</ul>
+<h3 id="for-developers">For Developers</h3>
+<ul>
+<li><strong>Package integration</strong>: Use as Python package or
+GUI</li>
+<li><strong>Extensible</strong>: Add new analysis methods easily</li>
+<li><strong>Modern stack</strong>: Built with current web
+technologies</li>
+<li><strong>Cross-platform</strong>: Works on Windows, Mac, Linux</li>
+</ul>
+<h2 id="intent-recognition-feature">🧠 Intent Recognition Feature</h2>
+<h3 id="overview">Overview</h3>
+<p>The Intent Recognition feature uses machine learning to predict user
+route choices <strong>before</strong> they reach decision points. This
+enables proactive systems and predictive content loading.</p>
+<h3 id="key-features">Key Features</h3>
+<ul>
+<li><strong>Multi-distance prediction</strong>: Train models at 100, 75,
+50, 25 units before junction</li>
+<li><strong>Flexible model selection</strong>: Random Forest (fast) or
+Gradient Boosting (accurate)</li>
+<li><strong>Cross-validation</strong>: Built-in model evaluation with
+custom folds</li>
+<li><strong>Feature importance</strong>: Understand which behavioral
+cues matter most</li>
+<li><strong>Accuracy analysis</strong>: See how prediction improves with
+proximity</li>
+</ul>
+<h3 id="workflow">Workflow</h3>
+<ol type="1">
+<li><strong>Run Discover Branches</strong> first (to set clustering
+parameters)</li>
+<li><strong>Select Intent Recognition</strong> in Analysis tab</li>
+<li><strong>Configure</strong> prediction distances, model type, test
+split</li>
+<li><strong>Run Analysis</strong> to train ML models on historical
+data</li>
+<li><strong>Visualize</strong> results - feature importance, accuracy
+over distance, sample predictions</li>
+<li><strong>Export</strong> models and results for production
+deployment</li>
+</ol>
+<h3 id="use-cases">Use Cases</h3>
+<ul>
+<li><strong>Proactive wayfinding</strong>: Show navigation hints before
+user reaches junction</li>
+<li><strong>Predictive content loading</strong>: Preload next area based
+on predicted route</li>
+<li><strong>Dynamic optimization</strong>: Adjust environment before
+user arrives</li>
+<li><strong>A/B testing</strong>: Test early interventions at different
+prediction distances</li>
+</ul>
+<h3 id="model-details">Model Details</h3>
+<ul>
+<li><strong>Features</strong>: Spatial (distance, angle, offset),
+kinematic (speed, acceleration, curvature), gaze (if available),
+physiological (if available), contextual (previous choices)</li>
+<li><strong>Evaluation</strong>: Cross-validation with stratified
+splits</li>
+<li><strong>Output</strong>: Feature importance plots, accuracy
+vs. distance charts, per-junction models</li>
+</ul>
+</body>
+</html>
