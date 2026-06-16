@@ -262,7 +262,7 @@ def plot_sample_trajectories_map(
     out_path: str = "Sample_Trajectories_Map.png",
     show_all_faint: bool = True,
     seed: int = 0,
-    title: str = "Raw trajectories and junctions",
+    title: str = "Sample trajectories",
 ) -> None:
     """Overview map: all paths in grey with junction markers.
 
@@ -420,7 +420,7 @@ def plot_branch_trajectories_map(
                        label=f"Unassigned (N={n_missing})")
         )
 
-    plot_title = title or f"Trajectories coloured by branch at junction {junction_number}"
+    plot_title = title or f"Branch trajectories (J{junction_number})"
     ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_title(plot_title, fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
@@ -492,10 +492,7 @@ def plot_branch_directions(
     ax.set_aspect("equal")
     ax.set_xlabel("+X")
     ax.set_ylabel("+Z")
-    ax.set_title(
-        "Discovered branch directions\n(same axes as trajectory maps: X right, Z up)",
-        fontsize=DEFAULT_PLOT_CONFIG.title_fontsize,
-    )
+    ax.set_title("Branch directions", fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
     ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
 
     jc_x, jc_z = junction_center
@@ -534,7 +531,7 @@ def plot_branch_counts(
     ax.set_xticklabels([f"Branch {int(b)}" for b in counts.index])
     ax.set_ylabel("Number of trajectories (count)")
     ax.set_xlabel("Discovered branch")
-    ax.set_title("Route-choice frequencies at junction")
+    ax.set_title("Branch counts")
     ymax = float(counts.max())
     ax.set_ylim(0, ymax * 1.18)
     for bar, cnt, pct in zip(bars, counts.values, percents.values):
@@ -583,7 +580,7 @@ def plot_discover_map(
     )
     ax.set_xlabel(labels["x"])
     ax.set_ylabel(labels["z"])
-    ax.set_title("Trajectories and junction (horizontal plane)", fontsize=14)
+    ax.set_title("Decision map", fontsize=14)
     ax.set_aspect("equal")
     ax.grid(True, alpha=0.3)
     _add_map_caption(fig, _map_footnote(n_total, scale=scale, unit=coordinate_unit))
@@ -692,19 +689,13 @@ def plot_decision_intercepts(
     labels = coordinate_labels(scale=scale, unit=coordinate_unit)
     fig = plt.figure(figsize=(14, 12))
 
-    gs = fig.add_gridspec(3, 1, height_ratios=[0.5, 3, 1], hspace=0.38)
+    gs = fig.add_gridspec(3, 1, height_ratios=[0.25, 3, 1], hspace=0.32)
 
     ax_title = fig.add_subplot(gs[0])
     ax_title.text(
-        0.5, 0.65,
-        f'Junction {junction_number} — from raw paths to branch assignments',
+        0.5, 0.5,
+        f'Junction {junction_number} — Decision Intercepts',
         ha='center', va='center', fontsize=16, fontweight='bold',
-    )
-    ax_title.text(
-        0.5, 0.2,
-        "Dots: decision points where paths cross the analysis radius (orange). "
-        "Triangles: mean direction per branch. Black circle: junction.",
-        ha='center', va='center', fontsize=10, style='italic',
     )
     ax_title.set_xlim(0, 1)
     ax_title.set_ylim(0, 1)
@@ -880,11 +871,8 @@ def plot_decision_intercepts(
     ax.set_aspect('equal')
     ax.set_xlabel(labels["x"], labelpad=8)
     ax.set_ylabel(labels["z"])
-    ax.set_title(
-        f'Decision intercepts by branch (analysis radius = {r_outer:.1f} {coordinate_unit or "units"})'
-        if coordinate_unit else
-        f'Decision intercepts by branch (analysis radius = {r_outer:.1f} scene units)'
-    )
+    radius_label = coordinate_unit or "units"
+    ax.set_title(f'Decision intercepts (r = {r_outer:.1f} {radius_label})')
     
     ax.grid(True, alpha=0.3)
 
@@ -922,7 +910,7 @@ def plot_decision_intercepts(
         ax_mini.set_aspect('equal')
         ax_mini.set_xlabel(labels["x"])
         ax_mini.set_ylabel(labels["z"])
-        ax_mini.set_title('Overview: full experiment area', pad=12)
+        ax_mini.set_title('Full area overview', pad=12)
         ax_mini.grid(True, alpha=0.3)
         
         # Set reasonable limits for mini-map
@@ -1123,7 +1111,7 @@ def plot_flow_graph_map(
     ax.set_aspect("equal")
     ax.set_xlabel(flow_labels["x"])
     ax.set_ylabel(flow_labels["z"])
-    ax.set_title("Flow graph on environment map", fontsize=14, fontweight='bold')
+    ax.set_title("Flow graph", fontsize=14, fontweight='bold')
     
     # Add legend
     legend_elements = [
@@ -1309,7 +1297,7 @@ def plot_per_junction_flow_graph(
     ax.set_aspect("equal")
     ax.set_xlabel("X")
     ax.set_ylabel("Z")
-    ax.set_title("Flow Graph: Per-Junction Percentages", fontsize=14, fontweight='bold')
+    ax.set_title("Per-junction flow", fontsize=14, fontweight='bold')
     
     # Add legend
     legend_elements = [
@@ -1861,7 +1849,7 @@ def plot_chain_overview(trajectories: List[Trajectory], chain_df: pd.DataFrame, 
     
     ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
-    ax.set_title('Decision chain overview (all trajectories)', fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
+    ax.set_title('Decision chain', fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
     ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
     ax.set_aspect('equal')
     _add_map_caption(fig, labels["caption"])
@@ -2035,7 +2023,7 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
         ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
         ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
         ax.set_title(
-            f'Junction {i}: paths colored by branch ({intercept_count} assignments)',
+            f'Junction {i} (N={intercept_count})',
             fontsize=DEFAULT_PLOT_CONFIG.title_fontsize,
         )
         ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
@@ -2046,7 +2034,7 @@ def plot_chain_small_multiples(trajectories: List[Trajectory], chain_df: pd.Data
         axes[i].set_visible(False)
     
     plt.suptitle(
-        'Per-junction view: raw trajectory segments colored by discovered branch',
+        'Branch paths per junction',
         fontsize=DEFAULT_PLOT_CONFIG.title_fontsize + 2,
     )
     _add_map_caption(fig, labels["caption"])

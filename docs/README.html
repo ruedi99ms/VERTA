@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>VERTA</title>
+  <title>README</title>
   <style>
     html {
       color: #1a1a1a;
@@ -236,9 +236,6 @@
   <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
-<h1 class="title">VERTA</h1>
-</header>
 <h1 id="verta---virtual-environment-route-and-trajectory-analyzer">VERTA
 - Virtual Environment Route and Trajectory Analyzer</h1>
 <figure>
@@ -690,14 +687,27 @@ outliers</li>
 Branch center coordinates</li>
 <li><code>branch_summary.csv</code> - Branch count statistics with
 entropy</li>
-<li><code>Branch_Directions.png</code> - Visual plot of branch
-directions</li>
-<li><code>Branch_Counts.png</code> - Bar chart of branch
-frequencies</li>
-<li><code>Decision_Intercepts.png</code> - Trajectory decision points
-visualization</li>
-<li><code>Decision_Map.png</code> - Overview map of decisions</li>
+<li><code>Sample_Trajectories_Map.png</code> - Example raw paths on the
+environment map (for publications)</li>
+<li><code>Branch_Directions.png</code> - Compass plot of discovered
+branch directions (degrees from +X)</li>
+<li><code>Branch_Counts.png</code> - Bar chart of branch frequencies
+(count and %)</li>
+<li><code>Branch_Trajectories_Map.png</code> - Full-area map with each
+path coloured by branch choice at that junction</li>
+<li><code>Decision_Intercepts.png</code> - How each trajectory crosses
+the analysis radius, coloured by branch</li>
+<li><code>Decision_Map.png</code> - Overview map with paths coloured by
+assigned branch</li>
 </ul>
+<p><strong>Map axis labels:</strong> pass
+<code>--coordinate_unit m</code> (or your unit) so figures show explicit
+units on the X/Z axes. Coordinates are the horizontal plane of the VR
+scene (X and Z; height Y is omitted). The <code>--scale</code> factor is
+applied when CSVs are loaded.</p>
+<p><strong>Reproducible paper pipeline:</strong> see <a
+href="examples/from_raw_trajectories_to_analysis.py"><code>examples/from_raw_trajectories_to_analysis.py</code></a>
+for a scripted walkthrough from raw CSVs to all map figures.</p>
 <h3 id="assign-command">Assign Command</h3>
 <ul>
 <li><code>branch_assignments.csv</code> - New trajectory
@@ -764,10 +774,12 @@ with confidence scores</li>
 </ul>
 <h3 id="chain-enhanced-command">Chain-Enhanced Command</h3>
 <ul>
+<li><code>Sample_Trajectories_Map.png</code> - Example raw paths with
+all junctions marked</li>
 <li><code>Chain_Overview.png</code> - Multi-junction trajectory
 overview</li>
 <li><code>Chain_SmallMultiples.png</code> - Detailed
-junction-by-junction view</li>
+junction-by-junction view (paths coloured by branch)</li>
 <li><code>Flow_Graph_Map.png</code> - Flow diagram between
 junctions</li>
 <li><code>Per_Junction_Flow_Graph.png</code> - Individual junction flow

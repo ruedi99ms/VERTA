@@ -101,10 +101,14 @@ launch_gui()</p>
             st.session_state.gaze_column_mappings = {}
         if &#39;analysis_results&#39; not in st.session_state:
             st.session_state.analysis_results = None
+        if &#39;pending_export&#39; not in st.session_state:
+            st.session_state.pending_export = None
         if &#39;current_step&#39; not in st.session_state:
             st.session_state.current_step = &#34;data_upload&#34;
         if &#39;scale_factor&#39; not in st.session_state:
             st.session_state.scale_factor = 0.2  # Default scale factor
+        if &#39;coordinate_unit&#39; not in st.session_state:
+            st.session_state.coordinate_unit = &#39;m&#39;  # Axis label unit for map plots
         if &#39;data_loaded&#39; not in st.session_state:
             st.session_state.data_loaded = False
         # Flash message shown after reruns (tuple: (level, text))
@@ -130,7 +134,7 @@ launch_gui()</p>
         if logo_path and os.path.exists(logo_path):
             col1, col2, col3 = st.columns([1, 2, 1])
             with col2:
-                st.image(logo_path, use_container_width=True)
+                st.image(logo_path, width=&#34;stretch&#34;)
         
         st.markdown(&#39;&lt;h1 class=&#34;main-header&#34;&gt;🗺️ VERTA&lt;/h1&gt;&#39;, unsafe_allow_html=True)
         st.markdown(&#34;&#34;&#34;
@@ -284,6 +288,12 @@ launch_gui()</p>
             with col_scale:
                 scale = st.number_input(&#34;Scale Factor:&#34;, value=st.session_state.get(&#34;scale_factor&#34;, 0.2), min_value=0.01, max_value=1.0, step=0.01)
                 st.session_state.scale_factor = scale
+                coord_unit = st.text_input(
+                    &#34;Coordinate unit (map axes):&#34;,
+                    value=st.session_state.get(&#34;coordinate_unit&#34;, &#34;m&#34;),
+                    help=&#34;Shown on map plot axes, e.g. &#39;m&#39; for metres. Leave empty for generic scene-unit labels.&#34;,
+                )
+                st.session_state.coordinate_unit = coord_unit.strip() or None
             with col_threshold:
                 motion_threshold = st.number_input(&#34;Motion Threshold:&#34;, value=0.1, min_value=0.01, max_value=1.0, step=0.01)
                 st.session_state.motion_threshold = motion_threshold
@@ -1160,7 +1170,7 @@ launch_gui()</p>
             showlegend=True
         ))
 
-        st.plotly_chart(fig, config={&#39;displayModeBar&#39;: True}, width=&#39;stretch&#39;)
+        st.plotly_chart(fig, config={&#39;displayModeBar&#39;: True})
 
     def load_sample_junctions(self):
         &#34;&#34;&#34;Load sample junctions&#34;&#34;&#34;
@@ -1378,7 +1388,12 @@ launch_gui()</p>
                         &#34;Cluster Method:&#34;,
                         [&#34;dbscan&#34;, &#34;kmeans&#34;, &#34;auto&#34;],
                         index=0,  # Default to DBSCAN
-                        help=&#34;Clustering method for discover analysis&#34;
+                        help=(
+                            &#34;How initial movement directions are grouped into branches. &#34;
+                            &#34;DBSCAN: density-based, unknown K, outliers marked separately. &#34;
+                            &#34;k-means: fixed number of branches (K). &#34;
+                            &#34;auto: tries K between K min and K max and picks the best silhouette score.&#34;
+                        ),
                     )
 
                 with col_seed:
@@ -1388,7 +1403,10 @@ launch_gui()</p>
                         min_value=0,
                         max_value=10000,
                         step=1,
-                        help=&#34;Random seed for reproducibility&#34;
+                        help=(
+                            &#34;Fixed seed for k-means and auto-K selection so repeated runs &#34;
+                            &#34;with the same data and settings yield identical branch labels.&#34;
+                        ),
                     )
 
                 # Decision mode parameters (needed for discover analysis)
@@ -1400,12 +1418,21 @@ launch_gui()</p>
                         &#34;Decision Mode:&#34;,
                         [&#34;radial&#34;, &#34;pathlen&#34;, &#34;hybrid&#34;],
                         index=2,  # Default to hybrid
-                        help=&#34;Decision mode for discover analysis&#34;
+                        help=(
+                            &#34;Where each trajectory&#39;s route choice is measured. &#34;
+                            &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
+                            &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                            &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
+                        ),
                     )
 
                 with col_decision_param:
                     if discover_decision_mode == &#34;radial&#34;:
-                        st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                        st.info(
+                            &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                            &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                            &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1414,7 +1441,13 @@ launch_gui()</p>
                             min_value=0.01,
                             max_value=1.0,
                             step=0.01,
-                            help=&#34;Epsilon parameter&#34;
+                            help=(
+                                &#34;Minimum step length (scene units, after scale) when estimating &#34;
+                                &#34;movement direction at the analysis radius. Shorter steps are &#34;
+                                &#34;treated as tracking noise and ignored; if none qualify, the &#34;
+                                &#34;largest step in the window is used instead. Lower = more &#34;
+                                &#34;sensitive; higher = smoother directions. Typical: 0.05.&#34;
+                            ),
                         )
                     elif discover_decision_mode == &#34;pathlen&#34;:
                         discover_path_length = st.number_input(
@@ -1423,7 +1456,11 @@ launch_gui()</p>
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help=&#34;Path length for pathlen mode&#34;
+                            help=(
+                                &#34;Distance travelled along the path after junction entry &#34;
+                                &#34;(scene units, after scale) before the initial direction is &#34;
+                                &#34;measured. Used in pathlen mode. Typical: 100.&#34;
+                            ),
                         )
                         discover_linger_delta = st.number_input(
                             &#34;Linger Delta:&#34;,
@@ -1431,10 +1468,19 @@ launch_gui()</p>
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help=&#34;Linger distance beyond junction&#34;
+                            help=(
+                                &#34;Extra outward distance (scene units, after scale) beyond the &#34;
+                                &#34;junction radius before direction is measured in pathlen mode. &#34;
+                                &#34;Filters paths that turn around immediately at the junction. &#34;
+                                &#34;0 = no extra requirement.&#34;
+                            ),
                         )
                     elif discover_decision_mode == &#34;hybrid&#34;:
-                        st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                        st.info(
+                            &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                            &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                            &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
@@ -1443,7 +1489,11 @@ launch_gui()</p>
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help=&#34;Path length for hybrid mode&#34;
+                            help=(
+                                &#34;Fallback path-length threshold (scene units, after scale) in &#34;
+                                &#34;hybrid mode when no radial crossing is detected — same meaning &#34;
+                                &#34;as Path Length in pathlen mode. Typical: 100.&#34;
+                            ),
                         )
                         discover_hybrid_linger_delta = st.number_input(
                             &#34;Hybrid Linger Delta:&#34;,
@@ -1451,7 +1501,10 @@ launch_gui()</p>
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help=&#34;Linger distance beyond junction for hybrid mode&#34;
+                            help=(
+                                &#34;Same as Linger Delta, applied when hybrid mode falls back to &#34;
+                                &#34;pathlen after radial detection fails.&#34;
+                            ),
                         )
 
                 # Dynamic parameters based on cluster method (for discover analysis)
@@ -1465,7 +1518,11 @@ launch_gui()</p>
                             min_value=0.1,
                             max_value=10.0,
                             step=0.1,
-                            help=&#34;Maximum distance between samples in the same neighborhood&#34;
+                            help=(
+                                &#34;DBSCAN density parameter on direction vectors. In practice, &#34;
+                                &#34;angular grouping is controlled mainly by Angle Epsilon below; &#34;
+                                &#34;increase Min Samples to require more trajectories per branch.&#34;
+                            ),
                         )
                     with col_min_samples:
                         dbscan_min_samples = st.number_input(
@@ -1474,17 +1531,25 @@ launch_gui()</p>
                             min_value=1,
                             max_value=50,
                             step=1,
-                            help=&#34;Minimum number of samples in a neighborhood&#34;
+                            help=(
+                                &#34;Minimum trajectories with similar initial directions needed to &#34;
+                                &#34;form a branch cluster. Lower = more small branches; higher = &#34;
+                                &#34;stricter, fewer clusters. Typical: 5.&#34;
+                            ),
                         )
 
                     # Add angle_eps parameter for DBSCAN
                     dbscan_angle_eps = st.number_input(
                         &#34;DBSCAN Angle Epsilon (degrees):&#34;,
-                        value=11.0,
+                        value=12.0,
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help=&#34;Angle epsilon for DBSCAN clustering (angular separation between clusters)&#34;
+                        help=(
+                            &#34;Maximum angular difference (degrees) between two movement directions &#34;
+                            &#34;to count as the same DBSCAN neighborhood. Smaller = more, tighter &#34;
+                            &#34;branches; larger = fewer, broader groups. Typical: 12–15°.&#34;
+                        ),
                     )
                 elif cluster_method == &#34;kmeans&#34;:
                     col_k, col_k_range = st.columns(2)
@@ -1495,7 +1560,10 @@ launch_gui()</p>
                             min_value=2,
                             max_value=20,
                             step=1,
-                            help=&#34;Number of clusters to form&#34;
+                            help=(
+                                &#34;Fixed number of route branches (clusters) to find at each junction. &#34;
+                                &#34;Should match the number of physical exits or main paths. Typical: 3.&#34;
+                            ),
                         )
                     with col_k_range:
                         kmeans_k_min = st.number_input(
@@ -1504,7 +1572,10 @@ launch_gui()</p>
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help=&#34;Minimum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                                &#34;defining the search range. Must be at least 2.&#34;
+                            ),
                         )
                         kmeans_k_max = st.number_input(
                             &#34;K-Means K Max:&#34;,
@@ -1512,7 +1583,11 @@ launch_gui()</p>
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help=&#34;Maximum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                                &#34;count via silhouette score. Should exceed the expected number &#34;
+                                &#34;of exits.&#34;
+                            ),
                         )
                 elif cluster_method == &#34;auto&#34;:
                     col_k_range, col_separation = st.columns(2)
@@ -1523,7 +1598,10 @@ launch_gui()</p>
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help=&#34;Minimum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                                &#34;defining the search range. Must be at least 2.&#34;
+                            ),
                         )
                         auto_k_max = st.number_input(
                             &#34;Auto K Max:&#34;,
@@ -1531,7 +1609,11 @@ launch_gui()</p>
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help=&#34;Maximum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                                &#34;count via silhouette score. Should exceed the expected number &#34;
+                                &#34;of exits.&#34;
+                            ),
                         )
                     with col_separation:
                         auto_min_sep_deg = st.number_input(
@@ -1540,7 +1622,11 @@ launch_gui()</p>
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help=&#34;Minimum separation in degrees between clusters&#34;
+                            help=(
+                                &#34;After clustering, merges branch directions closer than this &#34;
+                                &#34;angle (degrees). Prevents duplicate branches for the same &#34;
+                                &#34;physical exit. Typical: 12°.&#34;
+                            ),
                         )
                         auto_angle_eps = st.number_input(
                             &#34;Auto Angle Epsilon (degrees):&#34;,
@@ -1548,13 +1634,21 @@ launch_gui()</p>
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help=&#34;Angle epsilon for auto clustering&#34;
+                            help=(
+                                &#34;Angular neighborhood (degrees) for grouping similar movement &#34;
+                                &#34;directions when DBSCAN is used; stored for pipeline consistency &#34;
+                                &#34;in auto mode. Typical: 11–15°.&#34;
+                            ),
                         )
 
             elif analysis_type == &#34;enhanced&#34;:
                 # Enhanced analysis parameters (same as discover since it uses discover_decision_chain)
                 st.markdown(&#34;#### Enhanced Analysis Parameters&#34;)
-                st.info(&#34;🚨 Enhanced analysis uses the same clustering and decision parameters as discover analysis, then performs evacuation planning, risk assessment, and efficiency analysis.&#34;)
+                st.info(
+                    &#34;🚨 **Enhanced analysis** runs the same branch discovery as above (clustering + &#34;
+                    &#34;decision mode), then adds evacuation planning, risk assessment, and &#34;
+                    &#34;efficiency metrics on top of the discovered routes.&#34;
+                )
 
                 # Clustering parameters (same as discover)
                 st.markdown(&#34;##### Clustering Parameters&#34;)
@@ -1565,7 +1659,12 @@ launch_gui()</p>
                         &#34;Cluster Method:&#34;,
                         [&#34;dbscan&#34;, &#34;kmeans&#34;, &#34;auto&#34;],
                         index=0,  # Default to DBSCAN
-                        help=&#34;Clustering method for enhanced analysis&#34;
+                        help=(
+                            &#34;How initial movement directions are grouped into branches. &#34;
+                            &#34;DBSCAN: density-based, unknown K, outliers marked separately. &#34;
+                            &#34;k-means: fixed number of branches (K). &#34;
+                            &#34;auto: tries K between K min and K max and picks the best silhouette score.&#34;
+                        ),
                     )
 
                 with col_seed:
@@ -1575,7 +1674,10 @@ launch_gui()</p>
                         min_value=0,
                         max_value=10000,
                         step=1,
-                        help=&#34;Random seed for reproducibility&#34;
+                        help=(
+                            &#34;Fixed seed for k-means and auto-K selection so repeated runs &#34;
+                            &#34;with the same data and settings yield identical branch labels.&#34;
+                        ),
                     )
 
                 # Decision mode parameters (same as discover)
@@ -1587,12 +1689,21 @@ launch_gui()</p>
                         &#34;Decision Mode:&#34;,
                         [&#34;radial&#34;, &#34;pathlen&#34;, &#34;hybrid&#34;],
                         index=2,  # Default to hybrid
-                        help=&#34;Decision mode for enhanced analysis&#34;
+                        help=(
+                            &#34;Where each trajectory&#39;s route choice is measured. &#34;
+                            &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
+                            &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                            &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
+                        ),
                     )
 
                 with col_decision_param:
                     if discover_decision_mode == &#34;radial&#34;:
-                        st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                        st.info(
+                            &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                            &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                            &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1601,7 +1712,13 @@ launch_gui()</p>
                             min_value=0.01,
                             max_value=1.0,
                             step=0.01,
-                            help=&#34;Epsilon parameter&#34;
+                            help=(
+                                &#34;Minimum step length (scene units, after scale) when estimating &#34;
+                                &#34;movement direction at the analysis radius. Shorter steps are &#34;
+                                &#34;treated as tracking noise and ignored; if none qualify, the &#34;
+                                &#34;largest step in the window is used instead. Lower = more &#34;
+                                &#34;sensitive; higher = smoother directions. Typical: 0.05.&#34;
+                            ),
                         )
                     elif discover_decision_mode == &#34;pathlen&#34;:
                         discover_path_length = st.number_input(
@@ -1610,7 +1727,11 @@ launch_gui()</p>
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help=&#34;Path length for pathlen mode&#34;
+                            help=(
+                                &#34;Distance travelled along the path after junction entry &#34;
+                                &#34;(scene units, after scale) before the initial direction is &#34;
+                                &#34;measured. Used in pathlen mode. Typical: 100.&#34;
+                            ),
                         )
                         discover_linger_delta = st.number_input(
                             &#34;Linger Delta:&#34;,
@@ -1618,10 +1739,19 @@ launch_gui()</p>
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help=&#34;Linger distance beyond junction&#34;
+                            help=(
+                                &#34;Extra outward distance (scene units, after scale) beyond the &#34;
+                                &#34;junction radius before direction is measured in pathlen mode. &#34;
+                                &#34;Filters paths that turn around immediately at the junction. &#34;
+                                &#34;0 = no extra requirement.&#34;
+                            ),
                         )
                     elif discover_decision_mode == &#34;hybrid&#34;:
-                        st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                        st.info(
+                            &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                            &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                            &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                        ),
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
@@ -1630,7 +1760,11 @@ launch_gui()</p>
                             min_value=10.0,
                             max_value=500.0,
                             step=10.0,
-                            help=&#34;Path length for hybrid mode&#34;
+                            help=(
+                                &#34;Fallback path-length threshold (scene units, after scale) in &#34;
+                                &#34;hybrid mode when no radial crossing is detected — same meaning &#34;
+                                &#34;as Path Length in pathlen mode. Typical: 100.&#34;
+                            ),
                         )
                         discover_hybrid_linger_delta = st.number_input(
                             &#34;Hybrid Linger Delta:&#34;,
@@ -1638,7 +1772,10 @@ launch_gui()</p>
                             min_value=0.0,
                             max_value=50.0,
                             step=1.0,
-                            help=&#34;Linger distance beyond junction for hybrid mode&#34;
+                            help=(
+                                &#34;Same as Linger Delta, applied when hybrid mode falls back to &#34;
+                                &#34;pathlen after radial detection fails.&#34;
+                            ),
                         )
 
                 # Dynamic parameters based on cluster method (same as discover)
@@ -1652,7 +1789,11 @@ launch_gui()</p>
                             min_value=0.1,
                             max_value=10.0,
                             step=0.1,
-                            help=&#34;Maximum distance between samples in the same neighborhood&#34;
+                            help=(
+                                &#34;DBSCAN density parameter on direction vectors. In practice, &#34;
+                                &#34;angular grouping is controlled mainly by Angle Epsilon below; &#34;
+                                &#34;increase Min Samples to require more trajectories per branch.&#34;
+                            ),
                         )
                     with col_min_samples:
                         dbscan_min_samples = st.number_input(
@@ -1661,7 +1802,11 @@ launch_gui()</p>
                             min_value=1,
                             max_value=50,
                             step=1,
-                            help=&#34;Minimum number of samples in a neighborhood&#34;
+                            help=(
+                                &#34;Minimum trajectories with similar initial directions needed to &#34;
+                                &#34;form a branch cluster. Lower = more small branches; higher = &#34;
+                                &#34;stricter, fewer clusters. Typical: 5.&#34;
+                            ),
                         )
 
                     # Add angle_eps parameter for DBSCAN
@@ -1671,7 +1816,11 @@ launch_gui()</p>
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help=&#34;Angle epsilon for DBSCAN clustering (angular separation between clusters)&#34;
+                        help=(
+                            &#34;Maximum angular difference (degrees) between two movement directions &#34;
+                            &#34;to count as the same DBSCAN neighborhood. Smaller = more, tighter &#34;
+                            &#34;branches; larger = fewer, broader groups. Typical: 12–15°.&#34;
+                        ),
                     )
                 elif cluster_method == &#34;kmeans&#34;:
                     col_k, col_k_range = st.columns(2)
@@ -1682,7 +1831,10 @@ launch_gui()</p>
                             min_value=2,
                             max_value=20,
                             step=1,
-                            help=&#34;Number of clusters to form&#34;
+                            help=(
+                                &#34;Fixed number of route branches (clusters) to find at each junction. &#34;
+                                &#34;Should match the number of physical exits or main paths. Typical: 3.&#34;
+                            ),
                         )
                     with col_k_range:
                         kmeans_k_min = st.number_input(
@@ -1691,7 +1843,10 @@ launch_gui()</p>
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help=&#34;Minimum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                                &#34;defining the search range. Must be at least 2.&#34;
+                            ),
                         )
                         kmeans_k_max = st.number_input(
                             &#34;K-Means K Max:&#34;,
@@ -1699,7 +1854,11 @@ launch_gui()</p>
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help=&#34;Maximum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                                &#34;count via silhouette score. Should exceed the expected number &#34;
+                                &#34;of exits.&#34;
+                            ),
                         )
                 elif cluster_method == &#34;auto&#34;:
                     col_k_range, col_separation = st.columns(2)
@@ -1710,7 +1869,10 @@ launch_gui()</p>
                             min_value=2,
                             max_value=10,
                             step=1,
-                            help=&#34;Minimum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                                &#34;defining the search range. Must be at least 2.&#34;
+                            ),
                         )
                         auto_k_max = st.number_input(
                             &#34;Auto K Max:&#34;,
@@ -1718,7 +1880,11 @@ launch_gui()</p>
                             min_value=3,
                             max_value=20,
                             step=1,
-                            help=&#34;Maximum number of clusters for auto selection&#34;
+                            help=(
+                                &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                                &#34;count via silhouette score. Should exceed the expected number &#34;
+                                &#34;of exits.&#34;
+                            ),
                         )
                     with col_separation:
                         auto_min_sep_deg = st.number_input(
@@ -1727,7 +1893,11 @@ launch_gui()</p>
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help=&#34;Minimum separation in degrees between clusters&#34;
+                            help=(
+                                &#34;After clustering, merges branch directions closer than this &#34;
+                                &#34;angle (degrees). Prevents duplicate branches for the same &#34;
+                                &#34;physical exit. Typical: 12°.&#34;
+                            ),
                         )
                         auto_angle_eps = st.number_input(
                             &#34;Auto Angle Epsilon (degrees):&#34;,
@@ -1735,7 +1905,11 @@ launch_gui()</p>
                             min_value=1.0,
                             max_value=90.0,
                             step=1.0,
-                            help=&#34;Angle epsilon for auto clustering&#34;
+                            help=(
+                                &#34;Angular neighborhood (degrees) for grouping similar movement &#34;
+                                &#34;directions when DBSCAN is used; stored for pipeline consistency &#34;
+                                &#34;in auto mode. Typical: 11–15°.&#34;
+                            ),
                         )
 
             elif analysis_type == &#34;metrics&#34;:
@@ -2091,7 +2265,12 @@ launch_gui()</p>
                             max_value=200.0,
                             step=1.0,
                             key=&#34;assign_linger_delta&#34;,
-                            help=&#34;Linger distance beyond junction&#34;
+                            help=(
+                                &#34;Extra outward distance (scene units, after scale) beyond the &#34;
+                                &#34;junction radius before direction is measured in pathlen mode. &#34;
+                                &#34;Filters paths that turn around immediately at the junction. &#34;
+                                &#34;0 = no extra requirement.&#34;
+                            ),
                         )
                         assign_epsilon = st.number_input(
                             &#34;Epsilon:&#34;,
@@ -2114,7 +2293,11 @@ launch_gui()</p>
                             max_value=500.0,
                             step=10.0,
                             key=&#34;assign_path_length&#34;,
-                            help=&#34;Path length for hybrid mode&#34;
+                            help=(
+                                &#34;Fallback path-length threshold (scene units, after scale) in &#34;
+                                &#34;hybrid mode when no radial crossing is detected — same meaning &#34;
+                                &#34;as Path Length in pathlen mode. Typical: 100.&#34;
+                            ),
                         )
                         assign_linger_delta = st.number_input(
                             &#34;Hybrid Linger Delta:&#34;,
@@ -2316,6 +2499,8 @@ launch_gui()</p>
                     epsilon = decision_params.get(&#34;epsilon&#34;, 0.05) if decision_params else 0.05
                     linger_delta = decision_params.get(&#34;linger_delta&#34;, 5.0) if decision_params else 5.0
                     r_outer_list = [st.session_state.junction_r_outer.get(i, 50.0) for i in range(len(st.session_state.junctions))]
+                    scale = float(st.session_state.get(&#34;scale_factor&#34;, 1.0))
+                    coord_unit = st.session_state.get(&#34;coordinate_unit&#34;)
 
                     # Run consolidated discovery
                     chain_df, centers_list, decisions_chain_df = discover_decision_chain(
@@ -2335,6 +2520,8 @@ launch_gui()</p>
                         min_sep_deg=min_sep_deg,
                         angle_eps=angle_eps,
                         min_samples=min_samples,
+                        scale=scale,
+                        coordinate_unit=coord_unit,
                     )
 
                     # Build per-junction results view from chain_df/centers_list
@@ -4786,29 +4973,37 @@ launch_gui()</p>
         &#34;&#34;&#34;Render discover analysis visualizations&#34;&#34;&#34;
         st.markdown(&#34;### Discover Analysis Results&#34;)
 
+        sample_map = os.path.join(&#34;gui_outputs&#34;, &#34;Sample_Trajectories_Map.png&#34;)
+        if os.path.exists(sample_map):
+            st.markdown(&#34;#### Sample raw trajectories&#34;)
+            st.caption(
+                &#34;All participant paths in grey with junction locations (J0, J1, …). &#34;
+                &#34;Use this figure to show raw movement data in publications.&#34;
+            )
+            st.image(sample_map, caption=&#34;Sample Trajectories Map&#34;, width=&#39;stretch&#39;)
+        else:
+            st.info(
+                &#34;Run **Discover Branches** analysis to generate the sample trajectory map. &#34;
+                &#34;It is saved as `gui_outputs/Sample_Trajectories_Map.png`.&#34;
+            )
+
         # Display decision intercepts for each junction
         for junction_key, branches_data in st.session_state.analysis_results[&#34;branches&#34;].items():
-            if junction_key == &#34;chain_decisions&#34;:  # Skip the chain decisions data
+            if junction_key in (&#34;chain_decisions&#34;, &#34;decision_points&#34;):
+                continue
+            if not isinstance(branches_data, dict):
                 continue
 
             st.markdown(f&#34;#### {junction_key.replace(&#39;_&#39;, &#39; &#39;).title()}&#34;)
 
-            # Show decision intercepts plot
             junction_num = junction_key.split(&#39;_&#39;)[1]
             junction_dir = os.path.join(&#34;gui_outputs&#34;, f&#34;junction_{junction_num}&#34;)
 
-            # Display available plots
-            intercepts_path = os.path.join(junction_dir, &#34;Decision_Intercepts.png&#34;)
-            if os.path.exists(intercepts_path):
-                st.image(intercepts_path, caption=f&#34;Decision Intercepts - {junction_key}&#34;, width=&#39;stretch&#39;)
-            else:
-                st.warning(f&#34;Decision intercepts plot not found for {junction_key}&#34;)
-
-            # Check for other available plots that might be generated
             other_plots = [
-                (&#34;Decision_Map.png&#34;, &#34;Decision Map&#34;),
+                (&#34;Decision_Intercepts.png&#34;, &#34;Decision Intercepts&#34;),
+                (&#34;Branch_Trajectories_Map.png&#34;, &#34;Branch Trajectories Map&#34;),
                 (&#34;Branch_Counts.png&#34;, &#34;Branch Counts&#34;),
-                (&#34;Branch_Directions.png&#34;, &#34;Branch Directions&#34;)
+                (&#34;Branch_Directions.png&#34;, &#34;Branch Directions&#34;),
             ]
 
             for plot_file, plot_name in other_plots:
@@ -8450,7 +8645,7 @@ launch_gui()</p>
                         yaxis_range=[0, 1],
                         height=300
                     )
-                    st.plotly_chart(fig, width=&#39;stretch&#39;, key=f&#34;intent_confidence_{junction_num}_{traj_id}&#34;)
+                    st.plotly_chart(fig, key=f&#34;intent_confidence_{junction_num}_{traj_id}&#34;)
 
         # Feature importance table
         if &#39;feature_importance&#39; in junction_results[&#39;training_results&#39;]:
@@ -8604,7 +8799,7 @@ launch_gui()</p>
                 fig = px.bar(df, x=&#34;Junction&#34;, y=&#34;Trajectory Count&#34;, color=&#34;Branch&#34;,
                            title=&#34;Trajectory Distribution by Junction and Branch&#34;,
                            hover_data=[&#34;Percentage&#34;])
-                st.plotly_chart(fig, width=&#39;stretch&#39;)
+                st.plotly_chart(fig)
 
     def _render_recommendations(self, recommendations):
         &#34;&#34;&#34;Render recommendations&#34;&#34;&#34;
@@ -8735,7 +8930,7 @@ launch_gui()</p>
                            title=&#34;Unified Risk Assessment by Junction&#34;,
                            color_discrete_map={&#34;HIGH&#34;: &#34;red&#34;, &#34;MEDIUM&#34;: &#34;orange&#34;, &#34;LOW&#34;: &#34;green&#34;},
                            hover_data=[&#34;Trajectory Count&#34;, &#34;Concentration&#34;, &#34;Route Count&#34;])
-                st.plotly_chart(fig, width=&#39;stretch&#39;)
+                st.plotly_chart(fig)
 
     def _render_efficiency_metrics(self, efficiency_data):
         &#34;&#34;&#34;Render efficiency metrics visualizations&#34;&#34;&#34;
@@ -8783,14 +8978,14 @@ launch_gui()</p>
                             title=&#34;Route Efficiency by Junction&#34;,
                             color=&#34;Route Efficiency&#34;,
                             color_continuous_scale=&#34;RdYlGn&#34;)
-                st.plotly_chart(fig1, width=&#39;stretch&#39;)
+                st.plotly_chart(fig1)
 
                 # Capacity utilization chart
                 fig2 = px.bar(df, x=&#34;Junction&#34;, y=&#34;Capacity Utilization&#34;,
                             title=&#34;Capacity Utilization by Junction&#34;,
                             color=&#34;Capacity Utilization&#34;,
                             color_continuous_scale=&#34;RdYlGn&#34;)
-                st.plotly_chart(fig2, width=&#39;stretch&#39;)
+                st.plotly_chart(fig2)
 
         # Efficiency summary
         st.markdown(&#34;##### 📈 Efficiency Summary&#34;)
@@ -8820,37 +9015,173 @@ launch_gui()</p>
             help=&#34;Select the format for exporting results&#34;
         )
 
-        if st.button(&#34;📥 Export Results&#34;):
-            self.export_results(export_format)
+        if st.button(&#34;📥 Export Results&#34;, key=&#34;export_results_button&#34;):
+            if self.export_results(export_format):
+                st.success(&#34;✅ Export ready!&#34;)
 
-    def export_results(self, format: str):
-        &#34;&#34;&#34;Export analysis results&#34;&#34;&#34;
+        pending = st.session_state.get(&#34;pending_export&#34;)
+        if pending and pending.get(&#34;format&#34;) == export_format:
+            st.download_button(
+                label=pending[&#34;label&#34;],
+                data=pending[&#34;data&#34;],
+                file_name=pending[&#34;file_name&#34;],
+                mime=pending[&#34;mime&#34;],
+                key=f&#34;download_{export_format.lower().replace(&#39; &#39;, &#39;_&#39;)}_persist&#34;,
+            )
+            if pending.get(&#34;caption&#34;):
+                st.caption(pending[&#34;caption&#34;])
+
+    def _to_json_serializable(self, obj: Any) -&gt; Any:
+        &#34;&#34;&#34;Convert analysis artefacts to JSON-friendly structures (full data, not repr strings).&#34;&#34;&#34;
+        if obj is None:
+            return None
+        if isinstance(obj, (str, bool)):
+            return obj
+        if isinstance(obj, int) and not isinstance(obj, bool):
+            return obj
+        if isinstance(obj, float):
+            if np.isnan(obj) or np.isinf(obj):
+                return None
+            return obj
+        if isinstance(obj, (np.integer,)):
+            return int(obj)
+        if isinstance(obj, (np.floating,)):
+            val = float(obj)
+            if np.isnan(val) or np.isinf(val):
+                return None
+            return val
+        if isinstance(obj, pd.DataFrame):
+            if obj.empty:
+                return []
+            return json.loads(obj.to_json(orient=&#34;records&#34;))
+        if isinstance(obj, pd.Series):
+            return json.loads(obj.to_json())
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, Circle):
+            return {&#34;type&#34;: &#34;circle&#34;, &#34;cx&#34;: obj.cx, &#34;cz&#34;: obj.cz, &#34;r&#34;: obj.r}
+        if isinstance(obj, Rect):
+            return {
+                &#34;type&#34;: &#34;rect&#34;,
+                &#34;xmin&#34;: obj.xmin,
+                &#34;xmax&#34;: obj.xmax,
+                &#34;zmin&#34;: obj.zmin,
+                &#34;zmax&#34;: obj.zmax,
+            }
+        if isinstance(obj, Path):
+            return str(obj)
+        if is_dataclass(obj) and not isinstance(obj, type):
+            return {k: self._to_json_serializable(v) for k, v in asdict(obj).items()}
+        if isinstance(obj, dict):
+            return {str(k): self._to_json_serializable(v) for k, v in obj.items()}
+        if isinstance(obj, (list, tuple)):
+            return [self._to_json_serializable(v) for v in obj]
+        return str(obj)
+
+    def _build_json_export_payload(self, results: Dict) -&gt; Dict:
+        &#34;&#34;&#34;Structured export payload with session metadata and fully serialized results.&#34;&#34;&#34;
+        payload = {
+            &#34;export_metadata&#34;: {
+                &#34;scale_factor&#34;: st.session_state.get(&#34;scale_factor&#34;),
+                &#34;coordinate_unit&#34;: st.session_state.get(&#34;coordinate_unit&#34;),
+                &#34;junction_count&#34;: len(st.session_state.get(&#34;junctions&#34;) or []),
+                &#34;trajectory_count&#34;: len(st.session_state.get(&#34;trajectories&#34;) or []),
+            },
+            &#34;results&#34;: self._to_json_serializable(results),
+        }
+        return payload
+
+    def _collect_csv_exports(self, results: Dict) -&gt; Dict[str, str]:
+        &#34;&#34;&#34;Build {filename: csv_text} from tabular parts of analysis results.&#34;&#34;&#34;
+        exports: Dict[str, str] = {}
+        if not results:
+            return exports
+
+        if &#34;metrics&#34; in results and results[&#34;metrics&#34;]:
+            exports[&#34;metrics_results.csv&#34;] = pd.DataFrame(results[&#34;metrics&#34;]).to_csv(index=False)
+
+        branches = results.get(&#34;branches&#34;)
+        if isinstance(branches, dict):
+            chain_df = branches.get(&#34;chain_decisions&#34;)
+            if isinstance(chain_df, pd.DataFrame) and not chain_df.empty:
+                exports[&#34;branch_assignments_chain.csv&#34;] = chain_df.to_csv(index=False)
+            decisions_df = branches.get(&#34;decision_points&#34;)
+            if isinstance(decisions_df, pd.DataFrame) and not decisions_df.empty:
+                exports[&#34;decision_points_chain.csv&#34;] = decisions_df.to_csv(index=False)
+            for junction_key, branch_data in branches.items():
+                if junction_key in (&#34;chain_decisions&#34;, &#34;decision_points&#34;):
+                    continue
+                if not isinstance(branch_data, dict):
+                    continue
+                assignments = branch_data.get(&#34;assignments&#34;)
+                if isinstance(assignments, pd.DataFrame) and not assignments.empty:
+                    exports[f&#34;{junction_key}_assignments.csv&#34;] = assignments.to_csv(index=False)
+                summary = branch_data.get(&#34;summary&#34;)
+                if isinstance(summary, pd.DataFrame) and not summary.empty:
+                    exports[f&#34;{junction_key}_summary.csv&#34;] = summary.to_csv(index=False)
+
+        assignments = results.get(&#34;assignments&#34;)
+        if isinstance(assignments, dict):
+            for junction_key, assign_data in assignments.items():
+                if not isinstance(assign_data, dict):
+                    continue
+                df = assign_data.get(&#34;assignments&#34;)
+                if isinstance(df, pd.DataFrame) and not df.empty:
+                    exports[f&#34;{junction_key}_assignments.csv&#34;] = df.to_csv(index=False)
+
+        return exports
+
+    def export_results(self, format: str) -&gt; bool:
+        &#34;&#34;&#34;Prepare analysis results for download. Returns True when export data is ready.&#34;&#34;&#34;
         try:
             if format == &#34;JSON&#34;:
-                # Export as JSON
-                json_str = json.dumps(st.session_state.analysis_results, indent=2, default=str)
-                st.download_button(
-                    label=&#34;Download JSON&#34;,
-                    data=json_str,
-                    file_name=&#34;analysis_results.json&#34;,
-                    mime=&#34;application/json&#34;
-                )
+                payload = self._build_json_export_payload(st.session_state.analysis_results)
+                json_str = json.dumps(payload, indent=2)
+                st.session_state.pending_export = {
+                    &#34;format&#34;: &#34;JSON&#34;,
+                    &#34;label&#34;: &#34;Download JSON&#34;,
+                    &#34;file_name&#34;: &#34;analysis_results.json&#34;,
+                    &#34;mime&#34;: &#34;application/json&#34;,
+                    &#34;data&#34;: json_str,
+                }
+                return True
 
             elif format == &#34;CSV&#34;:
-                # Export as CSV (if applicable)
-                if &#34;metrics&#34; in st.session_state.analysis_results:
-                    # Export metrics as CSV
-                    import pandas as pd
-                    df = pd.DataFrame(st.session_state.analysis_results[&#34;metrics&#34;])
-                    csv_data = df.to_csv(index=False)
-                    st.download_button(
-                        label=&#34;Download Metrics CSV&#34;,
-                        data=csv_data,
-                        file_name=&#34;metrics_results.csv&#34;,
-                        mime=&#34;text/csv&#34;
+                csv_exports = self._collect_csv_exports(st.session_state.analysis_results)
+                if not csv_exports:
+                    st.session_state.pending_export = None
+                    st.warning(
+                        &#34;No tabular results to export. Run **Discover**, **Assign**, or &#34;
+                        &#34;**Metrics** analysis first.&#34;
                     )
+                    return False
+
+                if len(csv_exports) == 1:
+                    file_name, csv_data = next(iter(csv_exports.items()))
+                    st.session_state.pending_export = {
+                        &#34;format&#34;: &#34;CSV&#34;,
+                        &#34;label&#34;: f&#34;Download {file_name}&#34;,
+                        &#34;file_name&#34;: file_name,
+                        &#34;mime&#34;: &#34;text/csv&#34;,
+                        &#34;data&#34;: csv_data,
+                    }
                 else:
-                    st.info(&#34;CSV export available for metrics data&#34;)
+                    with tempfile.TemporaryDirectory() as temp_dir:
+                        zip_path = os.path.join(temp_dir, &#34;analysis_results_csv.zip&#34;)
+                        with zipfile.ZipFile(zip_path, &#34;w&#34;) as zipf:
+                            for name, content in csv_exports.items():
+                                zipf.writestr(name, content)
+                        with open(zip_path, &#34;rb&#34;) as f:
+                            zip_data = f.read()
+                    st.session_state.pending_export = {
+                        &#34;format&#34;: &#34;CSV&#34;,
+                        &#34;label&#34;: &#34;Download CSV Package&#34;,
+                        &#34;file_name&#34;: &#34;analysis_results_csv.zip&#34;,
+                        &#34;mime&#34;: &#34;application/zip&#34;,
+                        &#34;data&#34;: zip_data,
+                        &#34;caption&#34;: &#34;Includes: &#34; + &#34;, &#34;.join(sorted(csv_exports)),
+                    }
+                return True
 
             elif format == &#34;ZIP Archive&#34;:
                 # Create comprehensive ZIP archive with all files from gui_outputs
@@ -8858,7 +9189,11 @@ launch_gui()</p>
                     # Save analysis results JSON
                     results_file = os.path.join(temp_dir, &#34;analysis_results.json&#34;)
                     with open(results_file, &#39;w&#39;) as f:
-                        json.dump(st.session_state.analysis_results, f, indent=2, default=str)
+                        json.dump(
+                            self._build_json_export_payload(st.session_state.analysis_results),
+                            f,
+                            indent=2,
+                        )
 
                     # Create ZIP
                     zip_path = os.path.join(temp_dir, &#34;analysis_results.zip&#34;)
@@ -8880,12 +9215,13 @@ launch_gui()</p>
                     with open(zip_path, &#39;rb&#39;) as f:
                         zip_data = f.read()
 
-                    st.download_button(
-                        label=&#34;Download Complete Analysis Package&#34;,
-                        data=zip_data,
-                        file_name=&#34;complete_analysis_results.zip&#34;,
-                        mime=&#34;application/zip&#34;
-                    )
+                    st.session_state.pending_export = {
+                        &#34;format&#34;: &#34;ZIP Archive&#34;,
+                        &#34;label&#34;: &#34;Download Complete Analysis Package&#34;,
+                        &#34;file_name&#34;: &#34;complete_analysis_results.zip&#34;,
+                        &#34;mime&#34;: &#34;application/zip&#34;,
+                        &#34;data&#34;: zip_data,
+                    }
 
                     # Show what&#39;s included in the ZIP
                     st.info(&#34;📦 **Complete Analysis Package includes:**&#34;)
@@ -8907,11 +9243,16 @@ launch_gui()</p>
                     st.write(&#34;• Intent recognition models&#34;)
                     st.write(&#34;• Feature importance analysis&#34;)
                     st.write(&#34;• ML prediction results&#34;)
+                    return True
 
-            st.success(&#34;✅ Export ready!&#34;)
+            st.session_state.pending_export = None
+            st.warning(f&#34;Unknown export format: {format}&#34;)
+            return False
 
         except Exception as e:
+            st.session_state.pending_export = None
             st.error(f&#34;❌ Export failed: {str(e)}&#34;)
+            return False
 
     def run_quick_analysis(self):
         &#34;&#34;&#34;Run a quick analysis with default parameters&#34;&#34;&#34;
@@ -8928,6 +9269,7 @@ launch_gui()</p>
         st.session_state.junctions = []
         st.session_state.junction_r_outer = {}
         st.session_state.analysis_results = None
+        st.session_state.pending_export = None
         st.session_state.current_step = &#34;data_upload&#34;
         st.success(&#34;✅ All data cleared!&#34;)
         st.rerun()
@@ -8981,6 +9323,7 @@ launch_gui()</p>
     st.session_state.junctions = []
     st.session_state.junction_r_outer = {}
     st.session_state.analysis_results = None
+    st.session_state.pending_export = None
     st.session_state.current_step = &#34;data_upload&#34;
     st.success(&#34;✅ All data cleared!&#34;)
     st.rerun()</code></pre>
@@ -8988,41 +9331,64 @@ launch_gui()</p>
 <div class="desc"><p>Clear all data and reset the application</p></div>
 </dd>
 <dt id="verta.verta_gui.VERTAGUI.export_results"><code class="name flex">
-<span>def <span class="ident">export_results</span></span>(<span>self, format: str)</span>
+<span>def <span class="ident">export_results</span></span>(<span>self, format: str) ‑> bool</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def export_results(self, format: str):
-    &#34;&#34;&#34;Export analysis results&#34;&#34;&#34;
+<pre><code class="python">def export_results(self, format: str) -&gt; bool:
+    &#34;&#34;&#34;Prepare analysis results for download. Returns True when export data is ready.&#34;&#34;&#34;
     try:
         if format == &#34;JSON&#34;:
-            # Export as JSON
-            json_str = json.dumps(st.session_state.analysis_results, indent=2, default=str)
-            st.download_button(
-                label=&#34;Download JSON&#34;,
-                data=json_str,
-                file_name=&#34;analysis_results.json&#34;,
-                mime=&#34;application/json&#34;
-            )
+            payload = self._build_json_export_payload(st.session_state.analysis_results)
+            json_str = json.dumps(payload, indent=2)
+            st.session_state.pending_export = {
+                &#34;format&#34;: &#34;JSON&#34;,
+                &#34;label&#34;: &#34;Download JSON&#34;,
+                &#34;file_name&#34;: &#34;analysis_results.json&#34;,
+                &#34;mime&#34;: &#34;application/json&#34;,
+                &#34;data&#34;: json_str,
+            }
+            return True
 
         elif format == &#34;CSV&#34;:
-            # Export as CSV (if applicable)
-            if &#34;metrics&#34; in st.session_state.analysis_results:
-                # Export metrics as CSV
-                import pandas as pd
-                df = pd.DataFrame(st.session_state.analysis_results[&#34;metrics&#34;])
-                csv_data = df.to_csv(index=False)
-                st.download_button(
-                    label=&#34;Download Metrics CSV&#34;,
-                    data=csv_data,
-                    file_name=&#34;metrics_results.csv&#34;,
-                    mime=&#34;text/csv&#34;
+            csv_exports = self._collect_csv_exports(st.session_state.analysis_results)
+            if not csv_exports:
+                st.session_state.pending_export = None
+                st.warning(
+                    &#34;No tabular results to export. Run **Discover**, **Assign**, or &#34;
+                    &#34;**Metrics** analysis first.&#34;
                 )
+                return False
+
+            if len(csv_exports) == 1:
+                file_name, csv_data = next(iter(csv_exports.items()))
+                st.session_state.pending_export = {
+                    &#34;format&#34;: &#34;CSV&#34;,
+                    &#34;label&#34;: f&#34;Download {file_name}&#34;,
+                    &#34;file_name&#34;: file_name,
+                    &#34;mime&#34;: &#34;text/csv&#34;,
+                    &#34;data&#34;: csv_data,
+                }
             else:
-                st.info(&#34;CSV export available for metrics data&#34;)
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    zip_path = os.path.join(temp_dir, &#34;analysis_results_csv.zip&#34;)
+                    with zipfile.ZipFile(zip_path, &#34;w&#34;) as zipf:
+                        for name, content in csv_exports.items():
+                            zipf.writestr(name, content)
+                    with open(zip_path, &#34;rb&#34;) as f:
+                        zip_data = f.read()
+                st.session_state.pending_export = {
+                    &#34;format&#34;: &#34;CSV&#34;,
+                    &#34;label&#34;: &#34;Download CSV Package&#34;,
+                    &#34;file_name&#34;: &#34;analysis_results_csv.zip&#34;,
+                    &#34;mime&#34;: &#34;application/zip&#34;,
+                    &#34;data&#34;: zip_data,
+                    &#34;caption&#34;: &#34;Includes: &#34; + &#34;, &#34;.join(sorted(csv_exports)),
+                }
+            return True
 
         elif format == &#34;ZIP Archive&#34;:
             # Create comprehensive ZIP archive with all files from gui_outputs
@@ -9030,7 +9396,11 @@ launch_gui()</p>
                 # Save analysis results JSON
                 results_file = os.path.join(temp_dir, &#34;analysis_results.json&#34;)
                 with open(results_file, &#39;w&#39;) as f:
-                    json.dump(st.session_state.analysis_results, f, indent=2, default=str)
+                    json.dump(
+                        self._build_json_export_payload(st.session_state.analysis_results),
+                        f,
+                        indent=2,
+                    )
 
                 # Create ZIP
                 zip_path = os.path.join(temp_dir, &#34;analysis_results.zip&#34;)
@@ -9052,12 +9422,13 @@ launch_gui()</p>
                 with open(zip_path, &#39;rb&#39;) as f:
                     zip_data = f.read()
 
-                st.download_button(
-                    label=&#34;Download Complete Analysis Package&#34;,
-                    data=zip_data,
-                    file_name=&#34;complete_analysis_results.zip&#34;,
-                    mime=&#34;application/zip&#34;
-                )
+                st.session_state.pending_export = {
+                    &#34;format&#34;: &#34;ZIP Archive&#34;,
+                    &#34;label&#34;: &#34;Download Complete Analysis Package&#34;,
+                    &#34;file_name&#34;: &#34;complete_analysis_results.zip&#34;,
+                    &#34;mime&#34;: &#34;application/zip&#34;,
+                    &#34;data&#34;: zip_data,
+                }
 
                 # Show what&#39;s included in the ZIP
                 st.info(&#34;📦 **Complete Analysis Package includes:**&#34;)
@@ -9079,13 +9450,18 @@ launch_gui()</p>
                 st.write(&#34;• Intent recognition models&#34;)
                 st.write(&#34;• Feature importance analysis&#34;)
                 st.write(&#34;• ML prediction results&#34;)
+                return True
 
-        st.success(&#34;✅ Export ready!&#34;)
+        st.session_state.pending_export = None
+        st.warning(f&#34;Unknown export format: {format}&#34;)
+        return False
 
     except Exception as e:
-        st.error(f&#34;❌ Export failed: {str(e)}&#34;)</code></pre>
+        st.session_state.pending_export = None
+        st.error(f&#34;❌ Export failed: {str(e)}&#34;)
+        return False</code></pre>
 </details>
-<div class="desc"><p>Export analysis results</p></div>
+<div class="desc"><p>Prepare analysis results for download. Returns True when export data is ready.</p></div>
 </dd>
 <dt id="verta.verta_gui.VERTAGUI.generate_cli_command"><code class="name flex">
 <span>def <span class="ident">generate_cli_command</span></span>(<span>self,<br>analysis_type: str,<br>results: dict,<br>cluster_method: str = 'dbscan',<br>cluster_params: dict = None,<br>decision_mode: str = 'hybrid',<br>decision_params: dict = None,<br>seed: int = 0)</span>
@@ -9432,10 +9808,14 @@ launch_gui()</p>
         st.session_state.gaze_column_mappings = {}
     if &#39;analysis_results&#39; not in st.session_state:
         st.session_state.analysis_results = None
+    if &#39;pending_export&#39; not in st.session_state:
+        st.session_state.pending_export = None
     if &#39;current_step&#39; not in st.session_state:
         st.session_state.current_step = &#34;data_upload&#34;
     if &#39;scale_factor&#39; not in st.session_state:
         st.session_state.scale_factor = 0.2  # Default scale factor
+    if &#39;coordinate_unit&#39; not in st.session_state:
+        st.session_state.coordinate_unit = &#39;m&#39;  # Axis label unit for map plots
     if &#39;data_loaded&#39; not in st.session_state:
         st.session_state.data_loaded = False
     # Flash message shown after reruns (tuple: (level, text))
@@ -10248,7 +10628,12 @@ launch_gui()</p>
                     &#34;Cluster Method:&#34;,
                     [&#34;dbscan&#34;, &#34;kmeans&#34;, &#34;auto&#34;],
                     index=0,  # Default to DBSCAN
-                    help=&#34;Clustering method for discover analysis&#34;
+                    help=(
+                        &#34;How initial movement directions are grouped into branches. &#34;
+                        &#34;DBSCAN: density-based, unknown K, outliers marked separately. &#34;
+                        &#34;k-means: fixed number of branches (K). &#34;
+                        &#34;auto: tries K between K min and K max and picks the best silhouette score.&#34;
+                    ),
                 )
 
             with col_seed:
@@ -10258,7 +10643,10 @@ launch_gui()</p>
                     min_value=0,
                     max_value=10000,
                     step=1,
-                    help=&#34;Random seed for reproducibility&#34;
+                    help=(
+                        &#34;Fixed seed for k-means and auto-K selection so repeated runs &#34;
+                        &#34;with the same data and settings yield identical branch labels.&#34;
+                    ),
                 )
 
             # Decision mode parameters (needed for discover analysis)
@@ -10270,12 +10658,21 @@ launch_gui()</p>
                     &#34;Decision Mode:&#34;,
                     [&#34;radial&#34;, &#34;pathlen&#34;, &#34;hybrid&#34;],
                     index=2,  # Default to hybrid
-                    help=&#34;Decision mode for discover analysis&#34;
+                    help=(
+                        &#34;Where each trajectory&#39;s route choice is measured. &#34;
+                        &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
+                        &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                        &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
+                    ),
                 )
 
             with col_decision_param:
                 if discover_decision_mode == &#34;radial&#34;:
-                    st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                    st.info(
+                        &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                        &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                        &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                    ),
                     # r_outer will be overridden by junction-specific values
                     discover_r_outer = 50.0
                     discover_epsilon = st.number_input(
@@ -10284,7 +10681,13 @@ launch_gui()</p>
                         min_value=0.01,
                         max_value=1.0,
                         step=0.01,
-                        help=&#34;Epsilon parameter&#34;
+                        help=(
+                            &#34;Minimum step length (scene units, after scale) when estimating &#34;
+                            &#34;movement direction at the analysis radius. Shorter steps are &#34;
+                            &#34;treated as tracking noise and ignored; if none qualify, the &#34;
+                            &#34;largest step in the window is used instead. Lower = more &#34;
+                            &#34;sensitive; higher = smoother directions. Typical: 0.05.&#34;
+                        ),
                     )
                 elif discover_decision_mode == &#34;pathlen&#34;:
                     discover_path_length = st.number_input(
@@ -10293,7 +10696,11 @@ launch_gui()</p>
                         min_value=10.0,
                         max_value=500.0,
                         step=10.0,
-                        help=&#34;Path length for pathlen mode&#34;
+                        help=(
+                            &#34;Distance travelled along the path after junction entry &#34;
+                            &#34;(scene units, after scale) before the initial direction is &#34;
+                            &#34;measured. Used in pathlen mode. Typical: 100.&#34;
+                        ),
                     )
                     discover_linger_delta = st.number_input(
                         &#34;Linger Delta:&#34;,
@@ -10301,10 +10708,19 @@ launch_gui()</p>
                         min_value=0.0,
                         max_value=50.0,
                         step=1.0,
-                        help=&#34;Linger distance beyond junction&#34;
+                        help=(
+                            &#34;Extra outward distance (scene units, after scale) beyond the &#34;
+                            &#34;junction radius before direction is measured in pathlen mode. &#34;
+                            &#34;Filters paths that turn around immediately at the junction. &#34;
+                            &#34;0 = no extra requirement.&#34;
+                        ),
                     )
                 elif discover_decision_mode == &#34;hybrid&#34;:
-                    st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                    st.info(
+                        &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                        &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                        &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                    ),
                     # r_outer will be overridden by junction-specific values
                     discover_hybrid_r_outer = 50.0
                     discover_hybrid_path_length = st.number_input(
@@ -10313,7 +10729,11 @@ launch_gui()</p>
                         min_value=10.0,
                         max_value=500.0,
                         step=10.0,
-                        help=&#34;Path length for hybrid mode&#34;
+                        help=(
+                            &#34;Fallback path-length threshold (scene units, after scale) in &#34;
+                            &#34;hybrid mode when no radial crossing is detected — same meaning &#34;
+                            &#34;as Path Length in pathlen mode. Typical: 100.&#34;
+                        ),
                     )
                     discover_hybrid_linger_delta = st.number_input(
                         &#34;Hybrid Linger Delta:&#34;,
@@ -10321,7 +10741,10 @@ launch_gui()</p>
                         min_value=0.0,
                         max_value=50.0,
                         step=1.0,
-                        help=&#34;Linger distance beyond junction for hybrid mode&#34;
+                        help=(
+                            &#34;Same as Linger Delta, applied when hybrid mode falls back to &#34;
+                            &#34;pathlen after radial detection fails.&#34;
+                        ),
                     )
 
             # Dynamic parameters based on cluster method (for discover analysis)
@@ -10335,7 +10758,11 @@ launch_gui()</p>
                         min_value=0.1,
                         max_value=10.0,
                         step=0.1,
-                        help=&#34;Maximum distance between samples in the same neighborhood&#34;
+                        help=(
+                            &#34;DBSCAN density parameter on direction vectors. In practice, &#34;
+                            &#34;angular grouping is controlled mainly by Angle Epsilon below; &#34;
+                            &#34;increase Min Samples to require more trajectories per branch.&#34;
+                        ),
                     )
                 with col_min_samples:
                     dbscan_min_samples = st.number_input(
@@ -10344,17 +10771,25 @@ launch_gui()</p>
                         min_value=1,
                         max_value=50,
                         step=1,
-                        help=&#34;Minimum number of samples in a neighborhood&#34;
+                        help=(
+                            &#34;Minimum trajectories with similar initial directions needed to &#34;
+                            &#34;form a branch cluster. Lower = more small branches; higher = &#34;
+                            &#34;stricter, fewer clusters. Typical: 5.&#34;
+                        ),
                     )
 
                 # Add angle_eps parameter for DBSCAN
                 dbscan_angle_eps = st.number_input(
                     &#34;DBSCAN Angle Epsilon (degrees):&#34;,
-                    value=11.0,
+                    value=12.0,
                     min_value=1.0,
                     max_value=90.0,
                     step=1.0,
-                    help=&#34;Angle epsilon for DBSCAN clustering (angular separation between clusters)&#34;
+                    help=(
+                        &#34;Maximum angular difference (degrees) between two movement directions &#34;
+                        &#34;to count as the same DBSCAN neighborhood. Smaller = more, tighter &#34;
+                        &#34;branches; larger = fewer, broader groups. Typical: 12–15°.&#34;
+                    ),
                 )
             elif cluster_method == &#34;kmeans&#34;:
                 col_k, col_k_range = st.columns(2)
@@ -10365,7 +10800,10 @@ launch_gui()</p>
                         min_value=2,
                         max_value=20,
                         step=1,
-                        help=&#34;Number of clusters to form&#34;
+                        help=(
+                            &#34;Fixed number of route branches (clusters) to find at each junction. &#34;
+                            &#34;Should match the number of physical exits or main paths. Typical: 3.&#34;
+                        ),
                     )
                 with col_k_range:
                     kmeans_k_min = st.number_input(
@@ -10374,7 +10812,10 @@ launch_gui()</p>
                         min_value=2,
                         max_value=10,
                         step=1,
-                        help=&#34;Minimum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                            &#34;defining the search range. Must be at least 2.&#34;
+                        ),
                     )
                     kmeans_k_max = st.number_input(
                         &#34;K-Means K Max:&#34;,
@@ -10382,7 +10823,11 @@ launch_gui()</p>
                         min_value=3,
                         max_value=20,
                         step=1,
-                        help=&#34;Maximum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                            &#34;count via silhouette score. Should exceed the expected number &#34;
+                            &#34;of exits.&#34;
+                        ),
                     )
             elif cluster_method == &#34;auto&#34;:
                 col_k_range, col_separation = st.columns(2)
@@ -10393,7 +10838,10 @@ launch_gui()</p>
                         min_value=2,
                         max_value=10,
                         step=1,
-                        help=&#34;Minimum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                            &#34;defining the search range. Must be at least 2.&#34;
+                        ),
                     )
                     auto_k_max = st.number_input(
                         &#34;Auto K Max:&#34;,
@@ -10401,7 +10849,11 @@ launch_gui()</p>
                         min_value=3,
                         max_value=20,
                         step=1,
-                        help=&#34;Maximum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                            &#34;count via silhouette score. Should exceed the expected number &#34;
+                            &#34;of exits.&#34;
+                        ),
                     )
                 with col_separation:
                     auto_min_sep_deg = st.number_input(
@@ -10410,7 +10862,11 @@ launch_gui()</p>
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help=&#34;Minimum separation in degrees between clusters&#34;
+                        help=(
+                            &#34;After clustering, merges branch directions closer than this &#34;
+                            &#34;angle (degrees). Prevents duplicate branches for the same &#34;
+                            &#34;physical exit. Typical: 12°.&#34;
+                        ),
                     )
                     auto_angle_eps = st.number_input(
                         &#34;Auto Angle Epsilon (degrees):&#34;,
@@ -10418,13 +10874,21 @@ launch_gui()</p>
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help=&#34;Angle epsilon for auto clustering&#34;
+                        help=(
+                            &#34;Angular neighborhood (degrees) for grouping similar movement &#34;
+                            &#34;directions when DBSCAN is used; stored for pipeline consistency &#34;
+                            &#34;in auto mode. Typical: 11–15°.&#34;
+                        ),
                     )
 
         elif analysis_type == &#34;enhanced&#34;:
             # Enhanced analysis parameters (same as discover since it uses discover_decision_chain)
             st.markdown(&#34;#### Enhanced Analysis Parameters&#34;)
-            st.info(&#34;🚨 Enhanced analysis uses the same clustering and decision parameters as discover analysis, then performs evacuation planning, risk assessment, and efficiency analysis.&#34;)
+            st.info(
+                &#34;🚨 **Enhanced analysis** runs the same branch discovery as above (clustering + &#34;
+                &#34;decision mode), then adds evacuation planning, risk assessment, and &#34;
+                &#34;efficiency metrics on top of the discovered routes.&#34;
+            )
 
             # Clustering parameters (same as discover)
             st.markdown(&#34;##### Clustering Parameters&#34;)
@@ -10435,7 +10899,12 @@ launch_gui()</p>
                     &#34;Cluster Method:&#34;,
                     [&#34;dbscan&#34;, &#34;kmeans&#34;, &#34;auto&#34;],
                     index=0,  # Default to DBSCAN
-                    help=&#34;Clustering method for enhanced analysis&#34;
+                    help=(
+                        &#34;How initial movement directions are grouped into branches. &#34;
+                        &#34;DBSCAN: density-based, unknown K, outliers marked separately. &#34;
+                        &#34;k-means: fixed number of branches (K). &#34;
+                        &#34;auto: tries K between K min and K max and picks the best silhouette score.&#34;
+                    ),
                 )
 
             with col_seed:
@@ -10445,7 +10914,10 @@ launch_gui()</p>
                     min_value=0,
                     max_value=10000,
                     step=1,
-                    help=&#34;Random seed for reproducibility&#34;
+                    help=(
+                        &#34;Fixed seed for k-means and auto-K selection so repeated runs &#34;
+                        &#34;with the same data and settings yield identical branch labels.&#34;
+                    ),
                 )
 
             # Decision mode parameters (same as discover)
@@ -10457,12 +10929,21 @@ launch_gui()</p>
                     &#34;Decision Mode:&#34;,
                     [&#34;radial&#34;, &#34;pathlen&#34;, &#34;hybrid&#34;],
                     index=2,  # Default to hybrid
-                    help=&#34;Decision mode for enhanced analysis&#34;
+                    help=(
+                        &#34;Where each trajectory&#39;s route choice is measured. &#34;
+                        &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
+                        &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                        &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
+                    ),
                 )
 
             with col_decision_param:
                 if discover_decision_mode == &#34;radial&#34;:
-                    st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                    st.info(
+                        &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                        &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                        &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                    ),
                     # r_outer will be overridden by junction-specific values
                     discover_r_outer = 50.0
                     discover_epsilon = st.number_input(
@@ -10471,7 +10952,13 @@ launch_gui()</p>
                         min_value=0.01,
                         max_value=1.0,
                         step=0.01,
-                        help=&#34;Epsilon parameter&#34;
+                        help=(
+                            &#34;Minimum step length (scene units, after scale) when estimating &#34;
+                            &#34;movement direction at the analysis radius. Shorter steps are &#34;
+                            &#34;treated as tracking noise and ignored; if none qualify, the &#34;
+                            &#34;largest step in the window is used instead. Lower = more &#34;
+                            &#34;sensitive; higher = smoother directions. Typical: 0.05.&#34;
+                        ),
                     )
                 elif discover_decision_mode == &#34;pathlen&#34;:
                     discover_path_length = st.number_input(
@@ -10480,7 +10967,11 @@ launch_gui()</p>
                         min_value=10.0,
                         max_value=500.0,
                         step=10.0,
-                        help=&#34;Path length for pathlen mode&#34;
+                        help=(
+                            &#34;Distance travelled along the path after junction entry &#34;
+                            &#34;(scene units, after scale) before the initial direction is &#34;
+                            &#34;measured. Used in pathlen mode. Typical: 100.&#34;
+                        ),
                     )
                     discover_linger_delta = st.number_input(
                         &#34;Linger Delta:&#34;,
@@ -10488,10 +10979,19 @@ launch_gui()</p>
                         min_value=0.0,
                         max_value=50.0,
                         step=1.0,
-                        help=&#34;Linger distance beyond junction&#34;
+                        help=(
+                            &#34;Extra outward distance (scene units, after scale) beyond the &#34;
+                            &#34;junction radius before direction is measured in pathlen mode. &#34;
+                            &#34;Filters paths that turn around immediately at the junction. &#34;
+                            &#34;0 = no extra requirement.&#34;
+                        ),
                     )
                 elif discover_decision_mode == &#34;hybrid&#34;:
-                    st.info(&#34;ℹ️ Using junction-specific r_outer values from the Junctions tab&#34;)
+                    st.info(
+                        &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
+                        &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
+                        &#34;plots and the distance at which radial mode detects a route choice.&#34;
+                    ),
                     # r_outer will be overridden by junction-specific values
                     discover_hybrid_r_outer = 50.0
                     discover_hybrid_path_length = st.number_input(
@@ -10500,7 +11000,11 @@ launch_gui()</p>
                         min_value=10.0,
                         max_value=500.0,
                         step=10.0,
-                        help=&#34;Path length for hybrid mode&#34;
+                        help=(
+                            &#34;Fallback path-length threshold (scene units, after scale) in &#34;
+                            &#34;hybrid mode when no radial crossing is detected — same meaning &#34;
+                            &#34;as Path Length in pathlen mode. Typical: 100.&#34;
+                        ),
                     )
                     discover_hybrid_linger_delta = st.number_input(
                         &#34;Hybrid Linger Delta:&#34;,
@@ -10508,7 +11012,10 @@ launch_gui()</p>
                         min_value=0.0,
                         max_value=50.0,
                         step=1.0,
-                        help=&#34;Linger distance beyond junction for hybrid mode&#34;
+                        help=(
+                            &#34;Same as Linger Delta, applied when hybrid mode falls back to &#34;
+                            &#34;pathlen after radial detection fails.&#34;
+                        ),
                     )
 
             # Dynamic parameters based on cluster method (same as discover)
@@ -10522,7 +11029,11 @@ launch_gui()</p>
                         min_value=0.1,
                         max_value=10.0,
                         step=0.1,
-                        help=&#34;Maximum distance between samples in the same neighborhood&#34;
+                        help=(
+                            &#34;DBSCAN density parameter on direction vectors. In practice, &#34;
+                            &#34;angular grouping is controlled mainly by Angle Epsilon below; &#34;
+                            &#34;increase Min Samples to require more trajectories per branch.&#34;
+                        ),
                     )
                 with col_min_samples:
                     dbscan_min_samples = st.number_input(
@@ -10531,7 +11042,11 @@ launch_gui()</p>
                         min_value=1,
                         max_value=50,
                         step=1,
-                        help=&#34;Minimum number of samples in a neighborhood&#34;
+                        help=(
+                            &#34;Minimum trajectories with similar initial directions needed to &#34;
+                            &#34;form a branch cluster. Lower = more small branches; higher = &#34;
+                            &#34;stricter, fewer clusters. Typical: 5.&#34;
+                        ),
                     )
 
                 # Add angle_eps parameter for DBSCAN
@@ -10541,7 +11056,11 @@ launch_gui()</p>
                     min_value=1.0,
                     max_value=90.0,
                     step=1.0,
-                    help=&#34;Angle epsilon for DBSCAN clustering (angular separation between clusters)&#34;
+                    help=(
+                        &#34;Maximum angular difference (degrees) between two movement directions &#34;
+                        &#34;to count as the same DBSCAN neighborhood. Smaller = more, tighter &#34;
+                        &#34;branches; larger = fewer, broader groups. Typical: 12–15°.&#34;
+                    ),
                 )
             elif cluster_method == &#34;kmeans&#34;:
                 col_k, col_k_range = st.columns(2)
@@ -10552,7 +11071,10 @@ launch_gui()</p>
                         min_value=2,
                         max_value=20,
                         step=1,
-                        help=&#34;Number of clusters to form&#34;
+                        help=(
+                            &#34;Fixed number of route branches (clusters) to find at each junction. &#34;
+                            &#34;Should match the number of physical exits or main paths. Typical: 3.&#34;
+                        ),
                     )
                 with col_k_range:
                     kmeans_k_min = st.number_input(
@@ -10561,7 +11083,10 @@ launch_gui()</p>
                         min_value=2,
                         max_value=10,
                         step=1,
-                        help=&#34;Minimum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                            &#34;defining the search range. Must be at least 2.&#34;
+                        ),
                     )
                     kmeans_k_max = st.number_input(
                         &#34;K-Means K Max:&#34;,
@@ -10569,7 +11094,11 @@ launch_gui()</p>
                         min_value=3,
                         max_value=20,
                         step=1,
-                        help=&#34;Maximum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                            &#34;count via silhouette score. Should exceed the expected number &#34;
+                            &#34;of exits.&#34;
+                        ),
                     )
             elif cluster_method == &#34;auto&#34;:
                 col_k_range, col_separation = st.columns(2)
@@ -10580,7 +11109,10 @@ launch_gui()</p>
                         min_value=2,
                         max_value=10,
                         step=1,
-                        help=&#34;Minimum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Lower bound on K when testing branch counts (auto mode) or &#34;
+                            &#34;defining the search range. Must be at least 2.&#34;
+                        ),
                     )
                     auto_k_max = st.number_input(
                         &#34;Auto K Max:&#34;,
@@ -10588,7 +11120,11 @@ launch_gui()</p>
                         min_value=3,
                         max_value=20,
                         step=1,
-                        help=&#34;Maximum number of clusters for auto selection&#34;
+                        help=(
+                            &#34;Upper bound on K when auto mode searches for the best branch &#34;
+                            &#34;count via silhouette score. Should exceed the expected number &#34;
+                            &#34;of exits.&#34;
+                        ),
                     )
                 with col_separation:
                     auto_min_sep_deg = st.number_input(
@@ -10597,7 +11133,11 @@ launch_gui()</p>
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help=&#34;Minimum separation in degrees between clusters&#34;
+                        help=(
+                            &#34;After clustering, merges branch directions closer than this &#34;
+                            &#34;angle (degrees). Prevents duplicate branches for the same &#34;
+                            &#34;physical exit. Typical: 12°.&#34;
+                        ),
                     )
                     auto_angle_eps = st.number_input(
                         &#34;Auto Angle Epsilon (degrees):&#34;,
@@ -10605,7 +11145,11 @@ launch_gui()</p>
                         min_value=1.0,
                         max_value=90.0,
                         step=1.0,
-                        help=&#34;Angle epsilon for auto clustering&#34;
+                        help=(
+                            &#34;Angular neighborhood (degrees) for grouping similar movement &#34;
+                            &#34;directions when DBSCAN is used; stored for pipeline consistency &#34;
+                            &#34;in auto mode. Typical: 11–15°.&#34;
+                        ),
                     )
 
         elif analysis_type == &#34;metrics&#34;:
@@ -10961,7 +11505,12 @@ launch_gui()</p>
                         max_value=200.0,
                         step=1.0,
                         key=&#34;assign_linger_delta&#34;,
-                        help=&#34;Linger distance beyond junction&#34;
+                        help=(
+                            &#34;Extra outward distance (scene units, after scale) beyond the &#34;
+                            &#34;junction radius before direction is measured in pathlen mode. &#34;
+                            &#34;Filters paths that turn around immediately at the junction. &#34;
+                            &#34;0 = no extra requirement.&#34;
+                        ),
                     )
                     assign_epsilon = st.number_input(
                         &#34;Epsilon:&#34;,
@@ -10984,7 +11533,11 @@ launch_gui()</p>
                         max_value=500.0,
                         step=10.0,
                         key=&#34;assign_path_length&#34;,
-                        help=&#34;Path length for hybrid mode&#34;
+                        help=(
+                            &#34;Fallback path-length threshold (scene units, after scale) in &#34;
+                            &#34;hybrid mode when no radial crossing is detected — same meaning &#34;
+                            &#34;as Path Length in pathlen mode. Typical: 100.&#34;
+                        ),
                     )
                     assign_linger_delta = st.number_input(
                         &#34;Hybrid Linger Delta:&#34;,
@@ -11326,6 +11879,12 @@ launch_gui()</p>
         with col_scale:
             scale = st.number_input(&#34;Scale Factor:&#34;, value=st.session_state.get(&#34;scale_factor&#34;, 0.2), min_value=0.01, max_value=1.0, step=0.01)
             st.session_state.scale_factor = scale
+            coord_unit = st.text_input(
+                &#34;Coordinate unit (map axes):&#34;,
+                value=st.session_state.get(&#34;coordinate_unit&#34;, &#34;m&#34;),
+                help=&#34;Shown on map plot axes, e.g. &#39;m&#39; for metres. Leave empty for generic scene-unit labels.&#34;,
+            )
+            st.session_state.coordinate_unit = coord_unit.strip() or None
         with col_threshold:
             motion_threshold = st.number_input(&#34;Motion Threshold:&#34;, value=0.1, min_value=0.01, max_value=1.0, step=0.01)
             st.session_state.motion_threshold = motion_threshold
@@ -11378,29 +11937,37 @@ launch_gui()</p>
     &#34;&#34;&#34;Render discover analysis visualizations&#34;&#34;&#34;
     st.markdown(&#34;### Discover Analysis Results&#34;)
 
+    sample_map = os.path.join(&#34;gui_outputs&#34;, &#34;Sample_Trajectories_Map.png&#34;)
+    if os.path.exists(sample_map):
+        st.markdown(&#34;#### Sample raw trajectories&#34;)
+        st.caption(
+            &#34;All participant paths in grey with junction locations (J0, J1, …). &#34;
+            &#34;Use this figure to show raw movement data in publications.&#34;
+        )
+        st.image(sample_map, caption=&#34;Sample Trajectories Map&#34;, width=&#39;stretch&#39;)
+    else:
+        st.info(
+            &#34;Run **Discover Branches** analysis to generate the sample trajectory map. &#34;
+            &#34;It is saved as `gui_outputs/Sample_Trajectories_Map.png`.&#34;
+        )
+
     # Display decision intercepts for each junction
     for junction_key, branches_data in st.session_state.analysis_results[&#34;branches&#34;].items():
-        if junction_key == &#34;chain_decisions&#34;:  # Skip the chain decisions data
+        if junction_key in (&#34;chain_decisions&#34;, &#34;decision_points&#34;):
+            continue
+        if not isinstance(branches_data, dict):
             continue
 
         st.markdown(f&#34;#### {junction_key.replace(&#39;_&#39;, &#39; &#39;).title()}&#34;)
 
-        # Show decision intercepts plot
         junction_num = junction_key.split(&#39;_&#39;)[1]
         junction_dir = os.path.join(&#34;gui_outputs&#34;, f&#34;junction_{junction_num}&#34;)
 
-        # Display available plots
-        intercepts_path = os.path.join(junction_dir, &#34;Decision_Intercepts.png&#34;)
-        if os.path.exists(intercepts_path):
-            st.image(intercepts_path, caption=f&#34;Decision Intercepts - {junction_key}&#34;, width=&#39;stretch&#39;)
-        else:
-            st.warning(f&#34;Decision intercepts plot not found for {junction_key}&#34;)
-
-        # Check for other available plots that might be generated
         other_plots = [
-            (&#34;Decision_Map.png&#34;, &#34;Decision Map&#34;),
+            (&#34;Decision_Intercepts.png&#34;, &#34;Decision Intercepts&#34;),
+            (&#34;Branch_Trajectories_Map.png&#34;, &#34;Branch Trajectories Map&#34;),
             (&#34;Branch_Counts.png&#34;, &#34;Branch Counts&#34;),
-            (&#34;Branch_Directions.png&#34;, &#34;Branch Directions&#34;)
+            (&#34;Branch_Directions.png&#34;, &#34;Branch Directions&#34;),
         ]
 
         for plot_file, plot_name in other_plots:
@@ -11482,8 +12049,21 @@ launch_gui()</p>
         help=&#34;Select the format for exporting results&#34;
     )
 
-    if st.button(&#34;📥 Export Results&#34;):
-        self.export_results(export_format)</code></pre>
+    if st.button(&#34;📥 Export Results&#34;, key=&#34;export_results_button&#34;):
+        if self.export_results(export_format):
+            st.success(&#34;✅ Export ready!&#34;)
+
+    pending = st.session_state.get(&#34;pending_export&#34;)
+    if pending and pending.get(&#34;format&#34;) == export_format:
+        st.download_button(
+            label=pending[&#34;label&#34;],
+            data=pending[&#34;data&#34;],
+            file_name=pending[&#34;file_name&#34;],
+            mime=pending[&#34;mime&#34;],
+            key=f&#34;download_{export_format.lower().replace(&#39; &#39;, &#39;_&#39;)}_persist&#34;,
+        )
+        if pending.get(&#34;caption&#34;):
+            st.caption(pending[&#34;caption&#34;])</code></pre>
 </details>
 <div class="desc"><p>Render the export interface</p></div>
 </dd>
@@ -11586,7 +12166,7 @@ launch_gui()</p>
     if logo_path and os.path.exists(logo_path):
         col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
-            st.image(logo_path, use_container_width=True)
+            st.image(logo_path, width=&#34;stretch&#34;)
     
     st.markdown(&#39;&lt;h1 class=&#34;main-header&#34;&gt;🗺️ VERTA&lt;/h1&gt;&#39;, unsafe_allow_html=True)
     st.markdown(&#34;&#34;&#34;
@@ -11746,7 +12326,7 @@ launch_gui()</p>
                     yaxis_range=[0, 1],
                     height=300
                 )
-                st.plotly_chart(fig, width=&#39;stretch&#39;, key=f&#34;intent_confidence_{junction_num}_{traj_id}&#34;)
+                st.plotly_chart(fig, key=f&#34;intent_confidence_{junction_num}_{traj_id}&#34;)
 
     # Feature importance table
     if &#39;feature_importance&#39; in junction_results[&#39;training_results&#39;]:
@@ -12160,7 +12740,7 @@ launch_gui()</p>
         showlegend=True
     ))
 
-    st.plotly_chart(fig, config={&#39;displayModeBar&#39;: True}, width=&#39;stretch&#39;)</code></pre>
+    st.plotly_chart(fig, config={&#39;displayModeBar&#39;: True})</code></pre>
 </details>
 <div class="desc"><p>Render interactive plot for junction editing</p></div>
 </dd>
@@ -12723,6 +13303,8 @@ launch_gui()</p>
                 epsilon = decision_params.get(&#34;epsilon&#34;, 0.05) if decision_params else 0.05
                 linger_delta = decision_params.get(&#34;linger_delta&#34;, 5.0) if decision_params else 5.0
                 r_outer_list = [st.session_state.junction_r_outer.get(i, 50.0) for i in range(len(st.session_state.junctions))]
+                scale = float(st.session_state.get(&#34;scale_factor&#34;, 1.0))
+                coord_unit = st.session_state.get(&#34;coordinate_unit&#34;)
 
                 # Run consolidated discovery
                 chain_df, centers_list, decisions_chain_df = discover_decision_chain(
@@ -12742,6 +13324,8 @@ launch_gui()</p>
                     min_sep_deg=min_sep_deg,
                     angle_eps=angle_eps,
                     min_samples=min_samples,
+                    scale=scale,
+                    coordinate_unit=coord_unit,
                 )
 
                 # Build per-junction results view from chain_df/centers_list

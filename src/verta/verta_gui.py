@@ -5029,10 +5029,10 @@ class VERTAGUI:
             junction_dir = os.path.join("gui_outputs", f"junction_{junction_num}")
 
             other_plots = [
-                ("Decision_Intercepts.png", "Decision Intercepts — raw paths linked to branch assignments"),
-                ("Branch_Trajectories_Map.png", "Branch Trajectories Map — full area coloured by branch choice"),
-                ("Branch_Counts.png", "Branch Counts — route-choice frequencies"),
-                ("Branch_Directions.png", "Branch Directions — compass of discovered directions"),
+                ("Decision_Intercepts.png", "Decision Intercepts"),
+                ("Branch_Trajectories_Map.png", "Branch Trajectories Map"),
+                ("Branch_Counts.png", "Branch Counts"),
+                ("Branch_Directions.png", "Branch Directions"),
             ]
 
             for plot_file, plot_name in other_plots:

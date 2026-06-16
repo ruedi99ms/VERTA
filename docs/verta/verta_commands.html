@@ -155,6 +155,11 @@ el.replaceWith(d);
 
     def add_common_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
         &#34;&#34;&#34;Add arguments shared by all commands&#34;&#34;&#34;
+        parser.add_argument(
+            &#34;--coordinate_unit&#34;, default=None,
+            help=&#34;Unit for map axis labels in plots (e.g. &#39;m&#39; for metres). &#34;
+                 &#34;If omitted, plots use descriptive scene-unit labels.&#34;,
+        )
         parser.add_argument(&#34;--skip_plots&#34;, action=&#34;store_true&#34;,
                             help=&#34;Skip generating plots (compute only)&#34;)
 
@@ -225,6 +230,11 @@ def add_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
 </summary>
 <pre><code class="python">def add_common_arguments(self, parser: argparse.ArgumentParser) -&gt; None:
     &#34;&#34;&#34;Add arguments shared by all commands&#34;&#34;&#34;
+    parser.add_argument(
+        &#34;--coordinate_unit&#34;, default=None,
+        help=&#34;Unit for map axis labels in plots (e.g. &#39;m&#39; for metres). &#34;
+             &#34;If omitted, plots use descriptive scene-unit labels.&#34;,
+    )
     parser.add_argument(&#34;--skip_plots&#34;, action=&#34;store_true&#34;,
                         help=&#34;Skip generating plots (compute only)&#34;)</code></pre>
 </details>
@@ -382,6 +392,8 @@ class CommandConfig:
                 junction_number=0,  # CLI discover command is always for junction 0
                 all_junctions=[junction],
                 skip_plots=skip_plots,
+                scale=float(args.scale),
+                coordinate_unit=getattr(args, &#34;coordinate_unit&#34;, None),
             )
 
         with self.logger.operation(&#34;Processing assignments&#34;):
@@ -455,21 +467,41 @@ class CommandConfig:
     def _generate_plots(self, trajectories, assignments, centers, junction, args):
         &#34;&#34;&#34;Generate visualization plots&#34;&#34;&#34;
         main_assignments = pd.read_csv(os.path.join(args.out, &#34;branch_assignments.csv&#34;))
+        coord_unit = getattr(args, &#34;coordinate_unit&#34;, None)
+        scale = float(getattr(args, &#34;scale&#34;, 1.0))
 
-        # Branch directions plot (optional - function may not exist)
+        try:
+            plot_sample_trajectories_map(
+                trajectories=trajectories,
+                junctions=[junction],
+                r_outer_list=[float(args.r_outer)] if args.r_outer is not None else None,
+                scale=scale,
+                coordinate_unit=coord_unit,
+                out_path=os.path.join(args.out, &#34;Sample_Trajectories_Map.png&#34;),
+                seed=int(getattr(args, &#34;seed&#34;, 0)),
+            )
+            self.logger.info(&#34;Sample trajectories map generated&#34;)
+        except Exception as e:
+            self.logger.error(f&#34;Sample trajectories map failed: {e}&#34;)
+
         try:
             from .verta_plotting import plot_branch_directions
-            plot_branch_directions(centers, (junction.cx, junction.cz),
-                                 os.path.join(args.out, &#34;Branch_Directions.png&#34;))
-        except (ImportError, AttributeError):
-            self.logger.warning(&#34;plot_branch_directions not available, skipping&#34;)
+            plot_branch_directions(
+                centers, (junction.cx, junction.cz),
+                os.path.join(args.out, &#34;Branch_Directions.png&#34;),
+                scale=scale, coordinate_unit=coord_unit,
+                junction_number=0,
+            )
+            self.logger.info(&#34;Branch directions plot generated&#34;)
+        except Exception as e:
+            self.logger.warning(f&#34;plot_branch_directions failed: {e}&#34;)
 
-        # Branch counts plot (optional - function may not exist)
         try:
             from .verta_plotting import plot_branch_counts
             plot_branch_counts(main_assignments, os.path.join(args.out, &#34;Branch_Counts.png&#34;))
-        except (ImportError, AttributeError):
-            self.logger.warning(&#34;plot_branch_counts not available, skipping&#34;)
+            self.logger.info(&#34;Branch counts plot generated&#34;)
+        except Exception as e:
+            self.logger.warning(f&#34;plot_branch_counts failed: {e}&#34;)
 
         # Decision intercepts plot
         if args.plot_intercepts:
@@ -505,7 +537,9 @@ class CommandConfig:
                     out_path=os.path.join(args.out, &#34;Decision_Intercepts.png&#34;),
                     show_paths=False,
                     legend_noenter_as_line=args.legend_noenter_as_line,
-                    decision_points_df=decision_points_df
+                    decision_points_df=decision_points_df,
+                    scale=scale,
+                    coordinate_unit=coord_unit,
                 )
                 self.logger.info(&#34;Decision intercepts plot generated&#34;)
             except Exception as e:
@@ -520,11 +554,13 @@ class CommandConfig:
                 junction=junction,
                 centers=centers,
                 r_outer=float(args.r_outer) if args.r_outer is not None else None,
-                out_path=os.path.join(args.out, &#34;Decision_Map.png&#34;)
+                out_path=os.path.join(args.out, &#34;Decision_Map.png&#34;),
+                scale=scale,
+                coordinate_unit=coord_unit,
             )
             self.logger.info(&#34;Decision map plot generated&#34;)
-        except (ImportError, AttributeError, NameError) as e:
-            self.logger.warning(f&#34;plot_discover_map not available, skipping: {e}&#34;)</code></pre>
+        except Exception as e:
+            self.logger.warning(f&#34;plot_discover_map failed: {e}&#34;)</code></pre>
 </details>
 <div class="desc"><p>Command handler for branch discovery</p></div>
 <h3>Ancestors</h3>
@@ -635,6 +671,8 @@ class CommandConfig:
             seed=args.seed,
             out_dir=args.out,
             skip_plots=skip_plots,
+            scale=float(args.scale),
+            coordinate_unit=getattr(args, &#34;coordinate_unit&#34;, None),
         )
 
         self.logger.info(&#34;Completed Discovering decision chain&#34;)
@@ -667,6 +705,23 @@ class CommandConfig:
 
     def _generate_chain_plots(self, trajectories, chain_df, junctions, rlist, args):
         &#34;&#34;&#34;Generate chain visualization plots&#34;&#34;&#34;
+        coord_unit = getattr(args, &#34;coordinate_unit&#34;, None)
+        scale = float(getattr(args, &#34;scale&#34;, 1.0))
+
+        try:
+            plot_sample_trajectories_map(
+                trajectories=trajectories,
+                junctions=junctions,
+                r_outer_list=rlist,
+                scale=scale,
+                coordinate_unit=coord_unit,
+                out_path=os.path.join(args.out, &#34;Sample_Trajectories_Map.png&#34;),
+                seed=int(getattr(args, &#34;seed&#34;, 0)),
+            )
+            self.logger.info(&#34;Sample trajectories map generated&#34;)
+        except Exception as e:
+            self.logger.error(f&#34;Sample trajectories map failed: {e}&#34;)
+
         try:
             plot_chain_overview(
                 trajectories=trajectories,
@@ -682,6 +737,8 @@ class CommandConfig:
                 show_centers=False,
                 centers_list=None,
                 annotate_counts=False,
+                scale=scale,
+                coordinate_unit=coord_unit,
             )
             self.logger.info(&#34;Chain overview plot generated&#34;)
         except Exception as e:
@@ -700,6 +757,8 @@ class CommandConfig:
                 linger_delta=float(args.linger_delta),
                 decision_mode=str(args.decision_mode),
                 out_path=os.path.join(args.out, &#34;Chain_SmallMultiples.png&#34;),
+                scale=scale,
+                coordinate_unit=coord_unit,
             )
             self.logger.info(&#34;Chain small multiples plot generated&#34;)
         except Exception as e:
@@ -812,6 +871,8 @@ class CommandConfig:
         seed=args.seed,
         out_dir=args.out,
         skip_plots=skip_plots,
+        scale=float(args.scale),
+        coordinate_unit=getattr(args, &#34;coordinate_unit&#34;, None),
     )
 
     self.logger.info(&#34;Completed Discovering decision chain&#34;)
@@ -888,8 +949,15 @@ class CommandConfig:
         self.logger.info(f&#34;Launching VERTA GUI on http://{args.host}:{args.port}&#34;)
         self.logger.info(&#34;Press Ctrl+C to stop the server&#34;)
 
+        env = os.environ.copy()
+        src_dir = gui_path.parent.parent
+        if src_dir.name == &#34;src&#34; and (src_dir / &#34;verta&#34; / &#34;__init__.py&#34;).exists():
+            env[&#34;PYTHONPATH&#34;] = str(src_dir) + (
+                os.pathsep + env[&#34;PYTHONPATH&#34;] if env.get(&#34;PYTHONPATH&#34;) else &#34;&#34;
+            )
+
         try:
-            subprocess.run(cmd)
+            subprocess.run(cmd, env=env)
         except KeyboardInterrupt:
             self.logger.info(&#34;GUI stopped by user&#34;)
         except Exception as e:
@@ -942,8 +1010,15 @@ class CommandConfig:
     self.logger.info(f&#34;Launching VERTA GUI on http://{args.host}:{args.port}&#34;)
     self.logger.info(&#34;Press Ctrl+C to stop the server&#34;)
 
+    env = os.environ.copy()
+    src_dir = gui_path.parent.parent
+    if src_dir.name == &#34;src&#34; and (src_dir / &#34;verta&#34; / &#34;__init__.py&#34;).exists():
+        env[&#34;PYTHONPATH&#34;] = str(src_dir) + (
+            os.pathsep + env[&#34;PYTHONPATH&#34;] if env.get(&#34;PYTHONPATH&#34;) else &#34;&#34;
+        )
+
     try:
-        subprocess.run(cmd)
+        subprocess.run(cmd, env=env)
     except KeyboardInterrupt:
         self.logger.info(&#34;GUI stopped by user&#34;)
     except Exception as e:
@@ -1054,6 +1129,8 @@ class CommandConfig:
                 angle_eps=float(args.angle_eps),
                 min_samples=int(args.min_samples),
                 skip_plots=skip_plots,
+                scale=float(args.scale),
+                coordinate_unit=getattr(args, &#34;coordinate_unit&#34;, None),
             )
 
         with self.logger.operation(&#34;Computing gaze analysis&#34;):
