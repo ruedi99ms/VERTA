@@ -1461,7 +1461,7 @@ class VERTAGUI:
                             "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
                             "**Junctions** tab. It defines the orange decision circle in intercept "
                             "plots and the distance at which radial mode detects a route choice."
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1509,7 +1509,7 @@ class VERTAGUI:
                             "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
                             "**Junctions** tab. It defines the orange decision circle in intercept "
                             "plots and the distance at which radial mode detects a route choice."
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
@@ -1732,7 +1732,7 @@ class VERTAGUI:
                             "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
                             "**Junctions** tab. It defines the orange decision circle in intercept "
                             "plots and the distance at which radial mode detects a route choice."
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1780,7 +1780,7 @@ class VERTAGUI:
                             "ℹ️ **Analysis radius (r_outer)** for each junction is set in the "
                             "**Junctions** tab. It defines the orange decision circle in intercept "
                             "plots and the distance at which radial mode detects a route choice."
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
