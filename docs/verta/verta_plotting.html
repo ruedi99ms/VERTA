@@ -232,18 +232,18 @@ applied when CSV files are loaded (see <code>--scale</code> / <code>load_folder<
     title: Optional[str] = None,
     show_unassigned: bool = True,
 ) -&gt; None:
-    &#34;&#34;&#34;Full-area map with each trajectory coloured by branch at one junction.
+    &#34;&#34;&#34;Full-area map with each trajectory colored by branch at one junction.
 
-    Like :func:`plot_sample_trajectories_map`, but path colour reflects the
+    Like :func:`plot_sample_trajectories_map`, but path color reflects the
     discovered route choice at ``junction_number`` so readers can see where
-    participants who took each branch travelled in the environment.
+    participants who took each branch traveled in the environment.
     &#34;&#34;&#34;
     if not trajectories:
         logger.warning(&#34;plot_branch_trajectories_map: no trajectories to plot&#34;)
         return
 
     labels = coordinate_labels(scale=scale, unit=coordinate_unit)
-    branch_by_tid = _branch_colour_map(assignments_df)
+    branch_by_tid = _branch_color_map(assignments_df)
     n_total = len(trajectories)
 
     fig, ax = plt.subplots(figsize=(12, 10), dpi=DEFAULT_PLOT_CONFIG.dpi)
@@ -316,7 +316,7 @@ applied when CSV files are loaded (see <code>--scale</code> / <code>load_folder<
                        label=f&#34;Unassigned (N={n_missing})&#34;)
         )
 
-    plot_title = title or f&#34;Branch trajectories (J{junction_number})&#34;
+    plot_title = title or f&#34;Branch trajectories (Junction {junction_number})&#34;
     ax.set_xlabel(labels[&#34;x&#34;], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_ylabel(labels[&#34;z&#34;], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_title(plot_title, fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
@@ -336,17 +336,17 @@ applied when CSV files are loaded (see <code>--scale</code> / <code>load_folder<
         )
 
     caption = (
-        f&#34;Path colour = discovered branch at junction {junction_number}. &#34;
+        f&#34;Path color = discovered branch at junction {junction_number}. &#34;
         f&#34;{_map_footnote(n_total, scale=scale, unit=coordinate_unit)}&#34;
     )
     _add_map_caption(fig, caption)
     plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
     plt.close()</code></pre>
 </details>
-<div class="desc"><p>Full-area map with each trajectory coloured by branch at one junction.</p>
-<p>Like :func:<code><a title="verta.verta_plotting.plot_sample_trajectories_map" href="#verta.verta_plotting.plot_sample_trajectories_map">plot_sample_trajectories_map()</a></code>, but path colour reflects the
+<div class="desc"><p>Full-area map with each trajectory colored by branch at one junction.</p>
+<p>Like :func:<code><a title="verta.verta_plotting.plot_sample_trajectories_map" href="#verta.verta_plotting.plot_sample_trajectories_map">plot_sample_trajectories_map()</a></code>, but path color reflects the
 discovered route choice at <code>junction_number</code> so readers can see where
-participants who took each branch travelled in the environment.</p></div>
+participants who took each branch traveled in the environment.</p></div>
 </dd>
 <dt id="verta.verta_plotting.plot_chain_overview"><code class="name flex">
 <span>def <span class="ident">plot_chain_overview</span></span>(<span>trajectories: List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>chain_df: pandas.core.frame.DataFrame,<br>junctions: List[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>r_outer_list: List[float] | None = None,<br>path_length: float = 100.0,<br>epsilon: float = 0.015,<br>linger_delta: float = 5.0,<br>decision_mode: str = 'hybrid',<br>out_path: str = 'Chain_Overview.png',<br>show_paths: bool = True,<br>show_centers: bool = False,<br>centers_list: List[numpy.ndarray] | None = None,<br>annotate_counts: bool = False,<br>scale: float = 1.0,<br>coordinate_unit: str | None = None)</span>
@@ -1050,7 +1050,7 @@ the junction; colors group trajectories into discovered route branches.</p>
     scale: float = 1.0,
     coordinate_unit: Optional[str] = None,
 ) -&gt; None:
-    &#34;&#34;&#34;Overview map for a single junction: grey paths and junction marker only.&#34;&#34;&#34;
+    &#34;&#34;&#34;Overview map for a single junction: gray paths and junction marker only.&#34;&#34;&#34;
     labels = coordinate_labels(scale=scale, unit=coordinate_unit)
     n_total = len(trajectories)
     traj_color = &#34;#A8A8A8&#34;
@@ -1077,7 +1077,7 @@ the junction; colors group trajectories into discovered route branches.</p>
     plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
     plt.close()</code></pre>
 </details>
-<div class="desc"><p>Overview map for a single junction: grey paths and junction marker only.</p></div>
+<div class="desc"><p>Overview map for a single junction: gray paths and junction marker only.</p></div>
 </dd>
 <dt id="verta.verta_plotting.plot_flow_graph_map"><code class="name flex">
 <span>def <span class="ident">plot_flow_graph_map</span></span>(<span>trajectories: List[<a title="verta.verta_data_loader.Trajectory" href="verta_data_loader.html#verta.verta_data_loader.Trajectory">Trajectory</a>],<br>chain_df: pandas.core.frame.DataFrame,<br>junctions: List[<a title="verta.verta_geometry.Circle" href="verta_geometry.html#verta.verta_geometry.Circle">Circle</a>],<br>*,<br>r_outer_list: List[float] | None = None,<br>out_path: str = 'Flow_Graph_Map.png',<br>junction_names: List[str] | None = None,<br>show_junction_names: bool = True,<br>min_flow_threshold: float = 0.001,<br>arrow_scale: float = 1.0,<br>cached_sequences: Dict[int, List[int]] | None = None) ‑> None</span>
@@ -1540,7 +1540,7 @@ the junction; colors group trajectories into discovered route branches.</p>
     seed: int = 0,
     title: str = &#34;Sample trajectories&#34;,
 ) -&gt; None:
-    &#34;&#34;&#34;Overview map: all paths in grey with junction markers.
+    &#34;&#34;&#34;Overview map: all paths in gray with junction markers.
 
     Publication-style figure showing what the raw movement data look like on the
     virtual-environment floor plan. Parameters ``n_samples`` / ``sample_indices``
@@ -1586,7 +1586,7 @@ the junction; colors group trajectories into discovered route branches.</p>
     plt.savefig(out_path, dpi=150, bbox_inches=&#34;tight&#34;)
     plt.close()</code></pre>
 </details>
-<div class="desc"><p>Overview map: all paths in grey with junction markers.</p>
+<div class="desc"><p>Overview map: all paths in gray with junction markers.</p>
 <p>Publication-style figure showing what the raw movement data look like on the
 virtual-environment floor plan. Parameters <code>n_samples</code> / <code>sample_indices</code>
 are kept for API compatibility but no longer change the plot.</p></div>

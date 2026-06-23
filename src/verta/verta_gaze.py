@@ -901,7 +901,7 @@ def plot_gaze_directions_at_junctions(
         if junction_labels and j_idx < len(junction_labels):
             this_label = junction_labels[j_idx]
         else:
-            this_label = f"J{j_idx}"
+            this_label = f"Junction {j_idx}"
         ax.set_title(f"{this_label}: Head Directions")
         
         # Set axis limits around junction with proper scaling

@@ -320,7 +320,7 @@ class VERTAGUI:
                 coord_unit = st.text_input(
                     "Coordinate unit (map axes):",
                     value=st.session_state.get("coordinate_unit", "m"),
-                    help="Shown on map plot axes, e.g. 'm' for metres. Leave empty for generic scene-unit labels.",
+                    help="Shown on map plot axes, e.g. 'm' for meters. Leave empty for generic scene-unit labels.",
                 )
                 st.session_state.coordinate_unit = coord_unit.strip() or None
             with col_threshold:
@@ -1450,7 +1450,7 @@ class VERTAGUI:
                         help=(
                             "Where each trajectory's route choice is measured. "
                             "radial: when the path crosses the analysis radius (r_outer, per junction). "
-                            "pathlen: after travelling a set distance past junction entry. "
+                            "pathlen: after traveling a set distance past junction entry. "
                             "hybrid: radial first; if no crossing is found, falls back to pathlen."
                         ),
                     )
@@ -1486,7 +1486,7 @@ class VERTAGUI:
                             max_value=500.0,
                             step=10.0,
                             help=(
-                                "Distance travelled along the path after junction entry "
+                                "Distance traveled along the path after junction entry "
                                 "(scene units, after scale) before the initial direction is "
                                 "measured. Used in pathlen mode. Typical: 100."
                             ),
@@ -1721,7 +1721,7 @@ class VERTAGUI:
                         help=(
                             "Where each trajectory's route choice is measured. "
                             "radial: when the path crosses the analysis radius (r_outer, per junction). "
-                            "pathlen: after travelling a set distance past junction entry. "
+                            "pathlen: after traveling a set distance past junction entry. "
                             "hybrid: radial first; if no crossing is found, falls back to pathlen."
                         ),
                     )
@@ -1757,7 +1757,7 @@ class VERTAGUI:
                             max_value=500.0,
                             step=10.0,
                             help=(
-                                "Distance travelled along the path after junction entry "
+                                "Distance traveled along the path after junction entry "
                                 "(scene units, after scale) before the initial direction is "
                                 "measured. Used in pathlen mode. Typical: 100."
                             ),
@@ -4835,7 +4835,9 @@ class VERTAGUI:
 
         ax.set_xlabel('Successor Junction')
         ax.set_ylabel('Probability (%)')
-        ax.set_title(f'Direct Successor Probabilities: J{predecessor} → J{decision_junction} → ?')
+        ax.set_title(
+            f'Direct Successor Probabilities: Junction {predecessor} → Junction {decision_junction} → ?'
+        )
         ax.set_ylim(0, max(probabilities) * 1.1)
 
         # Add value labels on bars
@@ -4942,7 +4944,9 @@ class VERTAGUI:
 
         ax.set_xlabel('Predecessor Junction')
         ax.set_ylabel('Probability (%)')
-        ax.set_title(f'Direct Predecessor Probabilities: ? → J{decision_junction} → J{successor}')
+        ax.set_title(
+            f'Direct Predecessor Probabilities: ? → Junction {decision_junction} → Junction {successor}'
+        )
         ax.set_ylim(0, max(probabilities) * 1.1)
 
         # Add value labels on bars
@@ -5006,7 +5010,7 @@ class VERTAGUI:
         if os.path.exists(sample_map):
             st.markdown("#### Sample raw trajectories")
             st.caption(
-                "All participant paths in grey with junction locations (J0, J1, …). "
+                "All participant paths in gray with junction locations (Junction 0, Junction 1, …). "
                 "Use this figure to show raw movement data in publications."
             )
             st.image(sample_map, caption="Sample Trajectories Map", width='stretch')

@@ -264,7 +264,7 @@ def plot_sample_trajectories_map(
     seed: int = 0,
     title: str = "Sample trajectories",
 ) -> None:
-    """Overview map: all paths in grey with junction markers.
+    """Overview map: all paths in gray with junction markers.
 
     Publication-style figure showing what the raw movement data look like on the
     virtual-environment floor plan. Parameters ``n_samples`` / ``sample_indices``
@@ -311,7 +311,7 @@ def plot_sample_trajectories_map(
     plt.close()
 
 
-def _branch_colour_map(assignments_df: pd.DataFrame) -> Dict[str, int]:
+def _branch_color_map(assignments_df: pd.DataFrame) -> Dict[str, int]:
     """Map trajectory id (str) to branch label from an assignments table."""
     branch_by_tid: Dict[str, int] = {}
     if assignments_df is None or len(assignments_df) == 0:
@@ -336,18 +336,18 @@ def plot_branch_trajectories_map(
     title: Optional[str] = None,
     show_unassigned: bool = True,
 ) -> None:
-    """Full-area map with each trajectory coloured by branch at one junction.
+    """Full-area map with each trajectory colored by branch at one junction.
 
-    Like :func:`plot_sample_trajectories_map`, but path colour reflects the
+    Like :func:`plot_sample_trajectories_map`, but path color reflects the
     discovered route choice at ``junction_number`` so readers can see where
-    participants who took each branch travelled in the environment.
+    participants who took each branch traveled in the environment.
     """
     if not trajectories:
         logger.warning("plot_branch_trajectories_map: no trajectories to plot")
         return
 
     labels = coordinate_labels(scale=scale, unit=coordinate_unit)
-    branch_by_tid = _branch_colour_map(assignments_df)
+    branch_by_tid = _branch_color_map(assignments_df)
     n_total = len(trajectories)
 
     fig, ax = plt.subplots(figsize=(12, 10), dpi=DEFAULT_PLOT_CONFIG.dpi)
@@ -420,7 +420,7 @@ def plot_branch_trajectories_map(
                        label=f"Unassigned (N={n_missing})")
         )
 
-    plot_title = title or f"Branch trajectories (J{junction_number})"
+    plot_title = title or f"Branch trajectories (Junction {junction_number})"
     ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
     ax.set_title(plot_title, fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
@@ -440,7 +440,7 @@ def plot_branch_trajectories_map(
         )
 
     caption = (
-        f"Path colour = discovered branch at junction {junction_number}. "
+        f"Path color = discovered branch at junction {junction_number}. "
         f"{_map_footnote(n_total, scale=scale, unit=coordinate_unit)}"
     )
     _add_map_caption(fig, caption)
@@ -560,7 +560,7 @@ def plot_discover_map(
     scale: float = 1.0,
     coordinate_unit: Optional[str] = None,
 ) -> None:
-    """Overview map for a single junction: grey paths and junction marker only."""
+    """Overview map for a single junction: gray paths and junction marker only."""
     labels = coordinate_labels(scale=scale, unit=coordinate_unit)
     n_total = len(trajectories)
     traj_color = "#A8A8A8"

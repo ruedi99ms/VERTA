@@ -291,7 +291,7 @@ launch_gui()</p>
                 coord_unit = st.text_input(
                     &#34;Coordinate unit (map axes):&#34;,
                     value=st.session_state.get(&#34;coordinate_unit&#34;, &#34;m&#34;),
-                    help=&#34;Shown on map plot axes, e.g. &#39;m&#39; for metres. Leave empty for generic scene-unit labels.&#34;,
+                    help=&#34;Shown on map plot axes, e.g. &#39;m&#39; for meters. Leave empty for generic scene-unit labels.&#34;,
                 )
                 st.session_state.coordinate_unit = coord_unit.strip() or None
             with col_threshold:
@@ -1421,7 +1421,7 @@ launch_gui()</p>
                         help=(
                             &#34;Where each trajectory&#39;s route choice is measured. &#34;
                             &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
-                            &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                            &#34;pathlen: after traveling a set distance past junction entry. &#34;
                             &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
                         ),
                     )
@@ -1432,7 +1432,7 @@ launch_gui()</p>
                             &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                             &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                             &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1457,7 +1457,7 @@ launch_gui()</p>
                             max_value=500.0,
                             step=10.0,
                             help=(
-                                &#34;Distance travelled along the path after junction entry &#34;
+                                &#34;Distance traveled along the path after junction entry &#34;
                                 &#34;(scene units, after scale) before the initial direction is &#34;
                                 &#34;measured. Used in pathlen mode. Typical: 100.&#34;
                             ),
@@ -1480,7 +1480,7 @@ launch_gui()</p>
                             &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                             &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                             &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
@@ -1692,7 +1692,7 @@ launch_gui()</p>
                         help=(
                             &#34;Where each trajectory&#39;s route choice is measured. &#34;
                             &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
-                            &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                            &#34;pathlen: after traveling a set distance past junction entry. &#34;
                             &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
                         ),
                     )
@@ -1703,7 +1703,7 @@ launch_gui()</p>
                             &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                             &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                             &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_r_outer = 50.0
                         discover_epsilon = st.number_input(
@@ -1728,7 +1728,7 @@ launch_gui()</p>
                             max_value=500.0,
                             step=10.0,
                             help=(
-                                &#34;Distance travelled along the path after junction entry &#34;
+                                &#34;Distance traveled along the path after junction entry &#34;
                                 &#34;(scene units, after scale) before the initial direction is &#34;
                                 &#34;measured. Used in pathlen mode. Typical: 100.&#34;
                             ),
@@ -1751,7 +1751,7 @@ launch_gui()</p>
                             &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                             &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                             &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                        ),
+                        )
                         # r_outer will be overridden by junction-specific values
                         discover_hybrid_r_outer = 50.0
                         discover_hybrid_path_length = st.number_input(
@@ -4806,7 +4806,9 @@ launch_gui()</p>
 
         ax.set_xlabel(&#39;Successor Junction&#39;)
         ax.set_ylabel(&#39;Probability (%)&#39;)
-        ax.set_title(f&#39;Direct Successor Probabilities: J{predecessor} → J{decision_junction} → ?&#39;)
+        ax.set_title(
+            f&#39;Direct Successor Probabilities: Junction {predecessor} → Junction {decision_junction} → ?&#39;
+        )
         ax.set_ylim(0, max(probabilities) * 1.1)
 
         # Add value labels on bars
@@ -4913,7 +4915,9 @@ launch_gui()</p>
 
         ax.set_xlabel(&#39;Predecessor Junction&#39;)
         ax.set_ylabel(&#39;Probability (%)&#39;)
-        ax.set_title(f&#39;Direct Predecessor Probabilities: ? → J{decision_junction} → J{successor}&#39;)
+        ax.set_title(
+            f&#39;Direct Predecessor Probabilities: ? → Junction {decision_junction} → Junction {successor}&#39;
+        )
         ax.set_ylim(0, max(probabilities) * 1.1)
 
         # Add value labels on bars
@@ -4977,7 +4981,7 @@ launch_gui()</p>
         if os.path.exists(sample_map):
             st.markdown(&#34;#### Sample raw trajectories&#34;)
             st.caption(
-                &#34;All participant paths in grey with junction locations (J0, J1, …). &#34;
+                &#34;All participant paths in gray with junction locations (Junction 0, Junction 1, …). &#34;
                 &#34;Use this figure to show raw movement data in publications.&#34;
             )
             st.image(sample_map, caption=&#34;Sample Trajectories Map&#34;, width=&#39;stretch&#39;)
@@ -10661,7 +10665,7 @@ launch_gui()</p>
                     help=(
                         &#34;Where each trajectory&#39;s route choice is measured. &#34;
                         &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
-                        &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                        &#34;pathlen: after traveling a set distance past junction entry. &#34;
                         &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
                     ),
                 )
@@ -10672,7 +10676,7 @@ launch_gui()</p>
                         &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                         &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                         &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                    ),
+                    )
                     # r_outer will be overridden by junction-specific values
                     discover_r_outer = 50.0
                     discover_epsilon = st.number_input(
@@ -10697,7 +10701,7 @@ launch_gui()</p>
                         max_value=500.0,
                         step=10.0,
                         help=(
-                            &#34;Distance travelled along the path after junction entry &#34;
+                            &#34;Distance traveled along the path after junction entry &#34;
                             &#34;(scene units, after scale) before the initial direction is &#34;
                             &#34;measured. Used in pathlen mode. Typical: 100.&#34;
                         ),
@@ -10720,7 +10724,7 @@ launch_gui()</p>
                         &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                         &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                         &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                    ),
+                    )
                     # r_outer will be overridden by junction-specific values
                     discover_hybrid_r_outer = 50.0
                     discover_hybrid_path_length = st.number_input(
@@ -10932,7 +10936,7 @@ launch_gui()</p>
                     help=(
                         &#34;Where each trajectory&#39;s route choice is measured. &#34;
                         &#34;radial: when the path crosses the analysis radius (r_outer, per junction). &#34;
-                        &#34;pathlen: after travelling a set distance past junction entry. &#34;
+                        &#34;pathlen: after traveling a set distance past junction entry. &#34;
                         &#34;hybrid: radial first; if no crossing is found, falls back to pathlen.&#34;
                     ),
                 )
@@ -10943,7 +10947,7 @@ launch_gui()</p>
                         &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                         &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                         &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                    ),
+                    )
                     # r_outer will be overridden by junction-specific values
                     discover_r_outer = 50.0
                     discover_epsilon = st.number_input(
@@ -10968,7 +10972,7 @@ launch_gui()</p>
                         max_value=500.0,
                         step=10.0,
                         help=(
-                            &#34;Distance travelled along the path after junction entry &#34;
+                            &#34;Distance traveled along the path after junction entry &#34;
                             &#34;(scene units, after scale) before the initial direction is &#34;
                             &#34;measured. Used in pathlen mode. Typical: 100.&#34;
                         ),
@@ -10991,7 +10995,7 @@ launch_gui()</p>
                         &#34;ℹ️ **Analysis radius (r_outer)** for each junction is set in the &#34;
                         &#34;**Junctions** tab. It defines the orange decision circle in intercept &#34;
                         &#34;plots and the distance at which radial mode detects a route choice.&#34;
-                    ),
+                    )
                     # r_outer will be overridden by junction-specific values
                     discover_hybrid_r_outer = 50.0
                     discover_hybrid_path_length = st.number_input(
@@ -11882,7 +11886,7 @@ launch_gui()</p>
             coord_unit = st.text_input(
                 &#34;Coordinate unit (map axes):&#34;,
                 value=st.session_state.get(&#34;coordinate_unit&#34;, &#34;m&#34;),
-                help=&#34;Shown on map plot axes, e.g. &#39;m&#39; for metres. Leave empty for generic scene-unit labels.&#34;,
+                help=&#34;Shown on map plot axes, e.g. &#39;m&#39; for meters. Leave empty for generic scene-unit labels.&#34;,
             )
             st.session_state.coordinate_unit = coord_unit.strip() or None
         with col_threshold:
@@ -11941,7 +11945,7 @@ launch_gui()</p>
     if os.path.exists(sample_map):
         st.markdown(&#34;#### Sample raw trajectories&#34;)
         st.caption(
-            &#34;All participant paths in grey with junction locations (J0, J1, …). &#34;
+            &#34;All participant paths in gray with junction locations (Junction 0, Junction 1, …). &#34;
             &#34;Use this figure to show raw movement data in publications.&#34;
         )
         st.image(sample_map, caption=&#34;Sample Trajectories Map&#34;, width=&#39;stretch&#39;)
