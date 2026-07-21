@@ -448,6 +448,316 @@ def plot_branch_trajectories_map(
     plt.close()
 
 
+def _resample_polyline(x: np.ndarray, z: np.ndarray, n_samples: int) -> np.ndarray:
+    """Resample a polyline to ``n_samples`` points evenly spaced by arc length.
+
+    Returns an ``(n_samples, 2)`` array of ``(x, z)`` coordinates. Degenerate
+    inputs (fewer than two points, or zero total length) are handled by
+    repeating the single available position.
+    """
+    x = np.asarray(x, dtype=float)
+    z = np.asarray(z, dtype=float)
+    if x.size == 0:
+        return np.zeros((n_samples, 2))
+    if x.size == 1:
+        return np.column_stack([np.full(n_samples, x[0]), np.full(n_samples, z[0])])
+
+    seg = np.hypot(np.diff(x), np.diff(z))
+    s = np.concatenate([[0.0], np.cumsum(seg)])
+    total = s[-1]
+    if total <= 0:
+        return np.column_stack([np.full(n_samples, x[0]), np.full(n_samples, z[0])])
+
+    s_norm = s / total
+    target = np.linspace(0.0, 1.0, n_samples)
+    rx = np.interp(target, s_norm, x)
+    rz = np.interp(target, s_norm, z)
+    return np.column_stack([rx, rz])
+
+
+def _smooth_series(a: np.ndarray, window: int) -> np.ndarray:
+    """Edge-padded moving-average smoothing that preserves array length."""
+    a = np.asarray(a, dtype=float)
+    if window <= 1 or a.size < 3:
+        return a
+    window = int(min(window, a.size))
+    if window % 2 == 0:
+        window += 1
+    pad = window // 2
+    padded = np.pad(a, pad, mode="edge")
+    kernel = np.ones(window) / window
+    return np.convolve(padded, kernel, mode="valid")
+
+
+def _route_from_junction(
+    traj: Trajectory, junction: Optional[Circle], radius: Optional[float]
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Return the portion of a trajectory from its first junction entry onward.
+
+    Falls back to the full trajectory when no junction is given or the entry
+    cannot be located / leaves too few points to aggregate.
+    """
+    x = np.asarray(traj.x, dtype=float)
+    z = np.asarray(traj.z, dtype=float)
+    if junction is None or radius is None:
+        return x, z
+    d = np.hypot(x - junction.cx, z - junction.cz)
+    inside = np.where(d <= radius)[0]
+    if inside.size == 0:
+        return x, z
+    start = int(inside[0])
+    if x.size - start < 2:
+        return x, z
+    return x[start:], z[start:]
+
+
+def plot_aggregated_branch_flow_map(
+    trajectories: List[Trajectory],
+    assignments_df: pd.DataFrame,
+    *,
+    junctions: Optional[List[Circle]] = None,
+    junction_number: int = 0,
+    scale: float = 1.0,
+    coordinate_unit: Optional[str] = None,
+    out_path: str = "Aggregated_Branch_Flow_Map.png",
+    title: Optional[str] = None,
+    n_resample: int = 300,
+    pre_smooth_window: int = 25,
+    min_linewidth: float = 1.0,
+    max_linewidth: float = 12.0,
+    corridor_radius: Optional[float] = None,
+    corridor_frac: float = 0.03,
+    density_smooth_window: int = 15,
+    direction_cos_threshold: float = 0.64,
+    show_background: bool = True,
+    route_from_junction: bool = True,
+) -> None:
+    """Per-branch flow map with direction-gated density-weighted line thickness.
+
+    Each member trajectory of a branch is drawn individually (pre-smoothed for
+    visual clarity). The line width at every point reflects how many other
+    branch-mates pass both (a) spatially close AND (b) in a similar direction
+    at that location. The direction gate prevents lateral spread at curves:
+    a trajectory going straight and one turning at the same spot are in the
+    same place but different headings, so they do not count as co-travellers.
+
+    Line widths are normalised globally across all branches.
+
+    Args:
+        trajectories: List of :class:`Trajectory` objects.
+        assignments_df: Table with ``trajectory`` and ``branch`` columns.
+        junctions: Junction circles (used for markers and route clipping).
+        junction_number: Which junction's branch assignments to visualise.
+        scale, coordinate_unit: Passed through for axis labelling.
+        out_path: Where to save the figure.
+        title: Optional custom title.
+        n_resample: Arc-length sample count for each trajectory (for drawing).
+        pre_smooth_window: Moving-average window applied to XZ coordinates
+            *before* resampling, to eliminate high-frequency noise / squiggles.
+        min_linewidth, max_linewidth: Line-width range in points.
+        corridor_radius: Spatial radius (scene units) for counting neighbours;
+            if ``None`` derived from ``corridor_frac`` × map diagonal.
+        corridor_frac: Fraction of the map diagonal for the default band.
+        density_smooth_window: Smoothing window applied to per-point density
+            values along each drawn trajectory.
+        direction_cos_threshold: Minimum cosine similarity between local route
+            headings for two nearby trajectories to count as co-travellers.
+            The default ``0.64`` allows a heading difference of about 50°.
+        show_background: Draw faint gray raw trajectories behind flow lines.
+        route_from_junction: Clip trajectories to start at the junction.
+    """
+    from matplotlib.collections import LineCollection
+    from scipy.spatial import cKDTree
+
+    if not trajectories:
+        logger.warning("plot_aggregated_branch_flow_map: no trajectories to plot")
+        return
+
+    labels = coordinate_labels(scale=scale, unit=coordinate_unit)
+    branch_by_tid = _branch_color_map(assignments_df)
+    n_total = len(trajectories)
+
+    traj_by_tid: Dict[str, Trajectory] = {str(t.tid): t for t in trajectories}
+
+    members_by_branch: Dict[int, List[str]] = {}
+    for tid, branch in branch_by_tid.items():
+        if branch >= 0 and tid in traj_by_tid:
+            members_by_branch.setdefault(branch, []).append(tid)
+
+    if not members_by_branch:
+        logger.warning(
+            "plot_aggregated_branch_flow_map: no assigned branches to aggregate"
+        )
+        return
+
+    junction: Optional[Circle] = None
+    if junctions and 0 <= junction_number < len(junctions):
+        junction = junctions[junction_number]
+    clip_junction = junction if route_from_junction else None
+    clip_radius = float(junction.r) if (clip_junction is not None) else None
+
+    all_x = np.concatenate([np.asarray(t.x, dtype=float) for t in trajectories])
+    all_z = np.concatenate([np.asarray(t.z, dtype=float) for t in trajectories])
+    diag = float(np.hypot(all_x.max() - all_x.min(), all_z.max() - all_z.min()))
+    if corridor_radius is None:
+        corridor_radius = max(corridor_frac * diag, 1e-6)
+
+    branch_data: Dict[int, Dict] = {}
+    global_max_density = 1.0
+
+    for branch, tids in members_by_branch.items():
+        # Step 1: clip to post-junction portion, pre-smooth XZ, then resample.
+        smoothed_routes: List[np.ndarray] = []
+        for tid in tids:
+            traj = traj_by_tid[tid]
+            rx, rz = _route_from_junction(traj, clip_junction, clip_radius)
+            # Smooth x and z independently to remove high-frequency noise.
+            rx = _smooth_series(rx, pre_smooth_window)
+            rz = _smooth_series(rz, pre_smooth_window)
+            smoothed_routes.append(_resample_polyline(rx, rz, n_resample))
+
+        member_arr = np.stack(smoothed_routes)  # (M, n_resample, 2)
+        M = member_arr.shape[0]
+
+        # Step 2: compute unit tangents for every sample point on every route.
+        # tangents[j] has shape (n_resample, 2), unit vectors.
+        def _unit_tangents(pts: np.ndarray) -> np.ndarray:
+            # Central differences; forward/backward at the ends.
+            d = np.empty_like(pts)
+            d[1:-1] = pts[2:] - pts[:-2]
+            d[0] = pts[1] - pts[0]
+            d[-1] = pts[-1] - pts[-2]
+            norms = np.linalg.norm(d, axis=1, keepdims=True)
+            norms = np.where(norms < 1e-9, 1.0, norms)
+            return d / norms
+
+        tangents = [_unit_tangents(member_arr[j]) for j in range(M)]
+
+        # Step 3: direction-gated spatial density.
+        # For each query point on trajectory i, a neighbour trajectory j
+        # contributes 1 only if it passes within corridor_radius AND its
+        # local tangent agrees with trajectory i's tangent (dot > cos_thresh).
+        # This eliminates lateral counting at turns where two paths cross or
+        # diverge at the same location but in different directions.
+        if M > 1:
+            member_trees = [cKDTree(member_arr[j]) for j in range(M)]
+
+            density = np.zeros((M, n_resample), dtype=float)
+            cos_thresh = direction_cos_threshold
+
+            for i in range(M):
+                query_pts = member_arr[i]    # (n_resample, 2)
+                tang_i = tangents[i]         # (n_resample, 2)
+                for j in range(M):
+                    if j == i:
+                        continue
+                    # Find all points of j within radius of each query point.
+                    neighbours = member_trees[j].query_ball_point(
+                        query_pts, corridor_radius
+                    )
+                    for t_idx, nb_indices in enumerate(neighbours):
+                        if not nb_indices:
+                            continue
+                        # Check if ANY nearby point of j has a compatible direction.
+                        tang_j_nb = tangents[j][nb_indices]  # (k, 2)
+                        dots = tang_j_nb @ tang_i[t_idx]     # (k,)
+                        if np.any(dots >= cos_thresh):
+                            density[i, t_idx] += 1.0
+            density += 1.0  # include self
+        else:
+            density = np.ones((M, n_resample), dtype=float)
+
+        # Step 3: smooth density profiles along each trajectory.
+        smoothed_density = np.stack([
+            _smooth_series(density[i], density_smooth_window) for i in range(M)
+        ])
+
+        global_max_density = max(global_max_density, float(smoothed_density.max()))
+        branch_data[branch] = {
+            "routes": member_arr,
+            "density": smoothed_density,
+            "n": M,
+        }
+
+    fig, ax = plt.subplots(figsize=(12, 10), dpi=DEFAULT_PLOT_CONFIG.dpi)
+
+    if show_background:
+        _plot_trajectory_layer(
+            ax, trajectories,
+            color="#D9D9D9", linewidth=0.4, alpha=0.4, zorder=0, rasterized=True,
+        )
+
+    if junctions:
+        _draw_junction_markers(ax, junctions)
+
+    legend_elements = []
+    for branch in sorted(branch_data):
+        bd = branch_data[branch]
+        routes = bd["routes"]
+        density = bd["density"]
+        color = DEFAULT_PLOT_CONFIG.get_branch_color(branch)
+        M = bd["n"]
+
+        for i in range(M):
+            pts = routes[i]       # (n_resample, 2)
+            dens = density[i]     # (n_resample,)
+
+            frac = np.clip(dens / global_max_density, 0.0, 1.0)
+            widths_pt = min_linewidth + (max_linewidth - min_linewidth) * frac
+            seg_widths = 0.5 * (widths_pt[:-1] + widths_pt[1:])
+
+            points = pts.reshape(-1, 1, 2)
+            segments = np.concatenate([points[:-1], points[1:]], axis=1)
+            lc = LineCollection(
+                segments,
+                colors=color,
+                linewidths=seg_widths,
+                alpha=0.72,
+                capstyle="round",
+                joinstyle="round",
+                zorder=3,
+                rasterized=True,
+            )
+            ax.add_collection(lc)
+
+        legend_elements.append(
+            plt.Line2D([0], [0], color=color, linewidth=3.0,
+                       label=f"Branch {branch} (N={M})")
+        )
+
+    ax.autoscale_view()
+
+    plot_title = title or f"Aggregated branch flow (Junction {junction_number})"
+    ax.set_xlabel(labels["x"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_ylabel(labels["z"], fontsize=DEFAULT_PLOT_CONFIG.label_fontsize)
+    ax.set_title(plot_title, fontsize=DEFAULT_PLOT_CONFIG.title_fontsize)
+    ax.set_aspect("equal")
+    ax.grid(True, alpha=DEFAULT_PLOT_CONFIG.grid_alpha)
+
+    fig.subplots_adjust(right=0.82)
+    if legend_elements:
+        ax.legend(
+            handles=legend_elements,
+            loc="upper left",
+            bbox_to_anchor=(1.01, 1.0),
+            bbox_transform=ax.transAxes,
+            fontsize=DEFAULT_PLOT_CONFIG.legend_fontsize,
+            frameon=True,
+            borderaxespad=0,
+            title="Line width \u221d local density",
+        )
+
+    caption = (
+        f"Smoothed per-branch routes; line width ∝ branch-mates within {corridor_radius:.1f} units "
+        f"travelling in the same direction (heading tolerance ≈ {int(np.degrees(np.arccos(direction_cos_threshold)))}°). "
+        f"Thick = shared corridor; thin = spreading or diverging. "
+        f"{_map_footnote(n_total, scale=scale, unit=coordinate_unit)}"
+    )
+    _add_map_caption(fig, caption)
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+
+
 def plot_branch_directions(
     centers: np.ndarray,
     junction_center: Tuple[float, float],

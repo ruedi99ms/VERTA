@@ -427,6 +427,7 @@ Each command generates specific output files:
 - `Branch_Directions.png` - Compass plot of discovered branch directions (degrees from +X)
 - `Branch_Counts.png` - Bar chart of branch frequencies (count and %)
 - `Branch_Trajectories_Map.png` - Full-area map with each path coloured by branch choice at that junction
+- `Aggregated_Branch_Flow_Map.png` - Smoothed, route-based branch flow map. Each trajectory remains visible, while line thickness reflects nearby participants travelling in a similar direction; shared corridors become thicker and diverging routes separate without junction-to-junction simplification.
 - `Decision_Intercepts.png` - How each trajectory crosses the analysis radius, coloured by branch
 - `Decision_Map.png` - Overview map with paths coloured by assigned branch
 

@@ -503,6 +503,19 @@ el.replaceWith(d);
             except Exception as e:
                 logger.error(f&#34;Branch trajectories map failed: {e}&#34;)
 
+            try:
+                plot_aggregated_branch_flow_map(
+                    trajectories=trajectories,
+                    assignments_df=assignments_all,
+                    junctions=all_junctions if all_junctions else [junction],
+                    junction_number=junction_number,
+                    scale=scale,
+                    coordinate_unit=coordinate_unit,
+                    out_path=os.path.join(out_dir, &#34;Aggregated_Branch_Flow_Map.png&#34;),
+                )
+            except Exception as e:
+                logger.error(f&#34;Aggregated branch flow map failed: {e}&#34;)
+
     return assignments, summary, centers</code></pre>
 </details>
 <div class="desc"><p>Compute initial movement vectors and cluster them into k branches.</p>

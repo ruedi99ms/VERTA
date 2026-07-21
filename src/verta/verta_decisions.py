@@ -10,7 +10,11 @@ import pandas as pd
 from verta.verta_clustering import best_k_by_silhouette, cluster_angles_dbscan, kmeans_2d, merge_close_centers
 from verta.verta_geometry import Circle, entered_junction_idx
 from verta.verta_data_loader import Trajectory
-from verta.verta_plotting import plot_decision_intercepts, plot_branch_trajectories_map
+from verta.verta_plotting import (
+    plot_decision_intercepts,
+    plot_branch_trajectories_map,
+    plot_aggregated_branch_flow_map,
+)
 from verta.verta_logging import get_logger
 
 logger = get_logger()
@@ -583,6 +587,19 @@ def discover_branches(trajectories: Sequence[Trajectory],
             except Exception as e:
                 logger.error(f"Branch trajectories map failed: {e}")
 
+            try:
+                plot_aggregated_branch_flow_map(
+                    trajectories=trajectories,
+                    assignments_df=assignments_all,
+                    junctions=all_junctions if all_junctions else [junction],
+                    junction_number=junction_number,
+                    scale=scale,
+                    coordinate_unit=coordinate_unit,
+                    out_path=os.path.join(out_dir, "Aggregated_Branch_Flow_Map.png"),
+                )
+            except Exception as e:
+                logger.error(f"Aggregated branch flow map failed: {e}")
+
     return assignments, summary, centers
 
 
@@ -868,6 +885,7 @@ def _write_chain_publication_plots(
         plot_branch_counts,
         plot_branch_directions,
         plot_branch_trajectories_map,
+        plot_aggregated_branch_flow_map,
         plot_sample_trajectories_map,
     )
 
@@ -914,6 +932,15 @@ def _write_chain_publication_plots(
                 scale=scale,
                 coordinate_unit=coordinate_unit,
                 out_path=os.path.join(junction_dir, "Branch_Trajectories_Map.png"),
+            )
+            plot_aggregated_branch_flow_map(
+                list(trajectories),
+                df_i,
+                junctions=list(junctions),
+                junction_number=i,
+                scale=scale,
+                coordinate_unit=coordinate_unit,
+                out_path=os.path.join(junction_dir, "Aggregated_Branch_Flow_Map.png"),
             )
         except Exception as e:
             logger.error(f"Publication plots for junction {i} failed: {e}")

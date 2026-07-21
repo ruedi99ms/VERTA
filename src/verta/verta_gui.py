@@ -5035,6 +5035,7 @@ class VERTAGUI:
             other_plots = [
                 ("Decision_Intercepts.png", "Decision Intercepts"),
                 ("Branch_Trajectories_Map.png", "Branch Trajectories Map"),
+                ("Aggregated_Branch_Flow_Map.png", "Aggregated Branch Flow Map"),
                 ("Branch_Counts.png", "Branch Counts"),
                 ("Branch_Directions.png", "Branch Directions"),
             ]
